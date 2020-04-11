@@ -1,0 +1,34 @@
+@import "/home/stefan/asciidoctor-stylesheet-factory/stylesheets/asciidoctor.css";
+
+/* https://github.com/asciidoctor/asciidoctor.org/issues/422 */
+
+:root{
+--maincolor:#00FFFF;
+--primarycolor:#000000;
+--secondarycolor:#AAAA00;
+--tertiarycolor:#CCCCCC;
+--sidebarbackground:#CACACA;
+--linkcolor:#0D47A1;
+--linkcoloralternate:#B71C1C;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+
+
+.code{font-family: monospace; background-color: #DDD; color: #000}
+.term{font-family: monospace; background-color: #DDD; color: #000}
+.ndef{font-style: italic; color: #000}
+
+
+.userinput{font-family: monospace, monospace;color:#000; font-size:80%;}
+
+.monospace{font-family: monospace, monospace;color:#000; background-color: #EEE; font-size:70%;}
+
+.important{color: #000; background-color:#FF0}
+
+.new{color: #000; background-color:#FF0}
+
+.dim{font-style: italic}
+
+.quote{} 
