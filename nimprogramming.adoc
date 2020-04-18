@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 14-APR-2020 
+//v0.1, 18-APR-2020 
 :doctype: book 
 :toc: left 
 :icons: font 
@@ -2738,6 +2738,8 @@ And maybe remove males from the list when we have more males then females?
 
 == Procedures and Functions
 
+=== Introduction
+
 Procedures and functions, called proc and func in Nim, are
 the most common way to structure larger programs in smaller parts
 with a dedicated task. The terms procedure and function where
@@ -2783,18 +2785,14 @@ func sqr(i: int): int =
   i * i
 ----
 
-//We write the keyword proc to tell the 
-
-//W use the keyword proc followed by our desired name to 
-//tell the compiler that we want to define a procedure
-
 A procedure declaration consists of the keyword proc, a user
 selected name, a optional parameter list enclosed in
 parenthesis  and an optional colon followed by a data type.
 
 Note that this is only a declaration so far -- the
 compiler could recognize the construct, its parameters
-and its result type.
+and its result type. Sometimes we call this construct
+a procedure-header.
 
 Generally we do not only declare a function, but we
 define it, that is we add a equal sign to the
@@ -2823,7 +2821,7 @@ echo sqr(j)
 
 Earlier in this book we said that the compiler processes
 our source code from top to bottom, and that the final
-program is executed from top to bootom too. The first
+program is executed from top to bottom too. The first
 statement is indeed true, for that reason it can be 
 necessary to declare a function at the top, and define
 it below, as we can not call a proc before it is declared or defined.
@@ -2846,7 +2844,7 @@ is modified. Let us assume we want to "frame" a passed
 string, for example we want to pass in the string "Hello"
 and want to change it to "* Hello *". Further let 
 us assume that we may sometimes want to use other
-characters instead of the asterics, maybe a + sign.
+characters instead of the asterisk, maybe a + sign.
 
 [source, nim]
 ----
@@ -2894,7 +2892,22 @@ character string at the front of our passed string. Finally we
 add a whitespace and the c character to the passed string.
 The passed string is now modified, it is 4 characters longer. That
 modification is noticeable for the caller of that proc, that
-is echo will print the modified version. 
+is echo will print the modified version.
+
+Our frame() proc above modified the passed string. We could have
+instead decided that the proc should not modify the string, but should
+return a new string consisting of the frame and the passed string in the center.
+Generally when creating procs we have to decide what is more useful -- modifying a 
+passed value or returning a modified copy. And sometimes we have to
+regard efficiency too. Returning newly created large data types
+like strings may be expensive. A string is a not trivial structure, as 
+it contains the dynamic buffer for the string content, which has to
+be allocated. On the other hand, for the passed var string we inserted
+characters, which involves moving characters and is also not 
+a really cheap operation, and maybe when we insert a lot, the
+string buffer must be even enlarged, which is again expensive.
+So for this use case it is not really clear what approach is better -- 
+we used the var parameter mainly to introduce var parameters.
 
 The execution of a procedure terminates when the
 last statement of the procedure body has be processed.
@@ -2906,7 +2919,7 @@ can also terminate with the last expression of
 the procedure body, or earlier with a return expression
 like return i * i. Functions and procedures with a result
 declare automatically a result variable for us, which we may
-use or just ignore. So for our previous sqr function we have
+use or just ignore. So for our previous sqr() function we have
 various ways to write it:
 
 ----
@@ -2959,7 +2972,234 @@ is that Nim supports type inference, and that would not work
 when we would have two procs with same name each accepting a int parameter 
 but one returning an int and one returning a float number.
 
-== Generics
+Nim does also support named arguments in proc calls, that is we could invoke
+the proc above with sqr(i = 2.0). Named arguments
+can be useful when procs or functions have many arguments,
+maybe some with default values, and we do not remember
+the order of parameters or when we want to specify only a few.
+
+=== Special argument types: OpenArray and Varargs
+
+The openArray and varargs data types can be used only in 
+parameter lists.
+OpenArray is a type which allows to pass arrays and seqs
+to the procedure or function. Allowing that makes
+sense as arrays as well as seqs store there content
+in a block of memory, which can be processed uniformly.
+Although arrays generally do not have to start with index
+number 0, when passed as openarray the first element
+is mapped to index 0, and the index of the last element is
+available by using the high() function on the passed array
+parameter. Whenever we write a proc that accepts an array
+or a seq, we should consider using the openArray parameter type
+to allow passing in both data types.
+
+The varargs data type allows passing a variable number of
+arguments to a proc or function, and we can
+iterate over the arguments in the proc body:
+
+----
+proc print(s: varargs[string]) =
+  for el in s:
+    stdout.write(el)
+    stdout.write(", ")
+  strout.write('\n')
+
+print("Hello", "World")
+----
+
+There exists a variant of the varargs data type that
+performs a type conversion automatically by applying a
+proc on the arguments. For example varargs[string, `$`]
+would apply the stringify operation on the passed arguments
+automatically. That is what echo does.
+
+Varargs arguments may be only allowed for the last
+argument in a parameter list.
+
+=== Scoping , Visibility and Locality
+
+Scoping, visibility and locality is an important concept in computer programming
+to keep the source code clear. Imagine that a variable which we declare at some point
+in our program would be visible everywhere. That would even for medium size
+programs generate a lot of confusion -- whenever we would need a variable we would
+have to carefully check which names are already in use. And for performance it would be
+bad also, as all variables declared somewhere would reside permanently in  memory.
+
+So most programming languages including Nim support the concept of locality --
+names declared inside of a procedure body or inside another form of block are
+only visible there and can only be used there. We say that they are only visible
+in that scope. For Nim we can say that whenever Nim's syntax requires a new level of
+indentation, that is a new statement block, then all symbols declared in that block
+are only visible in that block and in sub-blocks of this block, but not outside of
+that block. Nim has another important concept of visibility, which are called
+modules and allows separation our code in logically separated text files with
+well defined visibility rules, we will discuss modules later.
+
+Visibility is really a simple concept, let us regard this useless example:
+
+----
+var e: float = 2.7
+
+proc p1 =
+  var x: float = 3.1415
+  if x > 1.0:
+    var y = 2.0 * x
+    echo y # OK
+  echo x # OK
+  echo y # compile error, y is not visible
+  echo e # OK, e is declared globally, so it is visible everywhere
+
+echo e # OK
+echo x # ?
+echo y # ?
+----
+
+In line one we declare a so called global variable, that one is visible
+after declaration, that is below the line where it is declared, in the whole
+program. The variables declared in the proc p1 are called local variables,
+they are not visible outside of that proc p1. The variable x is declared
+at the start of the proc body and is visible in the whole proc everywhere, while
+variable y is declared in the if block and is visible only there. So
+it should be clear if the last two echo statements for x and y compile fine?
+
+Related to visibility of variables is their lifetime, that is
+the duration how long they exist and how long they can store a value.
+Global variables exist for the whole program runtime -- when you have
+assigned a value to it that value can be used everywhere as long as the program
+runs, and as long you do not assign a different value of course.
+Global variables are generally stored in a special memory region that is called BSS
+region.
+
+Variables of value type defined locally inside a procedure or function do exists
+only for the execution time of that proc, that is they are created when the proc
+is invoked and vanish when the proc terminates, that is when execution
+continues with the statement following on the proc call.
+
+Local variables declared in a proc reside in a special memory region of the RAM which is called
+the stack. The stack is nothing more than an arbitrary part of the hole ram that is used in some
+clever fashion: The memory words in it are used in consecutive order. A so called stack
+pointer is used to indicate the address of the first free area in that stack. So when a 
+proc is called, which may have n bytes of local variables, then the compiler can use
+the area where stack pointer points to for that variables, and when the proc 
+is called then the stack pointer is increased by that size. So the stack pointer
+points again to the next free area of the stack, and another proc can be called
+in the same way from within the current proc. Whenever a proc terminates, the stack
+pointer is set back to the value which it had when the proc starts execution.
+This method of memory management is simple and fast, but it does only
+work when the total amount of memory that the local variables in a proc 
+needs is known at compile time, so that the compiler can adjust the
+stack pointer accordingly. It does not work for dynamically sized data types
+like strings or sequences.
+
+Note that pointers and references are value types itself, we can regard 
+pointers and references as a plain integer variable interpreted in a special way --
+as a memory location. But the memory blocks to which the pointers and references 
+may point and that is allocated by alloc() or new() is different: That memory blocks
+are not allocated on the stack, but in the ordinary RAM which we call heap to
+separate it from the stack.
+
+So why can the stack not be used for memory blocks which alloc() or new provides for us:
+An important fact for the use of the stack to store variables is that
+the total size which is needed by a proc for all the static variables must be a
+compile time constant. The stack pointer is adjusted by that amount when the
+proc starts and all the local variables are accessed with a fixed offset to
+that stack pointer then. When we use alloc() or new in a proc, the we may
+call that multiple times like we did in our previous list example, and for
+alloc() an additional fact is that the byte size that alloc() should reserve
+can be a runtime value. So the total amount of ram that alloc or new()
+would allocate is a runtime value, and we can not use the stack for it. Instead
+alloc() and new() allocates block of memory in a more dynamic fashion, which is
+basically that they ask the OS for a free block of right size somewhere in the
+available RAM. That block is later given back to the OS for reuse by functions like
+dealloc() or automatically by the GC.
+
+Let us at the end of this section investigate some special
+cases:
+
+While in languages like C we have always a well defined main()
+function and all program code is contained in this function
+or in other functions which are called from this main function, in Nim we have
+also global code as in scripting languages Ruby or Python:
+
+----
+var i: int
+while i < 100:
+  var j: int
+  j = i * i
+  echo j
+  inc(i)
+----
+
+It should be clear that the global variable i resides
+in the BSS segment. But what is with the variable j
+declared in the body of the while statement? It is
+clear that that variable is only visible inside
+of the body of the while statement. But does
+j reside on a stack? There seems to be no proc involved
+so there may be no stack? The variable j may reside in the
+BSS segment too? That is not really clear and may be different
+for different Nim compilers maybe. But why should we care for
+that detail at all? Well it may be important for performance.
+Local proc parameters allocated on the stack are generally
+optimal for performance, and they are optimized by the compiler very
+well. We will learn more about the reasons for that later when we discuss
+the data cache. For now we should only remember that it may be
+a good idea to avoid global code and put all code in procs. We
+may have an arbitrary named main() proc then and call that from
+global scope only. At least for the current Nim compiler V 1.2 that
+seems to be a good idea, maybe later versions or other implementations
+will automatically move all global code into a hidden proc for us.
+
+Let us discuss above while loop again, but this time
+in the body of a proc:
+
+----
+proc p =
+  var i: int
+  while i < 100:
+    let j: int
+    j = i * i
+    echo j
+    inc(i)
+----
+
+When we carefully investigate that proc within the while loop
+we may wonder about two points. First we said earlier that we can
+and should use the let keyword instead of var when there is 
+only one assignment to a variable, so the variable can be 
+regarded as immutable. But the loop is executed 100 times,
+so how can we say there is only a single assignment to variable j?
+The trick is, that j is locally to the while loop, and that j
+is virtually new created and initialized to 0 for each iteration.
+So let is OK and the compiler does not complain. 
+
+We can test that fact with this simple:
+
+----
+proc main =
+  var i: int
+  while i < 10:
+    var a: int
+    a = a + 1
+    echo a
+    inc(i)
+main()
+----
+
+The output is 1 for each loop iteration, as variable
+a is virtually newly created for each loop iteration.
+
+We said virtually newly created, because we can not be
+sure how the compiler may handle it internally. Is storage
+for variable a already allocated when the proc is invoked, that is 
+in the same way as storage for the loop counter variable i is allocated 
+on the stack when the proc is called. Or is storage for variable
+a is reserved for each loop iteration by increasing the stack pointer at the start
+of the loop and resetting it at the end of the loop. We can not be sure without reading
+the compiler source code, but finally we should not care, as it does not really matter.
+
+=== Generics
 
 In the previous section we defined a sqr() proc
 for ints and one for float numbers. Both procs
@@ -2968,29 +3208,911 @@ For that case we can use so called generic procedures.
 
 ----
 func sqr[T](v: T): T =
-  v * v
+  var p: T
+  p = v * v
+  return p
+
+echo sqr(2)
+echo sqr(3.1415)
 ----
 
-We put a square bracked 
+We put a square bracket after the function name which includes a
+symbolic name, and that name is then used instead of concrete
+types in the proc header or in the proc body.
+
+We can now call that proc with parameters of different types including
+int and float types. You may wonder why that works -- Nim is a statically
+typed language, so how can the parameter of function sqr as well
+accept an integer as an float number? Is there a  hidden type conversion
+involved? No, the trick is that whenever we call that generic proc with 
+ a different type, than a new proc or function is instantiated. As we called
+the generic sqr proc with an int and a float parameter, during compile time the
+compiler creates machine code for two separate function, one which is
+called when an int is passed as parameter, and one which is called when a float
+is passed. If we would call that proc name again with an int or float parameter, than
+one of the two existing procs would be used. But for a different, still unused
+data type like float32 again a new proc would be instantiated. In this way generics
+procs can lead to some code bloat. Note that calling the generic function
+with a data type like a character or a string would fail, as that
+types do not support multiplication with itself.
+
+A slightly different notation is available by so called or types:
+
+----
+func sqr(v: int or float): auto =
+  var p: typeof(v)
+  p = v * v
+  return p
+
+echo sqr(2)
+echo sqr(3.1415)
+----
+
+Here we have limited the parameter types to the int type or the float type.
+Again the compiler would instantiate two separate functions for the
+both data types. As we had not the symbolic type T available here, we have used the
+keyword auto as return type, and for the type of variable p we used the macro
+typeof(). The type auto for the return type works as long as the
+function returns a well defined type. Note that we can not at runtime decide
+what a type the function should return, so a construct like
+if cond: return 2 else: return 3.1415 would not work, at least not when the
+values are variables of different type. For the literal value it may work, as
+the compiler may be smart and guess that we want to return the float literal 2.0.
+
+Generics can become a bit complicated, as we may even use multiple different
+generic types for different proc parameters. And we can use generics also
+for object types, we may for example create lists like we did for our names
+list that work not only for strings, but that can work with other data
+types like numbers or sequences in a very similar way. We may explain
+that in more detail later.
+
+=== Method call syntax
+
+A useful coding style introduced by OPP languages is the method call
+syntax, which was initially used in OOP programming style
+for objects, and later applied by languages like Ruby to all
+data types. Ruby in some way regards all data as objects.
+
+Method call syntax means, that for example for a variable s of data type string
+we do write s.add(c) instead of add(s, c). Or for an integer variable i we may
+write i.abs instead of abs(i). That is we put the first parameter of the proc parameter list
+in front of the proc name, and separate that parameter from the proc name by a period.
+The compiler regards both notation as equivalent. The advantage of the method call
+syntax is that we may save a character and that it is more clear with what "object"
+we are working, as it stands in front of the expression.
+
+Most OOP languages allows that notation only for a class, for example the string class
+may declare all possible operations that can be done with strings, and the
+method call syntax is used for that operations. One problem is, that it can
+be different to add more operations which can be used in that style, as
+often all that operations are defined in the class scope. Ruby fixed 
+that restriction by allowing so called reopen of classes, that is user can 
+later add more operations.
+
+Nim simple allows that notation generally, as did the D language, but D used
+the tern Uniform Function Call Syntax (UFCS) for it.
+
+=== Procedure variables
+
+Procedures and functions are not always fully static entities.
+We can assign procedures and functions to variables, and we
+can pass whole procedures or functions as parameters
+to other procedures or functions. And functions can even 
+generate and return new functions. Let us investigate how
+procedure variables work:
+
+----
+var
+  p: proc(i: int): int
+
+proc p1(i: int): int =
+  i + i
+
+proc p2(i: int): int =
+  i * i
+
+p = p1
+echo p(7)
+p = p2
+echo p(7)
+----
+
+The output of the two echo statements should be 14 and 49 -- we called in both
+cases the same proc variable with the same parameter, but the proc variable p
+was in the first call an alias for p1, and in the second call an alias for p2.
+Note, when we assign a proc to a proc variable we do only write the name of that proc,
+there is no () involved. That is because we assign that proc to the proc variable, but we do not call
+the proc in this case. Of course, when we assign a proc to a proc variable then the proc signatures
+have to match, that is the parameter list and the result have to be compatible.
+
+Now we use a function as a proc argument.
+
+----
+type
+  EchoProc = proc (x: float)
+
+proc t(ep: EchoProc; x: float) =
+  echo "The value is"
+  ep(x)
 
 
+proc ep1(x: float) =
+  echo "==> ", x
 
+proc ep2(x: float) =
+  echo x
 
-== Tuples
+t(ep1, 3.1415)
+t(ep2, 3.1415)
+----
+
+A common use case for a function as a proc parameter is sorting.
+We can use the same sort procedure for different data types
+when we provide cmp proc that can compare that data type.
+
+----
+from algorithm import sort
+
+proc cmp(a, b: int): int =
+  if a < b:
+    -1
+  elif a == b:
+    0
+  else:
+    1
+
+proc main =
+  var a = [2, 3, 1]
+  a.sort(cmp)
+  for i in a:
+    echo i
+
+main()
+----
+
+The sort procedure is provided by the algorithm module.
+The sort proc accepts an array or a sequence, and a
+cmp proc that gets two parameters of the same type as
+the elements in the passed array, and that returns
+-1, 0, or 1 as the result of the comparison. We could
+easily sort other data types like strings or our custom
+objects by an arbitrary key, as long as we can provide
+a matching cmp() proc. For the cmp proc it is important that it
+returns a well defined result based on the input, and when
+both parameters are equal it should really return 0. If you would exchange
+the return values 1 and -1 in the cmp proc above, you would
+invert the sort order.
+
+=== Nested Procedures and Closures
+
+While in C all functions must be defined in top level
+scope and nesting of functions is not allowed, in Nim
+procedures can contain other procedures. A special case
+occurs when the sub-procedures do access variables of the outer
+scope. In this case the sub-procedure is called a closure:
+
+----
+proc digitScanner(s: string) =
+
+  var pos = 0
+  proc nextDigit: char =
+    while pos < s.len and s[pos] notin {'0' .. '9'}:
+      inc(pos)
+    if pos == s.len:
+      return '\x0'
+    result = s[pos]
+    inc(pos)
+
+  var c: char
+  while true:
+    c = nextDigit()
+    if c == '\x0':
+      break
+    stdout.write(c) 
+  stdout.write('\n')
+
+digitScanner("ad5f2eo73q9st")
+----
+
+When you run this program the output should be
+
+----
+52739
+----
+
+This program is not that easy, but when you think about it a bit
+you should be able to understand it. The task is to extract
+from a string all the digits and to ignore the other characters.
+
+To get the digits, we use a local procedure that uses the pos
+variable of the enclosing procedure, and also access the parameter
+s of the enclosing procedure. The closure nextDigit() checks if
+the position in the string is still valid, that is if it is still
+smaller than the length of the string, and also checks if the 
+current character is a digit. The first check uses the standard procedure
+len() which return the length of a passed string parameter, that is how
+many characters the string contains. We have used the method call syntax here instead
+using the ordinary proc call len(s). The next check test if the current
+character is not  a decimal digit. For that test we could use a series of compares
+like if c == '0' or c == '1' or ... or c == '9'. But to make such tests
+easier and faster, Nim offers one more data type, the set type. And the notin
+operator test if an value is not contained in a set constant. We will
+learn more about the set datatype later. An important point for the expression
+after the while statement is, that it is processed from left to right.
+That fact is here important, because we have first to check if pos
+is still a valid position, before we can use the subscript operator []
+to access the current character and test if it is not contained in the set.
+If the check for the valid position would not come first, then we may
+access an invalid position in the string and we would get a runtime range error.
+
+While the position is still valid but the current character is not a digit
+we increase the position. The while loop can end by two conditions: Either
+the current character is a digit, or we have reached the end of the string
+and we have to stop. For the last case we use a special stop mark, we return a
+special character which we have entered in  escape notation as '\x0'. That
+is a very special character, that is used in C to mark the end of strings.
+It is the first character in  the ASCII table and has the decimal value 0.
+We said earlier that characters are encoded in 8 bit and correspond to
+the unsigned integer numbers 0 up to 255. '\x0' is just a special notation
+for the first character which corresponds to integer value 0. We may later say
+some more about these magic characters. Well, when the end of the string is reached 
+then we return that character. Otherwise we return the current character. Remember,
+from the while condition we know  that string end is reached, or current
+character is a digit. As we tested for string end before, we can only have the case
+that current character is a digit now. But can we return that character
+immediately now? If we would, s[pos] would be a digit, and we would
+get exactly the same character for the next proc call! So we have to move
+to the next character by increasing pos before we return that character.
+For this the pre-declared result variable is useful. We assign the current
+character to the result variable, and then increase pos. As the last
+statement in our proc is not a expression but a plain inc() statement, the content
+of the result variable is returned. The other while loop in the outer
+procedure is very simple, we just call the closure in the body of the while loop
+and terminate the loop when we get the special Null character.
+
+And finally an example where one proc returns
+another procedure:
+
+----
+proc addN(n: int): auto = (proc(x: int): int = x + n)
+ 
+let add2 = addN(2)
+echo add2(7)
+----
+
+The output of echo would be 9 in this case. This
+construct is sometimes named currying.
+
+=== Converters
+
+Nim's converters are a special variant of functions that are called
+automatically by the compiler when argument types do not match.
+
+----
+converter myIntToBool(i: int): bool =
+  if i == 0:
+    false
+  else:
+    true
+
+proc processBool(b: bool) =
+  if b:
+    echo "true"
+  else:
+    echo "false"
+
+var i = 7
+processBool(i)
+if i:
+  echo "true"
+else:
+  echo "false"
+----
+
+With above converter we can pass an integer to a proc that expects a bool
+parameter, and we can even use an integer as a logical expression in an
+if condition in the same way as it is done in C language.
+Converters do work only in a direct way, that is automatic chaining is not supported:
+If we have on converter from character to int and one from int to boolean, that
+does not mean that we can pass a charater to a proc that expects a boolean. We would
+have to declare one more converter that directly converts character to bool.
+
+Whenever we do consider using converters we should think twice -- converters
+may be confusing, may have some strange effects and may increase compile time.
+
+== Object Orientated Programming and Inheritance
+
+Object Orientated Programming and Inheritance became very popular
+in the early nineties of the last century. Java is a prominient
+representative of the programming paradigm, but most languages
+created in the nineties of the last century support is, like C++,
+Ruby and Python.
+
+The idea of OOP is that objects and procedures working on that objects
+are grouped to classes, and that classes can be extended with
+additional data fields and with additional procedures.
+In OOP procedures and function are often called methods and
+data fields are called members. Sometimes the members are completely
+hidden and are accessed only by so called getter and setter methods.
+That is called encapsulation. Encapsulation allows hiding implementation
+details, so that that details may change when necessary, without
+that the change of internal details become visible to users of that class, so
+that the users can use the class without noticing the change.
+Getters and setters also help hiding internal details and they
+ensure
+that the class is always in a consistent and valid state.
+
+An important property of OOP is dynamic dispatch: When we create
+various sub-classes of a common parent class, and we have defined methods
+for all the sub-classes, then we can have collections of instances of different
+sub-classes, and the compiler can automatically ensure that always 
+the matching method for each instance is called.
+
+A classical example is a drawing program, where we have different geometrical shapes
+like rectangle, circle and many more. All the geometrical objects
+are stored is some form of list, and when we want to draw all of them
+on the screen then we have to call only a unspecific draw() method, and
+the compiler ensures that for each shape the matching draw method
+is called. In Nim that may look like
+
+----
+type
+  Shape = ref object of RootRef
+
+  Rectangle = ref object of Shape
+    x, y, width, height: float
+
+  Circle = ref object of Shape
+    x, y, radius: float
+
+  LineSegment = ref object of Shape
+    x1, y1, x2, y2: float
+
+method draw(s: Shape) {.base.} =
+  # override this base method
+  quit "to override!"
+
+method draw(r: Rectangle) =
+  echo "drawing a rectangle"
+
+method draw(r: Circle) =
+  echo "drawing a circle"
+
+method draw(r: LineSegment) =
+  echo "drawing a line segment"
+
+proc main =
+  var l: seq[Shape]
+  l.add(Rectangle(x: 0, y: 0, width: 100, height: 50))
+  l.add(Circle(x: 60, y: 20, radius: 50))
+  l.add(LineSegment(x1: 20, y1: 20, x2: 50, y2: 50))
+
+  for el in l:
+    draw(el)
+
+main()
+----
+
+The output of that program is
+
+----
+drawing a rectangle
+drawing a circle
+drawing a line segment
+----
+
+So we can have a sequence of the base type, add various sub-types
+and then iterate over the list to draw all the various sub-types.
+Of course in the same way we could do many more task like
+moving, rotating or storing all the objects in one call. The
+compiler does the right dynamic dispatching for us, we have just
+to provide all necessary methods. The need of the base method
+seems to be a bit strange, some other OOP languages do not need that.
+The base method is marked by a {.base.} pragma, we will discuss
+the purpose of pragmas later. In the example we have used only one
+level of sub-classing, but of course we can use many levels, for example
+we can again subclass the Circle by a FilledCircle with a color field.
+
+The OOP coding style can be very convenient for some task, one
+important use case could be graphical user interfaces where
+the graphical elements like labels, buttons, frames built
+in natural way a hierarchical structure. Another typical 
+use case are drawing applications with code similar to our basic example.
+
+Not that the OOP style only works with ref objects, but not with value objects.
+The obvious reason is that we can have collections of different
+sub-types stored in arrays or seqences only for ref objects, as all
+in arrays and sequences all tapes have to have equal size. For references
+that it the case, as references are basically pointers. But different
+value types would have different size. Linked lists would be no better
+solution, as again we can not built lists with value objects.
+
+For maximum performance OOP code with ref objects is generally not optimal, as
+the dispatching itself needs some time, and as the ref objects
+are not contained in a single block of memory, but are distributed
+in the whole RAM, which is not cache friendly.
+
+== Other builtin Data Types
+
+=== Tuples
+
+Tuples can be regarded as some form of lightweight objects without
+inheritance support, but mostly tuples are used when
+functions has to return multiple arguments.
+
+----
+type
+  Move = tuple
+    from: int
+    to: int
+    check: bool
+
+proc findBestNextMove(): (dest: int; check: bool) =
+  ...
+
+let (dst, check) = findBestNextMove()
+----
+
+Here we define a custom Move type similar as we would do for
+a custom object, but we do not use that type at all but
+return a anonymous tuple from our proc, that is a pair of
+an int and a bool.
+
+Due to type inference our dst and check variables gets
+the data types int and bool.
+
+Tuples are also useful when a function has to return a value and
+also an error state, or if it may not be able to return something
+at all in a special case. For references we could return nil then, but
+for results like int or float we may not have a well defined error
+indicating constant, so we can return a tuple with an additional bool.
+But we could use exceptions instead, or we could use Nim's option type
+instead. We will learn more about that later.
+
+=== Enums
+
+While enums in C are nothing more than integers with some special
+syntax for creation, Nims enums are more complex.
+
+In Nim enums can be used whenever some form of symbols are needed
+like the colors red, yellow and green of a traffic light or
+the directions north, south, east and west for a map or a game.
+
+Most of the time we declare an enum type and the corressponding
+values by simple listing them like 
+
+----
+type
+  TrafficLight = enum
+    red, yellow, green
+----
+
+We can use variables of type TrafficLight then like
+
+----
+var tl: TrafficLight
+tl = green
+if tl == red:
+  tl = ...
+----
+
+Enums support assignment, plain tests for (in)-equality and for smaller or greater.
+Additional the functions succ() and pred() are defined for enums to get
+the successor or predecessor of an enum, ord() or int() deliver the corresponding integer number
+and the $ operator can be used
+to get the name of an enum. We can also iterate over enums, so we can
+print all the colors of our  TrafficLight by
+
+----
+for el in TrafficLight
+  echo el.ord, ' ', $el
+----
+
+Ordinary enums start at 0 and uses continues numbers for the internal
+numeric value, so that enums can be used as array indices.
+But we can also assign custom numbers like
+
+----
+type
+  TrafficLigth = enum
+    red = -1, yello = 3, green = 8
+----
+
+We should avoid that, as these "enums with holes" generate some problems for
+the compiler and may be later deprecated. For example array indexing or iterating
+is obviously not possible for enums with holes.
+
+It is also possible to set the string that the stringify operator $ returns, like
+in 
+
+----
+type
+  TrafficLigth = enum
+    red = "Stop"
+    yellow = (2, "Caution")
+    green = ("Go")
+----
+
+Here the assigned numerical values should be 0, 2 and 3. Currently the enums values
+must be specified in ascending order always.
+
+When we have many enums in a program then name conflicts may occur, for example
+we may have an addition enum type named BaseColor which also has red and green
+members. For that case the {.pure.} pragma exists:
+
+----
+type
+  BaseColor {.pure.} = enum
+    red, green, blue
+----
+
+With the pure pragma applied we can use the full qualified
+enum name when necessary, like BaseColor.red. But
+we can still
+use unqualified names like blue when there is no name conflict.
+
+=== Sets
+
+From mathematics we know that sets are some form of unordered collection
+for which we can test membership (x is included in mySet) and we
+can perform general set operations like union of multiple sets.
+
+The set data type maps well to bit operations of the CPU, as
+the CPU can generally clear, set and test single bits and perform
+logical operations of words -- remember a logical or operation
+sets all the bits in destination operand for which at least on source
+operand had a bit set.
+
+A prominent example for use of sets is the set of ASCII characters.
+
+----
+type
+  CharSet = set[char]
+var s = {'a' .. 'z', '.', ',', '!', '?'} 
+var c: char
+if c in s:
+  doSomething()
+----
+
+Here we tested if c is a lowercase letter or one of the 4 common
+punctuation characters. In Nim we can use the range notation ..
+to specify ranges, here that is the sequence of all lowercase
+letter. It works in this case only, as we know that all
+lowercase letters built an uninterrupted range in the ASCII
+table. We used the in operator to test if c is one of the
+listed set character literals.
+
+A character set needs 256 bits for its representation, as we have
+256 characters in the ASCII table and a character is one byte in size
+so it can store each of the ASCII characters. On a 64 bit computer
+256 bits takes 4 words, so above in test would need at most
+4 CPU instructions with bit tests. That is a fast operation, faster
+compared to many or test, and the set notation is easier to write.
+
+In Nim we can also use sets for the int8 or int16 type, but not for
+data types with more than 16 bit. A set with a 16 bit base datatype
+would already need 2^16 bit, that is 2^13 = 8096 bytes or 1024 words
+on a 64 bit CPU. That is the in test from above would extend
+to 1024 word tests for a set with 16 bit base type like a int16.
+
+Beside in or notin test we can join sets with the + operator and
+do all the ordinary operations on sets that are common in math.
+
+=== Object Variants
+
+Nim's object variants, sometimes also called sum types or abstract data types (ADT), are an
+advanced and type save variant of the union type known from C.
+The basic Idea is that we may use value types that may
+store similar, but not identical data. Untyped languages
+like Ruby or Python allow that of course, and we can do
+it in Nim with ref types and inheritance too, as we showed in a previous
+section with our Shape base type and various geometric shapes.
+We could store that ref types in arrays or sequences or linked
+list and use dynamic dispatch for processing the various sub-types.
+That is convenient but gives not maximum performance due
+to dynamic dispatch at runtime and due to bad cache use.
+So we may like to have a value type with different content, so
+that we can store all the value types in a seq and all
+entities reside in a compact block of memory for good cache use.
+
+----
+type
+  ShapeKind = enum
+    line, rect, circ
+
+  Shape = object
+    visible: bool
+    case kind: ShapeKind
+    of line:
+      x1, y1, x2, y2: float
+    of rect:
+      x, y, width, height: float
+    of circ:
+      x0, y0, radius: float
+
+proc draw(el: Shape) =
+  if el.kind == line:
+    echo "process line segment"
+  elif el.kind == rect:
+    echo "process rectangle"
+  elif el.kind == circ:
+    echo "process circle"
+  else:
+    echo "unknown shape"
+
+var
+  s: seq[Shape]
+s.add(Shape(kind: circ, x0: 0, y0:0, radius: 100, visible: true))
+for el in s:
+  draw(el)
+----
+
+Objects variants can have common fields like the boolean state visible above,
+but the other fields are not allowed to use the same names, so we
+had to use x0 and y0 for the names of the center coordinates in the cycle variant.
+
+As you can see we can store all the different object variants as value objects
+in a sequence and iterate over it. Note that object variants may waste some
+storage, as all variants are silently enlarged to have the exact same size, so
+that all variant types can be stored in an array or sequences and can be passed as
+proc parameters in the same way to the same proc. 
 
 == Iterators
 
+W have already used some of Nim's standard iterators to iterate over the
+characters of a string or the content of a sequence. Declaring
+iterartors is similar to declaring procedures, but we use the yield
+keyword to return a single value back to the caller of the iterator.
+When the body of the iterator declaration is reached the iterator terminates.
+In an earlier section we declared a procedure that extracted the decimal
+digits from a string. We can do the same with a iterator:
+
+----
+iterator decDigits(s: string) =
+  var pos = 0
+  while pos < s.len and s[pos] notin {'0' .. '9'}:
+    inc(pos)
+  if pos < s.len:
+    inc(pos)
+    yield(s[pos - 1])
+
+for d in decDigits("df4j6dr78sd31tz"):
+  stdout.write(d)
+stdout.write('\n')
+----
+
+Nim supports closure-iterators and inline-iterators. The later
+have to be marked with the {.inline.} pragma in the header of the declaration.
+Inline-iterators are inserted like templates at the location where they are
+called and offer maximum performance, but each call increases the total
+code size. Closure iterators are invoked like ordinary procedures, the
+invocation eats some performance. Note: Iterators do not provide
+a predefined result variable as procedures do. To avoid the need of
+declaring a res variable of type character, in avbove code we increase pos
+by one first and yield s[pos - 1].
+
 == Templates
+
+Nim templates are a more powerful variant of the macros in C.
+While in C macros are processed by the pre-processor and 
+are mostly just a plain text substitution, in Nim
+templates are a fundamental part of the languages and
+can be used in a similar way like procedures.
+But while procedures built a single block of code
+that is then called multiple times, templates work
+like C macros as textual substitution. Wherever we call
+a template the template source code is inserted.
+
+----
+template sqr(i: int): int =
+  i * i
+
+var j: 7
+echo sqr(j)
+----
 
 == Casts and type Conversion
 
+While we have various types of casts in C++, we have only one cast
+and type conversions in Nim. In Nim casts just reinterpret the same
+bit pattern for another data type. For example the boolean value false
+is internally encoded as a byte with all bits cleared, and true is encoded
+as a byte with all bit but the least significant one cleared. We could 
+cast a bool to an int8 of same size and would get a decimal number 0 or 1.
+Casting is not a real operation at all, as nothing is really done. We watch the
+same bit pattern just from a different perspective. But casting is dangerous,
+it violates the safe type system of the language, and it can go very wrong:
+Can we cast beetwen float64 and int64? Well they have same size, and both are numbers.
+We can cast, but the result would be far away from what we may expect. While 
+int64 has the well known and simple value encoding, that is rightmost bit stands
+for 2^0, next bit for 2^1 and so far, the encoding of floats is much more
+difficult and has not such a simple scheme. In floats some bits represent the so called mantissa
+and some bits represent the exponent. When we cast we may again get a number, but
+the value is not really predictable.
+We have to be very carefully when we cast between types of different size. Nim may permit that
+but we have to think what may really happen. When we cast between a bool and a int64, in one direction
+7 bytes have to be ignored, and in the other direction for 7 missing bytes there is some
+padding necessary. We do a cast by writing after the keyword cast in square brackets the
+desired type followed by paranthesis enclosing the source variable:
+
+----
+var i: uint8 = cast[unint8](myBoolVar)
+----
+
+Totally different to casting is type conversion. We can convert integers to floats
+without problem, for the conversion we use the type like a proc call, that is int(myfloat)
+or float(myInt) -- of course we could use method call syntax like myInt.float instead.
+Type conversion is some effort for the CPU, but most advanced CPU's should have fast
+instructions for basic conversion.
+
+Nim generally only allows type conversions that involve not too much effort.
+So we should not expect var i ="1234"; echo i.int * 7 to be available. Such a conversion
+is expensive, at runtime it costs many CPU cycles as we would have to extract the digits, multiply
+with it weight and sum then up. So for that operation functions like parseInt() are available
+that accept a string as argument and return an int. There exists different variants of parseInt(),
+one may raise exceptions for invalid input, the other may return a boolean.
+ 
 == Exceptions
 
-== Examples
+When we execute our code, sometimes something can go wrong: We may have an
+unexpected division by zero or an overflow, or we get some invalid user input.
+There exists various strategies to handle such situations. One is to terminate our program,
+we may do that by a plain assert() or quit() statements. If we have absolutely no
+idea how to recover from an error then that may be our best option. The user
+may restart the program, or the program may be restarted by some sort of supervisor
+program. For more expectable errors some sort of error indicator may be a better
+solution, for example a parseInt() procedure may return a boolean value for
+success. As we have to return the result for success also, the 
+parseInt() proc may return a tuple, or may get a var parameter in which the result
+is returned. Another solutions are exceptions as known from C++.
 
-=== Text file procession
+----
+proc charToInt(c: char): int =
+  if c in {'0' .. '9'}:
+    return ord(c) - ord('0')
+  raise newException(OSError, "parse error")
 
-Fix a vs an: that is an/a ugly bug!
+proc main =
+  while true:
+    stdout.write("Please enter a single decimal digit: ")
+    let s = stdin.readline
+    try:
+      echo "Fine, the number is: ", charToInt(s[0])
+    except:
+      if s.len == 0:
+        break
+      echo "Try again"
+
+main()
+----
+
+== Modules
+
+Modules are Nim's way to divide multiple source codes in clearly
+separated units and to hide implementation details. Nim use a module concept which is very similar
+to Modula-2 or Oberon. All the Nim standard libraries are divided into
+modules which collect and logically group data types and the related 
+procedures. In some way modules are Nim's classes.
+
+In Nim each module directly corresponds to one text file. Sub-modules
+as known from Ruby, that divide a single text file in multiple modules are
+not supported by Nim currently.
+
+Every textfile with Nim source code is basically a module, and that module
+can be imported and used by other modules. But all symbols like 
+data types or procedures have to be exported to make them visible and usable
+by other modules. That is done like in Oberon by appending an asterisk 
+character to all names that should be exported. These restricted
+exports allows to hide implementation details -- all symbols
+not exported are private to that module and can at be changed and improved 
+at any time without noticing the importing module.
+
+We can import whole modules, that is all symbols that are marked for
+export by the asterisk, or we can import only the symbols that we need
+by specifying their names. Let us create a module that declares a
+single procedure to remove all characters from a string that are not
+letters:
+
+----
+# save this textfile with name mystrops.nim
+proc remNoneLetters*(s: string): string =
+  result = newString(s.len)
+  for c in s:
+    if c in {'a' .. 'z', 'A' .. 'Z'}:
+      result[pos] = c
+      inc(pos)
+  result.setLen(pos)
+----
+
+We save above text file with our Nim source code with
+name mystrops.nim and can import it like
+
+----
+import mystrops
+
+echo remNoneLetters("3h7.5g:8h")
+----
+
+Module names should be lower case and may as other Nim symbols only contain
+letters and the underscore character.  
+
+Note the export marker after the proc name. Instead
+of importing whole modules we can import only single symbols
+with the from x import y, z syntax like
+
+----
+from mystrops import remNoneLetters
+
+echo remNoneLetters("3h7.5g:8h")
+----
+
+Both forms are an unqualified import, that is we can
+refer to the proc by only its name, we do not need
+the qualified form with module name prefix like
+mystrops.remNoneLetters() as long as there are no name conflicts.
+But whenever we want we can use the qualified form also.
+
+Nim programmer generally prefer importing whole modules and
+use unqualified names, while
+that is considered bad style in some other languages like Python.
+In untyped languages like Python unqualified imports
+may indeed pollute the name space and generate many name
+conflicts, but in statically typed languages like Nim
+unqualified import seems to generate name conflicts
+only in very rare cases. Procedures with the same
+name generally have different parameter list, so
+the overload resolution of the compiler can decide
+what proc is to be used. And when really a name conflict
+occurs then the compiler will tell us, and we can easily fix
+it by prefixing the proc name with its module name.
+
+For data types, constants or enums chances for name conflicts
+may be not that tiny, so we may have to use qualified names.
+
+We can also enforce a fully qualified import in Nim by a notation like
+
+----
+from mystrops import nil
+----
+
+In this case we can use all symbols from that module only in qualified form.
+But that does not always work that well in Nim, as Nim has not classes like
+Java, so a qualified use of method call syntax or qualified use of user defined or overloaded operators
+is difficult.
+Imagine strutils.add(s, '\n'), how should that look with method call syntax?
+
+For imports we have also the except keyword, so we may do something like
+
+----
+import strutils except toUpper
+----
+
+The except keyword can be used to prevent possible name conflicts
+without having to use qualified names.
+
+Note that the system module is imported automatically, we should not import
+it directly. Also note that Nim always imports only what is really needed
+in the final executable, so importing only a few symbols from a module
+has no code size benefit over importing the whole module. Still
+it may improve readability of your code when you import only single
+symbols when you are sure that you need not more. Maybe like from
+math import Pi. Note that you can even in that case access other
+symbols of that module by fully qualified names like math.sin().
+
+With the growing standard library it may occur that module 
+names of the standard library interfere with your own module names.
+So Nim now allows and recommends qualified import of modules
+from the standard library like import std/strutils. And
+for external packages installed by the nimble package manager
+imports in the form import package/[mod1, mod2, mod3] are permitted. 
+
+== Include
+
+The include statement should be not confused with the import statement.
+Include just insert a textfile at the position where the include
+statement occurs. Include can be used to split very large modules
+in smaller entities.
+
 
 = Part III: The standard library
 
@@ -3011,6 +4133,8 @@ xxx
 == Parallel Processing
 
 == FFI
+
+== Concepts
 
 = Part VI: Advanced examples
 
