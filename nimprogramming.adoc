@@ -1,10 +1,10 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 18-APR-2020 
-:doctype: book 
-:toc: left 
-:icons: font 
+//v0.1, 25-APR-2020
+:doctype: book
+:toc: left
+:icons: font
 //:experimental:
 :imagesdir: http://ssalewski.de/tmp
 :source-highlighter: pygments
@@ -15,6 +15,9 @@ A gentle Introduction
 :uC: micro-controllers
 :OOP: Object-Orientated-Programming
 :OS: operating system
+:proc: procedure
+:profus: procedures and functions
+:curnim: Nim v1.2
 
 ////
 
@@ -24,7 +27,7 @@ we are using these custom roles for clean semantic markup:
 [.term] terminal text
 [.user] user input
 [.ndef] new unknown entity like stack
-[.code] inline source code segment 
+[.code] inline source code segment
 [.imp] important
 
 We use
@@ -32,7 +35,7 @@ We use
 <<section title>> for cross references
 [[anchor]] for anchors
 {nbsp}
-+->+ disable replacements 
++->+ disable replacements
 
 ////
 
@@ -59,13 +62,16 @@ some sort of universality -- Nim can be used to create programs for tiny {uC} as
 as for large desktop apps and web applications.
 
 Most books about programming languages concentrate on the language itself and assume
-that the reader is already familiar with most basic concepts and has already some
+//that the reader is already familiar with most basic concepts and has already some
+that the reader is already familiar with the foundations of computer hardware and has already some
 programming experience. This is generally a valid approach, as today most
-people are taught these basics in school. But still there are people who missed this
+//people are taught these basics in school. But still there are people who missed this
+people are taught these fundamental knowledge, sometimes called [.ndef]#Computer Science# (CS)
+in school. But still there are people who missed this
 introduction in school for various reasons and decide later that they need some
 programming skills, maybe for a technical job. And there may exist some children
 that are not satisfied with the introduction to computer science taught at school. So
-we have decided to start this book with a short fundamental introduction to basic
+we have decided to start this book with a short introduction to fundamental
 concepts -- most people can skip that part. In part II we explain the basics of
 computer programming step by step in a way which should enable even children to learn
 independently. Part III will give you an overview of the Nim standard library and
@@ -90,9 +96,9 @@ A computer is in first line a device which can run computer programs.
 Nearly all computers currently in use, from the tiny ones integrated in
 electronic gadgets, over the well known desktop computer (PC) to large and
 powerful super computers filling whole rooms, work internally with digital data
-only.footnote[In the past some form of analog computers existed, some worked mechanically,
+only.footnote:[In the past some form of analog computers existed, some worked mechanically,
 some used analog voltages or currents as input and output signals. Indeed one important
-device which is still very common in analog electronics is the summing amplifier, 
+device which is still very common in analog electronics is the summing amplifier,
 which can sum up multiple electric voltages.]
 Digital data is basically integer (whole) numbers, we will discuss the term digital
 in the next section in more detail.
@@ -111,34 +117,34 @@ numbers are most often called just [.ndef]#data# -- basically that data is nothi
 more than numbers, but it can be interpreted in many different ways, as pictures,
 sounds and much more.
 
-Nearly all of today's desktop computers, and even most notebooks and cellphones contains
+Nearly all of today's desktop computers, and even most notebooks and cellphones contain
 not only a single CPU, but multiple of it, also called "Cores". So they can run different programs
 in parallel, or a single program can run parts of it on different CPU's, to
 increase performance or reduce total execution time. The so called super
 computers can contain thousands of CPU's. Beside CPU's most computers have also
-at least one GPU, a graphics processing unit, that can be used
+at least one [.ndef]#GPU#, a [.ndef]#Graphic Processing Unit#, that can be used
 to display data on a screen or monitor, maybe for doing animations in games or
 for playing video. The distinction between CPU and GPU is not really sharp, generally
 a CPU can also display data on screens and monitors, and GPU's can do also
 some data processing that CPU's can do. But GPU's are optimized for the
 data display task.
 
-More visible for the ordinary computer user is the periphery -- devices like
+More visible to the ordinary computer user is the periphery -- devices like
 keyboard, mouse, screen and maybe a printer. These periphery devices enables human
 interaction with the computer, but are in no way a core component of it, the computer
 can run well without them. In so called notebook or laptop computers or in cellphones
 the periphery devices are closely integrated with the core components.
-All the physical parts of a computer are also called the hardware, while
-the programs running on that hardware are called software.
+All the physical parts of a computer are also called the [.ndef]#hardware#, while
+the programs running on that hardware are called [.ndef]#software#.
 
-An less visible but also very important class of computers are [.ndef]#{uC}# and so
+A less visible but also very important class of computers are [.ndef]#{uC}# and so
 called [.ndef]#embedded devices#, tiny pieces with generally a hull of black plastic
 with some electrical contacts. The devices generally contain all necessary elements,
 that is the CPU, some RAM and a persistent storage that can store programs when no
 electric power supply is available. These devices may be restricted in computing
 power and the number of data that they can store and process, but they are contained in
 many devices, they control your washing machine, the refrigerator, the television and
-radio and many more. Some devices of you r home may even contain multiple {uC}s and
+radio and many more. Some devices of your home may even contain multiple {uC}s and
 often the {uC}s can already communicate under each other by RF (Radio-Frequency) or
 access by WLAN the internet, which is sometimes called [.ndef]#Internet of things#
 (IoT).
@@ -150,33 +156,41 @@ or task is split in many small parts, that are solved by one CPU each, and the f
 is then the combination of all the solved sub-tasks. Unfortunately it is not always possible
 to split large problems in smaller sub-tasks.
 
-Digital computers are generally driven by a rectangular shaped binary signal, that is
+Digital computers are generally driven by a rectangular shaped binary clock signal, that is
 an electrical voltage that jumps continuously from maybe a level of 0 Volt to a level
 of 1 Volt and back. The CPU can do simple operations like the addition of two
 integers for each (upwards) transition of the clock signal, for more complicated
 operations like a multiplication or a division it may need more clock periods.
 So a rough measure for the performance of a computer is the clock rate, that
-is the number of low to high transitions of the clock signal per second, divided 
+is the number of low to high transitions of the clock signal per second, divided
 by the number of transitions that the CPU needs to perform a basic operation, multiplied
 by the number of CPU's or Cores that the computer can use. 
 
-A total different kind of computers are [.ndef]#Quantum Computers#, large,
+A totally different kind of computers are [.ndef]#Quantum Computers#, large,
 expensive high-tech devices, which use the rules of [.ndef]#quantum mechanics# to
-calculate many computations in parallel. Today only a few of them exists, for
+calculate many computations in parallel. Today only a few of them exist, for
 research at universities and some large commercial institutes. Quantum computers may
 at some time in future fundamentally change computing and our whole world, but they
 are not the topic of this book.
 
-== Digital and Analog
+== Analog and Digital
 
 Whenever we measure a quantity based on one tiny base unit, then we
 work in the digital area, we measure with some granularity.
 Our ordinary money is digital in some way, as the cent is the
 smallest base unit, you will never pay a fraction of a cent for something.
 Time can be seen as a digital quantity as long as we accepts the second
-as the smallest unit -- even on so called analog watches the seconds hand
+as the smallest unit -- even on so called analogue watches the seconds hand
 will generally jump forwards in steps of a second, so you can not
-measure fractions of a seconds with that watch. While the hourglass
+measure fractions of a seconds with that watch.
+
+An obvious analogue property is the thermodynamic temperature and its classic measurement device is the
+well known capillary thermometer consisting of a glass capillary
+filled with alcohol or liquid mercury. When temperature increases
+the liquid in a reservoir expand more than the surrounding glass and partly fills
+the capillary -- that filling rate is an analogue measure for the temperature.
+
+While the hourglass
 works digitally, the sundial does not.
 
 All the quantities in our real world seems to be not digital or granular,
@@ -205,7 +219,7 @@ switch on, the filament may take a few milliseconds to heat up, and
 when we switch of, the filament takes again a new milliseconds to cool down.]
 
 Digital computers are generally using binary electric states internally -- voltage
-or current on or off. Such a on/off state is called a bit, we will learn more
+or current [.term]#on# or [.term]#off#. Such a on/off state is called a bit, we will learn more
 about bits and binary logic later. One bit can store obviously only two states, which we may
 map to the numbers 0 and 1. Larger integer numbers can be represented by a sequence
 of multiple bits. 
@@ -220,18 +234,18 @@ statement is not really true -- under bad conditions the noise can become so
 large that it changes the binary state of signals. Imagine we try to transfer
 some whole numbers encoded in binary form, maybe by binary states encoded as voltage
 level 0 Volt and 5 Volt, over an electric wire and a long distance.
-It is clear that the long wire can pick up some noise that changes the true 0 Volt
+It is clear that the long wire can pick up some electromagnetic noise that can change the true 0 Volt
 data to a voltage that is closer to 5 Volt than to the true 0 Volt level, so it is
-received wrongly. To catch such types of transmission errors check-sums are used,
+received wrongly. To catch such types of transmission errors [.ndef]#check-sums# are used,
 that is additional to the actual data some numbers that are derived by a special
 formula from the original data are also transferred. The receiver applies the same formula to
 the received data and compares the result with the received check-sums. If it does
 not match, then it is clear that data transmission is corrupted, and a resend is requested.
 But the field of data transmission and its error detection is not the topic of this book.
 
-The opposite of digital is generally called analogue, which is used for
+The opposite of digital is generally called analogue, a term which is used for
 data which have or seems to have no granularity. For example we speak
-of a analogue voltage when the voltage can have each value in a given range
+of an analogue voltage when the voltage can have each value in a given range
 and when the voltage does not "jump" but change continuous.footnote:[Of course
 even digital electric signals can not really "jump" from one digital state to another,
 but the transition time is much shorter than the time duration of the steady state, so
@@ -245,40 +259,40 @@ We said in the previous section that nearly all of our current computers
 work with digital data only. Basically that is that they work internally with
 integer numbers, stored in sequences of binary bits. All input for computers must have the form
 of integer numbers, and all output has the form of integer numbers.
-Whenever we want to feed computers with some sort of analogue data, like a 
+Whenever we want to feed computers with some sort of analogue data, like an
 analogue voltage, we have to convert it into a digital approximation.
 For that task special devices called [.ndef]#analog to digital converters# (ADC)
 exists. And in some cases we have to convert the digital output data of
 computers to analogue signals, like when a computer plays music: The computer
-output in form of digital data is then converted by a device called 
-[.ndef]#digital to analog converter# (DAC) into an analog voltage, that generates an
-analog current through a coil in the speakers of our sound box, and that
+output in form of digital data is then converted by a device called
+[.ndef]#digital to analog converter# (DAC) into an analogue voltage, that generates an
+analogue current through a coil in the speakers of our sound box, and that
 electric current in the coil generates a magnetic field which exercise
-mechanical forces and moves the membrane of the speaker, resulting 
+mechanical forces and moves the membrane of the speaker, resulting
 in oscillating motions, which generates air pressure variations that our ear
 can detect and that we finally feel as sound.
 
 == What is an Operating System
 
-Most computers, from cellphones to large super computers uses {OS}s (OS).
-A well known one is the GNU/Linux kernel. Operating systems can be seen
+Most computers, from cellphones to large super computers uses [.ndef]#{OS}s# (OS).
+A well known one is the GNU/Linux kernel. {OS}s can be seen
 as one initial program, that is loaded and started when we switch the computer on, and
 that works as some kind of supervisor: It can load other programs, it distribute resources
 like CPU cores or RAM between multiple running programs. And it controls user
 input by keyboard and mouse, it displays output data on the screen -- as text
 or graphics, and it controls how data is loaded and stored to nonvolatile storage
 media like hard-disk or SSD, it manages all the network traffic and many more tasks.
-An important task of the OS is to allow user programs to access all the various 
+An important task of the OS is to allow user programs to access all the various
 hardware components from various vendors in a uniform high level manner.
-An {OS} can be seen as some intermediate layer between user program like
+An OS can be seen as some intermediate layer between user program like
 a text processor or a game, and the hardware of the computer.
 The OS allows user programs to work on a higher level of abstraction, so
 that the program has not to care about low level details of the hardware too much.
 
 Current Linux kernel version 5.6 has 28 million lines of source code!
 
-Small {uC}s and embedded devices do generally not need and use an 
-operating system, as they generally run only one single user program and
+Small {uC}s and embedded devices do generally not need and use an
+{OS}, as they generally run only one single user program and
 because they do not have such a gigantic amount of hardware components which they
 have to support.
 
@@ -297,7 +311,7 @@ two numbers.
 The first computers, built in the fifties of the last century, where programmed
 indeed by feeding sequences of plain numbers to the device. The numbers where stored
 on so called [.ndef]#punch cards#, consisting of strong paper where the numbers where
-coded by holes in the cards. The holes could be recognized by electrical contacts to
+encoded by holes in the cards. The holes could be recognized by electrical contacts to
 feed the numbers into the CPU. As plain numbers do not match well human thinking,
 soon more abstract codes where used. A very direct code, which matches numerical
 instructions to symbols, is the [.ndef]#assembly language#. In that language for
@@ -387,33 +401,33 @@ which we call numeric machine code or assembly instructions.
 To run a program written in a high level language with many abstractions
 we need some sort of converter to transfer that program to the basic
 instructions that the CPU can execute. For the conversion process
-we have basically two possibilities: We can convert the whole program
-into maschine code, and than run it on the CPU. Or we can convert it
-in small portions, maybe line by line, and then run each portion whenever
+we have basically two options: We can convert the whole program
+into machine code, store it to disk, and than run it on the CPU. Or we can convert it
+in small portions, maybe line by line, and run each portion whenever
 we have converted it. Tools that convert the whole program first, are called
-compilers. Compilers process the program that we have written and when necessary
+compilers. [.ndef]#Compilers# process the program that we have written and when necessary
 also other source code like needed library modules, check the code
-for obvious errors and then generate the machine code, that we then can run.
+for obvious errors and then generate and store the machine code, that we then can run.
 Tools that process the source code in small portions, like single statements,
-are called interpreters: They read in a line of source code, investigate it
+are called [.ndef]#interpreters#. They read in a line of source code, investigate it
 to check if it is a valid statement, and then feed the CPU with corresponding instructions
 to execute it. It is similar as when you are picking strawberries: You can pick one
 and eat it at once, or you can put them all into a basked and eat them later.
 Both, interpreters and compilers have advantages and disadvantages for special use cases.
-Compilers can detect errors already before the program is run, and compiled 
+Compilers can detect errors already before the program is run, and compiled
 programs generally run fast, as all the instructions are available already when
 the programs runs. The compiling step takes some time of course, at least a few
-seconds, but for some languages and large programs it make take much longer. That
-can make the development slow, as you add or change some code, and then have to
+seconds, but for some languages and large programs it may take much longer. That
+can make the software development process slow, as you add or change some code, and then have to
 compile it before you can execute and test your program. That may be inconvenient
 for unskilled programmers, as they may have to do much testing. Some use a programming
 style that is: Change a tiny bit of the source code, then run it and see what is does.
 But a more common practice is that you think about the problem first and then write the
-code, that then in most cases does nearly that want you intended. For this style of
+code, that then in most cases does nearly that what you intended. For this style of
 programming you do not have to compile and execute your code that often. Compilers
-have one important benefit: The can detect many bug, mostly typing errors, already
+have one important benefit: They can detect many bugs, mostly typing errors, already
 in the compile phase, and they give you a detailed error message. Interpreters
-have the advatage that you can modify your code and immediately execute it. That is 
+have the advantage that you can modify your code and immediately execute it. That is
 nice for learning a new language and for some fast tests, but even plain
 typing errors can only be detected when you run the program. Generally
 interpreted program execution is much slower than running compiled executables,
@@ -428,7 +442,7 @@ convert the textual source code in one very fast, initial pre-processing step ("
 to so called byte code, that can then be interpreted faster. Ruby and Python do that.
 And some languages like Java can compile and optimize the source code while the
 program is running, for that process a so called virtual machine is used, that
-builds an intermediate layer between the hardware and the user program.  
+builds an intermediate layer between the hardware and the user program.
 
 == What type of Programming Languages exist
 
@@ -458,13 +472,13 @@ has a well defined data type like integer number, real number, a single letter, 
 text element and many more. The data type is assigned by the author of the program or
 is detected by the compiler when processing the program source code (type inference)
 and does not change during compile time. In this way the compiler can check for
-logical errors early at compile process, and the compiler can reserve memory block
+logical errors early at compile process, and the compiler can reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
 consumption and performance can be optimized.
 //The terms compiler, interpreter,
 //compile-time and runtime are explained in the next section.
 
-All these type of programming languages are often called imperative programming
+All these types of programming languages are often called imperative programming
 languages, as the program describes detailed what to do. There exists other types of
 programming languages too, for example languages like Prolog, which try to give a set
 of rules only and then let the computer try to solve a problem with these rules. And
@@ -476,17 +490,17 @@ course Nim can be used to create AI applications.
 
 Further we differentiate between languages like C, C++, Rust, Nim and many more that
 can run direct on the hardware of the computer, languages like Java, Scala, Julia and
-some more that use a large Virtual-Machine (VM) as an intermediate layer between the
+some more that use a large [.ndef]#Virtual Machine# (VM) as an intermediate layer between the
 program and the hardware, and interpreted languages like Ruby and Python. Languages
 using a virtual machine generally need some startup time when a program is invoked,
 as the VM must be loaded and initialized, and interpreted languages are generally not
-very fast.footnote:[Exacly speaking Ruby and Python do not really interpret the
+very fast.footnote:[Exactly speaking Ruby and Python do not really interpret the
 source code, but compile it on the fly to byte-code, which is then interpreted. And
 there exists some variants of Ruby and Python that compile with some success to
 native machine code. Crystal is a variant of Ruby, with some significant differences
 that compiles to fast native machine code.]
 
-An important class of programming languages are the so called {OOP} (OOP) languages,
+An important class of programming languages are the so called [.ndef]#{OOP}# (OOP) languages,
 which start becoming popular in the early nineties of the last century. For some time
 it was assumed that {OOP} was the ultimate solution to manage and structure really
 large programs. Java was the most prominent example for the OOP languages. Java
@@ -496,24 +510,29 @@ the ultimate solution for all computing problems, and OPP design may prevent opt
 performance. So newer languages like Go, Rust or Nim support some form of OOP
 programming, but use it only as one paradigm under many other.
 
-Another popular and important class of programming languages is Java-Script and its
-more modern cousins like Type-Script, Kotlin or Dart and some more. Java-Script was
+Another popular and important class of programming languages is JavaScript and its
+more modern cousins like TypeScript, Kotlin or Dart and some more. JavaScript was
 designed to run in Web-Browsers to support interactive web-pages and programs and
 games running in the browser. In this way the program became nearly independent from
 the native operating system of the computer. Note that unlike the name may indicate,
-Java-Script in not closely related to Java languages.
+JavaScript is not closely related to the Java language.
 
-Nim can compile to a Java-Script backend, so it support Web-Development well.
+Nim can compile to a JavaScript backend, so it support Web-Development well.
 
 == Why Nim
+
+NOTE: In this section we are using a lot of new CS expressions but do not explain them.
+That is intentional -- when you already know them you may get a better feeling what
+Nim is, and when you do not know them you will at least learn that we can describe
+Nim with fancy and sounding terms.
 
 Three well known traditional programming languages are C, Java and Python. C is
 basically a simple, close to the hardware language created in 1972, for which
 compilers can generate fast, highly optimized native machine code, but it has cryptic
 syntax, some strange semantics and is missing higher concepts of modern languages.
-Java, created in 1995, forces you strongly to Object Orientated style of programming
-(OOP) and runs on a Virtual Machine, which excludes its use for embedded systems and
-micro controllers. Python, created in 1991, is generally interpreted instead of
+Java, created in 1995, forces you strongly to object orientated style of programming
+(OOP) and runs on a virtual machine, which excludes its use for embedded systems and
+{uC}s. Python, created in 1991, is generally interpreted instead of
 compiled, which makes the program execution not very fast, and it does not really
 allow writing low level code which operates close to the hardware. Of course there
 exists many more programming languages, each with its own advantages and
@@ -529,7 +548,7 @@ compiler itself and the generated executables support all major platforms includ
 Windows, Linux, BSD and Mac OS X. The custom package manager makes use and
 redistribution of programs and libraries easy and secure. Nim supports various
 backends -- the C and LLVM based backends allow easy OS library calls without
-additional glue code, while the Java-Script backends generates high quality code for
+additional glue code, while the JavaScript backends generates high quality code for
 web applications. The integrated "Read–eval–print loop" (REPL), "Hot code reloading",
 incremental compilation, and support of various development environments including
 debugging and language server protocol makes working with Nim productive and
@@ -551,21 +570,22 @@ process is generally really fast, for example the compiler compiles itself in ma
 Modern concepts like zero-overhead iterators, compile time evaluation of user-defined
 functions and cross-module inlining in combination with the preference of
 value-based, stack located data types leads to extremely efficient code.
-Multi-threading, async IO, parallel processing including GPU execution are supported.
-Various memory management strategies exists: Selectable and tunable high performance
-Garbage Collectors including a new fully deterministic destructor based one are
+Multi-threading, asynchronous input/output operations (async IO), parallel processing and SIMD instructions
+including GPU execution are supported.
+Various memory management strategies exists: Selectable and tuneable high performance
+[.ndef]#Garbage Collectors# (GC) including a new fully deterministic destructor based one are
 supported by manually and semi manually memory management. This makes Nim a good
-choice for Application development and close to the hardware system programming at
+choice for application development and close to the hardware system programming at
 the same time. The unrestricted hardware access, small executables and optional GC
-will make Nim a perfect solution for embedded systems, hardware driver and Operating
-Systems development.
+will make Nim a perfect solution for embedded systems, hardware driver and {OS}s
+development.
 
 === Nim is Expressive and Elegant
 
 Nim offers a modern type system with templates, generics and type inference. Built
 in advanced data types like dynamic containers, sets and strings with full UTF
 support are completed by a large collection of library types like hash tables and
-regular expressions. While the traditional Object-Oriented Programming style with
+regular expressions. While the traditional {OOP} style with
 inheritance is supported, Nim does not enforce this programming paradigm and offers
 modern concepts like procedural and functional programming. The powerful AST-based
 hygienic macro system offers nearly unlimited possibilities for the advanced
@@ -578,7 +598,7 @@ meta-programming, as well as many Domain Specific Language extensions.
 === Nim is Open and Free
 
 The Nim compiler and all of the standard library are implemented in Nim. All source
-codes are available under less restricted MIT license.
+codes are available under the less restricted MIT license.
 
 === Nim has a friendly and helpful growing community
 
@@ -593,30 +613,30 @@ Real-time chat is supported by IRC, Gitter and others.
 === Nim has a encouraging future
 
 Started more than 10 years ago as a small community project of some bright CS
-students leaded by Mr. A. Rumpf, it is now considered as one of the most promising
+students leaded by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most interesting and promising
 programming languages supported by uncounted individuals and companies of leading
-computer industry, ie. from the area of game-, web- and crypto-currency development.
+computer industry, for instance from the area of game-, web- and crypto-currency development.
 Nim has made large progress in the last years: It reached version 1.2 with some
 stability guaranties and a new deterministic memory management system was introduced,
-which will improve support of parallel processing.
+which will improve support of parallel processing and the use of Nim in the embedded area.
 
 == Why is Nim not a popular mainstream language yet?
 
 Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally in
-2018 Nim got some significant monetary support by Status Corp. and in 2019 stable Nim
-version V 1.0 was released. But still Nim is developed by a small core team and some
+2018 Nim got some significant monetary support by [.ndef]#Status Corp.# and in 2019 stable Nim
+version 1.0 was released. But still Nim is developed by a small core team and some
 volunteers, while some other languages like Java, C#, Go or Rust get support by large
 companies, or like C and C++ have a very long history and well trained users. And
 finally there are many competing languages, some with a longer history, and some
-maybe better suited for special purposes, like Java-Script, Dart or Kotlin for Web
+maybe better suited for special purposes, like JavaScript, Dart or Kotlin for Web
 development, Julia or R for numeric applications, or C and Assembly for the tiny 8
 bit {uC}s with a few byte of RAM only.
 
 Nim has already support by more than 1000 external packages which cover many
 application areas, but that number is still small compared to really popular
-languages like Python, Java or Java-Script. And some Nim packages can currently not
+languages like Python, Java or JavaScript. And some Nim packages can currently not
 really compare with the libraries of other languages, which where optimized for years
-by hundreds or thousand of full time developers.
+by hundreds or thousands of full time developers.
 
 Indeed the future of Nim is not really secure. Core developers may vanish,
 financially support may stop or maybe a just better language may appear. But even
@@ -626,8 +646,8 @@ modern languages too.
 
 == Some facts about Nim
 
-* The generated executables are dependence free and small: A plain
-chess program with a basic GTK based graphical user interface is only 100 kB in size,
+* The generated executables are dependence free and small: A simple
+chess program with a plain GTK based graphical user interface is only 100 kB in size,
 the Nim compiler itself consumes about 5 MB. It is possible to shrink the executable
 size to about 10 kB for use on tiny {uC}s.
 
@@ -641,12 +661,12 @@ are more written with a priority of short and clean code or runtime safety.
 [.term]#{}# 
 or [.term]#begin/end# keywords, and no need for statement delimiters like [.term]#;#
 
-* Safety: Nim program are memory safe -- memory corruption is prevented by the
-compiler
+* Safety: Nim program are type- and memory-safe -- memory corruption is prevented by the
+compiler as long as we do not use unsafe low level constructs like cast and the addr operator. 
 
 * Fast compiler. The Nim compiler can compile itself and other medium size packages
 in less
-than 10 seconds and upcomming incremental compilation will increase that speed
+than 10 seconds and upcoming incremental compilation will increase that speed
 further.
 
 * Nim is statically typed: Each object and each variable has a well defined type,
@@ -658,9 +678,9 @@ allocations for critical low level task as well as various garbage collectors
 including a state of the art fully deterministic memory manager.
 
 * Nim produced native, highly optimized executables and can also generate
-Java-Script output for web applications.
+JavaScript output for web applications.
 
-* Nim has a clean module concept which helps to structure large projects
+* Nim has a clean module concept which helps to structure large projects.
 
 * Nim has a well designed library which supports many basic programming task.
 The full source code of that library is included and can be viewed easily
@@ -669,13 +689,13 @@ from within the HTML based API documentation.
 * That library is supported by more than 1000 external packages for a broad range
 of use cases.
 
-* Asyncronous operation, threading and parallel processing is supported.
+* Asynchronous operation, threading and parallel processing is supported.
 
-* Nim supports all popular operating systems like Linux, Windows, MacOS and Android
+* Nim supports all popular operating systems like Linux, Windows, MacOS and Android.
 
 * Usage of external libraries written in C is easy and and occurs directly
 without any glue code, and Nim can even work together with code written in other
-languages, for example there is some Nim +<->+ Python interface available. 
+languages, for example there is some Nim +<->+ Python interface available.
 
 * Many popular editors have already support for Nim syntax high-lighting and other
 IDE functionality like on the fly checking for errors and displaying detailed
@@ -697,9 +717,7 @@ want. The program is built of some elementary Nim instructions for which we will
 only a very short description here. All that is explained in much more detail in the
 next part of this book.
 
-[[example.nim]]
 [source,nim]
-.example.nim
 ----
 var sum: int
 var i: int
@@ -712,9 +730,8 @@ echo sum
 ----
 
 We write Nim programs in the form of plain
-//Nim programs are 
 text files, you will learn how to create them soon. We call these
-text files the source code of the program, the source code is the input for the
+text files the [.ndef]#source code# of the program, the source code is the input for the
 compiler, the compiler processes the source code, checks it for obvious errors and
 then generates a so called executable file, which contains the final CPU
 instructions and can be run. The executable files are sometimes called executables
@@ -722,15 +739,15 @@ or binary files. The term binary is misleading, as all files on computers are
 stored as binary data indeed, but the expression binary is used to differentiate
 the executable program from text files like the Nim source code which we can
 read, print and edit in an editor. You should better not try to load the executable files generated by the Nim
-compiler into an text editor, as the content is not plain text, but numeric machine code
-that may confuse the editor. On Windows OS executuable files generally get a special name extension
-[.term]#.txt#, but on Linux no special name extensions are used.
+compiler into a text editor, as the content is not plain text, but numeric machine code
+that may confuse the editor. On Windows OS executable files generally get a special name extension
+[.term]#.exe#, but on Linux no special name extensions are used.
 
 One elementary entity of computer programs is a
 variable, which is basically a named storage area in the computer. As Nim is a
 compiled and statically typed language, we have to declare each variable before we
 can use it. We do that by choosing a meaningful name for that variable and specifying
-it data type. To tell the computer about our intention to declare a variable, we
+it data type. To tell the compiler about our intention to declare a variable, we
 start the line with the [.term]#var# keyword, followed by the chosen name, a colon
 and the data type of our variable. The first line of our program declares a new
 variable named sum of datatype int. Int is short for integer and indicates that our
@@ -748,7 +765,8 @@ counter in a loop.
 
 In line 3 and 4 of our program we initialize the variables, that is we give them a
 well defined initial value. To do that we use the [.term]#=# operator to assign it a
-value. Operators are special symbols like +, -, * or / to indicate our desire to do a
+value. Operators are special symbols like [.term]#+#, [.term]#-#, [.term]#*# or [.term]#/#
+to indicate our desire to do a
 addition, a subtraction, a multiplication or a division. Note that the [.term]#=#
 operator is used in Nim like in many other programming languages for assignment, and
 not like in traditional mathematics for equality test. The reason for that is that in
@@ -760,7 +778,7 @@ the content of variable y to x, that is x gets the value of y, the former value 
 is overwritten and lost, while content of y remains unchanged. After that assignment
 x and y contains the same value. In the above example we do not assign the content of
 a variable to the destination, but a literal constant with value 0. When the computer
-has executed lines 3 and 4 the variables sum and i contains the start value 0 each. 
+has executed lines 3 and 4 the variables sum and i contains the start value 0 each.
 
 Line 5 is much more interesting, it contains a [.term]#while# condition. The line
 starts with the term [.term]#while#, which is again a reserved keyword, followed by
@@ -779,7 +797,7 @@ has the initial value [.term]#0#, the condition [.term]#i < 100# evaluates to
 [.term]#true# and the block after the [.term]#while# condition is executed for the
 first time. In the following block we have the [.term]#inc()# instruction,
 [.term]#inc# is short for increment, [.term]#inc(a, b)# increases the value of a by
-b. So in the above block [.term]#i# is increased by one, and after that [.term]#sum#
+b, b is unchanged. So in the above block [.term]#i# is increased by one, and after that [.term]#sum#
 is increased by the current value of [.term]#i#. So when that block is executed for
 the first time [.term]#i# has the value [.term]#1# and [.term]#sum# has also the
 value [.term]#1#. At the end of that block execution starts again at the line with
@@ -796,10 +814,14 @@ to the terminal or screen of the computer. Some other languages uses the term
 Don't worry if you have not understood much of this short explanation, we will
 explain all that in much more detail later.
 
-== Binary numbers
+== Binary Numbers
 
-When we write numbers in ordinary life we generally use the decimal system with the
-10 available digits 0, 1, ... 9. A literal decimal number like 7382 has then the numerical
+When we write numbers in ordinary life we generally use the decimal system with
+base 10 and the
+10 available digits 0, 1, ... 9.
+To get the value of a decimal number we multiply each digit with powers of 10
+depending on the position of the digit and sum the individual terms.
+A literal decimal number like 7382 has then the numerical
 value [.term]#2 * 10^0 + 8 * 10^1 + 3 * 10^2 + 7 * 10^3#. We have used here the
 exponential operator [.term]#^# -- with [.term]#10^3 = 10 * 10 * 10#. Current
 computers are using binary representation internally for numbers. Generally we do
@@ -810,8 +832,10 @@ distinction is that we have only two available digits, which we write generally 
 two digits. Like in the decimal system the numerical value results from the
 individual digits and their position: The binary number [.term]#1010# has the
 numerical value [.term]#0 * 2^0 + 1 * 2^1 + 0 * 2^2 + 1 * 2^3#, which is 9 in decimal
-notation. Formally addition of two binary numbers works like we know it from decimal
-system, we add the matching digits and take carry into account: 1001 + 1101 = 11010
+notation. As for binary numbers the base is 2, we do multiply the binary digits
+with powers of two.
+Formally addition of two binary numbers works like we know it from decimal
+system, we add the matching digits and take carry into account: [.term]#1001 + 1101 = 11010#
 because we start by adding the two least significant digits of each number, which are
 both 1. That addition 1+1 results in a carry and result 0. The next two digits are
 both zero, but we have to take the carry from the former operation into account, so
@@ -819,11 +843,11 @@ result is 1. For the next position we have to add 0 and 1, which is just 1 witho
 carry. And finally we have 1 + 1, which results in 0 with a carry. The carry
 generates one more digit, and we are done. In the decimal system with base 10 a
 multiplication with 10 is easily calculated by just shifting all digits one place to
-the left and writing a 0 at the now empty leftmost position. For binary numbers it
+the left and writing a 0 at the now empty rightmost position. For binary numbers it
 is very similar: A multiplication with the base, which is two in the binary system,
 is just a shift left, with the rightmost position getting digit 0.
 
-In the binary system we call the digits often bits, and we number the bits from right
+In the binary system we call the digits often [.ndef]#bits#, and we number the bits from right
 to left, starting with 0 for the rightmost bit -- we say that the binary number
 10010101 is a 8 bit number because writing that number in binary representation needs
 8 digits. Often we imagine the individual bits as small bulbs, a 1 bit is imaged as a
@@ -864,9 +888,9 @@ binary representation we have only two states available, 0 or 1, a set bit or an
 unset bit. But we have no unitary minus sign. We may encode the sign of a number
 maybe in the topmost bit of a word -- when topmost bit is set that indicates that the
 number is regarded negative. Generally a modified version of this encoding is used,
-called two-complement: A negative number is constructed by first inverting all the
+called [.ndef]#two-complement#: A negative number is constructed by first inverting all the
 bits -- a 0 bit is transferred into a 1 bit and vice versa, and finally the number 1
-is added. That encoding simplifies the CPU, as subtraction can be replaced by
+is added. That encoding simplifies the CPU construction, as subtraction can be replaced by
 addition in this way:
 
 Consider the case that we want to do a subtraction of two binary encoded numbers, the
@@ -898,16 +922,33 @@ restrict all positive numbers to all the bit combinations where the leftmost bit
 unset, for a 8 bit word this means that positive numbers are restricted to the bits
 00000000 to 01111111 which is the range 0 to 127 in decimal notation. Two complement
 of decimal 127 is 10000001. Seems to be fine so far, but note there exists also the
-bit pattern 10000000 which is -128 in decimal. This is some asymmetry of
+bit pattern 10000000 which is -128 in decimal.
+For that bit pattern there exists no positive value, if we would try to built 
+two-complement of that bit pattern, we would get the same pattern again.
+This is some asymmetry of
 two-complement representation, which can not be avoided. It generally is no problem,
 with one exception. We can never invert the sign of the smallest available integer,
-that operation would result in an runtime error.
+that operation would result in an runtime error.footnote:[If you have a piece of
+paper and a pencil at hand, you may test some properties of signed binary numbers
+represented in two-complement: Take binary 0, apply two-complement operation
+to get the negative of it. Note, we ignore overflow here when we add the 1! That was
+easy. Can we verify that all negative numbers in two-complement can be really
+identified by its set topmost bit? Maybe that fact is not really obvious, as we not
+only invert all bits of the positive number, but also add 1. OK, let us consider
+the non negative numbers 0 .. 127 for a 8 bit word. All that bit patterns have the topmost bit
+cleared and all bit combinations used in the other 7 bits. Inverting these patterns
+gives us a pattern with leftmost bit set and again all bit combinations used in the other 7 bits.
+Fine so far, the topmost bit is set, but we still have to add 1 to complete
+our two-complement operation. But the only case where adding 1 change the topmost
+bit is when the 7 other bits are all set, and that is only the case when the initial
+value before bit inversion was zero. So the leftmost bit remains set for all
+numbers except initial zero, and zero maps to zero again!]
 
 Summery: When we work only with positive numbers, we can store in a 8 bit word,
 which is generally called a byte, numbers from 0 up to 255. In a 16 bit word we could
 store values from 0 up to 2^16 - 1, which is 65535. When we need numbers which can be
 also negative we have for 8 bit words the range from -128 to 127 available, which is
--2^7 upto 2^7 - 1. For a signed 16 bit word that range would be -2^15 up to 2^15 - 1.
+-2^7 up to 2^7 - 1. For a signed 16 bit word that range would be -2^15 up to 2^15 - 1.
 
 While we can work with 8 or 16 bit words, for PC programming the CPU supports
 generally 32 or 64 bit words, so we have a much larger number range available. But
@@ -924,7 +965,7 @@ be 128 if we have stored intentionally positive numbers in that storage location
 could be -127 if we intentionally stored a negative value. Or it could be not a
 number at all. Is that a problem? No it is not as long as we use a programming
 language like Nim which use static typing. Whenever we are using variables we
-declare there type first, and so the compiler can do book keeping about the type of
+declare their type first, and so the compiler can do book keeping about the type of
 each variable stored somewhere in the computer memory. The benefit is, that we can
 use all the available bits to encode our actual data, we do not have to reserve a few
 bits to encode the actual data type of that variable. For languages without static
@@ -937,7 +978,7 @@ and wastes a few bits for the book keeping.
 To say it again in other words: For deciding if an operation is valid, it is
 generally sufficient to know the data type of the operands only, we do not have to know the
 actual content. The only exception is if we invert the sign of the most negative integer number
-or if we do a operation with causes an overflow, as therer are not enough bits available
+or if we do a operation with causes an overflow, as there are not enough bits available
 to store the result -- we get a runtime error for that case.
 In a statically typed language each variable has a well defined type,
 and the compiler can ensure at compile time that all operations on that variables are
@@ -945,16 +986,9 @@ valid -- if a operation is not valid then the compiler will give an error messag
 Then when these operations are executed at runtime they are always valid operation,
 the actual content, like the actual numeric value does not matter.
 
-//== Resources
-
-//Rosetta
-//https://forum.nim-lang.org/
-
-//https://forum.nim-lang.org/[Nim forum]
-
 == Installation of the Compiler
 
-We will not describe in detail how you can install the Nim compiler, because that
+We will not describe in too much detail how you can install the Nim compiler, because that
 strongly depends on your operating system, and because the install instructions may
 change in future. We assume that you have a computer with a installed operating
 system and internet access, and you are able to do at least very basic operations
@@ -978,17 +1012,17 @@ Linux distributions.
 
 Another solution, which is preferable when you want to ensure that you get the most
 recent Nim compiler, is compiling directly from latest git sources. That process is
-also easy and is described here: https://github.com/nim-lang/Nim But before you can
+also easy and is described here: https://github.com/nim-lang/Nim. But before you can
 follow that instructions you have to ensure that on your computer the git software
 and a working C compiler is available. 
 
-== Creation of program text files
+== Creation of Source Code Files
 
 Nim source code as most source code of other programming languages is based on text
 files. Text files are documents saved on your computer that contains only ordinary
 letters which you can type on your keyboard. No images or videos, no HTML content
 with fancy CSS styling. Generally source code should contain only ordinary ASCII
-text, that is no umlauts or Unicode characters.
+text, that is no umlauts or unicode characters.
 
 To create source code we generally use a text editor, which is a tool designed for
 creating and modifying of plain text files. When you do not have a text editor yet
@@ -1001,7 +1035,7 @@ advanced features like checking for errors while you type the code in.
 A list of recommended editors is available at https://nim-lang.org/faq.html
 
 If you do not want to use a special editor now, then for Linux gedit or at least [.term]#nano#
-should be available. For windows maybe something like notepad.
+should be available. For Windows maybe something like notepad.
 
 Generally we store our Nim code files in its own directory, that is a separate section
 of your harddisk. If you work on Linux in a terminal window, then you can type
@@ -1027,26 +1061,31 @@ GUI is vim or neovim. That is a very powerful editor, but it is difficult to lea
 strange as you have a command mode and an ordinary text input mode available.
 For neovim there is very good Nim support available.
 
-If you do not want to work from a terminal, or if you are using windows or MAC OS,
+If you do not want to work from a terminal, or if you are using Windows or MAC OS,
 then you should have a graphical user interface which enables you also to create a
 directory and to launch some sort of editor.
 
 When the editor is opened, you can type in the Nim source code from our previous
-example and save it to a file named test.nim.
+example and save it to a file named test.nim. Then you can terminate the editor.
 
-Then you can terminate the editor.
+Note that the [.term]#return# key behaves differently in editors than in the terminal window:
+In the terminal window you type in a command and finally press the return key to
+"launch" or execute the command. In an editor the return key is not that special:
+If you press ordinary keys in your editor, than that key is inserted and the cursor
+moves one position to the right. And when you press the return key then an
+invisible newline character is inserted and the cursor moves to the start
+of the next line.
 
 == Launching the compiler and running the program
 
-
-If you are working from a terminal then you can type
+If you are working from a Linux terminal then you can type
 
 ----
 ls -lt
 cat test.nim
 ----
 
-That is you first show the content of the your directory and then display the content
+That is you first show the content of your directory and then display the content
 that you just have typed in.
 
 Now type
@@ -1079,7 +1118,7 @@ be able to launch the compiler and run the program from within the editor direct
 
 In this part we will introduce the most important constructs of the Nim programming language,
 like statements and expression, conditional and repeated execution, functions and
-procedures, iterators, templates, exceceptions and we will discuss various basic data types
+procedures, iterators, templates, exceptions and we will discuss various basic data types
 including the basic container types array, sequence and string.
 
 == Declarations
@@ -1091,14 +1130,14 @@ intent to use.
 We will explain type and procedure declarations in later sections, currently only constant and
 variable declarations are important.
 
-A constant declaration in it simplest form maps only a symbolic name to a value, like
+A constant declaration in its simplest form maps only a symbolic name to a value, like
 
 ----
 const Pi = 3.1415
 ----
 
 We used the reserved word [.term]#const# to tell the compiler that we want to declare
-a constant which we have named Pi and we assign it the numeric value 3.1415. Nim has
+a constant which we have named Pi and we assign it the numeric decimal value 3.1415. Nim has
 a small set of reserved words like [.term]#var, const, proc, while# and some more to
 tell the compiler that we want to declare a variable, a constant, a procedure or that
 we want to use a while loop for some repeated execution. The [.term]#=# is the
@@ -1117,7 +1156,7 @@ don't have to remember the exact sequence of digits. For plain constants like ou
 do a plain substitution in the source code when the program is compiled, so where we
 write the symbol [.term]#Pi# the actual numeric value is used.
 
-For constants it must be possible to determine its value at compile time already.
+For constant declarations it must be possible to determine its value at compile time already.
 Expressions assigned to constants can contain simple operations like basic math, but
 some functions calls may be not allowed.
 
@@ -1132,20 +1171,24 @@ Here we put the reserved keyword [.term]#var# at the beginning of the line to te
 compiler that we want to declare a variable, then we give our chosen name for that
 variable followed by a colon and the data type of the variable. The int type is a
 predefined numeric type indicating a signed integer type. The storage capacity of an
-integer variable depends on the operating system of your computer. On 32 bit system
-32 bits are used, and on 64 bit systems 64 are used. That is enough for even
+integer variable depends on the operating system of your computer. On 32 bit systems
+32 bits are used, and on 64 bit systems 64 bits are used to store one single integer variable.
+That is enough for even
 large signed integer numbers, range is - 2^31 up to 2^31 - 1 for 32 bit OS and -
 2^63 up to 2^63 - 1 for 64 bit OS.
+
+For variables we generally use lower cases names, but names of constants
+may start with an upper case letter.
 
 == Statements
 
 Statements or instructions are a core component of Nim programs, they tell the
-computer what is shall do. Often statements are so called procedure calls, like the
-call of the echo or inc procedure which we have already seen in part I of the book.
+computer what it shall do. Often statements are so called procedure calls, like the
+call of the [.term]#echo()# or [.term]#inc()# procedure which we have already seen in part I of the book.
 What procedures exactly are we will learn in later sections, for now we just regard
 procedures as entities that perform a well defined task for us when we call them. We
-call then by writing their name in our source file, optionally followed by a list of
-parameters or arguments. When we write echo 7 then echo is the procedure which we
+call them by writing their name in our source file, optionally followed by a list of
+parameters or arguments. When we write [.term]#echo 7# then echo is the procedure which we
 call, and 7 is the argument, an integer literal in this case. The effect of our
 procedure call is that the decimal number 7 is written to the terminal when we run
 the program after compilation. A special form of procedures are functions, that are
@@ -1162,7 +1205,7 @@ echo a
 
 The Nim program above consists of a variable declaration and two statements: In the
 first line we declare the variable which we want to use. In the next line we assign
-the value 2 + 3 to it, and finally in line 3 we use the procedure echo to display the
+the value [.term]#2 + 3# to it, and finally in line 3 we use the procedure [.term]#echo()# to display the
 content of our variable in the terminal window.
 
 Nim programs are generally processed from top to bottom by the compiler, and when we
@@ -1175,7 +1218,7 @@ compiler would be still satisfied, and we would be able to compile and run the
 program. But we would get a very different result, because we would first try to
 display the value of variable a, and later assign a value to it.
 
-When we have to declare multiple constants or variables, we can use so called
+When we have to declare multiple constants or variables, then we can use so called
 sections, that is we write the keyword var or const on its own line, followed by the
 actual declarations like in
 
@@ -1268,10 +1311,12 @@ There exists a variant for variable declarations which uses the let keyword inst
 of var keyword. Let is used when we need a variable which only once gets a value
 assigned, while var is used when we want to change the content of the variable during
 program execution. Let seems to be similar to const, but in const declarations we can
-use only values that are known at compile time. Let allows us to assign values to
-variables that are only available at program run time, maybe because the value is a
+use only values that are known at compile time. Let allows us to assign to variables values
+that are only available at program run time, maybe because the value is a
 result of a prior calculation. But let indicate at the same time that the assignment
-occurs only once, the content does not change later. That may help the human reader
+occurs only once, the content does not change later.
+We say that the variable is immutable.
+Use of the let keyword may help the human reader
 of the source code understanding what in going on, and it may also help the compiler
 doing optimizations to get faster or more compact code. For now we can just ignore
 let declarations and use var instead -- later we may use let where appropriate, the
@@ -1295,11 +1340,11 @@ echo sum
 We declared both variables of type int in a single line and
 used the fact that the compiler will initialize them with 0 for us.
 And we used a named constant for the upper loop boundary. Another
-tiny fix is that we wrote inc(i) instead of inc(i, 1). We could do that
-because there exists multiple procedures with the name inc() -- one
+tiny fix is that we wrote [.term]#inc(i)# instead of [.term]#inc(i, 1)#. We could do that
+because there exists multiple procedures with the name [.term]#inc()# -- one
 which takes two arguments, and one which takes only one argument and
-always increases that argument by one. Instead of inc(i) we could have
-written also i = i + 1 and instead of inc(sum, i) we could write sum = sum + i.
+always increases that argument by one. Instead of [.term]#inc(i)# we could have
+written also [.term]#i = i + 1# and instead of [.term]#inc(sum, i)# we could write [.term]#sum = sum + i#.
 That would generate generally identical code in the executable, we can use whatever
 we like better.
 
@@ -1309,7 +1354,7 @@ We have already used the echo procedure for displaying output in the terminal. F
 our experiments we may want to have some user input also. As we do not know much
 about procedures currently, let us keep things simple and read in a textual user
 input from the terminal window for now only.
-We use a procedure with name readLine() for this task.
+We use a procedure with name [.term]#readLine()# for this task.
 
 [source,nim]
 ----
@@ -1322,11 +1367,11 @@ Note that you have to press the [.term]#return# key after you have entered your 
 
 The
 first line of our program would be not really necessary, we just print some message. In the
-second line we use the readLine() procedure to read textual user input. The
+second line we use the [.term]#readLine()# procedure to read textual user input. The
 readLine() procedure needs one parameter to know from where it should read -- from
 terminal or from a file for example. [.term]#stdin# indicated that it should read
-from current terminal. Finally in line 3 we use again the [.term]#echo# procedure to
-print some text. In this case we pass two arguments to [.term]#echo#, a literal text
+from current terminal. Finally in line 3 we use again the [.term]#echo()# procedure to
+print some text. In this case we pass two arguments to [.term]#echo()#, a literal text
 enclosed in quotes, and separated by a comma the [.term]#mytext# variable. The
 [.term]#mytext# variable has the data type [.term]#string#, we used type inference in
 this example to declare that type: The [.term]#readLine()# procedure returns always a
@@ -1344,10 +1389,10 @@ type depends on the word size of the OS will become clear later when we explain 
 references and pointers are.
 
 Beside the int data type, we have some more data types for signed and unsigned
-integers: [.term]#int8, int16, int32# and [.term]#int64# are signed types with well
-defined bit and word size, and [.term]#uint8, uint16, uint32# and [.term]#uint64# are
+integers: [.term]#int8#, [.term]#int16#, [.term]#int32# and [.term]#int64# are signed types with well
+defined bit and word size, and [.term]#uint8#, [.term]#uint16#, [.term]#uint32# and [.term]#uint64# are
 the unsigned equivalents. The number at the end of the type name is the bit size, we
-get the byte size when we define that value by 8. Additional we have the type
+get the byte size when we devide that value by 8. Additional we have the type
 [.term]#uint#, which corresponds to [.term]#int#, has same size, but stores unsigned
 numbers only. footnote:[When we are using the term size here, this means how much
 space the types needs in the RAM of the computer, a type of size 4 would occupy 4
@@ -1404,7 +1449,7 @@ values the compiler may be able to recognize the expression and deliver the exac
 value, but when you assign the literals to variables and then do the math, you can be
 sure that it is not absolutely accurate. That is no real problem, the accuracy is in
 most cases much better than needed. But you should know about the minimal numeric
-errors and should avoid testing two floats for exact equality. Because they will not
+errors and should avoid testing two floats for exact equality. Because they may not
 be equal due to rounding errors, even when in theory the values should exactly match.
 Instead of a test for equality sometimes expressions like abs(a - b) < 0.000001 are
 used, that is we take the absolute value of the difference and compare it with a tiny
@@ -1412,17 +1457,17 @@ epsilon. If you ever should use a test like that, think carefully about it --
 sometimes it may be better to make an even more complicated test regarding not the
 absolute, but the relative difference of the numbers.
 
-For floats we have the operators +, -, * and / for addition, subtraction,
-multiplication and division. For powers with integral exponent you can use the ^
-operator, but you have to import it from the math module. x ^ 3 is the same as x * x
-* x. The math module contains many more functions like sin() or cos(), sqrt() or
-pow(). sqrt() is short for square-root, pow() for power, so pow(x, y) is x to the
+For floats we have the operators [.term]#+#, [.term]#-#, [.term]#*# and [.term]#/# for addition, subtraction,
+multiplication and division. For powers with integral exponent you can use the [.term]#^#
+operator, but you have to import it from the math module. [.term]#x ^ 3# is the same as [.term]#x * x
+* x#. The math module contains many more functions like [.term]#sin()# or [.term]#cos()#, [.term]#sqrt()# or
+[.term]#pow()#. [.term]#sqrt()# is short for square-root, [.term]#pow()# for power, so [.term]#pow(x, y)# is x to the
 power of y, when both operands have type float.
 
 === Boolean types
 
 Boolean types are used to store the result of logic operations. The type is called
-bool and can store only two values, false and true. Although we have
+bool in Nim and can store only two values, false and true. Although we have
 only two distinct states for a boolean variable and so one single bit
 would suffice to store a bool, generally a whole byte is used for storing
 a boolean variable. Most other programming languages including C do the same, the reason
@@ -1436,33 +1481,68 @@ var
   age = 17
   adult: bool = age > 17
   iLikeNim = true
-  ILikeOtherLangaugeBetter = false.
+  iLikeOtherLangaugeBetter = false.
 ----
 
-In line two we assign the variable adult the result of a logical comparison. The
-next two lines assign the boolean constants true and false to the variables, their
-type bool is inferred.
+In line three we assign to the variable adult the result of a logical comparison. The
+next two lines assign the boolean constants [.term]#true# and [.term]#false# to the variables, their
+type [.term]#bool# is inferred.
 
-Variables of type bool support the operator not, and, or and xor. Not inverts the
-logic value, a and b is only true when both values are true, and false otherwise. And
-a or b is true when at least one of the values is true, and only false when both
-values are false. xor is not used that often, it is called exclusive or, a xor b is
+Variables of type [.term]#bool# support the operator [.term]#not#, [.term]#and#, [.term]#or#
+and [.term]#xor#. Not inverts the
+logic value, [.term]#a and b# is only true when both values are true, and false otherwise. And
+[.term]#a or b# is true when at least one of the values is true, and only false when both
+values are false. [.term]#xor# is not used that often, it is called exclusive or, [.term]#a xor b# is
 false when both values have the same logic state, that is when both are true, or both
 are false. When the values are not the same, than the result of the xor operator is
 true.
 
 === Characters
 
-The data type for single characters is called char. A variable of type char has 8 bit
+The data type for single characters is called char in Nim. A variable of type char has 8 bit
 and can store single characters. Indeed it stores 8 bit integers which are mapped to
 characters. The mapping is described by the ASCII table, for example the integer
-value 65 in decimal is mapped to the character A. When we use single characters,
+value 65 in decimal is mapped to the character A. When we use single character literals,
 then we have to enclose the letter in single quotes. As only 8 bit are used to store
 the characters, we do have only 256 different values, including upper and lower case
 letters, punctuation characters and some characters with a special meaning like a
 newline character to move the cursor in the terminal to the next line, or a backspace
 character to move the cursor one position backwards. Single characters are not used
-too often, we generally group them in sequences called strings to built text
+too often, we generally group them in sequences called strings to built text.
+
+The initial ASCII table contains only the characters with numbers 0 up to 127,
+here is an overview generated with the small program listed in the appendix:
+
+----
+Visible ASCII Characters
+
+      +0   +1   +2   +3   +4   +5   +6   +7   +8   +9  +10  +11  +12  +13  +14  +15  
+  0                                                                                 
+ 16                                                                                 
+ 32        !    "    #    $    %    &    '    (    )    *    +    ,    -    .    /  
+ 48   0    1    2    3    4    5    6    7    8    9    :    ;    <    =    >    ?  
+ 64   @    A    B    C    D    E    F    G    H    I    J    K    L    M    N    O  
+ 80   P    Q    R    S    T    U    V    W    X    Y    Z    [    \    ]    ^    _  
+ 96   `    a    b    c    d    e    f    g    h    i    j    k    l    m    n    o  
+112   p    q    r    s    t    u    v    w    x    y    z    {    |    }    ~      
+----
+
+The position in the table is the sum of the number on the left and the number
+on the top, that is character A has position 64+1=65, which is the value
+which the Nim standard function [.term]#ord('A')# or [.term]#int('A')# would return. The characters
+with a decimal value less than 32 can not be printed and are called control
+characters like linefeed, carriage-return, backspace, audible beep and such.
+Character 127 is also not printable, it is called DEL. An important property of
+this table is the fact that decimal digits and upper- and lower-case letters
+built continuous blocks. So to test for example if a characters is a uppercase
+letter we can use this simple condition: [.term]#+c >= 'A' and c <= 'Z'+#.
+
+Characters with ord() > 127 are so called umlauts, exotic characters of other
+languages and some special characters. But these characters may be different
+on different computers, as the characters depend on the active code-page, which
+maps position to actual character, and there exists multiple code pages.
+When we need more than the plain ASCII characters, then we use generally
+strings in Nim, which display much more glyphs by using UTF-8 encoding.   
 
 === Strings
 
@@ -1488,16 +1568,16 @@ add(str, ' ')
 echo str, name
 ----
 
-We declare a variable with name str and assign it the initial literal value
-"Hello". We use the echo procedure to ask the user for his name, and use readLine()
+We declare a variable called str and assign it the initial literal value
+[.term]#"Hello"#. We use the [.term]#echo()# procedure to ask the user for his name, and use [.term]#readLine()#
 procedure to read the user input from the terminal. To show how we can add
-characters to existing string variables we call add() procedure
-to append a space character to our str variable, and finally call the echo procedure
-to print the hello message and the name to the screen. Note that the echo procedure
+characters to existing string variables we call [.term]#add()# procedure
+to append a space character to our str variable, and finally call the [.term]#echo()# procedure
+to print the hello message and the name to the screen. Note that the [.term]#echo()# procedure
 automatically terminates each output operation with a jump to the next line. If you
-want an output operation without a newline, you can use the similar write()
+want an output operation without a newline, you can use the similar [.term]#write()#
 procedure. But write() needs an additional first parameter, for which we use the
-special variable stdout when we want to write to the terminal.
+special variable [.term]#stdout# when we want to write to the terminal.
 
 So we could substitute the last two lines of the above code by
 
@@ -1511,19 +1591,25 @@ write(stdout, name)
 
 We already learned that the ASCII table contains some special characters, one
 important is the newline character, which moves the cursor in the terminal
-window to the beginning of the next line. The echo procedure prints that character
+window to the beginning of the next line. The [.term]#echo()# procedure prints that character
 automatically after each output operation. Indeed it can be important to terminate
 each output operation with that character, as the output can be buffered, and writing
 just a string without a termination newline may not appear at once on the
 screen, but can be delayed. That is bad when the user is asked something and should
 respond, but the message is still buffered and not yet visible.
 
-The problem with special characters like newline is that we can not enter
-them directly with the keyboard. To solve that problem so called escape sequences
+The problem with special characters like backspace or newline is that we can not enter
+them directly with the keyboard.footnote:[Well we have a backspace key on our
+keyboard, but generally it does not insert a backspace character but deletes the character
+left to the cursor when we are editing text. And the return key -- well
+it indeed inserts a newline character, but at the same time
+in our editor the cursor moves to the next line. Most of the
+time we desire a character that generates a newline when we run our program,
+but not when we enter our source code.] To solve that problem so called escape sequences
 where introduced for most programming languages. An escape sequence is a special
 sequence of characters, that the compiler can discover in strings and then replace it
 with a single special character. Whenever we want a newline in a string we
-type it as "\n", that is the so called backslash character followed by an ordinary
+type it as [.term]#"\n"#, that is the so called backslash character followed by an ordinary
 letter n, n for newline. 
 
 ----
@@ -1531,22 +1617,25 @@ echo "\n"
 echo "Hello\nHello\nHello"
 ----
 
-The first line prints two empty lines -- two because the \n generates a jump to next
-line, and because echo always adds one more jump to next line. The second line prints
+The first line prints two empty lines -- two because the [.term]#\n# generates a jump to next
+line, and because [.term]#echo()# always adds one more jump to next line. The second line prints
 three lines which each contains the word Hello, and the cursor is moved below the
-last Hello, because echo automatically adds one more carriage-return.
+last Hello, because [.term]#echo()# automatically adds one more newline character.
 
 Older Windows versions used generally a sequence of two control characters to start a new line,
 one '\r' (carriage-return) to move to the start of the line, and one '\l' (linefeed) to move down. You may still
-find these two charaters in old windows text files at the end of each line. Old printers
+find these two characters in old Windows text files at the end of each line. Old printers
 used these combination too, so it was possible to send that text files to old printers
 directly. Nim also has the special escape sequence "\p" which is called platform dependent newline
-and maps to  "\c\l" on windows. But modern Windows supports '\n', so we generally can use that. 
+and maps to  "\c\l" on Windows. That is when we compile our program on Windows, then
+the compiler replaces "\p" in our strings with a carriage-return and a linefeed character, and
+when we compile on Linux then the compiler replaces "\n" only with a newline character.
+But modern Windows supports '\n', so we generally can use that. 
 
 === Raw strings and multi-line strings
 
 In rare situations you may want to print exactly what you have typed, so you do not
-want the compiler replaces a \n by a newline character. You can do that in two ways:
+want the compiler to replaces a \n by a newline character. You can do that in two ways:
 You can escape the escape character, that is you put in front of the backslash one
 more backslash. When you print the string "\\n" you will get a backslash and the n
 character in your terminal. Or you can use so called raw strings, that is you put the
@@ -1563,10 +1652,14 @@ can extend over multiple lines of the source text. Multi-line texts starts and e
 with three quotes like in
 
 ----
-echo """ this is
+echo """this is
 three lines
 of text"""
+
+echo "this is\nthree lines\nof text"
 ----
+
+Both echo() commands above generates exactly the same machine code!
 
 === Comments
 
@@ -1577,7 +1670,7 @@ compiler. You can also start the comment with ##, then it is a documentation
 comment. It is also ignored by the compiler, but can be processed when you use later
 tools to generate documentation for your code. There are also multi-line comments,
 which starts with the two characters
-# [ and ends with ] # . These form of comment can extend over multiple lines
++#[+ and ends with +]#+. These form of comment can extend over multiple lines
 and can be nested, that is multi-line comments can contain plain or multi-line
 comments.
 
@@ -1591,10 +1684,10 @@ but useless comment
 
 === Other data types
 
-There exist some more predefined types like the container types array and seq, which
-can contain multiple objects of the same type, or the tuple type with can contain
-different types. And we have sets, and enums and finally objects. Nim Objects are
-similar to C structs, they are not so verbose like Java classes. We will learn more
+There exists some more predefined types like the container types array and seq, which
+can contain multiple objects of the same type, or the tuple type which can contain
+different types. And we have sets, and enums and finally objects. Nim objects are
+similar to C structs, they are not so verbose as Java classes. We will learn more
 about all these types in later sections of the book.
 
 == Nim source code
@@ -1610,7 +1703,7 @@ screen or in the terminal when the editor or terminal supports unicode properly 
 when all necessary fonts are installed. That may be the case for your local computer,
 but what when someone other may edit your source code?
 
-Nim does currently not allow to insert tabular characters in your source code, so you
+Nim does currently not allow to insert tabular characters (tabs) in your source code, so you
 have to do the indentation of blocks by spaces only.
 
 Names in Nim, as used for variables, constants, procedures, user defined types and
@@ -1637,7 +1730,7 @@ and left_margin are identical for the compiler. But LeftMargin is different to a
 the others, because it starts with a capital letter. This may sound a bit strange at
 first, but works well in practice. One advantage is, that a library author may use
 snake case in his library for names, but the users of the library can freely decide
-if they prefer camelCase. But still you make think that all this generates confusion.
+if they prefer camelCase. But still you may think that all this generates confusion.
 In practice it does not, it prevents confusion. Imagine a conventional programming
 language, fully case sensitive and not ignoring underscores: In a larger program we
 may then have names like nextIteration and next_Iteration or keymap and keyMap. What
@@ -1647,30 +1740,58 @@ not allow that similar looking names, as the compiler would regard them as ident
 and would complain about a name redefinition.
 
 You may ask why the first letter is case sensitive. That is to allow for user defined
-types to use capital type names and then write something like var myWindow: MyWindow.
+types to use capital type names and then write something like [.term]#var myWindow: MyWindow#.
 So we can declare a variable named myWindows of a user defined data type named
 MyWindow. That is a common practice.
 
 The case insensitivity and the ignoring of underscores may be not the greatest
 invention of Nim, but it does not really hurt. The only exception is when we make
 bindings to C libraries, where leading or trailing underscores are used, that can
-make some re-namings necessary.
+make some renamings necessary.
 
 The only minor disadvantage of Nim's fuzzy names is when you use tools like grep
 or your editor search functionality: You could not be sure if a search for "KdTree"
-would give you all results, you would have to try "Kd-Tree" or "KDTree" and maybe
+would give you all results, you would have to try "Kd_Tree" or "KDTree" and maybe
 some more variants too. For that task Nim provides a tool called nimgrep that
 does a case- and style-insensitive search. And maybe your editor supports
 that type of search also. You can also enforce a consistent naming scheme
-when you call the compiler with the command line argument [.term]#--styleCheck:error"
-or [.term]#--styleCheck:hint".
+when you call the compiler with the command line argument [.term]#--styleCheck:error#
+or [.term]#--styleCheck:hint#.
 
-== Control structures
+== Control Structures
 
 The most important control structures of Nim are the if statement for conditional
 execution, the related case statement and the while loop for repetitions.
 
 === If statement and If expression
+
+The if statement with the optional elif and else part evaluates
+a sequence of conditions. As soon as one condition evaluates as true the
+corresponding statement block is executed, and after that the program
+execution continues after the whole if construct. That is at most one
+branch is executed. If none of the conditions after the if or elif keywords
+evaluates to true, then the else branch is executed if it exists. 
+
+----
+if condition1:
+  statement1a
+  statement1b
+  ...
+elif condition2:
+  statement2a
+  statement2b
+  ...
+elif condition3:
+  statement3a
+  statement3b
+  ...
+elsif ...:
+  ...
+else:
+  statementa
+  statementb
+  ...
+----
 
 The most simple form of an if statement is
 
@@ -1683,30 +1804,8 @@ if age > 17:
   echo "you may drink and smoke, but better avoid it!"
 ----
 
-An extended version has an additional else clause:
-
-----
-if condition:
-  statement1
-else:
-  statement2
-----
-
-We can also test for a lot of conditions like
-
-----
-if condition1:
-  statement1
-elif condition2:
-  statement2
-elif condition3:
-  statement3
-else:
-  anotherStatement
-----
-
 Note that the statements are indented by spaces, we use two spaces generally, but
-other numbers work as well. And note that it is elif, not elsif like in Ruby, and
+other numbers work as well. And note that it is [.term]#elif#, not elsif like in Ruby, and
 that there is a colon after the condition. Instead of a single statement we can use
 multiple each, all on its own line and all indented in the same way.
 
@@ -1735,11 +1834,11 @@ var a: int
 var b: bool
 a = if b: 1 elif a > 0: 7 else: 0 # OK
 a = if b: 1 elif a > 0: 7 # invalid
-# a = if b: 1 # invalid
-# a = if b: 1 else: 0.0 # invalid, different types!
+a = if b: 1 # invalid
+a = if b: 1 else: 0.0 # invalid, different types!
 ----
 
-=== The case statement
+=== The Case Statement
 
 The case statement is not used that often, but it can be useful when we have many
 similar conditions:
@@ -1752,21 +1851,20 @@ of 'q', 'e': quitProgram()
 else: echo "unknown keycode" 
 ----
 
-
 To enable optimizations the case construct has some
-restrictions compare to a more flexible if/elif statement:
+restrictions compared to a more flexible if/elif statement:
 
-The variable after the case keyword must have a so called ordinal type like
+The variable after the [.term]#case# keyword must have a so called ordinal type like
 int, char or string, while float would not work. And the values
-after each of keyword must be constant, that is single constant value,
-multiple constant values or a constant range like 'a' .. 'd' for
+after each [.term]#of# keyword must be constant, that is single constant value,
+multiple constant values or a constant range like [.term]#'a' .. 'd'# for
 the 4 first lower case letters. Of course these constants must have a type
 compatible to the type of the variable after the case keyword. A case
 statement must cover all possible cases, so most of the time an
 else branch is necessary. 
 
 Unless the similar switch statement in C the case statement needs
-no break after each branch. If a condition after a of keyword is true, then 
+no break after each branch. If a condition after a [.term]#of# keyword is true, then 
 the corresponding statement or statement sequence is executed, and after
 that program execution continues after the whole case construct.
 
@@ -1787,10 +1885,10 @@ we can also indent the block after the case keyword if we want.
 
 === The While Loop
 
-The while loop is used when we want to do conditional repetitions, that is we want to
+The [.term]#while# loop is used when we want to do conditional repetitions, that is we want to
 check a condition and want to execute a block of statements only as long as the
 condition is true. If the condition is false in advance or becomes false after some
-repetitions then the program execution proceeds after the indented block
+repetitions then the program execution proceeds after the indented block.
 
 A basic while loop has this shape:
 
@@ -1819,7 +1917,7 @@ assignment operator is evaluated, after that is done, the new value is assigned 
 the counter.
 
 There exists two rarely used variants of a while loop: the loop body can contain a
-break or a continue statement, which each consists only of this single keyword. A
+[.term]#break# or a [.term]#continue# statement, which each consists only of this single keyword. A
 break in the body stops execution of the loop immediately and continues execution
 after the loop body. And a continue statement in the body skips the following
 statements in the body and starts at the top again, the while condition is evaluated
@@ -1835,7 +1933,7 @@ while input != "quit":
     break
 ----
 
-Above code used the == and the != operator. The == operator does a test
+Above code used the [.term]#==# and the [.term]#!=# operator. The == operator does a test
 for equality, and != test for inequality. Both operator work for
 most data types like integer, floats, characters and strings. The
 literal value of an empty string is written "". In line 2 we test
@@ -1843,8 +1941,6 @@ if the variable named input has not the value "quit", and in
 line 4 we test of that variable is empty, that it contains no text
 at all. 
 
-//Above code used the == and the != operator to test if a string is empty, that is if
-//it contains no characters.
 Using of break and continue destroys the expected flow in
 loops, it can make understanding loops harder. So we generally avoid their use, but
 sometimes break or continue are really helpful. For example when an unexpected error
@@ -1865,7 +1961,7 @@ often used to iterate over containers or collections. We have not discussed the
 important array and seq containers yet, but we know already the string container.
 
 A string contains characters, the characters are numbered starting with 0, and we can
-access single characters of a string with the subscript operator [] which gets the
+access single characters of a string with the subscript operator [.term]#[]# which gets the
 position of the desired character as argument. So we could print the single
 characters of a string, in this way:
 
@@ -1887,24 +1983,24 @@ with iterators for this purpose:
 ----
 var
   s = "Nim is not always that easy?"
-for char in items(s):
-  echo "-->", s
+for ch in items(s):
+  echo "-->", ch
 ----
 
 That is obvious shorter. The for construct may appear a bit strange, and it is
 indeed, but it is a common way to write iterators, it is used in Python too. Ruby
-uses something like s.each{|char| ...} instead.
+uses something like s.each{|ch| ...} instead.
 
 For loops in Nim iterates over containers or collections, and pics each element in
 sequence in this process. The variable after the for keyword is used to access or
-reference to the single elements. That variable has automatically the right type,
+to reference the single elements. That variable has automatically the right type,
 which is the type of the elements in the container, and get in each iteration the
 value of the next element in the container, starting by the first element in the
-container and stopping when there is no element left. Items() is here the actual
+container and stopping when there is no element left. [.term]#Items()# is here the actual
 iterator, which allows us to access the individual characters in sequence. It exists
-the convention in Nim that a items() iterator is automatically called in a for
+the convention in Nim that an [.term]#items()# iterator is automatically called in a for
 construct when no iterator name is explicitly given, so we could also write shorter
-for char in s: in this use case.
+[.term]#for ch in s:# in this use case.
 
 You may recognize that the output of the above for loop is not identical to the
 output of the previous while loop. The while loops stops when the last char, that is
@@ -1919,9 +2015,9 @@ to modify the string, there is a variant available.
 ----
 var
   s = "Nim is not always that easy?"
-for char in mitems(s):
-  if char == '?':
-    char != '!'
+for ch in mitems(s):
+  if ch == '?':
+    ch = '!'
 ----
 
 Here we use mitems() instead of the plain items(), the leading m stands for mutable.
@@ -1951,9 +2047,13 @@ type
     price: float
 ----
 
-We have to use the type keyword to tell the compiler that we want to define a new
-custom type. In the next line we write our type name, an equal sign and the keyword
-object. That indicates that we want to declare a new object type named Computer.
+We have to use the [.term]#type# keyword to tell the compiler that we want to define a new
+custom type.
+Writing the type keyword on its own line begins a type section where we can
+declare one or more custom data types. All type declarations in a type
+section must be indented.
+In the next line we write our type name, an equal sign and the keyword
+[.term]#object#. That indicates that we want to declare a new object type named Computer.
 Here Computer is a type name, in Nim we use the convention that user defined type names start with
 a capital letter. In the following indented block we specify the desired fields,
 each line contains the name of a field, and a colon followed by the needed data type.
@@ -1977,15 +2077,15 @@ computer.cpu = "x7"
 computer.powerConsumption = 17
 computer.ram = 32
 computer.ssd = 1024
-computer.quantity: 3
-computer.price: 499.99
+computer.quantity = 3
+computer.price = 499.99
 ----
 
 Of course in real applications we would fill the fields not in this way, but we would
 maybe read the data from a file, from terminal or maybe from a graphical user
 interface.
 
-It may look a bit ugly that we have to write computer. before each field when we
+It may look a bit ugly that we have to write [.term]#computer.# before each field when we
 access the fields. Indeed in recent Nim versions that is not necessary, you may use
 the [.term]#with# construct now instead.
 
@@ -2007,12 +2107,13 @@ short seq in Nim.
 
 Sequences and arrays are so called containers, they can contain multiple other
 elements, while a plain variable like a float or an int only contains a single value.
-We could regard Objects also as containers, because Objects contain multiple fields,
+We could regard objects also as containers, because objects contain multiple fields,
 well maybe. The same holds for tuples -- tuples are a very simple, restricted form
 of objects and also contain fields. But more typical container data types are the
 built in arrays and sequences, or for example hash tables which are provided by the
 Nim standard library. Arrays, sequences and hash tables can contain multiple
-elements, but all elements must have the same type. Arrays have a fixed, predefined
+elements, but all elements must have the same type.footnote:[But the types can be
+sum types, we will discuss them later.] Arrays have a fixed, predefined
 size, they can not grow or shrink during runtime of our program. Sequences and hash
 tables can grow and shrink.
 
@@ -2029,7 +2130,7 @@ insert even more elements, then the runtime system may have to allocate a larger
 block of memory first, copy the already existing elements at the new location, and
 then release the old, now unnecessary memory block. And this is an relative slow
 operation. The reason why this process can be necessary is, that the initially
-allocated memory block can not increase in size because the neighborhood in the RAM
+allocated memory block may not increase in size because the neighborhood in the RAM
 is already occupied by other data. Now let us see want we can do with arrays and
 sequences
 
@@ -2049,7 +2150,7 @@ for square in a:
 In the second line we declare a variable named a of array type -- we want to use an
 array with exactly 8 elements, and each element should have the data type int. The
 first for loop fills our array, that is for each of the 8 storage places in the array
-we fill in some well defined data. We use the mitems iterator here, because we want
+we fill in some well defined data. We use the [.term]#mitems()# iterator here, because we want
 to modify the content of our array -- we fill in numbers 1 .. 8. In the next for loop
 we square each storage location, and finally we print the content. In the last for
 loop we do not modify the content, so a plain items() instead of mitems() would work,
@@ -2060,18 +2161,17 @@ Sequences work very similar like arrays, but they can grow:
 ----
 var
   s: seq[int]
-  v = 1
-
+  v = 0
 while v < 8:
-  add(s, v)
   inc(v)
+  add(s, v)
 for el in mitems(s)
   el = el * el
 for square in s:
   echo square
 ----
 
-We start with an empty seq here, and use the add() procedure to append elements.
+We start with an empty seq here, and use the [.term]#add()# procedure to append elements.
 After that we can iterate over the seq as we did for the array.
 
 In the same way as we accessed single characters of a string with the subscript
@@ -2140,7 +2240,7 @@ memory, just as it knows the address of plain variables, so there is no need for
 address calculations at runtime.
 
 We said that appending elements to seqs is not extremely fast -- indeed it is a few
-times slower than access to an array element by its index using the subscript operartor. So when we know that our
+times slower than access to an array element by its index using the subscript operator. So when we know that our
 seq will have to contain at least an initial amount of elements, then it can be useful
 for maximum performance, that we allocate the seq from the beginning for this size
 and than fill in the content by use of the subscript operator instead that we append
@@ -2263,7 +2363,8 @@ property of that person, then you have not much luck.
 
 In Nim references are some form of smart or managed pointer, we will learn more about
 references later. The plain pointer data type is nothing more than a memory address,
-it is similar to a (unsigned) integer number.
+it is similar to a (unsigned) integer number. We say that a pointer points
+to an entity when the pointer contains the memory address of that entity.
 
 Beside the pointer data type, which is only some RAM address, we have also the ptr
 entity. Ptr is not a datatype for its own, it is always used in conjunction with
@@ -2276,14 +2377,14 @@ var
 ----
 
 Here the variable p is of type pointer, we could use it to point to some arbitrary
-memory address. The variable ip is of type [.term]#ptr# int, which indicates that it should
+memory address. The variable ip is of type [.term]#ptr int#, which indicates that it should
 only point to memory addresses where a variable with data type int resides. So a ptr
 is a pointer that is bound to a specific data type. Generally we speak only about
 pointers, if we are referring to an untyped pointer or a typed ptr is generally clear
 from the context.
 
 When we only declare pointers but do not assign a value then the pointers have the
-value nil, what indicates that they are regarded to point to nothing. Exactly
+value [.term]#nil#, what indicates that they are regarded to point to nothing. Exactly
 speaking a pointer can never point to nothing in the same way as an integer variable
 can not contain no number. As an integer variable always contains a bit pattern, a
 pointer also always contains a bit pattern. But we are free to define a special
@@ -2295,7 +2396,7 @@ with all bits cleared. But that is more or less an arbitrary decision.
 So how can we give our pointers above a useful value?
 
 One possibility would be to use Nim's addr() function, which gives us the memory
-addresss of each ordinary variable.
+address of each ordinary variable.
 
 [source, nim]
 ----
@@ -2311,9 +2412,14 @@ echo cast[int](p)
 echo cast[int](ip)
 ----
 
-First we define an ordinary integer variable called number which will reside
+First we declare an ordinary integer variable called number which will reside
 somewhere in memory when we execute the program, and then we use the addr() function
-to assign the address of that variable to p and ip. We used the echo() procedure to
+to assign the address of that variable to p and ip. The addr() function is a low level
+function provided by the compiler, it can be used to determine the memory address of
+variables and some other entities known to the compiler.footnote:[Sometimes the compiler
+may refuse to accept the addr() function, for example for variables defined with the let keyword.
+For that case we may have to use the function unsafeAddr().] 
+We used the echo() procedure to
 show us the numeric decimal value of the addresses in the terminal. As it generally
 makes not too much sense to print addresses, echo() would refuse to print it, so we
 have used the construct cast[int](someValue) to tell that echo() should regard our
@@ -2336,7 +2442,8 @@ in RAM is reserved. And that can differ for each new program execution. For your
 next holiday in the same hotel, you may get a different room also.
 
 So when we have the pointer ip pointing to a valid address, can we recover the
-content? Sure, we use the de-reference operator [] for that purpose. Whenever we
+content of that memory region?
+Sure, we use the de-reference operator [] for that purpose. Whenever we
 have a typed pointer x we can use x[] to get the content of the memory location where
 the pointer is pointing to. Note that the operator [] is not really related to the
 subscript operator [pos] which we used earlier for array, seq and string access. Nim
@@ -2375,10 +2482,10 @@ echo ip[]
 echo number
 ----
 
-What do you expect for the output of the last echo statement? Well remember, ip
+What do you expect for the output of the last echo() statement? Well remember, ip
 points to the location where variable number is stored in RAM. So echo ip[] gave us
 the content of number. Now ip[] = 3 is an assignment, the right site of the
-assignment operator is the integral number 3, which is a value type. Earlier we said
+assignment operator is the literal number 3, which is a value type. Earlier we said
 that for value types an assignment is a copy operation, the right site of the
 assignment operator is copied into the variable on the left site. Now ip[] stands
 exactly for the same content as the name number, and so assigning to ip[] is the same
@@ -2397,7 +2504,6 @@ most of the time addr() is not necessary at all or is only necessary for really
 low level code, maybe when interfacing with external libraries written in C.
 Instead of using addr() to assigning to pointers a valid address, often procedures
 like alloc() or create() are used to reserve a block of memory:
-
 
 ----
 var ip: ptr int
@@ -2418,17 +2524,17 @@ that pointer we do not allocate a new block, but we assign the old block that we
 allocated for ip to ip2. Now both pointers points to the same object, the int value 13.
 
 When we use alloc() or create() to allocate memory blocks, then we have
-to deallocate them when we need then not any more. Otherwise that memory
+to deallocate them when we need them not any more. Otherwise that memory
 blocks couldn't be reused. If we would continuously allocate memory blocks  and never
 deallocate, that is free then, then at some point in time all memory would be
-occupied -- not only for our own program, but for all program running
+occupied -- not only for our own program, but for all programs running
 currently on the same computer. We had to terminate our program -- when
 a program is terminated then all resources get freed automatically by the OS.
 
 The use of procedure pairs like alloc() and dealloc() is common practice in low level
 programming languages like C, but it is inconvenient and dangerous: We can
 forget to call dealloc() and waste resources, or we may even deallocate
-memory blocks but still use it by our pointers. That later would at some point
+memory blocks but still use it by our pointers. The later would at some point
 of time crash our program, as we would use memory blocks which are already
 released and may be used for other variables -- from our own program
 or from other programs. Note that in the source code above there is only one
@@ -2463,7 +2569,8 @@ result in a runtime error. So we would see the problem immediately. Other
 pointer errors, like missing de-allocation or use after free are not that obvious
 and more dangerous.
 
-With References we can rewrite our previous example code in this way:
+With references we can rewrite our previous example code in this way:
+
 ----
 var ip: ref int
 new(ip)
@@ -2481,7 +2588,7 @@ that is after the new() call ip has a well defines value referring to a
 managed memory block that can store an integer value.
 Again, we can use one more ref and assign that ref the value
 of the other, so now both references the same memory block.
-The advatage here is that we don't have to care about freeing
+The advantage here is that we don't have to care about freeing
 that block, the GC will do that when appropriate.
 
 To verify that in the example code above both references really
@@ -2529,7 +2636,7 @@ With that declaration we could declare a few friends variables
 like
 
 ----
-  var harry,clint, eastwood: Friend
+  var harry, clint, eastwood: Friend
 ----
 
 But that is not what we want, we would need a list
@@ -2552,9 +2659,9 @@ Now our Friend data type is a reference to an object,
 and the object itself has an additional next field
 which is again of type friend.
 
-That is some sort of recursion. If that should appear as to
+That is some sort of recursion. If that should appear as too
 strange, then imagine you have some numbered paper cards, each with two
-fields: One field name, one field next: In the name filed you can
+fields: One field name, one field next: In the name field you can
 fill in a name of a friend, in the next field you fill
 in the number of the next card. The last card in the chain
 gets no entry in the next field.
@@ -2637,13 +2744,13 @@ terminate the loop.
 
 Let us investigate the second loop first as it is really easy:
 In the while condition we check if current value of f is nil, that
-is if thre are no more entries in our list. For that
+is if there are no more entries in our list. For that
 case we terminate the loop, as we are done. If f has not the
 value nil, than f points to a valid content, that is there
 is at least a valid name, which we access by the field access
 operator and print it with echo f.name. Note that in Nim the
-field access operator . works in the same way for objects types as
-well for ref objects types. For ref objects types we could also write
+field access operator . works in the same way for value objects types as
+well as for ref objects types. For ref objects types we could also write
 f[].name instead of plain f.name, that is we first apply [] to
 f to get the content, and then use . to access the name field.
 In some other languages like C we would have to use
@@ -2655,11 +2762,11 @@ content. The content could be a valid reference to one more friend object,
 or it could be nil, indicating that our loop should terminate.
 
 The input loop is also not that complicated: First we ask the user
-to enter a name. We use write(stdin) for this, as echo
+to enter a name. We use write(stdin) for this, as echo()
 always generates a newline, but we want to read in the name on the same line.
-If the name is empty or has the special value "quit" the we terminate the input
+If the name is empty or has the special value "quit" then we terminate the input
 loop. In the loop we are using a temporary variable nxt of type Friend, we
-allocate a memory block for it with new. Then we assign the read in name n to
+allocate a memory block for it with new(). Then we assign the read in name n to
 the name field. The last two statements of the loop body are a bit demanding:
 First we assign to nxt.next the value of f. Now nxt is basically the start of our list,
 and it next field refers to the first element of the current list. Fine, but we said that
@@ -2671,7 +2778,7 @@ nxt can be used in the next loop iteration again, but we have to allocate a new 
 block for the nxt reference, as the previous memory block is still in use, it contains the 
 name which we just entered and also a reference to the next object in the list.
 
-Note that we add the the new elements at the top of the list in this way. We have done it that way
+Note that we add the new elements at the top of the list in this way. We have done it that way
 because it is very easy in this way. For adding at the end of the list, we would have to
 use one more reference variable which allows us always access to the current end of the list, or
 we would have travel the list from head to tail whenever we would like to
@@ -2705,7 +2812,8 @@ because when the list is empty we should stop of course.
 In the loop body we have an if statement, and
 in the else branch of the if statement we have one more loop.
 The reason why we need the if statement is, that the case that our
-list contains only a single entry is some sort of special. Let us
+name to delete is the first in the list is some sort of special. Let us
+//list contains only a single entry is some sort of special. Let us
 investigate the inner loop first. That loop assumes that 
 there are at least 2 elements in the list, f and f.next.
 We compare the name of the next entry with n. If they match then we would have to
@@ -2715,15 +2823,17 @@ f.next, by the next entry of the next element, which is (n.next).next. We do not
 to write the parenthesis. The n.next.next entry can be nil, in that case it is the end
 of the list. If we found a matching name then we terminate the inner loop 
 with a break statement, and we are done. Otherwise we assign to f the value of f.next and continue the loop
-execution. Now to the special case that
-our initial list contains only a single entry. For that case the initial
-test of our inner loop  while f.next != nil: would be false, we would do nothing.
-Since we need the first if branch for that -- if already the first element matches
+execution. Now to the special case that the name to delete is the first in the list.
+//our initial list contains only a single entry.
+//For that case the initial
+//test of our inner loop  while f.next != nil: would be false, we would do nothing.
+//If this case we have to set f to the next element in the list
+We need the first if branch for that -- if already the first element matches
 the name to delete than we just skip the first element by setting the head of the list to
 the next entry, which may or may not be nil.
 
 This is one way to solve the task, for operations on lists there exist in most
-cases various solutions, some optimized to easy or short code, some fore performance.
+cases various solutions, some optimized to easy or short code, some for performance.
 You may copy the code segment below to the end of the former code, and maybe 
 add one more copy of our printing loop at the end again. Then you should have a program
 that reads in a list, prints the contents, then ask for names to delete, and finally
@@ -2754,7 +2864,7 @@ parameter list can be empty. When we call a proc, then
 the program execution continues with that procedure, 
 and when the execution of the procedure terminates, then the
 next statement after that proc call is executed. Sometimes
-we say that we jump into a procecure and jump back when that
+we say that we jump into a procedure and jump back when that
 procedure terminates.
 
 In Nim functions are a special form of procedures that return
@@ -2866,7 +2976,11 @@ The frame proc above accepts two parameters and returns no
 result. The first parameter has the type string, it
 is not a value parameter but a var parameter, which
 is indicated by the var keyword between the colon and the
-type of the parameter. Var parameters can be modified in the
+type of the parameter. Note that we use here again the keyword var
+that we used earlier to declare variables. The main  reason that we
+use again the same keyword is that we do not want to use a new one --
+var proc parameters are different from var declarations.
+Var parameters can be modified in the
 procedure body, and that modification is visible after the proc call.
 The second proc parameter is a plain value type, it is a character
 which has the default value '*'. Default values are useful for
@@ -2892,7 +3006,11 @@ character string at the front of our passed string. Finally we
 add a whitespace and the c character to the passed string.
 The passed string is now modified, it is 4 characters longer. That
 modification is noticeable for the caller of that proc, that
-is echo will print the modified version.
+is echo() will print the modified version.
+
+When we call a proc or function with multiple arguments, then we have
+to pass the arguments in the same order as they are specified
+in the proc declaration.
 
 Our frame() proc above modified the passed string. We could have
 instead decided that the proc should not modify the string, but should
@@ -2900,7 +3018,7 @@ return a new string consisting of the frame and the passed string in the center.
 Generally when creating procs we have to decide what is more useful -- modifying a 
 passed value or returning a modified copy. And sometimes we have to
 regard efficiency too. Returning newly created large data types
-like strings may be expensive. A string is a not trivial structure, as 
+like strings may be expensive. A string is not a trivial structure, as 
 it contains the dynamic buffer for the string content, which has to
 be allocated. On the other hand, for the passed var string we inserted
 characters, which involves moving characters and is also not 
@@ -2912,12 +3030,12 @@ we used the var parameter mainly to introduce var parameters.
 The execution of a procedure terminates when the
 last statement of the procedure body has be processed.
 We can also terminate a procedure earlier when we
-specify a return statement somewhere.
+specify a [.term]#return# statement somewhere.
 
 Functions and procedures which return a result
 can also terminate with the last expression of
 the procedure body, or earlier with a return expression
-like return i * i. Functions and procedures with a result
+like [.term]#return i * i#. Functions and procedures with a result
 declare automatically a result variable for us, which we may
 use or just ignore. So for our previous sqr() function we have
 various ways to write it:
@@ -2984,7 +3102,7 @@ The openArray and varargs data types can be used only in
 parameter lists.
 OpenArray is a type which allows to pass arrays and seqs
 to the procedure or function. Allowing that makes
-sense as arrays as well as seqs store there content
+sense as arrays as well as seqs store their content
 in a block of memory, which can be processed uniformly.
 Although arrays generally do not have to start with index
 number 0, when passed as openarray the first element
@@ -2992,7 +3110,8 @@ is mapped to index 0, and the index of the last element is
 available by using the high() function on the passed array
 parameter. Whenever we write a proc that accepts an array
 or a seq, we should consider using the openArray parameter type
-to allow passing in both data types.
+to allow passing in both data types. Strings can be passed although
+to procs accepting openArrays with char base type.
 
 The varargs data type allows passing a variable number of
 arguments to a proc or function, and we can
@@ -3032,7 +3151,7 @@ only visible there and can only be used there. We say that they are only visible
 in that scope. For Nim we can say that whenever Nim's syntax requires a new level of
 indentation, that is a new statement block, then all symbols declared in that block
 are only visible in that block and in sub-blocks of this block, but not outside of
-that block. Nim has another important concept of visibility, which are called
+that block. Nim has another important concept of visibility, which is called
 modules and allows separation our code in logically separated text files with
 well defined visibility rules, we will discuss modules later.
 
@@ -3068,7 +3187,7 @@ the duration how long they exist and how long they can store a value.
 Global variables exist for the whole program runtime -- when you have
 assigned a value to it that value can be used everywhere as long as the program
 runs, and as long you do not assign a different value of course.
-Global variables are generally stored in a special memory region that is called BSS
+Global variables are generally stored in a special memory region that is called the BSS
 region.
 
 Variables of value type defined locally inside a procedure or function do exists
@@ -3081,7 +3200,7 @@ the stack. The stack is nothing more than an arbitrary part of the hole ram that
 clever fashion: The memory words in it are used in consecutive order. A so called stack
 pointer is used to indicate the address of the first free area in that stack. So when a 
 proc is called, which may have n bytes of local variables, then the compiler can use
-the area where stack pointer points to for that variables, and when the proc 
+the area where the stack pointer points to for that variables, and when the proc 
 is called then the stack pointer is increased by that size. So the stack pointer
 points again to the next free area of the stack, and another proc can be called
 in the same way from within the current proc. Whenever a proc terminates, the stack
@@ -3104,10 +3223,10 @@ An important fact for the use of the stack to store variables is that
 the total size which is needed by a proc for all the static variables must be a
 compile time constant. The stack pointer is adjusted by that amount when the
 proc starts and all the local variables are accessed with a fixed offset to
-that stack pointer then. When we use alloc() or new in a proc, the we may
+that stack pointer then. When we use alloc() or new() in a proc, then we may
 call that multiple times like we did in our previous list example, and for
 alloc() an additional fact is that the byte size that alloc() should reserve
-can be a runtime value. So the total amount of ram that alloc or new()
+can be a runtime value. So the total amount of ram that alloc() or new()
 would allocate is a runtime value, and we can not use the stack for it. Instead
 alloc() and new() allocates block of memory in a more dynamic fashion, which is
 basically that they ask the OS for a free block of right size somewhere in the
@@ -3158,8 +3277,7 @@ in the body of a proc:
 proc p =
   var i: int
   while i < 100:
-    let j: int
-    j = i * i
+    let j: int = i * i
     echo j
     inc(i)
 ----
@@ -3174,7 +3292,7 @@ The trick is, that j is locally to the while loop, and that j
 is virtually new created and initialized to 0 for each iteration.
 So let is OK and the compiler does not complain. 
 
-We can test that fact with this simple:
+We can test that fact with this simple program:
 
 ----
 proc main =
@@ -3195,7 +3313,7 @@ sure how the compiler may handle it internally. Is storage
 for variable a already allocated when the proc is invoked, that is 
 in the same way as storage for the loop counter variable i is allocated 
 on the stack when the proc is called. Or is storage for variable
-a is reserved for each loop iteration by increasing the stack pointer at the start
+a reserved for each loop iteration by increasing the stack pointer at the start
 of the loop and resetting it at the end of the loop. We can not be sure without reading
 the compiler source code, but finally we should not care, as it does not really matter.
 
@@ -3222,11 +3340,11 @@ types in the proc header or in the proc body.
 
 We can now call that proc with parameters of different types including
 int and float types. You may wonder why that works -- Nim is a statically
-typed language, so how can the parameter of function sqr as well
+typed language, so how can the parameter of function sqr() as well
 accept an integer as an float number? Is there a  hidden type conversion
 involved? No, the trick is that whenever we call that generic proc with 
- a different type, than a new proc or function is instantiated. As we called
-the generic sqr proc with an int and a float parameter, during compile time the
+a different type, than a new proc or function is instantiated. As we called
+the generic sqr() proc with an int and a float parameter, during compile time the
 compiler creates machine code for two separate function, one which is
 called when an int is passed as parameter, and one which is called when a float
 is passed. If we would call that proc name again with an int or float parameter, than
@@ -3284,13 +3402,13 @@ we are working, as it stands in front of the expression.
 Most OOP languages allows that notation only for a class, for example the string class
 may declare all possible operations that can be done with strings, and the
 method call syntax is used for that operations. One problem is, that it can
-be different to add more operations which can be used in that style, as
+be difficult to add more operations which can be used in that style, as
 often all that operations are defined in the class scope. Ruby fixed 
 that restriction by allowing so called reopen of classes, that is user can 
 later add more operations.
 
 Nim simple allows that notation generally, as did the D language, but D used
-the tern Uniform Function Call Syntax (UFCS) for it.
+the tern [.ndef]#Uniform Function Call Syntax# (UFCS) for it.
 
 === Procedure variables
 
@@ -3514,7 +3632,7 @@ parameter, and we can even use an integer as a logical expression in an
 if condition in the same way as it is done in C language.
 Converters do work only in a direct way, that is automatic chaining is not supported:
 If we have on converter from character to int and one from int to boolean, that
-does not mean that we can pass a charater to a proc that expects a boolean. We would
+does not mean that we can pass a character to a proc that expects a boolean. We would
 have to declare one more converter that directly converts character to bool.
 
 Whenever we do consider using converters we should think twice -- converters
@@ -3523,8 +3641,8 @@ may be confusing, may have some strange effects and may increase compile time.
 == Object Orientated Programming and Inheritance
 
 Object Orientated Programming and Inheritance became very popular
-in the early nineties of the last century. Java is a prominient
-representative of the programming paradigm, but most languages
+in the early nineties of the last century. Java is a prominent
+representative of that programming paradigm, but most languages
 created in the nineties of the last century support is, like C++,
 Ruby and Python.
 
@@ -3621,8 +3739,8 @@ use case are drawing applications with code similar to our basic example.
 
 Not that the OOP style only works with ref objects, but not with value objects.
 The obvious reason is that we can have collections of different
-sub-types stored in arrays or seqences only for ref objects, as all
-in arrays and sequences all tapes have to have equal size. For references
+sub-types stored in arrays or seqences only for ref objects, as
+in arrays and sequences all element types have to have equal size. For references
 that it the case, as references are basically pointers. But different
 value types would have different size. Linked lists would be no better
 solution, as again we can not built lists with value objects.
@@ -3655,7 +3773,7 @@ let (dst, check) = findBestNextMove()
 
 Here we define a custom Move type similar as we would do for
 a custom object, but we do not use that type at all but
-return a anonymous tuple from our proc, that is a pair of
+return an anonymous tuple from our proc, that is a pair of
 an int and a bool.
 
 Due to type inference our dst and check variables gets
@@ -3678,7 +3796,7 @@ In Nim enums can be used whenever some form of symbols are needed
 like the colors red, yellow and green of a traffic light or
 the directions north, south, east and west for a map or a game.
 
-Most of the time we declare an enum type and the corressponding
+Most of the time we declare an enum type and the corresponding
 values by simple listing them like 
 
 ----
@@ -3760,7 +3878,7 @@ can perform general set operations like union of multiple sets.
 The set data type maps well to bit operations of the CPU, as
 the CPU can generally clear, set and test single bits and perform
 logical operations of words -- remember a logical or operation
-sets all the bits in destination operand for which at least on source
+sets all the bits in destination operand for which at least one source
 operand had a bit set.
 
 A prominent example for use of sets is the set of ASCII characters.
@@ -3802,7 +3920,7 @@ do all the ordinary operations on sets that are common in math.
 
 Nim's object variants, sometimes also called sum types or abstract data types (ADT), are an
 advanced and type save variant of the union type known from C.
-The basic Idea is that we may use value types that may
+The basic idea is that we may use value types that may
 store similar, but not identical data. Untyped languages
 like Ruby or Python allow that of course, and we can do
 it in Nim with ref types and inheritance too, as we showed in a previous
@@ -3859,9 +3977,9 @@ proc parameters in the same way to the same proc.
 
 == Iterators
 
-W have already used some of Nim's standard iterators to iterate over the
+We have already used some of Nim's standard iterators to iterate over the
 characters of a string or the content of a sequence. Declaring
-iterartors is similar to declaring procedures, but we use the yield
+iterators is similar to declaring procedures, but we use the yield
 keyword to return a single value back to the caller of the iterator.
 When the body of the iterator declaration is reached the iterator terminates.
 In an earlier section we declared a procedure that extracted the decimal
@@ -3888,7 +4006,7 @@ called and offer maximum performance, but each call increases the total
 code size. Closure iterators are invoked like ordinary procedures, the
 invocation eats some performance. Note: Iterators do not provide
 a predefined result variable as procedures do. To avoid the need of
-declaring a res variable of type character, in avbove code we increase pos
+declaring a res variable of type character, in above code we increase pos
 by one first and yield s[pos - 1].
 
 == Templates
@@ -3922,7 +4040,7 @@ cast a bool to an int8 of same size and would get a decimal number 0 or 1.
 Casting is not a real operation at all, as nothing is really done. We watch the
 same bit pattern just from a different perspective. But casting is dangerous,
 it violates the safe type system of the language, and it can go very wrong:
-Can we cast beetwen float64 and int64? Well they have same size, and both are numbers.
+Can we cast between float64 and int64? Well they have same size, and both are numbers.
 We can cast, but the result would be far away from what we may expect. While 
 int64 has the well known and simple value encoding, that is rightmost bit stands
 for 2^0, next bit for 2^1 and so far, the encoding of floats is much more
@@ -3933,7 +4051,7 @@ We have to be very carefully when we cast between types of different size. Nim m
 but we have to think what may really happen. When we cast between a bool and a int64, in one direction
 7 bytes have to be ignored, and in the other direction for 7 missing bytes there is some
 padding necessary. We do a cast by writing after the keyword cast in square brackets the
-desired type followed by paranthesis enclosing the source variable:
+desired type followed by parenthesis enclosing the source variable:
 
 ----
 var i: uint8 = cast[unint8](myBoolVar)
@@ -3985,6 +4103,8 @@ proc main =
 
 main()
 ----
+
+This section has to be extended...
 
 == Modules
 
@@ -4140,3 +4260,37 @@ xxx
 
 == something
 
+= Appendix
+
+== ASCII Table
+
+----
+proc print(i: int) =
+  let c =
+    if i > 31 and i < 128: char(i) else: ' '
+  stdout.write("  ", c, "  ")
+
+proc main =
+  echo "Visible ASCII Characters\n"
+  stdout.write("     ")
+  for i in 0 .. 15:
+    if i < 10:
+       stdout.write(" +")
+    else:
+      stdout.write("+")
+    stdout.write(i, "  ")
+  stdout.write('\n')
+  var i = 0
+  while i < 128:
+    if i < 10:
+      stdout.write("  ")
+    elif i < 100:
+      stdout.write(" ")
+    stdout.write(i, ' ')
+    for j in 0 .. 15:
+      print(i + j)
+    stdout.write('\n')
+    inc(i, 16)
+
+main()
+----
