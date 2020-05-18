@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 25-APR-2020
+//v0.1, 18-MAY-2020
 :doctype: book
 :toc: left
 :icons: font
@@ -12,8 +12,8 @@ A gentle Introduction
 :stylesheet: nimbook.css
 
 :Wirth: Prof. Niklaus Wirth
-:uC: micro-controllers
-:OOP: Object-Orientated-Programming
+:uC: micro-controller
+:OOP: Object-Oriented-Programming
 :OS: operating system
 :proc: procedure
 :profus: procedures and functions
@@ -51,22 +51,22 @@ his students the fundamentals of computer programming. While the initial core Pa
 language was designed for teaching purpose only, it was soon expanded by commercial
 vendors and got some popularity. Later Wirth presented the language [.ndef]#Modula-2#
 with improved syntax and support of modules for larger projects, and the
-[.ndef]#Oberon# language family with additional support for [.ndef]#Object Orientated
+[.ndef]#Oberon# language family with additional support for [.ndef]#Object Oriented
 Programming#.
 
 The [.ndef]#Nim# programming language can be seen in this tradition, as it is
 basically an easy language suited for beginners with no prior programming experience,
 but at the same time is not restricted in any way. Nim offers all the concepts of
 modern and powerful programming languages in combination with high performance and
-some sort of universality -- Nim can be used to create programs for tiny {uC} as well
+some sort of universality -- Nim can be used to create programs for tiny microcontrollers as well
 as for large desktop apps and web applications.
 
 Most books about programming languages concentrate on the language itself and assume
 //that the reader is already familiar with most basic concepts and has already some
-that the reader is already familiar with the foundations of computer hardware and has already some
+that the reader is already familiar with the foundations of computer hardware and already has some
 programming experience. This is generally a valid approach, as today most
 //people are taught these basics in school. But still there are people who missed this
-people are taught these fundamental knowledge, sometimes called [.ndef]#Computer Science# (CS)
+people are taught this fundamental knowledge, sometimes called [.ndef]#Computer Science# (CS)
 in school. But still there are people who missed this
 introduction in school for various reasons and decide later that they need some
 programming skills, maybe for a technical job. And there may exist some children
@@ -84,23 +84,25 @@ advanced examples.
 = Part I: Introduction
 
 [.normal]
-For using computers and writing computer programs you initially have to know really
-not many details. It is basically like driving a car: Although a car is a powerful
-and complicated tool, kids generally can drive it after a 3 minutes introduction.
-Still good racing drivers generally need a much broader insight into the inner
-working of all the technical components and finally a lot of practice.
+For using computers and writing computer programs you initially do not have to know
+many details. It is basically like driving a car: Although a car is a powerful
+and complicated tool, kids generally can drive it after a 3-minute introduction.
+Still, good racing drivers generally need a much broader insight into the inner
+working of all the technical components, and finally, a lot of practice.
 
 == What is a Computer
 
-A computer is in first line a device which can run computer programs.
+A computer is primarily a device which can run computer programs.
+// primarily, mainly, first, principally, chiefly, preeminently
+// mainly, primarily, principally, mostly, chiefly, essentially
 Nearly all computers currently in use, from the tiny ones integrated in
-electronic gadgets, over the well known desktop computer (PC) to large and
+electronic gadgets, to the well known desktop computer (PC), to large and
 powerful super computers filling whole rooms, work internally with digital data
 only.footnote:[In the past some form of analog computers existed, some worked mechanically,
 some used analog voltages or currents as input and output signals. Indeed one important
 device which is still very common in analog electronics is the summing amplifier,
 which can sum up multiple electric voltages.]
-Digital data is basically integer (whole) numbers, we will discuss the term digital
+Digital data is basically integer (whole) numbers; we will discuss the term digital
 in the next section in more detail.
 
 The most
@@ -110,31 +112,32 @@ basic mathematical and logical operations on numbers, like adding two numbers or
 deciding if a number is larger or smaller than another number. Most computer CPU's
 can only store very few numbers internally, and forget the numbers when the power is
 switched off. So the CPU is generally electrically connected to a [.ndef]#RAM#
-module, a [.ndef]#Random Access Memory#, which can store much more numbers and allow
+module, a [.ndef]#Random Access Memory#, which can store many more numbers and allow
 fast access to these numbers, and to a [.ndef]#Harddisk# or [.ndef]#SSD# device which
-can permanently store the numbers, but does not allow such a fast access. The stored
+can permanently store the numbers, but does not allow such fast access. The stored
 numbers are most often called just [.ndef]#data# -- basically that data is nothing
 more than numbers, but it can be interpreted in many different ways, as pictures,
 sounds and much more.
 
 Nearly all of today's desktop computers, and even most notebooks and cellphones contain
-not only a single CPU, but multiple of it, also called "Cores". So they can run different programs
+not only a single CPU, but multiple CPUs, also called "Cores", so they can run different programs
 in parallel, or a single program can run parts of it on different CPU's, to
 increase performance or reduce total execution time. The so called super
 computers can contain thousands of CPU's. Beside CPU's most computers have also
 at least one [.ndef]#GPU#, a [.ndef]#Graphic Processing Unit#, that can be used
 to display data on a screen or monitor, maybe for doing animations in games or
-for playing video. The distinction between CPU and GPU is not really sharp, generally
+for playing video. The distinction between CPU and GPU is not really sharp; generally
+// for playing video. The distinction between CPU and GPU is not really sharp: generally
 a CPU can also display data on screens and monitors, and GPU's can do also
 some data processing that CPU's can do. But GPU's are optimized for the
 data display task.
 
-More visible to the ordinary computer user is the periphery -- devices like
-keyboard, mouse, screen and maybe a printer. These periphery devices enables human
-interaction with the computer, but are in no way a core component of it, the computer
-can run well without them. In so called notebook or laptop computers or in cellphones
-the periphery devices are closely integrated with the core components.
-All the physical parts of a computer are also called the [.ndef]#hardware#, while
+More visible to the ordinary computer user are the peripheral devices like
+keyboard, mouse, screen and maybe a printer. These enable human
+interaction with the computer, but are in no way a core component of it; the computer
+can run well without them. In notebook or laptop computers or in cellphones,
+the peripheral devices are closely integrated with the core components.
+All the physical parts of a computer are also called [.ndef]#hardware#, while
 the programs running on that hardware are called [.ndef]#software#.
 
 A less visible but also very important class of computers are [.ndef]#{uC}# and so
@@ -142,35 +145,40 @@ called [.ndef]#embedded devices#, tiny pieces with generally a hull of black pla
 with some electrical contacts. The devices generally contain all necessary elements,
 that is the CPU, some RAM and a persistent storage that can store programs when no
 electric power supply is available. These devices may be restricted in computing
-power and the number of data that they can store and process, but they are contained in
-many devices, they control your washing machine, the refrigerator, the television and
-radio and many more. Some devices of your home may even contain multiple {uC}s and
-often the {uC}s can already communicate under each other by RF (Radio-Frequency) or
-access by WLAN the internet, which is sometimes called [.ndef]#Internet of things#
+power and the amount of data that they can store and process, but they are contained in
+many devices.  They control your washing machine, refrigerator, television and
+radio and much more. Some devices in your home may even contain multiple {uC}s and
+often the {uC}s can already communicate with each other by RF (Radio-Frequency), or
+access by WLAN the internet, which is sometimes called [.ndef]#Internet of Things#
 (IoT).
 
 Another class of large and very powerful digital computers are called [.ndef]#mainframe computers# or
 [.ndef]#super computers#, which are optimized to process large amount of data very fast. The
-key of the gigantic computing power is, that many fast CPU's work in parallel -- the problem
-or task is split in many small parts, that are solved by one CPU each, and the final result
+key to their gigantic computing power is that many fast CPU's work in parallel -- the problem
+or task is split into many small parts that are solved by one CPU each, and the final result
 is then the combination of all the solved sub-tasks. Unfortunately it is not always possible
-to split large problems in smaller sub-tasks.
+to split large problems into smaller sub-tasks.
 
-Digital computers are generally driven by a rectangular shaped binary clock signal, that is
-an electrical voltage that jumps continuously from maybe a level of 0 Volt to a level
-of 1 Volt and back. The CPU can do simple operations like the addition of two
-integers for each (upwards) transition of the clock signal, for more complicated
-operations like a multiplication or a division it may need more clock periods.
+Digital computers are generally driven by a clock that pulses at a certain frequency.  
+The CPU can do simple operations like the addition of two
+integers at each pulse of the clock signal. For more complicated
+operations like a multiplication or a division it may need more clock pulses.
+//Digital computers are generally driven by a rectangular shaped binary clock signal, that is
+//an electrical voltage that jumps continuously from maybe a level of 0 Volt to a level
+//of 1 Volt and back. The CPU can do simple operations like the addition of two
+//integers for each (upwards) transition of the clock signal, for more complicated
+//operations like a multiplication or a division it may need more clock periods.
+
 So a rough measure for the performance of a computer is the clock rate, that
-is the number of low to high transitions of the clock signal per second, divided
-by the number of transitions that the CPU needs to perform a basic operation, multiplied
+is the number of clock pulses per second, divided
+by the number of pulses that the CPU needs to perform a basic operation, multiplied
 by the number of CPU's or Cores that the computer can use. 
 
 A totally different kind of computers are [.ndef]#Quantum Computers#, large,
 expensive high-tech devices, which use the rules of [.ndef]#quantum mechanics# to
 calculate many computations in parallel. Today only a few of them exist, for
 research at universities and some large commercial institutes. Quantum computers may
-at some time in future fundamentally change computing and our whole world, but they
+at some time in the future fundamentally change computing and our whole world, but they
 are not the topic of this book.
 
 == Analog and Digital
@@ -178,9 +186,9 @@ are not the topic of this book.
 Whenever we measure a quantity based on one tiny base unit, then we
 work in the digital area, we measure with some granularity.
 Our ordinary money is digital in some way, as the cent is the
-smallest base unit, you will never pay a fraction of a cent for something.
+smallest base unit; you will never pay a fraction of a cent for something.
 Time can be seen as a digital quantity as long as we accepts the second
-as the smallest unit -- even on so called analogue watches the seconds hand
+as the smallest unit.  Even on so called analogue watches the second hand
 will generally jump forwards in steps of a second, so you can not
 measure fractions of a seconds with that watch.
 
@@ -188,59 +196,69 @@ An obvious analogue property is the thermodynamic temperature and its classic me
 well known capillary thermometer consisting of a glass capillary
 filled with alcohol or liquid mercury. When temperature increases
 the liquid in a reservoir expand more than the surrounding glass and partly fills
-the capillary -- that filling rate is an analogue measure for the temperature.
+the capillary.  That filling rate is an analogue measure for the temperature.
 
+// An hourglass usually has sand running through a constriction, so it seems analog to me.  -Jim
+// The sand consists of tiny stones, you can count the stones!
 While the hourglass
 works digitally, the sundial does not.
 
-All the quantities in our real world seems to be not digital or granular,
-so digital quantities seems to be some sort of arbitrary approximation.
-
+Most of the quantities in our real world seem analog,
+and digital quantities seem to be some sort of arbitrary approximation.
+//All the quantities in our real world seems to be not digital or granular,
+//so digital quantities seems to be some sort of arbitrary approximation.
 But [.ndef]#quantum mechanics# has taught us that many quantities in our world
-have really a granularity. Physically quantities like energy or momentum
+really have a granularity. Physically quantities like energy or momentum
 are indeed multiplies of the tiny [.ndef]#planck constant#. Or consider electric
 charge, which is always a multiple of the [.ndef]#elementary charge unit# of one
 electron. Whenever an electrical current is flowing through an
 electrically conducting wire, an ionized gas or an electrolyte like salt water,
 there are flowing multiplies of the elementary charge only, never fractions of
-it. And of course light and electromagnetic radiation has also some form of granularity,
+it. And of course light and electromagnetic radiation also has some form of granularity,
 which the photoelectric effect as well as compton scattering proves.
 
+// A paragraph usually has more than a single sentence.  -Jim
 An important and useful property of digital signals and digital data is
 that they map directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two
+//distinct values, 0 and 1. When you use a mechanical switch to turn
 distinct values. When you use a mechanical switch to turn
 the light bulb in your house on or of, you change
 the binary state of the bulb. And your neighbor, when watching
 your house, receives binary signals.footnote:[Well, when we watch very
-careful, we will noticed that the signal is not really digital -- when we
+carefully, we will notice that the signal is not really digital -- when we
 switch on, the filament may take a few milliseconds to heat up, and
-when we switch of, the filament takes again a new milliseconds to cool down.]
+when we switch off, the filament takes again a few milliseconds to cool down.]
 
 Digital computers are generally using binary electric states internally -- voltage
-or current [.term]#on# or [.term]#off#. Such a on/off state is called a bit, we will learn more
+or current [.term]#on# or [.term]#off#. Such a on/off state is called a bit. We will learn more
 about bits and binary logic later. One bit can store obviously only two states, which we may
 map to the numbers 0 and 1. Larger integer numbers can be represented by a sequence
-of multiple bits. 
+of multiple bits.
 
 The [.ndef]#morse code# was an early application to transmit messages encoded in binary form.
 
-A very important property of digital data is that
-they can be copied and transmitted exactly. The reason for this is that they have
+// data is usually considered singular in English
+// A very important property of digital data is that
+// it can be copied and transmitted exactly. The reason for this is that it has
+A very important property of digital encoded numbers (data) is that
+they can be copied and transmitted exactly. The reason for this is that digital numbers have
 a well defined clean state, there is no noise which overlays the data
-and which may sum up when the data is copied multiple times. Well, that
+and may accumulate when the data is copied multiple times. Well, that
+// a well defined clean state: there is no noise that may accumulate the data is copied multiple times. Well, that
 statement is not really true -- under bad conditions the noise can become so
 large that it changes the binary state of signals. Imagine we try to transfer
 some whole numbers encoded in binary form, maybe by binary states encoded as voltage
 level 0 Volt and 5 Volt, over an electric wire and a long distance.
 It is clear that the long wire can pick up some electromagnetic noise that can change the true 0 Volt
 data to a voltage that is closer to 5 Volt than to the true 0 Volt level, so it is
-received wrongly. To catch such types of transmission errors [.ndef]#check-sums# are used,
-that is additional to the actual data some numbers that are derived by a special
-formula from the original data are also transferred. The receiver applies the same formula to
-the received data and compares the result with the received check-sums. If it does
+received incorrectly. To catch such types of transmission errors [.ndef]#checksums# are added
+to the actual data.  A checksum is derived by a special
+formula from the original data and transferred with it. The receiver applies the same formula to
+the received data and compares the result with the received checksum. If it does
 not match, then it is clear that data transmission is corrupted, and a resend is requested.
+// I think you should leave the following statement out, or omit the whole paragraph.  -Jim
 But the field of data transmission and its error detection is not the topic of this book.
 
 The opposite of digital is generally called analogue, a term which is used for
@@ -270,31 +288,35 @@ analogue current through a coil in the speakers of our sound box, and that
 electric current in the coil generates a magnetic field which exercise
 mechanical forces and moves the membrane of the speaker, resulting
 in oscillating motions, which generates air pressure variations that our ear
-can detect and that we finally feel as sound.
+can detect and that we finally hear as sound.
 
 == What is an Operating System
 
-Most computers, from cellphones to large super computers uses [.ndef]#{OS}s# (OS).
-A well known one is the GNU/Linux kernel. {OS}s can be seen
-as one initial program, that is loaded and started when we switch the computer on, and
-that works as some kind of supervisor: It can load other programs, it distribute resources
-like CPU cores or RAM between multiple running programs. And it controls user
-input by keyboard and mouse, it displays output data on the screen -- as text
-or graphics, and it controls how data is loaded and stored to nonvolatile storage
-media like hard-disk or SSD, it manages all the network traffic and many more tasks.
+Most computers, from cellphones to large super computers use an [.ndef]#{OS}# (OS).
+A well known OS is the GNU/Linux kernel. Operating Systems can be seen
+as the initial program that is loaded and started when we switch the computer on and
+// if you only have 2 things, separate them with and rather than comma.  -Jim
+that works as some kind of supervisor: it can load other programs and it distributes resources
+like CPU cores or RAM between multiple running programs. It also:
+// I would make this a list.  -Jim
+// no list as this enumeration is not really that important and as we do NOT explain the
+// list items later in detail
+controls user
+input by keyboard and mouse, displays output data on the screen -- as text
+or graphics, controls how data is loaded and stored to nonvolatile storage
+media like hard-disk or SSD, manages all the network traffic, and many more tasks.
 An important task of the OS is to allow user programs to access all the various
-hardware components from various vendors in a uniform high level manner.
-An OS can be seen as some intermediate layer between user program like
+hardware components from different vendors in a uniform high level manner.
+An OS can be seen as an intermediate layer between user programs like
 a text processor or a game, and the hardware of the computer.
-The OS allows user programs to work on a higher level of abstraction, so
-that the program has not to care about low level details of the hardware too much.
+The OS allows user programs to work on a higher level of abstraction, so they do
+not need to know much about the low level hardware details.
 
 Current Linux kernel version 5.6 has 28 million lines of source code!
 
-Small {uC}s and embedded devices do generally not need and use an
+Small {uC}s and embedded devices often do not need to use an
 {OS}, as they generally run only one single user program and
-because they do not have such a gigantic amount of hardware components which they
-have to support.
+because they usually do not have a large variety of hardware components to support.
 
 == What is Computer Programming
 
@@ -304,13 +326,13 @@ programs.
 == What is a Computer Program
 
 A computer program is basically a sequence of numbers, which make some sense to a
-computer CPU, in such a way that it recognize the numbers as so called
+computer CPU, in such a way that it recognizes the numbers as so called
 [.ndef]#instructions# or [.ndef]#numeric machine code#, maybe the instruction to add
 two numbers.
 
-The first computers, built in the fifties of the last century, where programmed
-indeed by feeding sequences of plain numbers to the device. The numbers where stored
-on so called [.ndef]#punch cards#, consisting of strong paper where the numbers where
+The first computers, built in the 1950's, were indeed programmed
+by feeding sequences of plain numbers to the device. The numbers were stored
+on so called [.ndef]#punch cards#, consisting of strong paper where the numbers were
 encoded by holes in the cards. The holes could be recognized by electrical contacts to
 feed the numbers into the CPU. As plain numbers do not match well human thinking,
 soon more abstract codes where used. A very direct code, which matches numerical
@@ -318,49 +340,57 @@ instructions to symbols, is the [.ndef]#assembly language#. In that language for
 example the character sequence "add A0, $8" may map directly to a sequence of numbers
 which instructs the CPU to add the constant integer number 8 to CPU register A0,
 where A0 is a storage area in the CPU where numbers can be stored. As there exists
-many different types of CPU's all with it own instruction sets, there exists many
-different assembly instruction sets, with similar, but not identical shape. The rules
-that describe how these basic instructions have to look like are called the
-[.ndef]#syntax# of the assembly code.
+many different types of CPU's all with their own instruction sets, there exists many
+different assembly instruction sets, with similar, but not identical instructions. The rules
+that describe how these basic instructions have to look are called the
+[.ndef]#syntax# of the assembly language.
 
 The numerical machine code or the corresponding assembly language is the most basic
-instruction set for a CPU -- every instruction which a CPU may be able to execute
-maps to a well defined assembly instruction. So each operation that a computer may be
-able to perform can be expressed in a sequence of assembly instruction. But
+instruction set for a CPU.  Every instruction which a CPU can execute
+maps to a well-defined assembly instruction. So each operation that a computer may be
+able to perform can be expressed in a sequence of assembly instructions. But
 complicated tasks may require millions of assembly instructions, which would take
 humans very long to write, and even much longer to modify, proof and
 debug.footnote:[The search for the reason why a program does not do exactly what was
-hoped for by it creators is calling debugging. That term is still a legacy from the
-very first computers in the fifties, where logical circuits where built by mechanical
+hoped for by its creators is called debugging. That term is still a legacy from the
+very first computers in the 50's, where logical circuits where built by mechanical
 relays, for example a logical [.term]#and# operation was built by two relays in
-series connection -- to let the current flow both of them would have to be in
+series connection.  To let the current flow, both of them would have to be in the
+//conducting state. And legend has it that sometimes insects walked onto the electric
+// "legend has it" -- I have never seen that phrase
 conducting state. And it was told that sometimes insects walked onto the electric
-contacts of the relays and blocked them. Today misbehavior of computer programs has
-rarely hardware reason, but the term bugs for errors and debugging for finding and
-fixing the errors was kept.]
+contacts of the relays and blocked them. Today, misbehavior of computer programs is
+rarely due to hardware faults, but the term "bugs" for errors and "debugging" for finding and
+fixing the errors, was kept.]
 
-So already a few years after the invention of the first computers people recognized
+Just a few years after the invention of the first computers, people recognized
 that they would need even more abstract instruction sets, like repeated execution,
+//composed conditionals, or data types other than plain integer numbers as operands. So
+// sound strange!
 composed conditionals, or other data types than plain integer numbers as operands. So
 higher level programming languages like Algol, Fortran, C, Pascal or Basic where
 created.
 
 //Simple C program here, with its assembly code from godbolt.org.
 
-== What is an Algorithm
+== What is an Algorithm?
 
+//An [.ndef]#algorithm# is a detailed sequence of abstract instructions to
 An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
-solve a specific task or to reach a goal. Cooking books or car repair instructions
-are examples of algorithm. The basic math operation kids learn in school to add,
-multiply or divide two numbers with paper and pencil are algorithm too. Even
-starting a car follows an algorithm -- when temperature is below zero and snow covers
-the vehicle, than you first have to clean windows and lights. And when you first
+solve a specific task or to reach a goal. Cooking recipe books and car repair instructions
+are examples of algorithms. The basic math operations kids learn in school to add,
+multiply or divide two numbers with paper and pencil are algorithms too. Even
+starting a car follows an algorithm -- when the temperature is below zero and snow covers
+the vehicle, than you first have to clean the windows and lights. And when you first
 drive again after a longer break you would have to check the tires before you start
-the engine. Algorithm can be carried out by strictly following the instructions, it
+// if you have two complete sentences, separate them with ; not with comma  -Jim
+// the engine. Algorithms can be carried out by strictly following the instructions without
+// needing to really understand how and why it works.
+the engine. Algorithm can be carried out by strictly following the instructions -- it
 is not necessary to really understand how and why it works.
 
-So an algorithm is a perfect fit for a computer, as computers are really good in
-following instruction, without really understanding what they do.
+So an algorithm is a perfect fit for a computer, as computers are really good at
+following instructions without really understanding what they are trying to accomplish.
 
 A math algorithm to sum up the first 100 natural numbers may look like
 
@@ -376,20 +406,22 @@ while i is less than 100 do:
 optionally print the final value of sum
 ----
 
-== What is a Programming Language
+== What is a Programming Language?
 
-Most traditional programming languages where created to map algorithm to elementary
-CPU instructions. Algorithm generally contain nested conditionals, repetition, math
+Most traditional programming languages were created to map algorithms to elementary
+CPU instructions. Algorithms generally contain nested conditionals, repetition, math
 operations, recovery from errors and maybe plausibility checks. Complicated
-algorithm generally can be split in various logical parts, which may include reading
-in data, multiple processing steps, and storing or displaying data, as plain text,
-graphic or animation. This splitting in parts is mapped in programming languages
-generally by grouping of tasks in so called subroutines, functions or procedures
-which accept a set of input parameters and can return a result. As algorithm often
-works not only with numbers, but also with text, it makes some sense to have some
+algorithm generally can be split into various logical parts, which may include reading
+in data, multiple processing steps, and storing or displaying data as plain text,
+graphic or animation. This splitting into parts is mapped to programming languages
+by grouping tasks into subroutines, functions or procedures
+which accept a set of input parameters and can return a result. As algorithms often
+work not only with numbers, but also with text, it makes sense to have a
 form of textual data type in a programming language too. And all the data types can be
 grouped in various ways, for example as sequences of multiple data of the same type,
 like lists of numbers or names. Or as collections of different types, like name, age
+// and profession of a citizen in an income tax database. programming languages provide
+// support for all of these use cases.
 and profession of a citizen in an income tax database. For all these use cases
 programming languages provide some sort of support.
 
@@ -405,91 +437,125 @@ we have basically two options: We can convert the whole program
 into machine code, store it to disk, and than run it on the CPU. Or we can convert it
 in small portions, maybe line by line, and run each portion whenever
 we have converted it. Tools that convert the whole program first, are called
-compilers. [.ndef]#Compilers# process the program that we have written and when necessary
-also other source code like needed library modules, check the code
-for obvious errors and then generate and store the machine code, that we then can run.
+compilers. [.ndef]#Compilers# process the program that we have written, 
+include other source code like needed library modules, check the code
+//compilers. [.ndef]#Compilers# process the program that we have written and when necessary
+//also other source code like needed library modules, check the code
+for obvious errors and then generate and store the machine code that we then can run.
 Tools that process the source code in small portions, like single statements,
 are called [.ndef]#interpreters#. They read in a line of source code, investigate it
 to check if it is a valid statement, and then feed the CPU with corresponding instructions
-to execute it. It is similar as when you are picking strawberries: You can pick one
-and eat it at once, or you can put them all into a basked and eat them later.
-Both, interpreters and compilers have advantages and disadvantages for special use cases.
-Compilers can detect errors already before the program is run, and compiled
-programs generally run fast, as all the instructions are available already when
+to execute it. It is similar to picking strawberries: you can pick one
+and eat it at once, or you can put them all into a basket and eat them later.
+Both interpreters and compilers have advantages and disadvantages for special use cases.
+//Compilers can detect errors before the program is run, and compiled
+Compilers can already detect errors before the program is run, and compiled
+//programs generally run fast, as all the instructions are available when
+programs generally run fast, as all the instructions are already available when
 the programs runs. The compiling step takes some time of course, at least a few
 seconds, but for some languages and large programs it may take much longer. That
-can make the software development process slow, as you add or change some code, and then have to
+can make the software development process slow because as you add or change code, you have to
 compile it before you can execute and test your program. That may be inconvenient
-for unskilled programmers, as they may have to do much testing. Some use a programming
-style that is: Change a tiny bit of the source code, then run it and see what is does.
+for unskilled programmers as they may have to do much testing. Some use a programming
+style that is: change a tiny bit of the source code, then run it and see what is does.
 But a more common practice is that you think about the problem first and then write the
 code, that then in most cases does nearly that what you intended. For this style of
 programming you do not have to compile and execute your code that often. Compilers
-have one important benefit: They can detect many bugs, mostly typing errors, already
-in the compile phase, and they give you a detailed error message. Interpreters
-have the advantage that you can modify your code and immediately execute it. That is
-nice for learning a new language and for some fast tests, but even plain
-typing errors can only be detected when you run the program. Generally
+have one important benefit: they can detect many bugs, mostly typing errors,
+already in the compile phase, and they give you a detailed error message. Interpreters
+have the advantage that you can modify your code and immediately execute it without delay. That is
+nice for learning a new language and for some fast tests, but even simple
+typing errors can only be detected when they are encoutered while running the program. If your test
+does not try to run a faulty statement, there will be no error, but it may occur later.  Generally
 interpreted program execution is much slower than running compiled executables,
-as the interpreter has to permanently process the source code, while the
+as the interpreter has to continually process the source code, while the
 compiler does it only once before the program is run. At the end of this section a few additional notes:
 Compilers are sometimes supported by so called linkers. In that case the compiler
 converts the source code, that can be stored in multiple text files, each in a
 sequence of machine code instructions, and finally the linker joins all these
-machine code files to the final executable. Some compilers do not need that
+//converts the source code, perhaps stored in multiple text files, to a
+//sequence of machine code instructions for each, and finally the linker joins all these
+machine code files to the final executable. Some compilers do not need the
 linking step or call the linker automatically. And some interpreters
 convert the textual source code in one very fast, initial pre-processing step ("on the fly")
-to so called byte code, that can then be interpreted faster. Ruby and Python do that.
-And some languages like Java can compile and optimize the source code while the
-program is running, for that process a so called virtual machine is used, that
+to so called byte code, that can then be interpreted faster. The Ruby and Python do that.
+// languages do that.
+// I think for Java you are talking about a JIT compile.  Python and Ruby also use virtual machines.  -Jim
+// True, later we will discuss details, JIT would be confusing here.
+Some languages like Java can compile and optimize the source code while the
+program is running. For that process a so called virtual machine is used, that
 builds an intermediate layer between the hardware and the user program.
 
+// I would either add a question mark below or change to Types of Programming Languages  -J
 == What type of Programming Languages exist
 
 We already mentioned the assembly languages, which provide only the basic operations
-that the CPU can perform. Assembly languages provide no abstractions, maybe we should
+that the CPU can perform. Assembly languages provide no abstractions, so maybe we should
 not even call them programming languages at all. Then there are low level languages like
 Fortran or C, with some basic abstractions and higher data types which still work
 close to the hardware and are mostly designed for high performance but not to detect
-and prevent programming errors or to make the life easy for programmers.
+and prevent programming errors or to make life easy for programmers.
+//In addition to
+//integer numbers, these languages provide: real numbers, called "floating point"
+//in computer jargon; text or "character strings"; and collections of data or "arrays".
+// I added the above sentence because below talks about typing, but no other data
+// types have ever been introduced.  -J
+// I think that is too much detail here -- and assembly langauge can support float as well.
 
-A different approach is taken by languages like Python or Ruby, which want to make
-writing of code easy by offering many high level abstractions and which have some
-better protection against errors, but do not care much for efficiency.
+A different approach is taken by languages like Python or Ruby, which try to make
+writing code easier by offering many high level abstractions and which have
+better protection against errors, but are not as efficient.
 
 Another way to differentiate programming languages is if they are statically or
-dynamically typed. Ruby and Python are two examples for dynamically typed languages,
-that is they use variables which can store each data type at each time, and the data
-type of what a variables do contain can change during program execution. That seems
-comfortable for the user, and sometimes it is, especially for short programs, which
-may be written for onetime use only and are called scripts sometimes. But dynamically
-typing makes discovery of logical errors harder -- an operation of a illegal addition
-of a number to a letter may be detected only at runtime of the program, and
+dynamically typed. Ruby and Python are two examples of dynamically typed languages,
+that is, they use variables which can store any data type, and the variable's type 
+can change during program execution. That seems
+comfortable for the user, and sometimes it is, especially for short programs which
+may be written for one-time use only and are sometimes called scripts. But dynamic
+typing makes discovery of logical errors harder -- an illegal addition
+of a number to a letter may be detected only at runtime.  And
 dynamically typed languages generally waste a lot of memory and their performance is
-generally not that great. It is as you would own many moving boxes and you store all
-your goods in it, each piece in one box. For statically typed languages each variable
+not that great.
+//It is as you would own many moving boxes and you store all
+//your goods in it, each piece in one box.
+//I removed the moving box analogy because it didn't seem to relate well to typing.
+//I guess if you said there were "hat boxes", "shoe boxes", "dish boxes" and so on,
+//and compared that to variables having integer, real, or character type, it might work.  -J
+// Moving boxes are really not a bad example as how dynamically typed languages store variables.
+For statically typed languages each variable
 has a well defined data type like integer number, real number, a single letter, a
-text element and many more. The data type is assigned by the author of the program or
-is detected by the compiler when processing the program source code (type inference)
-and does not change during compile time. In this way the compiler can check for
-logical errors early at compile process, and the compiler can reserve memory blocks
+text element and many more. The data type is assigned by the author of the program with
+a type declaration or
+is detected by the compiler when processing the program source code, called type inference,
+and the variable's type does not change during the compile. In this way the compiler can check for
+logical errors early in the compile process, and the compiler can reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
 consumption and performance can be optimized.
 //The terms compiler, interpreter,
 //compile-time and runtime are explained in the next section.
 
 All these types of programming languages are often called imperative programming
-languages, as the program describes detailed what to do. There exists other types of
-programming languages too, for example languages like Prolog, which try to give a set
-of rules only and then let the computer try to solve a problem with these rules. And
-of course there exists the new concepts of [.ndef]#artificial intelligence# (AI) and machine
-learning, which is less based on algorithm, but more on neural nets which are trained
-with a lot of data until it provides desired results. Nim is a imperative language,
-and so we describe mostly the imperative programming style in this book. But of
+languages, as the program describes detailed what to do. There are other types of
+programming languages too, for example languages like Prolog, which try to give only a set
+of rules and then let the computer try to solve a problem with these rules. And
+of course there are the new concepts of [.ndef]#artificial intelligence# (AI) and machine
+learning, which are less based on algorithms and more on neural nets which are trained
+with a lot of data until it provides the desired results. Nim, the computer language
+this book is about, is an imperative language,
+so we will focus on the imperative programming style in this book. But of
 course Nim can be used to create AI applications.
 
-Further we differentiate between languages like C, C++, Rust, Nim and many more that
-can run direct on the hardware of the computer, languages like Java, Scala, Julia and
+//This section is a little confusing to me.  I see 4 cases:
+//1. Compiles to machine code directly (C, C++, Rust, D, Julia (I think), etc)
+//2. Translated to another language, then compiled (Nim (to C), Scala (to Java)
+//3. Translated to a VM language, then run by a VM (Python)
+//4. Translated to a VM language, then JIT'ed during execution (Java)
+// Yes, it is confusing and the distiction is not sharp.
+// At least initially Julia compiled not to native machine code. But
+// now many languages try to generate native machine code, this includes
+// Python, Kotlin, maybe Julia. I dont think that Scala compiles to Java.
+Further, we differentiate between languages like C, C++, Rust, Nim and many more that
+can run directly on the hardware of the computer, languages like Java, Scala, Julia and
 some more that use a large [.ndef]#Virtual Machine# (VM) as an intermediate layer between the
 program and the hardware, and interpreted languages like Ruby and Python. Languages
 using a virtual machine generally need some startup time when a program is invoked,
@@ -501,104 +567,109 @@ native machine code. Crystal is a variant of Ruby, with some significant differe
 that compiles to fast native machine code.]
 
 An important class of programming languages are the so called [.ndef]#{OOP}# (OOP) languages,
-which start becoming popular in the early nineties of the last century. For some time
+which become popular in the 1990's. For some time
 it was assumed that {OOP} was the ultimate solution to manage and structure really
-large programs. Java was the most prominent example for the OOP languages. Java
+large programs. Java was the most prominent example of the OOP languages. Java
 forces the programmer to use OOP design, and languages like C++, Python or Ruby
 strongly push programmer to use OPP design. Practice has shown that OOP design is not
 the ultimate solution for all computing problems, and OPP design may prevent optimal
-performance. So newer languages like Go, Rust or Nim support some form of OOP
-programming, but use it only as one paradigm under many other.
+performance. So newer languages like Go, Rust and Nim support some form of OOP
+programming, but use it only as one paradigm among many other.
 
 Another popular and important class of programming languages is JavaScript and its
-more modern cousins like TypeScript, Kotlin or Dart and some more. JavaScript was
-designed to run in Web-Browsers to support interactive web-pages and programs and
+more modern cousins like TypeScript, Kotlin or Dart and others. JavaScript was
+designed to run in web browsers to support interactive web pages and programs and
 games running in the browser. In this way the program became nearly independent from
 the native operating system of the computer. Note that unlike the name may indicate,
 JavaScript is not closely related to the Java language.
-
-Nim can compile to a JavaScript backend, so it support Web-Development well.
+Nim can compile to a JavaScript backend, so it supports web development well.
 
 == Why Nim
 
-NOTE: In this section we are using a lot of new CS expressions but do not explain them.
-That is intentional -- when you already know them you may get a better feeling what
+NOTE: In this section we are using a lot of new Computer Science (CS) expressions but do not explain them.
+That is intentional -- when you already know them you may get a better feeling of what
 Nim is, and when you do not know them you will at least learn that we can describe
-Nim with fancy and sounding terms.
+Nim with fancy-sounding terms.
 
 Three well known traditional programming languages are C, Java and Python. C is
-basically a simple, close to the hardware language created in 1972, for which
+//When a group of words are used together as 1 adjective to describe a noun, the
+//group of words is hypenated because together they are 1 adjective for 1 noun.
+//Or you could put them in quotes, like "close to the hardware" language.  -J
+basically a simple, close-to-the-hardware language created in 1972, for which
 compilers can generate fast, highly optimized native machine code, but it has cryptic
-syntax, some strange semantics and is missing higher concepts of modern languages.
-Java, created in 1995, forces you strongly to object orientated style of programming
-(OOP) and runs on a virtual machine, which excludes its use for embedded systems and
+syntax, some strange semantics, and is missing higher concepts of modern languages.
+Java, created in 1995, forces you strongly to the object-orientated style of programming
+(OOP) and runs on a virtual machine, which makes it unsuitable for embedded systems and
 {uC}s. Python, created in 1991, is generally interpreted instead of
-compiled, which makes the program execution not very fast, and it does not really
+compiled, which makes program execution not very fast, and it does not really
 allow writing low level code which operates close to the hardware. Of course there
-exists many more programming languages, each with its own advantages and
-disadvantages, some optimized for special use cases.
+are many more programming languages, each with its own advantages and
+disadvantages, with some optimized for special use cases.
 
-Nim is a state of the art programming language well suited for systems and
-application programming. Its clean Python like syntax makes programming easy and fun
+//state-of-the-art is usually hyphenated, because of the rule I mentioned above.
+//the same with Python-like syntax.  -J
+Nim is a state-of-the-art programming language well suited for systems and
+application programming. Its clean Python-like syntax makes programming easy and fun
 for beginners, without applying any restrictions to experienced systems programmers.
 Nim combines successful concepts from mature languages like Python, Ada and Modula
-with a few sounding features of latest research. It offers high performance with
-type- and memory safety while keeping the source code short and readable. The
+with a few established features of the latest research. It offers high performance with
+type and memory safety while keeping the source code short and readable. The
 compiler itself and the generated executables support all major platforms including
-Windows, Linux, BSD and Mac OS X. The custom package manager makes use and
+Windows, Linux, BSD and Mac OS X. The custom package manager, Nimble, makes use and
 redistribution of programs and libraries easy and secure. Nim supports various
-backends -- the C and LLVM based backends allow easy OS library calls without
-additional glue code, while the JavaScript backends generates high quality code for
-web applications. The integrated "Read–eval–print loop" (REPL), "Hot code reloading",
+"backends" to generate the final code.  The C and LLVM-based backends allow easy OS library calls without
+additional glue code, while the JavaScript backend generates high quality code for
+web applications. The integrated "Read/Eval/Print Loop" (REPL), "Hot code reloading",
 incremental compilation, and support of various development environments including
-debugging and language server protocol makes working with Nim productive and
+debugging and language server protocols makes working with Nim productive and
 enjoyable.
 
-=== Nim is Efficient:
+=== Nim is Efficient
 
-Nim is a compiled and statically typed language. While for interpreted, dynamically
-typed languages like Python we have to run the program to check even for trivial
+Nim is a compiled and statically-typed language. While for interpreted, dynamically-typed
+languages like Python we have to run every statement to check even for trivial
 errors, the Nim compiler checks for most errors during the compile process. The
-static typing together with the well designed Nim type system allows the compiler to
+static typing together with the well-designed Nim type system allows the compiler to
 catch most errors already in the compile phase, like the undefined addition of a
-number and a letter, and reports the errors in the terminal window or directly in the
-editor or IDE. When no errors are found or all errors have been fixed then the
+number and a letter, and report the errors in the terminal window or directly in the
+editor or IDE. When no errors are found or all errors have been fixed, then the
 compiler generates highly optimized dependency free executables. And this compilation
 process is generally really fast, for example the compiler compiles itself in maybe
 10 to 30 seconds on a typical modern PC.
 
-Modern concepts like zero-overhead iterators, compile time evaluation of user-defined
+Modern concepts like zero-overhead iterators, compile-time evaluation of user-defined
 functions and cross-module inlining in combination with the preference of
-value-based, stack located data types leads to extremely efficient code.
+value-based, stack-located data types leads to extremely efficient code.
 Multi-threading, asynchronous input/output operations (async IO), parallel processing and SIMD instructions
 including GPU execution are supported.
-Various memory management strategies exists: Selectable and tuneable high performance
-[.ndef]#Garbage Collectors# (GC) including a new fully deterministic destructor based one are
-supported by manually and semi manually memory management. This makes Nim a good
+Various memory management strategies exists: selectable and tuneable high performance
+[.ndef]#Garbage Collectors# (GC), including a new fully deterministic destructor based GC, are
+supported for automatic memory management. These can be disabled for manual memory management.  This makes Nim a good
 choice for application development and close to the hardware system programming at
 the same time. The unrestricted hardware access, small executables and optional GC
-will make Nim a perfect solution for embedded systems, hardware driver and {OS}s
+will make Nim a perfect solution for embedded systems, hardware driver and (OS)
 development.
+//Sorry, I didn't realize that (OS) expanded an abbreviation!  -J
 
 === Nim is Expressive and Elegant
 
-Nim offers a modern type system with templates, generics and type inference. Built
-in advanced data types like dynamic containers, sets and strings with full UTF
+Nim offers a modern type system with templates, generics and type inference. Built-in
+advanced data types like dynamic containers, sets, and strings with full UTF
 support are completed by a large collection of library types like hash tables and
 regular expressions. While the traditional {OOP} style with
 inheritance is supported, Nim does not enforce this programming paradigm and offers
 modern concepts like procedural and functional programming. The powerful AST-based
 hygienic macro system offers nearly unlimited possibilities for the advanced
-programmer. These macro and meta-programming system allows some sort of compiler
-guided code generation at compile time. So the Nim core language can be kept small
+programmer. These macro and meta-programming system allows compiler-guided
+code generation at compile time, so the Nim core language can be kept small
 and compact, while many advanced features are enabled by user defined macros. For
-example the support of asynchronous IO operations has been created with these form of
+example the support of asynchronous IO operations has been created with these forms of
 meta-programming, as well as many Domain Specific Language extensions.
 
 === Nim is Open and Free
 
 The Nim compiler and all of the standard library are implemented in Nim. All source
-codes are available under the less restricted MIT license.
+code is available under the less restricted MIT license.
 
 === Nim has a friendly and helpful growing community
 
@@ -613,10 +684,10 @@ Real-time chat is supported by IRC, Gitter and others.
 === Nim has a encouraging future
 
 Started more than 10 years ago as a small community project of some bright CS
-students leaded by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most interesting and promising
+students led by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most interesting and promising
 programming languages supported by uncounted individuals and companies of leading
-computer industry, for instance from the area of game-, web- and crypto-currency development.
-Nim has made large progress in the last years: It reached version 1.2 with some
+computer industry, for instance in the areas of game, web and crypto-currency development.
+Nim has made large progress in the last few years: it reached version 1.2 with some
 stability guaranties and a new deterministic memory management system was introduced,
 which will improve support of parallel processing and the use of Nim in the embedded area.
 
@@ -625,36 +696,39 @@ which will improve support of parallel processing and the use of Nim in the embe
 Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally in
 2018 Nim got some significant monetary support by [.ndef]#Status Corp.# and in 2019 stable Nim
 version 1.0 was released. But still Nim is developed by a small core team and some
-volunteers, while some other languages like Java, C#, Go or Rust get support by large
-companies, or like C and C++ have a very long history and well trained users. And
+volunteers, while some other languages like Java, C#, Go or Rust are supported by large
+companies, or like C and C++ have a very long history and well-trained users. And
 finally there are many competing languages, some with a longer history, and some
 maybe better suited for special purposes, like JavaScript, Dart or Kotlin for Web
-development, Julia or R for numeric applications, or C and Assembly for the tiny 8
-bit {uC}s with a few byte of RAM only.
+development, Julia or R for numeric applications, or C and Assembly for the tiny 8-bit
+{uC}s with a small amount of RAM.
 
-Nim has already support by more than 1000 external packages which cover many
+Nim is already supported by more than 1000 external packages which cover many
 application areas, but that number is still small compared to really popular
 languages like Python, Java or JavaScript. And some Nim packages can currently not
-really compare with the libraries of other languages, which where optimized for years
-by hundreds or thousands of full time developers.
+really compare with the libraries of other languages, which have been optimized for years
+by hundreds or thousands of full-time developers.
 
 Indeed the future of Nim is not really secure. Core developers may vanish,
-financially support may stop or maybe a just better language may appear. But even
-when the development of Nim should stop some day, then you will still be able to use
+financial support may stop, or maybe a better language may appear. But even
+if the development of Nim should stop some day, you will still be able to use
 it, and many concepts that you may have learned with Nim can be used with other
 modern languages too.
 
-== Some facts about Nim
+//In most of these headings, I think each word should be capitalized (except and, or, the, of)
+== Some Facts About Nim
 
-* The generated executables are dependence free and small: A simple
-chess program with a plain GTK based graphical user interface is only 100 kB in size,
-the Nim compiler itself consumes about 5 MB. It is possible to shrink the executable
-size to about 10 kB for use on tiny {uC}s.
+* The generated executables are dependence free and small: a simple
+chess program with a plain GTK-based graphical user interface is only 100 kB in size and
+the size of the Nim compiler executable itself is about 5 MB. It is possible to shrink the executable
+size of "Hello World" programs to about 10 kB for use on tiny {uC}s.
+//with the Nim runtime using about 5 MB. It is possible to shrink the executable
+//size to about 10 kB for use on tiny {uC}s.
 
 * Nim is fast. Generally performance is very close to other
-high performance languages as C or C++. There are some exceptions still -- other
-languages may have libraries or applications that are tuned for performance for many
-years, while similar Nim applications are less tuned for performance yet, or maybe
+high-performance languages such as C or C++. There are some exceptions still: other
+languages may have libraries or applications that have been tuned for performance for many
+years, while similar Nim applications are so far less tuned for performance, or maybe
 are more written with a priority of short and clean code or runtime safety.
 
 * Clean syntax with significant whitespace, no need for block delimiters like
@@ -662,29 +736,29 @@ are more written with a priority of short and clean code or runtime safety.
 or [.term]#begin/end# keywords, and no need for statement delimiters like [.term]#;#
 
 * Safety: Nim program are type- and memory-safe -- memory corruption is prevented by the
-compiler as long as we do not use unsafe low level constructs like cast and the addr operator. 
+compiler as long as unsafe low level constructs like cast and the addr operator are not used.
 
-* Fast compiler. The Nim compiler can compile itself and other medium size packages
+* Fast compiler. The Nim compiler can compile itself and other medium-size packages
 in less
-than 10 seconds and upcoming incremental compilation will increase that speed
+than 10 seconds, and upcoming incremental compilation will increase that speed
 further.
 
-* Nim is statically typed: Each object and each variable has a well defined type,
+* Nim is statically typed: each object and each variable has a well-defined type,
 which catches most programming errors already at compile time, prevents runtime
-errors and ensures highest performance.
+errors, and ensures highest performance.
 
-* Nim supports various memory management strategies, which includes manually
-allocations for critical low level task as well as various garbage collectors
-including a state of the art fully deterministic memory manager.
+* Nim supports various memory management strategies, includeing manually
+allocations for critical low-level tasks as well as various garbage collectors
+including a state-of-the-art, fully deterministic memory manager.
 
-* Nim produced native, highly optimized executables and can also generate
+* Nim produces native, highly optimized executables and can also generate
 JavaScript output for web applications.
 
 * Nim has a clean module concept which helps to structure large projects.
 
-* Nim has a well designed library which supports many basic programming task.
-The full source code of that library is included and can be viewed easily
-from within the HTML based API documentation.
+* Nim has a well-designed library which supports many basic programming tasks.
+The full source code of the library is included and can be viewed easily
+from within the HTML-based API documentation.
 
 * That library is supported by more than 1000 external packages for a broad range
 of use cases.
@@ -695,26 +769,27 @@ of use cases.
 
 * Usage of external libraries written in C is easy and and occurs directly
 without any glue code, and Nim can even work together with code written in other
-languages, for example there is some Nim +<->+ Python interface available.
+languages, for example there are some Nim +<->+ Python interfaces available.
+//I would mention these by name: nimby, etc
 
-* Many popular editors have already support for Nim syntax high-lighting and other
-IDE functionality like on the fly checking for errors and displaying detailed
+* Many popular editors have support for Nim syntax highlighting and other
+IDE functionality like on-the-fly checking for errors and displaying detailed
 information.
 
 == Our first Nim Program
 
 To keep our motivation, we will present a first tiny Nim program now. Actually we
 should have delayed this section until we have installed the Nim compiler on our
-computer, but we can run and test the program already when we just copy it into one
+computer, but we can already run and test the program by just copying it into one
 of the available Nim online playgrounds like
 
 https://play.nim-lang.org/
 
-In the section <<What is an Algorithm>> we have described an algorithm to sum up the first 100 natural
-numbers. Converting that algorithm into a Nim program is straight forward and results
+In the section <<What is an Algorithm>> we described an algorithm to sum up the first 100 natural
+numbers. Converting that algorithm into a Nim program is straightforward and results
 in the text file below. You can copy it into the playground and run it now if you
-want. The program is built of some elementary Nim instructions for which we will give
-only a very short description here. All that is explained in much more detail in the
+want. The program is built using some elementary Nim instructions for which we will give
+only a very short description here. Everything is explained in much more detail in the
 next part of this book.
 
 [source,nim]
@@ -730,85 +805,90 @@ echo sum
 ----
 
 We write Nim programs in the form of plain
-text files, you will learn how to create them soon. We call these
-text files the [.ndef]#source code# of the program, the source code is the input for the
-compiler, the compiler processes the source code, checks it for obvious errors and
-then generates a so called executable file, which contains the final CPU
-instructions and can be run. The executable files are sometimes called executables
-or binary files. The term binary is misleading, as all files on computers are
-stored as binary data indeed, but the expression binary is used to differentiate
+text files, and you will learn how to create them soon. We call these
+text files the [.ndef]#source code# of the program.  The source code is the input for the
+compiler. The compiler processes the source code, checks it for obvious errors and
+then generates an executable file, which contains the final CPU
+instructions and can be run. Executable files are sometimes called executables
+or binary files. The term binary is misleading, as all files on computers are indeed
+stored as binary data, but the expression "binary" is used to differentiate
 the executable program from text files like the Nim source code which we can
-read, print and edit in an editor. You should better not try to load the executable files generated by the Nim
+read, print and edit in an editor. Don't try to load the executable files generated by the Nim
 compiler into a text editor, as the content is not plain text, but numeric machine code
-that may confuse the editor. On Windows OS executable files generally get a special name extension
+that may confuse the editor. On the Windows OS, executable files generally get a special name extension
 [.term]#.exe#, but on Linux no special name extensions are used.
 
 One elementary entity of computer programs is a
 variable, which is basically a named storage area in the computer. As Nim is a
-compiled and statically typed language, we have to declare each variable before we
-can use it. We do that by choosing a meaningful name for that variable and specifying
-it data type. To tell the compiler about our intention to declare a variable, we
+compiled and statically-typed language, we have to declare each variable before we
+can use it. We do that by choosing a meaningful name for the variable and specifying
+its data type. To tell the compiler about our intention to declare a variable, we
 start the line with the [.term]#var# keyword, followed by the chosen name, a colon
 and the data type of our variable. The first line of our program declares a new
 variable named sum of datatype int. Int is short for integer and indicates that our
 variable should be able to store negative or positive integer numbers. The
-[.term]#var# at the start of the line is a so called [ndef]#keyword#. Keywords are
-special reserved symbols which have a special meaning for the compiler. Var indicates
-that we want to introduce a new variable, the compiler will recognize that and will
+//I am taking out so called in many places because it is out of place in most less-formal English writing.  -J
+[.term]#var# at the start of the line is a [ndef]#keyword#. Keywords are
+reserved symbols which have a special meaning for the compiler. Var indicates
+that we want to introduce a new variable.  The compiler will recognize that and will
 reserve a memory location in the RAM of the computer which can store the actual value
 of the variable.
+//I would try to figure out a way to highlight Nim keywords  -J
 
-The second line is nearly identical to the first line, we declare another variable
+The second line is nearly identical to the first line: we declare another variable
 again with int type and plain name i. Variable names like i, j, k are often used when
-we have no idea for a meaningful name and when we intent to use that variable as a
+we have no idea for a meaningful name and when we intend to use that variable as a
 counter in a loop.
 
-In line 3 and 4 of our program we initialize the variables, that is we give them a
-well defined initial value. To do that we use the [.term]#=# operator to assign it a
+In line 3 and 4 of our program we initialize the variables, that is, we give them a
+well-defined initial value. To do that we use the [.term]#=# operator to assign it a
 value. Operators are special symbols like [.term]#+#, [.term]#-#, [.term]#*# or [.term]#/#
-to indicate our desire to do a
+to indicate our desire to do an
+//if a word starts with a vowel, like addition, use an before it; otherwise use a  -J
 addition, a subtraction, a multiplication or a division. Note that the [.term]#=#
 operator is used in Nim like in many other programming languages for assignment, and
-not like in traditional mathematics for equality test. The reason for that is that in
-computer programming assignments occurs more often than equality test. Some early
-languages like Pascal uses the compound [.term]#:=# operator for assignment, which
+not like in traditional mathematics as an equality test. The reason for that is that in
+computer programming, assignments occur more often than equality tests. Some early
+languages like Pascal use the compound [.term]#:=# operator for assignment, which
 may be closer to mathematics use, but is more difficult to type on a keyboard and
-which looks not too nice for most people. An expression like [.term]#x = y# assigns
-the content of variable y to x, that is x gets the value of y, the former value of x
-is overwritten and lost, while content of y remains unchanged. After that assignment
-x and y contains the same value. In the above example we do not assign the content of
-a variable to the destination, but a literal constant with value 0. When the computer
-has executed lines 3 and 4 the variables sum and i contains the start value 0 each.
+looks not too nice for most people. An expression like [.term]#x = y# assigns
+//if you want to abbreviate "that is", you can use ie.  eg is the abbreviate of "for example",
+//though many English readers do not know the difference!  -J
+the content of variable y to x, that is, x gets the value of y, the former value of x
+is overwritten and lost, and the content of y remains unchanged. After that assignment,
+x and y contain the same value. In the above example we do not assign the content of
+a variable to the destination, but instead use literal constant with value 0. When the computer
+has executed lines 3 and 4 the variables sum and i each contain the start value 0.
 
-Line 5 is much more interesting, it contains a [.term]#while# condition. The line
+Line 5 is much more interesting: it contains a [.term]#while# condition. The line
 starts with the term [.term]#while#, which is again a reserved keyword, followed by
 the logical expression [.term]#i < 100# and a colon. An expression in Nim is
 something which has a result, like a math expression as [.term]#2 + 2# which has the
-result 4 of type integer. A logical expression has not a numerical result, but a
+result 4 of type integer. A logical expression has no numerical result, but a
 logical one, which can be [.term]#true# or [.term]#false#. The logical expression
 [.term]#i < 100# depends on the actual content of variable [.term]#i#. The two lines
 following the line with the [.term]#while# keyword are each indented by two spaces,
-that means that these lines start with two spaces more than the line before. That
+meaning that these lines start with two spaces more than the line before. That
 form of indentation is used in Nim to indicate blocks. Blocks are grouped statements.
-The complete while loop consists of the line containing the while keyword following
+The complete while loop consists of the line containing the while keyword followed
 by a block of statements. The block after the while condition is executed as long as
 the [.term]#while# condition evaluates to true. For the first iteration [.term]#i#
 has the initial value [.term]#0#, the condition [.term]#i < 100# evaluates to
 [.term]#true# and the block after the [.term]#while# condition is executed for the
-first time. In the following block we have the [.term]#inc()# instruction,
-[.term]#inc# is short for increment, [.term]#inc(a, b)# increases the value of a by
+first time. In the following block we have the [.term]#inc()# instruction.
+[.term]#inc# is short for increment. [.term]#inc(a, b)# increases the value of a by
 b, b is unchanged. So in the above block [.term]#i# is increased by one, and after that [.term]#sum#
 is increased by the current value of [.term]#i#. So when that block is executed for
-the first time [.term]#i# has the value [.term]#1# and [.term]#sum# has also the
+the first time [.term]#i# has the value [.term]#1# and [.term]#sum# also has the
 value [.term]#1#. At the end of that block execution starts again at the line with
 the [.term]#while# condition, now testing the expression [.term]#i < 100# with
 [.term]#i# containing the value [.term]#1# now. Again it evaluates to [.term]#true#,
 the block is executed again, [.term]#i# gets the new value [.term]#2#, and
 [.term]#sum# gets the value [.term]#3#. This process continues until [.term]#i# has
 the value [.term]#100#, so the condition [.term]#i < 100# evaluates to [.term]#false#
-and execution proceed with the first instruction after the [.term]#while# block.
+and execution proceeds with the first instruction after the [.term]#while# block.
 That instruction is an [.term]#echo# statement, which is used in Nim to write values
-to the terminal or screen of the computer. Some other languages uses the term
+to the terminal or screen of the computer. Some other languages use the term
 [.term]#print# or [.term]#put# instead of [.term]#echo#.
 
 Don't worry if you have not understood much of this short explanation, we will
@@ -824,47 +904,51 @@ depending on the position of the digit and sum the individual terms.
 A literal decimal number like 7382 has then the numerical
 value [.term]#2 * 10^0 + 8 * 10^1 + 3 * 10^2 + 7 * 10^3#. We have used here the
 exponential operator [.term]#^# -- with [.term]#10^3 = 10 * 10 * 10#. Current
-computers are using binary representation internally for numbers. Generally we do
+computers use binary representation internally for numbers. Generally we do
 not care much about that fact, but it is good to know some facts about binary
-numbers. Generally binary numbers work nearly identical like decimal numbers, the
-distinction is that we have only two available digits, which we write generally as
+numbers. Binary numbers work nearly identically to decimal numbers.  The
+distinction is that we have only two available digits, which we write as
 [.term]#0# and [.term]#1#. A number in binary representation is a sequence of these
-two digits. Like in the decimal system the numerical value results from the
+two digits. Like in the decimal system, the numerical value results from the
 individual digits and their position: The binary number [.term]#1010# has the
 numerical value [.term]#0 * 2^0 + 1 * 2^1 + 0 * 2^2 + 1 * 2^3#, which is 9 in decimal
-notation. As for binary numbers the base is 2, we do multiply the binary digits
-with powers of two.
-Formally addition of two binary numbers works like we know it from decimal
-system, we add the matching digits and take carry into account: [.term]#1001 + 1101 = 11010#
+notation. For binary numbers the base is 2, so we multiply the binary digits
+by powers of two.
+Formally addition of two binary numbers works like we know it from the decimal
+//Addition of two binary numbers works like the decimal
+system: we add the matching digits and take carry into account: [.term]#1001 + 1101 = 11010#
 because we start by adding the two least significant digits of each number, which are
 both 1. That addition 1+1 results in a carry and result 0. The next two digits are
 both zero, but we have to take the carry from the former operation into account, so
 result is 1. For the next position we have to add 0 and 1, which is just 1 without a
 carry. And finally we have 1 + 1, which results in 0 with a carry. The carry
+//maybe it is intentional, but an example with two 1's and a carry would be useful I think,
+//because they probably won't know what to do with a 3.  -J
 generates one more digit, and we are done. In the decimal system with base 10 a
 multiplication with 10 is easily calculated by just shifting all digits one place to
 the left and writing a 0 at the now empty rightmost position. For binary numbers it
-is very similar: A multiplication with the base, which is two in the binary system,
+is very similar: a multiplication by the base, which is two in the binary system,
 is just a shift left, with the rightmost position getting digit 0.
 
 In the binary system we call the digits often [.ndef]#bits#, and we number the bits from right
 to left, starting with 0 for the rightmost bit -- we say that the binary number
-10010101 is a 8 bit number because writing that number in binary representation needs
-8 digits. Often we imagine the individual bits as small bulbs, a 1 bit is imaged as a
-light bit, and a 0 bit is imaged as a dark bulb. For lightning bulbs we say also that
-bit is set, meaning that in binary number 10010101 bits 0, 2, 4 and 7 are set, the
+//since "eight" starts with a vowel (aeiou), use an instead of a
+10010101 is an 8-bit number because writing that number in binary representation needs
+8 digits. Often we imagine the individual bits as small bulbs, a 1 bit is imagined as a
+lit bulb, and a 0 bit is imagined as a dark bulb. For lit bulbs we say also that the
+bit is set, meaning that in the binary number 10010101, bits 0, 2, 4 and 7 are set, and the
 other bits are unset or cleared.
 
-Groups of 8 bits are generally called a [.ndef]#byte#, and sometimes 4 bits are
+Groups of 8 bits are called a [.ndef]#byte#, and sometimes 4 bits are
 called a [.ndef]#nibble#.
 
 Two, four or 8 bytes are sometimes called a [.ndef]#word#, where a word is an entity
 which the computer can process in one single instruction. When we have a CPU with 8
-byte word size this means that the computer can for example add two variables each 8
-byte in size in one single instruction.
+byte word size this means that the computer can for example add two variables, each 8
+byte in size, in one single instruction.
 
 Let us investigate some basic properties of binary numbers. Let us assume that we have
-a 8 bit word. A 8 bit word can have 2^8 different states, as each bit can be set or
+an 8-bit word. An 8-bit word can have 2^8 different states, as each bit can be set or
 unset independently from the other bits. That corresponds to numbers 0 up to 255 --
 we assume that we work with positive numbers only for now, we will come to negative
 numbers soon. An important property of binary numbers is the wrapping around, which
@@ -885,18 +969,19 @@ is a useful property, which we can use when we consider negative numbers.
 
 Now let us investigate how we can encode negative numbers in binary form. In the
 binary representation we have only two states available, 0 or 1, a set bit or an
-unset bit. But we have no unitary minus sign. We may encode the sign of a number
-maybe in the topmost bit of a word -- when topmost bit is set that indicates that the
+//may is usually used for permission: May I go?  Could/can is used for alternate possibilities
+unset bit. But we have no unitary minus sign. We could encode the sign of a number
+in the topmost bit of a word -- when the topmost bit is set that indicates that the
 number is regarded negative. Generally a modified version of this encoding is used,
-called [.ndef]#two-complement#: A negative number is constructed by first inverting all the
-bits -- a 0 bit is transferred into a 1 bit and vice versa, and finally the number 1
+called [.ndef]#two-complement#: a negative number is constructed by first inverting all the
+bits -- a 0 bit is transferred into a 1 bit and vice versa -- and finally the number 1
 is added. That encoding simplifies the CPU construction, as subtraction can be replaced by
 addition in this way:
 
-Consider the case that we want to do a subtraction of two binary encoded numbers, the
+Consider the case that we want to do a subtraction of two binary encoded numbers.  The
 operation has the symbolic notation A - B for arbitrary numbers A and B. The
 subtraction is by definition the inverse operation of the addition, that is A + B - B
-= A for each number A and B, or in other words B - B = 0 for each number B.
+= A for each number A and B, or in other words, B - B = 0 for each number B.
 
 Assume we have a CPU that can do additions and that can invert all the bits of a
 number. Can we do subtraction with that CPU? Indeed we can. Remember the fact that
@@ -911,80 +996,85 @@ overflow. That may sound complicated, but bit inversion is a very cheap operatio
 a CPU, which is always available, and adding 1 is also a very simple operation. The
 advantage is that we do not need separate hardware for the subtraction operation.
 Generally subtraction in this way is not slower than addition because the bit
-inversion and the addition of 1 can be performed at the same time in the CPU as the
+inversion and the addition of 1 can be performed at the same time in the CPU as an
 ordinary addition.
- 
+
+// this is usually called two's-complement, not two-complement  -J 
 From the equation above indicating A - B = A + (!B + 1) it is obvious that we
 consider the two-complement (!B + 1) as the negative of B. Note that the
 two-complement of zero is again zero, and two-complement of 00000001 is 11111111. All
-negative numbers in this system have a set 1 bit at the leftmost position. This
+negative numbers in this system have a bit set to 1 at the leftmost position. This
 restrict all positive numbers to all the bit combinations where the leftmost bit is
-unset, for a 8 bit word this means that positive numbers are restricted to the bits
-00000000 to 01111111 which is the range 0 to 127 in decimal notation. Two complement
+unset. For an 8-bit word this means that positive numbers are restricted to the bits
+00000000 to 01111111, which is the range 0 to 127 in decimal notation. Two-complement
 of decimal 127 is 10000001. Seems to be fine so far, but note there exists also the
 bit pattern 10000000 which is -128 in decimal.
-For that bit pattern there exists no positive value, if we would try to built 
+For that bit pattern there exists no positive value.  If we try to build the
 two-complement of that bit pattern, we would get the same pattern again.
-This is some asymmetry of
+This is an asymmetry of
 two-complement representation, which can not be avoided. It generally is no problem,
-with one exception. We can never invert the sign of the smallest available integer,
-that operation would result in an runtime error.footnote:[If you have a piece of
+with one exception. We can never invert the sign of the smallest available integer;
+that operation would result in a runtime error.footnote:[If you have a piece of
 paper and a pencil at hand, you may test some properties of signed binary numbers
-represented in two-complement: Take binary 0, apply two-complement operation
+represented in two-complement: take binary 0, apply the two-complement operation
 to get the negative of it. Note, we ignore overflow here when we add the 1! That was
-easy. Can we verify that all negative numbers in two-complement can be really
+easy. Can we verify that all negative numbers in two-complement can really be
 identified by its set topmost bit? Maybe that fact is not really obvious, as we not
 only invert all bits of the positive number, but also add 1. OK, let us consider
-the non negative numbers 0 .. 127 for a 8 bit word. All that bit patterns have the topmost bit
+the non-negative numbers 0 .. 127 for an 8-bit word. All those bit patterns have the topmost bit
 cleared and all bit combinations used in the other 7 bits. Inverting these patterns
-gives us a pattern with leftmost bit set and again all bit combinations used in the other 7 bits.
+gives us a pattern with the leftmost bit set and again all bit combinations used in the other 7 bits.
 Fine so far, the topmost bit is set, but we still have to add 1 to complete
-our two-complement operation. But the only case where adding 1 change the topmost
+our two-complement operation. But the only case where adding 1 changes the topmost
 bit is when the 7 other bits are all set, and that is only the case when the initial
 value before bit inversion was zero. So the leftmost bit remains set for all
 numbers except initial zero, and zero maps to zero again!]
 
-Summery: When we work only with positive numbers, we can store in a 8 bit word,
-which is generally called a byte, numbers from 0 up to 255. In a 16 bit word we could
+Summary: when we work only with positive numbers, we can store in an 8-bit word,
+which is generally called a byte, numbers from 0 up to 255. In a 16-bit word we could
 store values from 0 up to 2^16 - 1, which is 65535. When we need numbers which can be
-also negative we have for 8 bit words the range from -128 to 127 available, which is
--2^7 up to 2^7 - 1. For a signed 16 bit word that range would be -2^15 up to 2^15 - 1.
+also negative we have for 8-bit words the range from -128 to 127 available, which is
+-2^7 up to 2^7 - 1. For a signed 16-bit word the range would be -2^15 up to 2^15 - 1.
 
-While we can work with 8 or 16 bit words, for PC programming the CPU supports
-generally 32 or 64 bit words, so we have a much larger number range available. But
-when we program {uC}s or embedded devices we may indeed have only 8 or 16 bits words
-available, or we may use such small words size by intent on PC to fit all of our data
+While we can work with 8 or 16-bit words, for PC programming the CPU usually supports
+32 or 64 bit words, so we have a much larger number range available. But
+when we program {uC}s or embedded devices we may indeed have only 8 or 16-bits words
+available, or we may use such small words size intentionally on a PC to fit all of our data
 into a smaller memory area.
 
-One important note at the end of this section: Whenever we have a word with a
+One important note at the end of this section: whenever we have a word with a
 specific bit pattern stored in the memory of our computer, then we can not decide
 from the bit pattern directly what type of data it is. It can be a positive or a
 negative number, but maybe it is not a number at all but a letter or maybe
-something totally different. As an example consider this 8 bit word: 10000001. Could
-be 128 if we have stored intentionally positive numbers in that storage location, or
+something totally different. As an example consider this 8 bit word: 10000001. It could
+// 10000000 is unsigned 128, right?  I think 10000000 might be a better example, because
+// it is 128 as uint8 as -128 as int8
+be 129 if we have stored intentionally positive numbers in that storage location, or
 could be -127 if we intentionally stored a negative value. Or it could be not a
 number at all. Is that a problem? No it is not as long as we use a programming
 language like Nim which use static typing. Whenever we are using variables we
-declare their type first, and so the compiler can do book keeping about the type of
-each variable stored somewhere in the computer memory. The benefit is, that we can
-use all the available bits to encode our actual data, we do not have to reserve a few
-bits to encode the actual data type of that variable. For languages without static
-typing that is not the case, in languages like Python or Ruby we can use variables
+declare their type first, and so the compiler can do bookkeeping about the type of
+each variable stored in the computer memory. The benefit is, that we can
+use all the available bits to encode our actual data, and we do not have to reserve a few
+bits to encode the actual data type of variables. For languages without static
+typing that is not the case.  In languages like Python or Ruby we can use variables
 without a static type, so we can assign whatever we want to it. That seems to be
-comfortable at first, but can be confusing when we write larger programs, and the
-Python or Ruby interpreter has to do all the book keeping at runtime, which is slow
-and wastes a few bits for the book keeping.
+comfortable at first, but can be confusing when we write larger programs and the
+Python or Ruby interpreter has to do all the bookkeeping at runtime, which is slow
+and wastes memory for the bookkeeping.
+// my experience is the bookeeping is a lot of memory.  Python uses 24 bytes to 
+// store a single integer
 
-To say it again in other words: For deciding if an operation is valid, it is
-generally sufficient to know the data type of the operands only, we do not have to know the
+To say it again in other words: for deciding if an operation is valid, it is
+generally sufficient to know the data type of the operands only. We do not have to know the
 actual content. The only exception is if we invert the sign of the most negative integer number
 or if we do a operation with causes an overflow, as there are not enough bits available
 to store the result -- we get a runtime error for that case.
-In a statically typed language each variable has a well defined type,
+In a statically-typed language each variable has a well-defined type,
 and the compiler can ensure at compile time that all operations on that variables are
-valid -- if a operation is not valid then the compiler will give an error message.
-Then when these operations are executed at runtime they are always valid operation,
-the actual content, like the actual numeric value does not matter.
+valid. If a operation is not valid then the compiler will give an error message.
+Then when these operations are executed at runtime they are always valid operations,
+and the actual content, like the actual numeric value, does not matter.
 
 == Installation of the Compiler
 
