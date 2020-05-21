@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 18-MAY-2020
+//v0.1, 21-MAY-2020
 :doctype: book
 :toc: left
 :icons: font
@@ -18,8 +18,11 @@ A gentle Introduction
 :proc: procedure
 :profus: procedures and functions
 :curnim: Nim v1.2
+:twocom: two's complement
 
 ////
+
+asciidoctor -a stylesheet=asciidoctor.css nimprogramming.adoc
 
 we are using these custom roles for clean semantic markup:
 
@@ -973,7 +976,7 @@ binary representation we have only two states available, 0 or 1, a set bit or an
 unset bit. But we have no unitary minus sign. We could encode the sign of a number
 in the topmost bit of a word -- when the topmost bit is set that indicates that the
 number is regarded negative. Generally a modified version of this encoding is used,
-called [.ndef]#two-complement#: a negative number is constructed by first inverting all the
+called [.ndef]#{twocom}#: a negative number is constructed by first inverting all the
 bits -- a 0 bit is transferred into a 1 bit and vice versa -- and finally the number 1
 is added. That encoding simplifies the CPU construction, as subtraction can be replaced by
 addition in this way:
@@ -990,7 +993,7 @@ relation is true for each number, than it is obviously true for each B in the
 expression A - B, and we can write A - B = A + (B + !B + 1) - B = A + (!B + 1) when
 we use the fact that in mathematics addition and subtraction is associative, that is
 we can group the terms as we want. But the term in the parenthesis is just the
-two-complement, which we get when we invert all bits of B and add 1. So to do a
+{twocom}, which we get when we invert all bits of B and add 1. So to do a
 subtraction we have to invert the bits of B, and then add A and !B and 1 ignoring
 overflow. That may sound complicated, but bit inversion is a very cheap operation in
 a CPU, which is always available, and adding 1 is also a very simple operation. The
@@ -1002,30 +1005,30 @@ ordinary addition.
 // this is usually called two's-complement, not two-complement  -J 
 From the equation above indicating A - B = A + (!B + 1) it is obvious that we
 consider the two-complement (!B + 1) as the negative of B. Note that the
-two-complement of zero is again zero, and two-complement of 00000001 is 11111111. All
+{twocom} of zero is again zero, and {twocom} of 00000001 is 11111111. All
 negative numbers in this system have a bit set to 1 at the leftmost position. This
 restrict all positive numbers to all the bit combinations where the leftmost bit is
 unset. For an 8-bit word this means that positive numbers are restricted to the bits
-00000000 to 01111111, which is the range 0 to 127 in decimal notation. Two-complement
+00000000 to 01111111, which is the range 0 to 127 in decimal notation. The {twocom}
 of decimal 127 is 10000001. Seems to be fine so far, but note there exists also the
 bit pattern 10000000 which is -128 in decimal.
 For that bit pattern there exists no positive value.  If we try to build the
-two-complement of that bit pattern, we would get the same pattern again.
+{twocom} of that bit pattern, we would get the same pattern again.
 This is an asymmetry of
-two-complement representation, which can not be avoided. It generally is no problem,
+{twocom} representation, which can not be avoided. It generally is no problem,
 with one exception. We can never invert the sign of the smallest available integer;
 that operation would result in a runtime error.footnote:[If you have a piece of
 paper and a pencil at hand, you may test some properties of signed binary numbers
-represented in two-complement: take binary 0, apply the two-complement operation
+represented in {twocom}: take binary 0, apply the {twocom} operation
 to get the negative of it. Note, we ignore overflow here when we add the 1! That was
-easy. Can we verify that all negative numbers in two-complement can really be
+easy. Can we verify that all negative numbers in {twocom} can really be
 identified by its set topmost bit? Maybe that fact is not really obvious, as we not
 only invert all bits of the positive number, but also add 1. OK, let us consider
 the non-negative numbers 0 .. 127 for an 8-bit word. All those bit patterns have the topmost bit
 cleared and all bit combinations used in the other 7 bits. Inverting these patterns
 gives us a pattern with the leftmost bit set and again all bit combinations used in the other 7 bits.
 Fine so far, the topmost bit is set, but we still have to add 1 to complete
-our two-complement operation. But the only case where adding 1 changes the topmost
+our {twocom} operation. But the only case where adding 1 changes the topmost
 bit is when the 7 other bits are all set, and that is only the case when the initial
 value before bit inversion was zero. So the leftmost bit remains set for all
 numbers except initial zero, and zero maps to zero again!]
@@ -1080,14 +1083,14 @@ and the actual content, like the actual numeric value, does not matter.
 
 We will not describe in too much detail how you can install the Nim compiler, because that
 strongly depends on your operating system, and because the install instructions may
-change in future. We assume that you have a computer with a installed operating
+change in the future. We assume that you have a computer with an installed operating
 system and internet access, and you are able to do at least very basic operations
-with your computer, as switching it on and opening a web browser or a terminal
+with your computer, such as switching it on and opening a web browser or a terminal
 window. If that is not the case then you really should ask someone for help for this
 basic step, and maybe for some more help for other basic tasks.
 
 Detailed installation instructions are available on the Nim internet homepage at
-https://nim-lang.org/install.html. Try to follow that instructions, and when they are
+https://nim-lang.org/install.html. Try to follow those instructions, and when they are
 not sufficient, then please ask at the Nim forum for help:
 https://forum.nim-lang.org/
 
@@ -1096,31 +1099,31 @@ package manager, which should make the installation very easy.
 
 For example for a Gentoo Linux system you would open a root terminal and simple type
 "emerge -av nim". That command would install Nim including all necessary dependencies
-for you -- it may take a few minutes as Gentoo compiles all packages fresh from
-source code, but then you are done. Similar command should exists for most other
+for you. It may take a few minutes as Gentoo compiles all packages fresh from
+source code, but then you are done. Similar commands exist for most other
 Linux distributions.
 
 Another solution, which is preferable when you want to ensure that you get the most
-recent Nim compiler, is compiling directly from latest git sources. That process is
+recent Nim compiler, is compiling directly from the latest git sources. That process is
 also easy and is described here: https://github.com/nim-lang/Nim. But before you can
-follow that instructions you have to ensure that on your computer the git software
-and a working C compiler is available. 
+follow those instructions you have to ensure that the git software
+and a working C compiler is available on your computer. 
 
 == Creation of Source Code Files
 
-Nim source code as most source code of other programming languages is based on text
-files. Text files are documents saved on your computer that contains only ordinary
+Nim source code, as most source code of other programming languages, is based on text
+files. Text files are documents saved on your computer that contain only ordinary
 letters which you can type on your keyboard. No images or videos, no HTML content
 with fancy CSS styling. Generally source code should contain only ordinary ASCII
 text, that is no umlauts or unicode characters.
 
 To create source code we generally use a text editor, which is a tool designed for
-creating and modifying of plain text files. When you do not have a text editor yet
+creating and modifying of plain text files. If you do not have a text editor yet
 you may also use a word processor for writing some source code, but then you have to
 ensure that the file is finally saved as plain ASCII text. Editors generally support
 syntax highlighting, that is keywords, numbers and such are displayed with a unique
 color or style to make it easier to recognize the content. Some editors support
-advanced features like checking for errors while you type the code in.
+advanced features like checking for errors while you type the program source code.
 
 A list of recommended editors is available at https://nim-lang.org/faq.html
 
@@ -1140,7 +1143,7 @@ gedit test.nim
 You type these commands in the terminal window and press the [.term]#return# key
 after each of the above lines -- that is you type [.term]#cd# and then press the
 [.term]#return# key to execute that command. The same for the next three commands.
-What you have done is this: You go to your default working area (home directory),
+What you have done is this: you go to your default working area (home directory),
 then create a subarea named mynimfiles, then you go into that subarea and finally you
 launch the gedit editor -- the argument test.nim tells gedit that you want to create
 a new file called test.nim. If gedit is not available, or if you work on a computer
@@ -1153,7 +1156,7 @@ For neovim there is very good Nim support available.
 
 If you do not want to work from a terminal, or if you are using Windows or MAC OS,
 then you should have a graphical user interface which enables you also to create a
-directory and to launch some sort of editor.
+directory and to launch an editor.
 
 When the editor is opened, you can type in the Nim source code from our previous
 example and save it to a file named test.nim. Then you can terminate the editor.
@@ -1161,7 +1164,7 @@ example and save it to a file named test.nim. Then you can terminate the editor.
 Note that the [.term]#return# key behaves differently in editors than in the terminal window:
 In the terminal window you type in a command and finally press the return key to
 "launch" or execute the command. In an editor the return key is not that special:
-If you press ordinary keys in your editor, than that key is inserted and the cursor
+if you press ordinary keys in your editor, than that key is inserted and the cursor
 moves one position to the right. And when you press the return key then an
 invisible newline character is inserted and the cursor moves to the start
 of the next line.
@@ -1201,7 +1204,7 @@ In your terminal window you seen a number now, which is the sum of the numbers 1
 100.
 
 If you have not managed to open a terminal where you can invoke the compiler -- well
-maybe then you should install some of the advanced editors like VS-Code, they should
+maybe then you should install some of the advanced editors like VS-Code. They should
 be able to launch the compiler and run the program from within the editor directly.
 
 = Part II: The Basics
@@ -1215,38 +1218,44 @@ including the basic container types array, sequence and string.
 
 We can declare constants, variables, procedures or our custom data types. Declarations are used
 to give information to the compiler, for example about the type of a variable that we
-intent to use.
+intend to use.
 
-We will explain type and procedure declarations in later sections, currently only constant and
+//a comma cannot be used between two complete sentences.  A semicolon can be used
+//between two sentences, but this is not that common, and if done a lot, it starts
+//to look/feel "weird" to the reader. -J
+We will explain type and procedure declarations in later sections. Currently only constant and
 variable declarations are important.
 
-A constant declaration in its simplest form maps only a symbolic name to a value, like
+A constant declaration in its simplest form maps a symbolic name to a value, like
 
 ----
 const Pi = 3.1415
 ----
 
-We used the reserved word [.term]#const# to tell the compiler that we want to declare
+//I changed from used (past tense) to use (present tense) because later you used
+//assign (present) instead of assigned (past), and using present tense is more
+//"active" for the reader I think. -J
+We use the reserved word [.term]#const# to tell the compiler that we want to declare
 a constant which we have named Pi and we assign it the numeric decimal value 3.1415. Nim has
-a small set of reserved words like [.term]#var, const, proc, while# and some more to
+a small set of reserved words like [.term]#var, const, proc, while# and others, to
 tell the compiler that we want to declare a variable, a constant, a procedure or that
 we want to use a while loop for some repeated execution. The [.term]#=# is the
-assignment operator in Nim, it assigns the value or expression on the right site of
+assignment operator in Nim, it assigns the value or expression on the right side of
 it to the symbol on the left. You have to understand that it is different from the
-equal sign with we may use in mathematics. Some languages like Pascal initially used
+equal sign we may use in mathematics. Some languages like Pascal initially used
 the compound operator [.term]#:=# for assignments, but that is not easy to type on
-the keyboard and looks some sort of angry for sensible people. And source code
-contains generally a lot of assignments, so use of [.term]#=# makes some sense. We
-called [.term]#=# an operator -- operators are symbols which perform some basic
+the keyboard and looks a bit angry for sensible people. And source code usually
+contains a lot of assignments, so use of [.term]#=# makes some sense. We
+call [.term]#=# an operator. Operators are symbols which perform some basic
 operation, like [.term]#+# for the addition of two numbers, or [.term]#=# for the
-assignment of one value to another. 
+assignment of a value to a symbol. 
 
-With above constant declaration we can use the symbol [.term]#Pi# in our program and
-don't have to remember the exact sequence of digits. For plain constants like our Pi value the compiler may
-do a plain substitution in the source code when the program is compiled, so where we
+With the above constant declaration we can use the symbol [.term]#Pi# in our program and
+don't have to remember or retype the exact sequence of digits. For constants like our Pi value the compiler will
+do a substitution in the source code when the program is compiled, so where we
 write the symbol [.term]#Pi# the actual numeric value is used.
 
-For constant declarations it must be possible to determine its value at compile time already.
+For constant declarations it must be possible to determine its value at compile time.
 Expressions assigned to constants can contain simple operations like basic math, but
 some functions calls may be not allowed.
 
@@ -1261,31 +1270,33 @@ Here we put the reserved keyword [.term]#var# at the beginning of the line to te
 compiler that we want to declare a variable, then we give our chosen name for that
 variable followed by a colon and the data type of the variable. The int type is a
 predefined numeric type indicating a signed integer type. The storage capacity of an
-integer variable depends on the operating system of your computer. On 32 bit systems
-32 bits are used, and on 64 bit systems 64 bits are used to store one single integer variable.
+integer variable depends on the operating system of your computer. On 32-bit systems
+32 bits are used, and on 64-bit systems 64 bits are used to store one single integer variable.
 That is enough for even
-large signed integer numbers, range is - 2^31 up to 2^31 - 1 for 32 bit OS and -
-2^63 up to 2^63 - 1 for 64 bit OS.
+large signed integer numbers: the range is -2^31 up to 2^31 - 1 for 32 bit systems and
+-2^63 up to 2^63 - 1 for 64-bit systems.
 
-For variables we generally use lower cases names, but names of constants
+For variables we generally use lower case names, but names of constants
 may start with an upper case letter.
 
 == Statements
 
-Statements or instructions are a core component of Nim programs, they tell the
-computer what it shall do. Often statements are so called procedure calls, like the
+Statements or instructions are a core component of Nim programs: they tell the
+computer what it shall do. Often statements are procedure calls, like the
 call of the [.term]#echo()# or [.term]#inc()# procedure which we have already seen in part I of the book.
-What procedures exactly are we will learn in later sections, for now we just regard
+What procedures exactly are we will learn in later sections. For now we just regard
 procedures as entities that perform a well defined task for us when we call them. We
 call them by writing their name in our source file, optionally followed by a list of
-parameters or arguments. When we write [.term]#echo 7# then echo is the procedure which we
+parameters, also called arguments. When we write [.term]#echo 7# then echo is the procedure which we
 call, and 7 is the argument, an integer literal in this case. The effect of our
 procedure call is that the decimal number 7 is written to the terminal when we run
 the program after compilation. A special form of procedures are functions, that are
-procedures that can return a value or result. In mathematics sin() or cos() would be
+procedures that can return a value or result. In mathematics, sin() or cos() would be
 functions -- we pass an angle as argument and get the sine or cosine as a result.
 
-Let us regard this minimal Nim program:
+// the common use of regard is how you feel about a person, and it is a
+// somewhat a formal word not used very often  -J
+Let's look at this minimal Nim program:
 
 ----
 var a: int
@@ -1293,23 +1304,25 @@ a = 2 + 3
 echo a
 ----
 
-The Nim program above consists of a variable declaration and two statements: In the
-first line we declare the variable which we want to use. In the next line we assign
+The Nim program above consists of a variable declaration and two statements: in the
+first line we declare the variable we want to use. In the next line we assign
 the value [.term]#2 + 3# to it, and finally in line 3 we use the procedure [.term]#echo()# to display the
 content of our variable in the terminal window.
 
 Nim programs are generally processed from top to bottom by the compiler, and when we
-execute the program after successful compilation, then it executes also from top to
-button. A consequence of this is, that we have to write the lines of above program
-exactly in that order. If we would move the variable declaration down, then the
-compiler would complain about a undeclared variable -- because the variable would be
-used before it would be declared. And if we would exchange lines 2 and 3, then the
+execute the program after successful compilation, then it also executes from top to
+button. A consequence of this is that we have to write the lines of above program
+exactly in that order. If we moved the variable declaration down, then the
+compiler would complain about an undeclared variable because the variable is 
+used before it has been declared. If we exchanged lines 2 and 3, then the
 compiler would be still satisfied, and we would be able to compile and run the
 program. But we would get a very different result, because we would first try to
 display the value of variable a, and later assign a value to it.
 
-When we have to declare multiple constants or variables, then we can use so called
-sections, that is we write the keyword var or const on its own line, followed by the
+// it's called section here, but block in the next paragraph.  I think block is
+// probably better since you may later want to say "in this while block, blah blah"  -J
+When we have to declare multiple constants or variables, then we can use a block,
+that is we write the keyword var or const on its own line, followed by the
 actual declarations like in
 
 ----
@@ -1323,19 +1336,19 @@ var
 
 Note the indentation -- the lines after const and var start with some space
 characters, so they build a block which allows the compiler to detect where the
-declaration ends. Generally we use two spaces for each level of indentation,
-other numbers would work also, but the indentation scheme should be consistent. Two
+declaration ends. Generally we use two spaces for each level of indentation.
+Other numbers would work also, but the indentation scheme should be consistent. Two
 spaces is the general recommendation, as it is clearly recognizable for humans in the
-source code, and because it wastes not too much space, that is it would not generate
-too long lines which may not fully fit onto the screen.
+source code, and because it doesn't waste too much space, that is, it would not generate
+long lines which may not fit onto the screen.
 
-Also note that in Nim we generally write each statement onto its own line, the line
+Also note that in Nim we generally write each statement onto its own line The line
 break indicates to the compiler that the statement has ended. There are a few
-exceptions -- long mathematical expressions can continue on the next line, see the
-Nim manual for details. We can also put multiple statements on a single line when we
+exceptions -- long mathematical expressions can continue on the next line (see the
+Nim manual for details). We can also put multiple statements on a single line when we
 separate them by a semicolon.
 
-We can also declare multiple variables of same type in one single declaration, like
+We can also declare multiple variables of the same type in one single declaration, like
 
 ----
 var
@@ -1349,7 +1362,7 @@ var
   year: int = 1900
 ----
 
-Finally for variable declarations we can use type inference when we assign an initial
+Finally, for variable declarations we can use type inference when we assign an initial
 start value, that is we can write
 
 ----
@@ -1358,20 +1371,20 @@ var
 ----
 
 The compiler recognizes in this case that we assign an integer literal to that
-variable and so silently gives it the int type for us. Type inference can be
-comfortable, but may make it for readers harder to understand the code, or the type
+variable and so silently gives the variable the int type for us. Type inference can be
+comfortable, but may make it harder for readers to understand the code, or the type
 inference may not always do exactly what we want. For example in the above code year
-gets the type int, which is a signed 4 or 8 byte number. But maybe we would like an
-unsigned number, or a number which occupies only two bytes in memory better. So use
+gets the type int, which is a signed 4 or 8 byte number. But maybe we would prefer an
+unsigned number, or a number which occupies only two bytes in memory. So use
 type inference with some caution.
 
-Note: For integral data we use generally the int data type in Nim, which is a signed
-type with 4 or 8 byte size. Generally it makes not much sense to use many different
-integral types, signed and unsigned once and types of different byte size. Mixing
+Note: For integral data we mostly use the int data type in Nim, which is a signed
+type with 4 or 8-byte size. It usually does not make sense to use many different
+integral types -- signed, unsigned, and types of different byte size. Mixing
 them in numerical expressions can be confusing and maybe even decrease performance,
 because the computer may have to do type conversion before it can do the math
-operation. For unsigned types one more problem is, that math operations of unsigned
-operands could have a negative result: Consider
+operation. For unsigned types, another problem is that math operations on unsigned
+operands could have a negative result. Consider:
 
 ----
 var a, b: unsigned int
@@ -1381,10 +1394,10 @@ a = a - b
 ----
 
 The true result would be -4, but a is of unsigned type and can never contain a
-negative content. So what should happen -- a wrong result or a program termination?
+negative content. So what should happen -- an incorrect result or a program termination?
 
 Related to variable declarations is the initial start value of variables. Nim clears
-for us all the bits of our variables when we declare them, that is numbers get always
+for us all the bits of our variables when we declare them, that is, numbers get always
 the initial start value zero if we do not assign a different value in the variable declaration.
 
 In this declaration
@@ -1403,13 +1416,13 @@ assigned, while var is used when we want to change the content of the variable d
 program execution. Let seems to be similar to const, but in const declarations we can
 use only values that are known at compile time. Let allows us to assign to variables values
 that are only available at program run time, maybe because the value is a
-result of a prior calculation. But let indicate at the same time that the assignment
+result of a prior calculation. But let indicates at the same time that the assignment
 occurs only once, the content does not change later.
 We say that the variable is immutable.
 Use of the let keyword may help the human reader
 of the source code understanding what in going on, and it may also help the compiler
 doing optimizations to get faster or more compact code. For now we can just ignore
-let declarations and use var instead -- later we may use let where appropriate, the
+let declarations and use var instead -- later we may use let where appropriate, and the
 compiler will tell us when let will not work and we have to use var.
 
 With what we have learned in this section we can rewrite our initial Nim
@@ -1435,15 +1448,15 @@ because there exists multiple procedures with the name [.term]#inc()# -- one
 which takes two arguments, and one which takes only one argument and
 always increases that argument by one. Instead of [.term]#inc(i)# we could have
 written also [.term]#i = i + 1# and instead of [.term]#inc(sum, i)# we could write [.term]#sum = sum + i#.
-That would generate generally identical code in the executable, we can use whatever
+That would generate identical code in the executable, so we can use whatever
 we like better.
 
 == Input and Output
 
 We have already used the echo procedure for displaying output in the terminal. For
 our experiments we may want to have some user input also. As we do not know much
-about procedures currently, let us keep things simple and read in a textual user
-input from the terminal window for now only.
+about procedures currently, let us keep things simple for now and read in a textual user
+input from the terminal window.
 We use a procedure with name [.term]#readLine()# for this task.
 
 [source,nim]
@@ -1456,15 +1469,15 @@ echo "you entered:", mytext
 Note that you have to press the [.term]#return# key after you have entered your text.
 
 The
-first line of our program would be not really necessary, we just print some message. In the
+first line of our program is not really necessary; we just print some message. In the
 second line we use the [.term]#readLine()# procedure to read textual user input. The
-readLine() procedure needs one parameter to know from where it should read -- from
-terminal or from a file for example. [.term]#stdin# indicated that it should read
-from current terminal. Finally in line 3 we use again the [.term]#echo()# procedure to
+readLine() procedure needs one parameter to know from where it should read -- from the
+terminal window or from a file for example. [.term]#stdin# indicates that it should read
+from the current terminal window. Finally in line 3 we use again the [.term]#echo()# procedure to
 print some text. In this case we pass two arguments to [.term]#echo()#, a literal text
-enclosed in quotes, and separated by a comma the [.term]#mytext# variable. The
-[.term]#mytext# variable has the data type [.term]#string#, we used type inference in
-this example to declare that type: The [.term]#readLine()# procedure returns always a
+enclosed in quotes, and then separated by a comma, the [.term]#mytext# variable. The
+[.term]#mytext# variable has the data type [.term]#string#. We used type inference in
+this example to declare that type: the [.term]#readLine()# procedure always returns a
 [.term]#string#, the compiler knows that, so our [.term]#mytext# variable is
 automatically declared with type [.term]#string#. We will learn more about data type
 [.term]#string# and other useful predefined data types in the next section.
@@ -1474,83 +1487,85 @@ automatically declared with type [.term]#string#. We will learn more about data 
 === Integer types
 
 We have already used the [.term]#int# data type, which indicates a signed integer
-type of 4 or 8 byte size, depending on the {OS}. Why it makes some sense that the
+type of 4 or 8-byte size, depending on the {OS}. The reason the
 type depends on the word size of the OS will become clear later when we explain what
 references and pointers are.
 
-Beside the int data type, we have some more data types for signed and unsigned
-integers: [.term]#int8#, [.term]#int16#, [.term]#int32# and [.term]#int64# are signed types with well
-defined bit and word size, and [.term]#uint8#, [.term]#uint16#, [.term]#uint32# and [.term]#uint64# are
-the unsigned equivalents. The number at the end of the type name is the bit size, we
+Beside the int data type, Nim has some more data types for signed and unsigned
+integers: [.term]#int8#, [.term]#int16#, [.term]#int32# and [.term]#int64# are signed types with
+well-defined bit and word size, and [.term]#uint8#, [.term]#uint16#, [.term]#uint32# and [.term]#uint64# are
+the unsigned equivalents. The number at the end of the type name is the bit size; we
 get the byte size when we devide that value by 8. Additional we have the type
-[.term]#uint#, which corresponds to [.term]#int#, has same size, but stores unsigned
-numbers only. footnote:[When we are using the term size here, this means how much
-space the types needs in the RAM of the computer, a type of size 4 would occupy 4
+[.term]#uint#, which corresponds to [.term]#int# and has same size, but stores unsigned
+numbers only. footnote:[When we are using the term "size" here, this means how much
+space the type needs in the RAM of the computer. A type of size 4 would occupy 4
 bytes of the RAM of your computer.] General we should try to use the int type for all
 integral numbers, but sometimes it can make sense to use the other types. For
-example, when you have to work with really many numbers, you know that each number is
-not very big and your RAM is not really that large, then you may decide for example
+example, when you have to work with a large collection of numbers, you know that each number is
+not very big, and your RAM is not really that large, then you may decide for example
 to use [.term]#int16# for all your numbers. Or when you know that your numbers will
-be really big and will not fit in a 4 byte integer, then you may use [.term]#int64#
+be really big and will not fit in a 4 byte integer, then you may use the [.term]#int64#
 type to ensure that the numbers fit in that type even when your program is compiled
 and executed on a computer with a 32 bit OS.
 
 === Floating point types
 
-Another important numeric data type are floats, that are floating point numbers.
-Floats are an approximation of real numbers, they can also store fractions, and are
-most often printed in decimal system containing a decimal point, or in scientific
-notation with exponent. Examples for floats are
+Another important numeric data type is float, for floating point numbers.
+Floats are an approximation of real numbers.  They can also store fractions, and are
+most often printed in the decimal system with a decimal point, or in scientific
+notation with an exponent. Examples for floats are
 
 ----
 var
   mean = 3.0 / 7.9
   x: float = 12
-  y: 1.2E3
+  y = 1.2E3
 ----
 
-The variable mean is the result of a float division, if we would print the result
-there would be a decimal point and some digits behind it. For variable x we specify
-the float type explicitly and assign the value 12. We could use type inference also
-if we would assign 12.0, because the compiler can recognize by the decimal point that
+The variable mean is the result of a float division. If we printed the result
+there would be a decimal point and some digits following it. For variable x we specify
+the float type explicitly and assign the value 12. We could use type inference
+if we assigned 12.0, because the compiler can recognize by the decimal point that
 we want a float, not a int. In line 3 we use scientific notation for the float
-literal that we assign to y, the value is [.term]#1.2 * 10^3 = 1200.0#. Literal
-values like [.term]#2E3# are also valid float literals, the value would be
+literal that we assign to y, and the value is [.term]#1.2 * 10^3 = 1200.0#. Literal
+values like [.term]#2E3# are also valid float literals -- the value would be
 [.term]#2000.0#. But literals with a decimal point and no digits before or after the
-point are not valid, as 1. or .2.
+// I changed this so the period at the end of the sentence wasn't near the numbers. -J
+point -- 1. or .2 -- are not valid.
 
-In Nim float variables occupy 64 bit. Nim has also the data type float64 which is
+In Nim float variables occupy 64 bits. Nim has also the data type float64 which is
 identical to plain float and float32 which can store only smaller numbers and has
-less precision. Floats can store values up to a magnitude of approximate
-[.term]#1E308# with positive or negative sign, and floats have a typical precision
-of 16 digits, that is when you do a division of two arbitrary floats and print the
-result, you will get 16 valid digits at most.
+less precision. Floats can store values up to a magnitude of approximately
+[.term]#1E308# with a positive or negative sign, and floats have a typical precision
+of 16 digits.  That is, when you do a division of two arbitrary floats and print the
+result, you will get up to 16 valid digits.
 
 Generally we use floats whenever integers are not sufficient for some reason.
-For example when we have to do complicated mathematical operations which includes
+For example when we have to do complicated mathematical operations which include
 fractional operands like Pi, or when we have to do divisions and need the
 exact fractional value. 
 
-An important property of floats is that not all numbers can be presented exactly and
-that math operations are not absolutely accurate. When you do a addition like 1.0 +
-2.0 the result will not be exactly 3.0, and 1.0 + 2.0 - 3.0 will not be exactly zero,
+Two important properties of floats are that not all numbers can be represented exactly and
+that math operations are not absolutely accurate. When you do an addition like 1.0 +
+2.0, the result will not be exactly 3.0, and 1.0 + 2.0 - 3.0 will not be exactly zero,
 but a tiny floating point number. Maybe in the case when you use the above literal
 values the compiler may be able to recognize the expression and deliver the exact
 value, but when you assign the literals to variables and then do the math, you can be
-sure that it is not absolutely accurate. That is no real problem, the accuracy is in
+sure that it is not absolutely accurate. That is no real problem: the accuracy is in
 most cases much better than needed. But you should know about the minimal numeric
-errors and should avoid testing two floats for exact equality. Because they may not
+errors and should avoid testing two floats for exact equality, because they may not
 be equal due to rounding errors, even when in theory the values should exactly match.
 Instead of a test for equality sometimes expressions like abs(a - b) < 0.000001 are
-used, that is we take the absolute value of the difference and compare it with a tiny
+used, ie, we take the absolute value of the difference and compare it with a tiny
 epsilon. If you ever should use a test like that, think carefully about it --
 sometimes it may be better to make an even more complicated test regarding not the
 absolute, but the relative difference of the numbers.
+// if you are going to mention this, should there be an example?  -J
 
 For floats we have the operators [.term]#+#, [.term]#-#, [.term]#*# and [.term]#/# for addition, subtraction,
-multiplication and division. For powers with integral exponent you can use the [.term]#^#
+multiplication and division. For powers with integral exponents you can use the [.term]#^#
 operator, but you have to import it from the math module. [.term]#x ^ 3# is the same as [.term]#x * x
-* x#. The math module contains many more functions like [.term]#sin()# or [.term]#cos()#, [.term]#sqrt()# or
+* x#. The math module contains many more functions like [.term]#sin()# or [.term]#cos()#, [.term]#sqrt()# and
 [.term]#pow()#. [.term]#sqrt()# is short for square-root, [.term]#pow()# for power, so [.term]#pow(x, y)# is x to the
 power of y, when both operands have type float.
 
@@ -1559,12 +1574,12 @@ power of y, when both operands have type float.
 Boolean types are used to store the result of logic operations. The type is called
 bool in Nim and can store only two values, false and true. Although we have
 only two distinct states for a boolean variable and so one single bit
-would suffice to store a bool, generally a whole byte is used for storing
-a boolean variable. Most other programming languages including C do the same, the reason
-is that most CPU's can not access single bits in the RAM, the smallest
+would suffice to store a bool, generally a whole byte (8 bits) is used for storing
+a boolean variable. Most other programming languages including C do the same. The reason
+is that most CPU's can not access single bits in the RAM -- the smallest
 entity that can be directly accessed in RAM is a byte.
 The default initial state of
-a boolean variable is false, that corresponds to a byte with all bits cleared.  
+a boolean variable is false, corresponding to a byte with all bits cleared.  
 
 ----
 var
@@ -1575,30 +1590,30 @@ var
 ----
 
 In line three we assign to the variable adult the result of a logical comparison. The
-next two lines assign the boolean constants [.term]#true# and [.term]#false# to the variables, their
-type [.term]#bool# is inferred.
+next two lines assign the boolean constants [.term]#true# and [.term]#false# to the variables, with their
+type [.term]#bool# inferred.
 
-Variables of type [.term]#bool# support the operator [.term]#not#, [.term]#and#, [.term]#or#
+Variables of type [.term]#bool# support the operators [.term]#not#, [.term]#and#, [.term]#or#
 and [.term]#xor#. Not inverts the
 logic value, [.term]#a and b# is only true when both values are true, and false otherwise. And
 [.term]#a or b# is true when at least one of the values is true, and only false when both
-values are false. [.term]#xor# is not used that often, it is called exclusive or, [.term]#a xor b# is
+values are false. [.term]#xor# is not used that often.  It is called exclusive or, [.term]#a xor b# is
 false when both values have the same logic state, that is when both are true, or both
 are false. When the values are not the same, than the result of the xor operator is
 true.
 
 === Characters
 
-The data type for single characters is called char in Nim. A variable of type char has 8 bit
-and can store single characters. Indeed it stores 8 bit integers which are mapped to
-characters. The mapping is described by the ASCII table, for example the integer
+The data type for single characters is called char in Nim. A variable of type char has 8 bits
+and can store single characters. Indeed it stores 8-bit integers which are mapped to
+characters. The mapping is described by the ASCII table. For example the integer
 value 65 in decimal is mapped to the character A. When we use single character literals,
-then we have to enclose the letter in single quotes. As only 8 bit are used to store
-the characters, we do have only 256 different values, including upper and lower case
+then we have to enclose the letter in single quotes. As only 8 bits are used to store
+characters, we only have 256 different values, including upper and lower case
 letters, punctuation characters and some characters with a special meaning like a
 newline character to move the cursor in the terminal to the next line, or a backspace
 character to move the cursor one position backwards. Single characters are not used
-too often, we generally group them in sequences called strings to built text.
+too often since we generally group them in sequences called strings to build text.
 
 The initial ASCII table contains only the characters with numbers 0 up to 127,
 here is an overview generated with the small program listed in the appendix:
@@ -1618,33 +1633,34 @@ Visible ASCII Characters
 ----
 
 The position in the table is the sum of the number on the left and the number
-on the top, that is character A has position 64+1=65, which is the value
-which the Nim standard function [.term]#ord('A')# or [.term]#int('A')# would return. The characters
+on the top, ie, character A has position 64+1=65, which is the value
+the Nim standard function [.term]#ord('A')# or [.term]#int('A')# would return. The characters
 with a decimal value less than 32 can not be printed and are called control
-characters like linefeed, carriage-return, backspace, audible beep and such.
-Character 127 is also not printable, it is called DEL. An important property of
+characters, like linefeed, carriage return, backspace, audible beep and such.
+Character 127 is also not printable, and is called DEL. An important property of
 this table is the fact that decimal digits and upper- and lower-case letters
-built continuous blocks. So to test for example if a characters is a uppercase
+form contiguous blocks. So to test for example if a characters is a uppercase
 letter we can use this simple condition: [.term]#+c >= 'A' and c <= 'Z'+#.
+// I like to use 'A' <= c and c <= 'Z' -J
 
 Characters with ord() > 127 are so called umlauts, exotic characters of other
-languages and some special characters. But these characters may be different
+languages, and some special characters. But these characters may be different
 on different computers, as the characters depend on the active code-page, which
-maps position to actual character, and there exists multiple code pages.
-When we need more than the plain ASCII characters, then we use generally
-strings in Nim, which display much more glyphs by using UTF-8 encoding.   
+maps position to actual character, and there are multiple code pages.
+When we need more than the plain ASCII characters, then we use
+strings in Nim, which display many more glyphs by using UTF-8 encoding.   
 
 === Strings
 
-The string data type is a sequence of characters, it is used whenever a textual input
-or output operation is performed. Basically it is a sequence of ASCII characters
-only, but multiple characters in the string can be interpreted as so called utf-8
-unicode characters, that allows to display nearly unlimited symbols as long as all
+The string data type is a sequence of characters. It is used whenever a textual input
+or output operation is performed. Usually it is a sequence of ASCII-only characters,
+but multiple characters in the string can be interpreted as so called utf-8
+unicode characters, that allow displaying nearly unlimited symbols as long as all
 the needed fonts are installed on your computer and you manage to enter them --
 unicode chars may be not accessible by a simple keystroke. For now we will only use
-ASCII characters, as they work always and everywhere. String literals has to be
-enclosed in double quotes. Nim strings are similar to the Nim seq data types, both
-are variable size containers. That means that a string or a seq expands automatically
+ASCII characters, as they are simpler and work everywhere. String literals must be
+enclosed in double quotes. Nim strings are similar to the Nim seq data types: both
+are variable-size containers. That means that a string or a seq expands automatically
 when you append or insert characters or other strings.
 
 [source, nim]
@@ -1661,13 +1677,13 @@ echo str, name
 We declare a variable called str and assign it the initial literal value
 [.term]#"Hello"#. We use the [.term]#echo()# procedure to ask the user for his name, and use [.term]#readLine()#
 procedure to read the user input from the terminal. To show how we can add
-characters to existing string variables we call [.term]#add()# procedure
+characters to existing string variables we call the [.term]#add()# procedure
 to append a space character to our str variable, and finally call the [.term]#echo()# procedure
 to print the hello message and the name to the screen. Note that the [.term]#echo()# procedure
 automatically terminates each output operation with a jump to the next line. If you
 want an output operation without a newline, you can use the similar [.term]#write()#
 procedure. But write() needs an additional first parameter, for which we use the
-special variable [.term]#stdout# when we want to write to the terminal.
+special variable [.term]#stdout# when we want to write to the terminal window.
 
 So we could substitute the last two lines of the above code by
 
@@ -1679,8 +1695,8 @@ write(stdout, name)
 
 === Escape sequences in strings
 
-We already learned that the ASCII table contains some special characters, one
-important is the newline character, which moves the cursor in the terminal
+We already learned that the ASCII table contains some special characters. An
+important one is the newline character, which moves the cursor in the terminal
 window to the beginning of the next line. The [.term]#echo()# procedure prints that character
 automatically after each output operation. Indeed it can be important to terminate
 each output operation with that character, as the output can be buffered, and writing
@@ -1691,15 +1707,15 @@ respond, but the message is still buffered and not yet visible.
 The problem with special characters like backspace or newline is that we can not enter
 them directly with the keyboard.footnote:[Well we have a backspace key on our
 keyboard, but generally it does not insert a backspace character but deletes the character
-left to the cursor when we are editing text. And the return key -- well
+to the left of the cursor when we are editing text. And the return key, well,
 it indeed inserts a newline character, but at the same time
 in our editor the cursor moves to the next line. Most of the
 time we desire a character that generates a newline when we run our program,
-but not when we enter our source code.] To solve that problem so called escape sequences
-where introduced for most programming languages. An escape sequence is a special
-sequence of characters, that the compiler can discover in strings and then replace it
+but not when we enter our source code.] To solve that problem, escape sequences
+were introduced for most programming languages. An escape sequence is a special
+sequence of characters, that the compiler can discover in strings and then replace
 with a single special character. Whenever we want a newline in a string we
-type it as [.term]#"\n"#, that is the so called backslash character followed by an ordinary
+type it as [.term]#"\n"#, that is, the backslash character followed by an ordinary
 letter n, n for newline. 
 
 ----
