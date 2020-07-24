@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 21-MAY-2020
+//v0.1, 24-JUL-2020
 :doctype: book
 :toc: left
 :icons: font
@@ -1206,6 +1206,61 @@ In your terminal window you seen a number now, which is the sum of the numbers 1
 If you have not managed to open a terminal where you can invoke the compiler -- well
 maybe then you should install some of the advanced editors like VS-Code. They should
 be able to launch the compiler and run the program from within the editor directly.
+
+The command
+
+----
+nim c test.nim
+----
+
+is the most basic compiler invocation. The extension .nim is optional, the compiler can infer that option.
+This command compiles our program in default debug mode, it
+uses the C compiler back end and generates a native executable. Debug mode means, that the
+generated executable contains a lot of checks, like array index checks, range checks,
+nil dereference checks and many more. The generated executable will run not very fast and it will
+be large, but when your program has bugs then the program will give you a meaningful
+error message in most cases. Only after you have tested your program carefully you may
+consider compiling it without debug mode. You may do that with
+
+----
+nim c -d:release test.nim
+
+nim c -d:danger test.nim
+----
+
+The compiler option -d:release removes most checks and debugging code and enables the backend optimization,
+giving a very fast and small executable file.
+The option -d:danger removes all checks, it includes -d:release. You should be aware that
+compiling with -d:danger means that your program may crash without any useful information, or even bad,
+may run, but contain uncatched errors like overflows and so may give you wrong results. Generally you
+should compile your program with plain nim c first. When you have tested it well and you may need the
+additional performance, you may switch to -d:release option. For games, benchmarks or other uncritical stuff you may
+try -d:danger.
+
+There exists many more compiler options, you can find them explained in the Nim manual or you may
+use the command nim --help and nim --fullhelp to get them displayed. One important new option is --gc:arc
+to enable the new deterministic memory management. You may combine --gc:arc with -d:useMalloc to disable
+Nims own memory allocator, this reduces the executable size and enables the use of Valgrind
+to detect memory leaks. Similar to --gc:arc is the option --gc:orc which can deal with cyclic data structures.
+Finally a very powerful option is --passC:-flto. This option is for the C compiler backend and enables link
+time optimization (LTO). LTO enables inlining for all procedure calls and can significantly reduce
+the final program size. We should mention that you can also try the C++ compiler backend with the
+cpp command instead of plain c command, and that you may compile with clang backend instead of default gcc
+backend with the --cc:clang option. You can additional specify the option -r to immediately run the program
+after successful build. For testing small scripts the compiler invocation in the form "nim r myfile.nim" can be used.
+to compile and run a program without generation of a permanent executable file.
+Here is an example how we use all these options:
+
+----
+nim c -d:release --gc:arc -d:useMalloc --passC:-flto --passC:-march=native board.nim
+----
+
+In this example we additional pass -march=native to the C compiler backend
+to enable use of the most efficient CPU instructions of our computer, which may
+result in an executable that will not run on older hardware. Of course we can save all these
+parameters in configuration files, so that we don't have to actual type then for each compiler invokation.
+You may find more explanations to all the compiler options in the Nim manual
+or in later sections of this book, this includes the options for the JavaScript backend. 
 
 = Part II: The Basics
 
@@ -2950,6 +3005,11 @@ add more fields to your Friend data type. Maybe a textual field with
 content male or female, and you can report the ratio of male to female.
 And maybe remove males from the list when we have more males then females?
 
+
+
+
+
+
 == Arithmetic -- Integers and Floats
 
 == Procedures and Functions
@@ -3047,6 +3107,8 @@ procs are only executed when we call them. That is, when
 we write a proc at the top of our source code, then that
 proc is processed by the compiler, but it is not executed
 during program runtime before we call it. 
+
+==== Procedure parameters of Var type
 
 Our sqr() function above accepts only one parameter and
 that
@@ -3202,6 +3264,118 @@ can be useful when procs or functions have many arguments,
 maybe some with default values, and we do not remember
 the order of parameters or when we want to specify only a few.
 
+==== Objects and Ref Objects as Procedure Parameters
+
+In the previous section we learned that we have to pass var parameters
+when the procedure should be able to mutate the variable permanently.
+This is also valid when the parameters are objects. When a
+procedure should modify fields of an object parameter, then we have to
+pass that object as a var parameter. In the following example proc t1
+gives a compiler error because that proc tries to modify a field of
+an object while the object instance is not passed as a var parameter.
+If we remove proc t1 then we can compile and run the example:
+
+[source, nim]
+----
+type O = object
+  i: int
+
+proc t1(o: O) =
+  o.i = 7 # Error: 'o.i' cannot be assigned to
+
+proc t2(o: var O) =
+  o.i = 13
+
+proc main =
+  var x = O(i: 3)
+  echo x.repr
+  t2(x)
+  echo x.repr
+
+main()
+----
+
+The otput is:
+
+----
+[i = 3]
+[i = 13]
+----
+
+Proc t2 gets a var parameter and can modify fields of the passed object.
+Here we used the expression echo x.repr to print the whole object.
+Strings and sequences are value objects in Nim, so you have to
+pass them as var parameters when you want to change their length
+or when you want to modify elements. THis code would give you compile
+errors, unless you add the var keyword to make the proc parameters mutable:
+
+[source, nim]
+----
+proc t1(s: string) =
+  s.setLen(7)
+  s[0] = 'x'
+
+proc t2(s: seq[int]) =
+  s.setLen(7)
+  s[0] = 13
+----
+
+
+This was not really surprising. But what when we use a reference to
+an object and pass that to procs as value and as var parameter?
+In the code below proc t1 gets a variable of type ref object and
+the proc can modify fields of the passed instance. That can be
+indeed surprising. In this case passing the ref object without use of the
+var keyword means only that we can not mutate the ref value itself in
+the proc, but we are allowed to modify the fields of the object.
+For proc t2 we pass a var parameter. As always we can modify a var 
+parameter in the proc, so we can assign it a newly created instance.
+
+[source, nim]
+----
+type O = ref object
+  i: int
+
+proc t1(o: O) =
+  o.i = 7
+
+proc t2(o: var O) =
+  o = O(i : 11)
+
+proc main =
+  var x = O(i : 3)
+  echo x.repr
+  t1(x)
+  echo x.repr
+  t2(x)
+  echo x.repr
+
+main()
+
+----
+
+When we compile and run above code we get:
+
+----
+ref 0x7f054a904050 --> [i = 3]
+
+ref 0x7f054a904050 --> [i = 7]
+
+ref 0x7f054a904070 --> [i = 11]
+----
+
+For a ref object the repr function gives us
+the address of the object instance in memory and the
+contents of its fields. The first two echo staements
+shows the same address, indicationg that proc t1 has
+modified only a field of our instance, the instance 
+itself (its address im memory) was not changed.
+But proc t2 has created a new instance and assigned that value
+to the variable x in the main proc. We notice this as
+the adress of variable x has changed. The old instance variable
+with adress 0x7f054a904050 is now unused and will be
+freed by the Nim memory management.
+
 === Special argument types: OpenArray and Varargs
 
 The openArray and varargs data types can be used only in 
@@ -3217,20 +3391,35 @@ available by using the high() function on the passed array
 parameter. Whenever we write a proc that accepts an array
 or a seq, we should consider using the openArray parameter type
 to allow passing in both data types. Strings can be passed although
-to procs accepting openArrays with char base type.
+to procs accepting openArrays with char base type. Note that a
+proc with openArray parameter type can not change the length of a passed seq,
+as for the openArray parameter type sequences are handled like arrays.
+So in the code below proc t1 generates a compiler error while
+t2 compiles and works fine.
 
-The varargs data type allows passing a variable number of
-arguments to a proc or function, and we can
-iterate over the arguments in the proc body:
+[source, nim]
+----
+proc t1(x: var openarray[int]) =
+  x.setLen(7)
 
+proc t2(x: var seq[int]) =
+  x.setLen(7)
+----
+
+The varargs parameter type is similar to the openArray type, but
+it additional allows passing an arbitrary number of single arguments.
+The compiler automatically collects the single arguments into an array for us.
+
+[source, nim]
 ----
 proc print(s: varargs[string]) =
   for el in s:
     stdout.write(el)
     stdout.write(", ")
-  strout.write('\n')
+  stdout.write('\n')
 
-print("Hello", "World")
+print("Hello", "World") # compiler builds the array for us
+print(["Hello", "World"]) # we generate the arry our self
 ----
 
 There exists a variant of the varargs data type that
@@ -3241,6 +3430,29 @@ automatically. That is what echo does.
 
 Varargs arguments may be only allowed for the last
 argument in a parameter list.
+
+Finally we may wonder if it makes sense to specify a parameter of
+type var varargs. If we try to pass a constant string this will
+obviously not work, and if the compiler generates an array for us
+it does also not work, the automatically generated array seems to behave
+like a constant array. But may we pass a array variable? Let us try:
+
+[source, nim]
+----
+proc print(s: var varargs[string]) =
+  s[0] = "Goodbye"
+  for el in s:
+    stdout.write(el)
+    stdout.write(", ")
+  stdout.write('\n')
+
+var msg = ["Hello", "World"]
+print(msg)
+----
+
+Surprisingly that does not compile, while it works when
+we replace varargs with openarray.
+
 
 === Scoping , Visibility and Locality
 
