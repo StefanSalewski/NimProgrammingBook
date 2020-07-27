@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 24-JUL-2020
+//v0.1, 26-JUL-2020
 :doctype: book
 :toc: left
 :icons: font
@@ -3685,15 +3685,33 @@ echo sqr(3.1415)
 ----
 
 Here we have limited the parameter types to the int type or the float type.
+We could have defined also a custom type first, like type MyNum = int or float
+and use that type for the type of our sqr proc. These [.code]#or types# are also called
+[.code]#type classes#. Instead of keyword [.key]#or# the [.key]#|# character can be used for defining type classes.
 Again the compiler would instantiate two separate functions for the
 both data types. As we had not the symbolic type T available here, we have used the
 keyword auto as return type, and for the type of variable p we used the macro
 typeof(). The type auto for the return type works as long as the
-function returns a well defined type. Note that we can not at runtime decide
+function returns a well defined type. Note that we can not decide at runtime
 what a type the function should return, so a construct like
 if cond: return 2 else: return 3.1415 would not work, at least not when the
 values are variables of different type. For the literal value it may work, as
 the compiler may be smart and guess that we want to return the float literal 2.0.
+
+A bit care is needed when we define procs for mutable [.code]#or types#:
+
+----
+# proc t(s: var seq[uint8] | var seq[char]) =
+proc t(s: var (seq[uint8] | seq[char])) =
+---- 
+
+Here we try to define a proc called t which should accept a mutable
+seq[uint8] or a mutable seq[char] as parameter. While the first
+line compiles fine, the seq[char] would be immutable. The correct notation
+is shown in the second line. This behavior was labeled "won't fix" in
+github issue tracker, so we have to remember this case, see
+https://github.com/nim-lang/Nim/issues/15063#issue-665553657.
+
 
 Generics can become a bit complicated, as we may even use multiple different
 generic types for different proc parameters. And we can use generics also
