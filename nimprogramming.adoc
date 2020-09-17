@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 16-SEP-2020
+//v0.1, 17-SEP-2020
 :doctype: book
 :toc: left
 :icons: font
@@ -2073,7 +2073,6 @@ Character 127 is also not printable, and is called DEL. An important property of
 this table is the fact that decimal digits and upper- and lower-case letters
 form contiguous blocks. So to test for example if a characters is an uppercase
 letter we can use this simple condition: [.term]#+c >= 'A' and c <= 'Z'+#.
-// I like to use 'A' <= c and c <= 'Z' -J
 
 Characters with ord() > 127 are so called umlauts, exotic characters of other
 languages, and some special characters. But these characters may be different
@@ -2090,14 +2089,15 @@ start with the backslash character, and the following characters are interpreted
 The backslash can follow a numeric value in decimal or hexadecimal encoding, or a letter
 which is interpreted in a special way. We mentioned already that the character 'A' is mapped
 to the decimal value 65, which is its position in the ASCII table. So instead of 'A' we could use the
-escape sequence '\65' for this character. Or, as decimal 65 is 41 in hexadecimal notation (4*16^1+1*16^0) we
+escape sequence '\65' for this character. Or, as decimal 65 is 41 in hexadecimal notation [.term]#(4 * 16^1 + 1 * 16^0)# we
 can use '\x41' where the x indicates that the following digits are hexadecimal. For common, often used
 control characters it is not easy to remember their numeric value, so another notation with a
 letter following the backslash can be used. For the important newline character we can use the
-decimal numeric value '\10', the hexadecimal value '\0A' or the symbolic form '\n'. Here the letter n
+decimal numeric value '\10', the hexadecimal value '\xA' or the symbolic form '\n'. Here the letter n
 stands for newline. The following table lists a few important control characters:
 
 [cols=4*,options="header"]
+[%autowidth]
 |===
 |Decimal
 |Hexadecimal
@@ -2105,16 +2105,64 @@ stands for newline. The following table lists a few important control characters
 |Meaning
 
 |10
-|0A
-|\n
+|xA
+|\n, \l
 |newline or linefeed -- move cursor one position down
 
+|12
+|xC
+|\f
+|formfeed
+
+|9
+|x9
+|\t
+|tabulator
+
+|11
+|xB
+|\v
+|vertical tabulator
+
+|92
+|x5C
+|\\
+|backslash
+
+|39
+|x27
+|\'
+|single quote, apostrophe
+
+|7
+|x7
+|\a
+|alert, audible beep
+
+|8
+|x8
+|\b
+|backspace
+
+|27
+|x1B
+|\e
+|Escape, [ESC]
+
 |13
-|0D
-|\r
-|carriage return -- move cursor at the beginning of the line
+|xD
+|\r, \c
+|return or carriage return -- move cursor at the beginning of the line
 
 |===
+
+The hexadecimal numbers after the [.term]#\x# character can by upper or lower case
+and can have one or two hexadecimal digits.   For symbolic control characters
+like '\a' for alert the upper case variant '\A' seems to be identical currently.
+The single quote entered as ''' does give an error message, so you have to
+escape it as '\''. Unfortunately by supporting this form of escaping it becomes
+impossible to enter a backslash character directly, so we have to escape the
+backslash character as '\\' to print a single backslash.
 
 For Nim the most important control character is '\n' which is used to start the output
 in a terminal window at the beginning of a new line. But '\n' is generally not used
@@ -2126,6 +2174,17 @@ character automatically after each printed line, but the write() function does n
 echo 'N', 'i', 'm'
 stdout.write  'N', 'i', 'm', '\n'
 ----
+
+What may be a bit confusing is the fact that we use the backslash character as
+escape symbol, and at the same time above table has an entry '\e' which is also
+called [ESC]. These '\e' control character with decimal value 27 is fully unrelated
+to the backslash character that we use to type in control characters. [ESC] is
+a special character to start control sequences, it was used in the past to
+send special commands to printers or modems, and can be used to
+control font style or colors in terminal windows.
+
+Nim's control characters should, with few exceptions, be identical with control characters
+of the C language, so you may also consult C literature for more details.
 
 === Ordinal types
 
