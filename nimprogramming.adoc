@@ -1,7 +1,7 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction
 (C) Dr. Stefan Salewski 2020
-//v0.1, 17-SEP-2020
+//v0.1, 02-OCT-2020
 :doctype: book
 :toc: left
 :icons: font
@@ -21,6 +21,7 @@ A gentle Introduction
 :curnim: Nim v1.4
 :twocom: two's complement
 :cpp: C++
+:pp: ++
 
 ////
 
@@ -1388,6 +1389,7 @@ variable declarations are important.
 
 A constant declaration in its simplest form maps a symbolic name to a value, like
 
+[source, nim]
 ----
 const Pi = 3.1415
 ----
@@ -1423,6 +1425,7 @@ some functions calls may be not allowed.
 Variable declarations are more complicated, as we ask the compiler to reserve a named
 storage location for us:
 
+[source, nim]
 ----
 var velocity: int
 ----
@@ -1457,6 +1460,7 @@ functions -- we pass an angle as argument and get the sine or cosine as a result
 
 Let's look at this minimal Nim program:
 
+[source, nim]
 ----
 var a: int
 a = 2 + 3
@@ -1482,6 +1486,7 @@ When we have to declare multiple constants or variables, then we can use a block
 that is we write the keyword var or const on its own line, followed by the
 actual declarations like in
 
+[source, nim]
 ----
 const
   Pi = 3.1415
@@ -1507,6 +1512,7 @@ separate them by a semicolon.
 
 We can also declare multiple variables of the same type in one single declaration, like
 
+[source, nim]
 ----
 var
   sum, age: int
@@ -1514,6 +1520,7 @@ var
 
 or we can assign an initial start value to a variable like in
 
+[source, nim]
 ----
 var
   year: int = 1900
@@ -1522,6 +1529,7 @@ var
 Finally, for variable declarations we can use type inference when we assign an initial
 start value, that is we can write
 
+[source, nim]
 ----
 var
   year = 1900
@@ -1544,6 +1552,7 @@ operation. For unsigned types, another problem is that math operations on unsign
 operands could have a negative result. Consider the following example where we
 use a hypothetical data type "unsigned int" to indicate unsigned integers:
 
+[source, nim]
 ----
 var a, b: unsigned int
 a = 3
@@ -1560,6 +1569,7 @@ the initial start value zero if we do not assign a different value in the variab
 
 In this declaration
 
+[source, nim]
 ----
 var
   a: int = 0
@@ -1750,6 +1760,7 @@ devices, it may be best to use only integers of well defined size like int8.
 An important property of the current Nim implementation of A. Rumpf used with the C backend is the
 fact that unsigned integers does not generate overflow errors but simple wrap around:
 
+[source, nim]
 ----
 var x: int8 = 0
 
@@ -1765,6 +1776,18 @@ value wraps around to 0 again and the process continues.  This behavior can lead
 strange bugs and is the reason that the Nim team generally recommends to avoid
 unsigned integers.
 
+For compatibility with external libraries Nim has also the integer types cint and cuint,
+which exactly match the C types int and uint when we compile for the C or {cpp}
+backend. For the javascript backend, the LLVM backend or other backends these types may be
+also avalable, for details you should consult the compiler documentation.
+For most {os} and C compilers the int and
+uint types in C are 4 bytes in size, but there can be exceptions, so we better should not
+write code that depends on the actual byte size of the types. The Nim types cint and cuint are generally
+only used for parameter lists of (C) library functions. To match other integer types
+like C char, short, long, longlong Nim supports these types when we put a c letter in front
+of the name like clong. Again you should consult the Nim compiler manual when you need
+more details, ie. when you create bindings to external libraries.   
+
 === Floating point types
 
 Another important numeric data type is float, for floating point numbers.  Floats are
@@ -1772,6 +1795,7 @@ an approximation of real numbers.  They can also store fractions, and are most o
 printed in the decimal system with a decimal point, or in scientific notation with an
 exponent. Examples for floats are
 
+[source, nim]
 ----
 var
   mean = 3.0 / 7.9
@@ -1845,6 +1869,17 @@ The operators [.term]#+#, [.term]#-#, [.term]#*# and [.term]#/# can be used also
 float variable and the other operand is an int literal. But when one operand is a float variable and the other
 is an int variable, then a type conversion is necessary like in [.term]#float(myIntVal) * myFloatVal#.
 
+As for integer variables Nim supports also the compatible types cfloat and cdouble which match
+the C types float and double when the C backend is enabled.  For most C compilers C float matches
+Nim's float32 and C double matches Nim's float64.
+
+****
+Some CPUs and C compilers support also other floating point types beside the common
+float32 and float64 types. Intel x86 compatible CPUs generally support float80 math operations,
+and the gcc C compiler may support float128. But these types are not yet supported
+by the Nim compiler of A. Rumpf. 
+****
+
 === Distinct types
 
 Before we continue with subrange types we should introduce the distinct types.  In
@@ -1859,6 +1894,7 @@ the distinct keyword which allows us to define new data types that are based on 
 that are not compatible with them or with other distinct types. And the new defined distinct
 types have no predefined operations, we have to define all desired operations our self.
 
+[source, nim]
 ----
 type
   Time = distinct float # in seconds
@@ -1884,6 +1920,7 @@ Sometimes it makes sense to limit the range of numeric variables to only a sub-r
 For this Nim uses the [.key]#range# keyword with this notation: [.key]#range[LowVal .. HighVal]#.
 Values of this type can never be smaller than LowVal or larger than HighVal.
 
+[source, nim]
 ----
 type
   Year = range[2020 .. 2023] # software update required at least for 2024!
@@ -1903,6 +1940,7 @@ base types like [.term]#type Probability = range[0.0 .. 1.0]#.
 
 Note that we can still mix different sub-range type:
 
+[source, nim]
 ----
 var d: Day = 13
 var m: Month = 3
@@ -1925,6 +1963,7 @@ west for a map or a game.
 Most of the time we declare an enum type and the corresponding values by simple
 listing them like 
 
+[source, nim]
 ----
 type
   TrafficLight = enum
@@ -1933,6 +1972,7 @@ type
 
 We can use variables of type TrafficLight then like
 
+[source, nim]
 ----
 var tl: TrafficLight
 tl = green
@@ -1946,6 +1986,7 @@ or predecessor of an enum, ord() or int() deliver the corresponding integer numb
 and the $ operator can be used to get the name of an enum. We can also iterate over
 enums, so we can print all the colors of our  TrafficLight by
 
+[source, nim]
 ----
 for el in TrafficLight
   echo el.ord, ' ', $el
@@ -1954,6 +1995,7 @@ for el in TrafficLight
 Ordinary enums start at 0 and uses continues numbers for the internal numeric value,
 so that enums can be used as array indices.
 
+[source, nim]
 ----
 type
   A = array[TrafficLight, string]
@@ -1965,6 +2007,7 @@ echo a[red]
 
 But we can also assign custom numbers like
 
+[source, nim]
 ----
 type
   TrafficLigth = enum
@@ -1977,6 +2020,7 @@ obviously not possible for enums with holes.
 
 It is also possible to set the string that the stringify operator $ returns, like in 
 
+[source, nim]
 ----
 type
   TrafficLigth = enum
@@ -1992,6 +2036,7 @@ When we have many enums in a program then name conflicts may occur, for example 
 may have an additional enum type named BaseColor which also has red and green members.
 For that case the {.pure.} pragma exists:
 
+[source, nim]
 ----
 type
   BaseColor {.pure.} = enum
@@ -2013,6 +2058,7 @@ can not access single bits in the RAM -- the smallest entity that can be directl
 accessed in RAM is a byte.  The default initial state of a boolean variable is false,
 corresponding to a byte with all bits cleared. 
 
+[source, nim]
 ----
 var
   age = 17
@@ -2170,6 +2216,7 @@ as a single character but embedded in strings, that is sequences of characters. 
 will learn more about strings soon. Note that the echo() function inserts a newline
 character automatically after each printed line, but the write() function does not:
 
+[source, nim]
 ----
 echo 'N', 'i', 'm'
 stdout.write  'N', 'i', 'm', '\n'
@@ -2234,6 +2281,7 @@ that is if it is a lower or upper case letter or a digit.  A traditional test wo
 be (x >= a and x <=z) or (x >= A and x <= Z) or (x >= 0 and x <= 9). Using Nim's set
 notation we can write that in a simpler form:
 
+[source, nim]
 ----
 const
   AlphaNum: set[char] = {'a' .. 'z', 'A' .. 'Z', '0' .. '9'}
@@ -2258,6 +2306,7 @@ conjunction with bit shifts.
 
 Two important operations for sets are building the union and the intersection:
 
+[source, nim]
 ----
 const
   AlphaNum: set[char] = {'a' .. 'z', 'A' .. 'Z', '0' .. '9'}
@@ -2279,6 +2328,7 @@ set bits only for positions where both arguments have set bits.
 
 We can use the functions incl() and excl() to add or remove single set members:
 
+[source, nim]
 ----
 var s: set[char]
 s = {} # empty set
@@ -2311,6 +2361,7 @@ is the number of contained members.
 We should also mention that we can have character sets which are restricted to a
 range of characters:
 
+[source, nim]
 ----
 type
   CharRange = set['a' .. 'f'] 
@@ -2328,6 +2379,7 @@ is that in Nim integer numbers are generally 4 or 8 bytes large, but sets can co
 only numbers with 1 or 2 byte size. So we have to specify the type of set members
 explicitly:
 
+[source, nim]
 ----
 type
   ChessPos = set[0'i8 .. 63'i8]
@@ -2343,6 +2395,7 @@ to 63.
 We can use also another notation for numeric sets when we define an explicit range
 type like in
 
+[source, nim]
 ----
 type
   ChessSquare = range[0..63]
@@ -2357,6 +2410,7 @@ assert baseLine == baseLineExplicit
 What may be a bit surprising is the fact that Nim's sets work also for negative
 numbers:
 
+[source, nim]
 ----
 type
   XPos = set[-3'i8 .. +2'i8]
@@ -2369,6 +2423,7 @@ Enum sets are also very useful and can be used to represent multiple boolean
 properties in a single set variable instead of using multiple boolean variables for
 this purpose:
 
+[source, nim]
 ----
 type
   CompLangFlags = enum
@@ -2382,6 +2437,7 @@ Enum sets can be used to interact with functions of C libraries where for flag
 variables often or'ed ints where used. For example for the gintro C bindings there is
 this definition:
 
+[source, nim]
 ----
 type
   DialogFlag* {.size: sizeof(cint), pure.} = enum
@@ -2399,6 +2455,7 @@ When we define set of enums in this way to generate bindings to C libraries, the
 have to ensure that the enum values start with zero, otherwise Nim's definition will
 not match with  the C definition.  For example in the gdk.nim module we have
 
+[source, nim]
 ----
 type
   AxisFlag* {.size: sizeof(cint), pure.} = enum
@@ -2428,6 +2485,7 @@ Can we print sets easily? As sets are an unordered type, it is not fully trivial
 we can iterate over the full base type and check if the element is contained in our
 set like
 
+[source, nim]
 ----
 var s: set[char] = {'d' .. 'f', '!'}
 
@@ -2452,11 +2510,14 @@ or output operation is performed. Usually it is a sequence of ASCII-only charact
 but multiple characters in the string can be interpreted as so called utf-8
 unicode characters, that allow displaying nearly unlimited symbols as long as all
 the needed fonts are installed on your computer and you manage to enter them --
-unicode chars may be not accessible by a simple keystroke. For now we will only use
+unicode characters may be not accessible by a simple keystroke. For now we will only use
 ASCII characters, as they are simpler and work everywhere. String literals must be
 enclosed in double quotes. Nim strings are similar to the Nim seq data types: both
 are homogeneous variable-size containers. That means that a string or a seq expands automatically
-when you append or insert characters or other strings.
+when you append or insert characters or other strings. Don't confuse short strings with only one character
+with single characters: A string is an non trivial entity with internal state like data buffer (the actual contained characters), length and storage capacity
+why a character is nothing more than a single byte interpreted in a special way. So a string like
+"x" is fully different from 'x'.
 
 [source, nim]
 ----
@@ -2469,7 +2530,7 @@ add(str, ' ')
 echo str, name
 ----
 
-We declare a variable called str and assign it the initial literal value
+In above example code we declare a variable called str and assign it the initial literal value
 [.term]#"Hello"#. We use the [.term]#echo()# procedure to ask the user for his name, and use the [.term]#readLine()#
 procedure to read the user input from the terminal. To show how we can add
 characters to existing string variables we call the [.term]#add()# procedure
@@ -2482,38 +2543,42 @@ special variable [.term]#stdout# when we want to write to the terminal window.
 
 So we could substitute the last two lines of the above code by
 
+[source, nim]
 ----
 write(stdout, str)
 write(stdout, ' ')
-write(stdout, name)
+echo name
 ----
 
 The Nim standard library provides a lot of functions for creating and modifying strings, most of
 these functions are collected in the system and in the strutils module. 
 The most important procedures for strings are len() and high(). The len() procedure returns
-the length of a string, that is the number of ASCII characters that the string currently contains.
+the length of a string, that is the number of ASCII characters or bytes that the string currently contains.
 The empty string "" has length zero. Note that the plain len() function returns the number of 
 8-bit characters, not the number of unicode glyphs when the string should be interpreted as
 unicode text. To determine the number of glyphs of unicode strings you should use some of the
 unicode modules. The high() function is very similar to the len() function, it returns the index
-of the last character in the string. For each string s high(s) == len(s) -1.  
+of the last character in the string. For each string s high(s) == len(s) -1.
+Remember that Nim supports method call syntax, so we can also write s.len instead len(s).
  
 The most important
 operators for strings are the subscript operator [.op]#[]# which allows access to individual characters
 of strings, and the [.op]#slice# operator which allows access to sub-strings. The first character in a string
-has always the index zero.
+has always the index zero. For concatenation of string literals or string variables Nim uses the [.op]#&# operator. 
 
+[source, nim]
 ----
-var s = "We hate Nim?"
+var s = "We hate " & "Nim?"
 s[3 .. 6] = "like"
 s[s.high] = '!'
 ----
 
-In the code above we used the slice operator to replace the substring "hate", that is the characters 3 up to 6,
+In the example above we define the string s by use of two literal strings to show the use of the concatenation operator.
+In line two we use the slice operator to replace the substring "hate", that is the characters 3 up to 6,
 with the string "like". In this case the replacement has exactly that many characters as the text to replace,
 but that is not necessary: We can replace substrings with longer or shorter strings, which includes the
 empty string "" to delete a text area.
-In the last line of above example we used the subscript operator [.op]#[]# to replace the single character '?' at the
+In the last line of above example we use the subscript operator [.op]#[]# to replace the single character '?' at the
 end of our string with an exclamation mark. For subscript and slice operators Nim supports also a special notation
 which indicates indexing from the end of the string. Python and Ruby use negative integers for this purpose, while
 Nim uses the [.op]#^# character. So [.code]#^1# is the last character, [.code]#^2# the one before the last. So we could have written
@@ -2523,15 +2588,107 @@ for negative indices it may be not always clear if a regular index or a position
 The term [.code]#s[^x]# is equivalent to [.code]#s[s.len - x]#. We will learn some more details about the slice operator in a later section
 when we have introduced arrays and sequences.
 
-In the C languages strings are just pointers to sequences of characters of fixed length. The end of such a C string is generally
-marked with the character "\x0". C functions like printf() needs this "\x0" characters to determine the
-end of the C string. While Nim strings are objects that store its current size and other properties, and
+Another important operator for strings is the "toString" or stringify operator [.op]#$#.
+It can be applied to nearly all data types and converts them to strings which can then be printed.
+Some procedures like echo() apply this operator on its arguments automatically. When we define
+our own data types then it can make some sense to define the  [.op]#$# for them, in case we
+need a textual representation of our data -- maybe only for debugging purpose. Note that
+applying the [.op]#$# operator on a string directly has no effect and is ignored, as the result would not change.
+
+Strings can contain all characters of the char data type including the control characters. The most
+important control character for strings is the newline character '\n' which is used at the end
+or sometimes also in strings to start a new line. For strings Nim also supports the virtual character
+"\p" to encode an OS dependent line break. When compiled for Windows, "\p" is automatically
+converted to "\r\n", and to plain '\n' on Linux. Note that "\p" can be used in strings, but not as
+single character, as it is two byte on Windows. "\p" is only needed to support very old Windows version or maybe other exotic
+{os}, as modern Windows recognizes plain '\n' well.
+
+As strings support utf-8 unicode, an escape sequence starting with "\u" is supported to insert unicode codepoints.
+The "\u" follows exactly 4 hexadecimal digits or an arbitrary number of hex digits enclosed in curly braces {}.
+
+As string literals are enclosed in quotation marks, it follows that strings can not directly contain this
+character, we have to escape it as in [.term]#"\"Hello\", she said"#. 
+
+Maybe we should mention that Nim strings use copy semantics for assignment. As we have not yet
+introduced ref objects or pointers, copy semantics is what you should expect -- strings
+behave just like all the other simple data types we used before like integer or float numbers or enums and characters:
+
+[source, nim]
+----
+var
+  s1: string
+  s2: string
+s1 = "Nim"
+s2 = s1
+s1.add(" is easy!")
+echo s1 & "\n" & "s2"
+---- 
+
+The output is
+
+----
+Nim is easy!
+Nim
+----
+
+The assignment [.term]#s2 = s1# creates a copy of s1, so the subsequent add() operation does
+only modify s1 but not s2. Probably not surprising for you, but other programming languages
+may behave differently, ie. the assignment may not copy the textual content but create only
+a reference to the first string, so that modifying one of then also effect the other. We will learn more
+about the concept of references when we introduce the object data type. 
+
+==== Entering Unicode Characters
+
+UTF-8 is a variable-width character encoding. To cite the introducing section from
+https://en.wikipedia.org/wiki/UTF-8:
+
+****
+UTF-8 is capable of encoding all 1,112,064[nb 1] valid character code points in Unicode using one to four one-byte (8-bit) code units. Code points with lower numerical values, which tend to occur more frequently, are encoded using fewer bytes. It was designed for backward compatibility with ASCII: the first 128 characters of Unicode, which correspond one-to-one with ASCII, are encoded using a single byte with the same binary value as ASCII, so that valid ASCII text is valid UTF-8-encoded Unicode as well. Since ASCII bytes do not occur when encoding non-ASCII code points into UTF-8, UTF-8 is safe to use within most programming and document languages that interpret certain ASCII characters in a special way, such as "/" (slash) in filenames, "\" (backslash) in escape sequences, and "%" in printf.
+****
+
+In Nim we have four ways to enter unicode characters: As hexadecimal digits following the "\x", as unicode
+codepoint following the "\u" or we can type the unicode sequence directly on our keyboard, as one single
+keystroke when our keyboard layout supports that, or as a special OS dependent sequence of
+keystrokes:
+
+[source, nim]
+----
+echo "\xe2\x99\x9A \xe2\x99\x94"
+echo "\u265A \u2654"
+echo "\u{265A} \u{2654}" # {} is only necessary for more than 4 hex digits
+echo "♚ ♔"
+----  
+
+The code above shows three was to print the symbol for a black and a white king of a chess game.
+In the first line we typed the unicode sequence directly as hexadecimal digits, this method is
+rarely used today. In the second line we used "\u" to enter the codepoint directly, we get the
+code from https://en.wikipedia.org/wiki/List_of_Unicode_characters. And finally we entered
+the glyph directly in an editor. For some Linux editors like gedit we can hold down shift and
+control key and then type u, release all keys and type the unicode digits like 265a and a space.
+See https://en.wikipedia.org/wiki/Unicode_input for details and other {os}.
+
+==== The CString data type
+
+In the C language strings are just pointers to sequences of characters of fixed length.footnote:[We
+will explain later in this book what pointers are, so if you have no idea for what pointers are used
+in computer programming, then just ignore it for now.] 
+The end of such a C string is generally
+marked with the character '\x0'. C functions like printf() needs this "\x0" characters to determine the
+end of the C string. While Nim strings are entities that store its current size and other properties, and
 can grow dynamically, the character sequence of Nim strings has also a hidden terminating '\0' character
-at the end to make them compatible with C strings. Nim has also the data type cstring, which matches
-the strings in C language. Cstrings are used in bindings definitions for C libraries, but as cstrings can not grow and
+at the end to make them compatible with C strings. Nim has also the data type cstring, called
+"compatible string" in modern Nim, which matches
+the strings in C language if we compile as usual with C backend. Cstrings are used in bindings definitions for C libraries, but as cstrings can not grow and
 do support only few string operations, they are only used in rare cases in ordinary Nim source code. 
 The Nim compiler passes automatically the zero terminated data buffer of Nim strings to C libraries whenever
-we call a C library.
+we call a C library, so there is no expensive type conversion involved. But the other way is much more expensive: When
+you have an existing cstring and need a Nim string with same content, then a simple conversion is not
+possible as a Nim string is a different, more complex entity. So we have to create a Nim string and copy the
+content, you can use the stringify operator [.op]#$# for this like in [.term]#myNimStr = $myCString#.
+Generally string creation is an expensive operation compared to plain operations like adding two numbers,
+so when performance matters one should try to avoid unnecessary string creation and also unnecessary
+string operations. This is mostly important in loops, which are executed often. We will explain more about
+the internal of strings and why string creation and dynamically allocating memory is expensive in later sections of the book.
 
 ****
 When we access text ranges with the slice operator or single characters with the subscript operator
@@ -2545,10 +2702,14 @@ of characters 4 .. 9? Well maybe spaces would make some sense, but in fact such 
 last valid character of the string is forbidden. You could do str.add("      !") for this purpose.   
 ****
 
-=== Escape sequences in strings
+==== Escape Sequences in Strings
 
-We already learned that the ASCII table contains some special characters. An
-important one is the newline character, which moves the cursor in the terminal
+We learned about control characters already in the section about characters, and earlier in this section
+we mentioned that strings can also contain control characters. As the use of control characters may be
+not really easy to understand, we will explain their use in  strings in some more detail and
+give a concrete example.
+
+The most important control characters for strings is the newline character, which moves the cursor in the terminal
 window to the beginning of the next line. The [.term]#echo()# procedure prints that character
 automatically after each output operation. Indeed it can be important to terminate
 each output operation with that character, as the output can be buffered, and writing
@@ -2570,6 +2731,7 @@ with a single special character. Whenever we want a newline in a string we
 type it as [.term]#"\n"#, that is, the backslash character followed by an ordinary
 letter n, n for newline. 
 
+[source, nim]
 ----
 echo "\n"
 echo "Hello\nHello\nHello"
@@ -2591,7 +2753,7 @@ replaces "\p" in our strings with a carriage-return and a linefeed character, an
 when we compile on Linux then the compiler replaces "\n" only with a newline
 character.  But modern Windows supports '\n', so we generally can use that. 
 
-=== Raw strings and multi-line strings
+==== Raw Strings and multi-line Strings
 
 In rare situations you may want to print exactly what you have typed, so you do not
 want the compiler to replaces a \n by a newline character. You can do that in two ways:
@@ -2600,6 +2762,7 @@ more backslash. When you print the string "\\n" you will get a backslash and the
 character in your terminal. Or you can use so called raw strings, that is you put the
 character r immediately in front of your string like
 
+[source, nim]
 ----
 echo r"\n"
 echo "\\n"
@@ -2610,6 +2773,7 @@ interpreted by the compiler, and additional multi-line strings, as the name impl
 can extend over multiple lines of the source text. Multi-line texts starts and ends
 with three quotes like in
 
+[source, nim]
 ----
 echo """this is
 three lines
@@ -2627,12 +2791,16 @@ starts with the hashtag character # and extend to the end of the line. The #
 character itself and all following characters up to the line end are ignored by the
 compiler. You can also start the comment with ##, then it is a documentation
 comment. It is also ignored by the compiler, but can be processed when you use later
-tools to generate documentation for your code. There are also multi-line comments,
+tools to generate documentation for your code. Documentation comments
+are only allowed at certain places, often they are inserted at the beginning
+of a procedure body to explain its use.
+There are also multi-line comments,
 which starts with the two characters
 +#[+ and ends with +]#+. These form of comment can extend over multiple lines
 and can be nested, that is multi-line comments can contain plain or multi-line
-comments.
+comments. 
 
+[source, nim]
 ----
 # this is comment
 ## important note for documentation
@@ -2640,6 +2808,21 @@ comments.
 but useless comment
 #]
 ----
+
+Multi-line documentation comments also exists and can also be nested.
+
+[source, nim]
+----
+proc even(i: int): bool =
+  ##[ This procedure
+  returns true if the integer argument is
+  even and false otherwise.
+  ]##
+  return i mod 2 == 0
+----
+
+You can also use the +#[+ comment +]#+ notation to insert comments everywhere in the source code at places
+where a whitspace character is allowed, but these form of in source comments is rarely used.
 
 === Other data types
 
@@ -2649,13 +2832,13 @@ different types. And we have sets, and enums and finally objects. Nim objects ar
 similar to C structs, they are not so verbose as Java classes. We will learn more
 about all these types in later sections of the book.
 
-== Nim source code
+== Nim Source Code
 
 You have already seen a few examples of simple Nim source code. The code is
 basically a plain text file consisting of ASCII characters, that is the ordinary
 characters which you can type on your keyboard. Generally Nim source code can also
-contain unicode utf-8 characters, so instead of using names consisting of ASCII character
-for your variable or procedure names, you could just use single unicode characters or
+contain unicode utf-8 characters, so instead of using names consisting of ASCII characters
+for your symbol names, you could just use single unicode characters or
 sequences of unicode characters. But generally that makes not much sense, entering
 unicode is not that easy with a keyboard, and it is displayed only correctly on the
 screen or in the terminal when the editor or terminal supports unicode properly and
@@ -2663,15 +2846,19 @@ when all necessary fonts are installed. That may be the case for your local comp
 but what when someone other may edit your source code?
 
 Nim does currently not allow to insert tabular characters (tabs) in your source code, so you
-have to do the indentation of blocks by spaces only.
+have to do the indentation of blocks by spaces only. Generally we use two spaces for
+each indentation level. Other numbers work also but you should stick to a fixed
+value. 
 
-Names in Nim, as used for variables, constants, procedures, user defined types and
-such may contain lower and upper case letters, unicode characters and additional
-underscores. But the names are not allowed to start or end with an underscore, and
+Names in Nim, as used for modules, variables, constants, procedures, user defined types and
+other symbols may contain lower and upper case letters, digits, unicode characters and additional
+underscores. But the names are not allowed to start with digits or to start or end with an underscore, and
 one underscore may not follow directly after another underscore.
 
+[source, nim]
 ----
 var
+  pos2: int # OK
   leftMargin: int # OK
   next_right_margin: int # OK
   _privat: int # illegal
@@ -2679,10 +2866,10 @@ var
   strange__error: int # illegal
 ----
 
-Generally we use camel case like leftMargin for names, not snake case like
+Generally we use camel case like leftMargin for variable names, not snake case like
 left_margin.
 
-Current Nim has the special property, that names are case insensitive and that
+Current Nim has the special property that names are case insensitive and that
 underscores are simple ignored by the compiler. The only exception is the first
 letter of a name, that letter is case sensitive. So the names leftMargin, leftmargin
 and left_margin are identical for the compiler. But LeftMargin is different to all
@@ -2699,9 +2886,9 @@ not allow that similar looking names, as the compiler would regard them as ident
 and would complain about a name redefinition.
 
 You may ask why the first letter is case sensitive. That is to allow for user defined
-types to use capital type names and then write something like [.term]#var myWindow: MyWindow#.
-So we can declare a variable named myWindows of a user defined data type named
-MyWindow. That is a common practice.
+types to use capital type names and then write something like [.term]#var window: Window#.
+So we can declare a variable named window of a user defined data type named
+Window. That is a common practice.
 
 The case insensitivity and the ignoring of underscores may be not the greatest
 invention of Nim, but it does not really hurt. The only exception is when we make
@@ -2717,20 +2904,55 @@ that type of search also. You can also enforce a consistent naming scheme
 when you call the compiler with the command line argument [.term]#--styleCheck:error#
 or [.term]#--styleCheck:hint#.
 
+****
+Languages like C uses curly braces to mark blocks, while other languages like Pascal
+uses begin/end keywords for this purpose. At the same time blocks are generally
+indented by tabs or spaces to make it easier for the programmer to recognize
+the extent of the block. This is some redundancy which is not always helpful --
+block marks and indentation range can contradict each other and can generate
+strange bugs. Like Python or Haskell Nim does not need additional block markers,
+the indent level is enough to mark the block extend for the compiler and the
+human programmer. This style looks clean and compact and was used in pseudo-code
+of textbooks for decades already. Some people still argue that this style is
+less "safe", as the behavior of the code depends on invisible white-space.
+But this is a strange argumentation -- the white-space is always visible
+due to the fact that there are visible characters on the right. Of course
+changing the indention of the last line of a block would effect the 
+behavior of the code. But that change is well visible. And program
+code contains many locations where changing one character breaks it.
+All numeric literals would suffer from adding a digit or deleting a digit.
+Or the operators like ++ or += from C -- the code may compile well after deleting
+the leading +, but it would be wrong. Computer programming is working carefully!
+Indeed use of curly braces for blocks has some advantages, eg. many editors
+can highlight such blocks well, editor may support jumping back and forth between the braces,
+and for really large blocks it may be indeed simpler to discover the whole block range.
+But practice has shown that marking blocks with indentation only works fine, most people
+who have used it for some time just prefer it.
+
+//For rare cases, like copy and past of long blocks,
+//maybe from other peoples code, indentation may not work that well. But computer
+//programming is different from writing a PhD thesis.  
+****
+
 == Control Structures
 
 The most important control structures of Nim are the if statement for conditional
 execution, the related case statement and the while loop for repetitions.
 
-=== If statement and If expression
+All these structures can be nested in arbitrary ways, so we can have in one if branch
+other if conditions or while loops, and in while loops again other control structures
+including other loops. 
 
-The if statement with the optional elif and else part evaluates
+=== If Statement and If Expression
+
+The if statement with the optional elif and else parts evaluates
 a sequence of conditions. As soon as one condition evaluates as true the
 corresponding statement block is executed, and after that the program
 execution continues after the whole if construct. That is at most one
 branch is executed. If none of the conditions after the if or elif keywords
 evaluates to true, then the else branch is executed if it exists. 
 
+[source, nim]
 ----
 if condition1:
   statement1a
@@ -2744,7 +2966,7 @@ elif condition3:
   statement3a
   statement3b
   ...
-elsif ...:
+elif ...:
   ...
 else:
   statementa
@@ -2754,10 +2976,13 @@ else:
 
 The most simple form of an if statement is
 
+[source, nim]
 ----
 if condition:
   statement
 ----
+
+[source, nim]
 ----
 if age > 17:
   echo "you may drink and smoke, but better avoid it!"
@@ -2768,26 +2993,52 @@ other numbers work as well. And note that it is [.term]#elif#, not elsif like in
 that there is a colon after the condition. Instead of a single statement we can use
 multiple each, all on its own line and all indented in the same way.
 
-Note: No, the terminating colon is not really necessary for the compiler, the
+****
+No, the terminating colon is not really necessary for the compiler, the
 compiler could determine the end of the condition without it, as the following
 statement is indented. But it looks better with colon, the colon makes it for humans
 easier to understand the structure of the whole if statement. So the compiler expects the
 colons and complains otherwise currently.
+****
 
-We can also have if/else expressions, which returns a value like in
+We can also have if/else expressions which returns a value like in
 
+[source, nim]
 ----
 var speed: float = if time > 0: delta / time else: 0.0 # prevent div by zero error
 ----
 
 In C for a similar construct the ternary ? operator is used.
 
+In languages like C or Ruby the assignment operator = is an expression which returns
+the value on the left, so we can write code like
+
+[source, c]
+----
+while (char c = getChar()) { process(c)}
+---- 
+
+In Nim the assignment operator is not an expression with a result, but we can group
+multiple statements in round brackets separated by semicolon, and when
+the last statement in the bracket is an expression, than the whole bracket has
+the same value. So we can use conditional terms like
+
+[source, nim]
+----
+while (let c = getChar(); c):
+  process(c)
+----
+
+If we declare a variable in this way using the var or let keyword then that variable
+is only visible in the bracket expression itself and in the following indented block.
+
 Note that if-expressions must always return a well defined value, so
-they must contain an else. A plain if without else, or a if/elsif without an
+they must contain an else. A plain if without else, or an if/elif without an
 else does not work. And as Nim is a statically typed language and all
 variables have a well defined type, the if-expression must return the same type for
 all branches!
 
+[source, nim]
 ----
 var a: int
 var b: bool
@@ -2797,11 +3048,32 @@ a = if b: 1 # invalid
 a = if b: 1 else: 0.0 # invalid, different types!
 ----
 
+=== The When Statement
+
+The when condition is similar to the if statement, but while the if condition
+is evaluated at program runtime, the when condition is already evaluated at
+compile time. In ordinary program code the when condition is not used that often,
+but it is very important and useful when we write bindings to C libraries and low
+level code.  An important condition for the when statement is the isMainModule
+condition and the test for defined symbols like defined(windows):
+
+[source, nim]
+----
+when not defined(gcDestructors):
+  echo "You may try to compile your code with option --gc:arc"
+when isMainModule:
+  doAllTheTests()
+----
+
+We will discuss the use of when statements, the isMainModule condition
+and defined symbols in more detail later.
+
 === The Case Statement
 
 The case statement is not used that often, but it can be useful when we have many
 similar conditions:
 
+[source, nim]
 ----
 case inputChar
 of 'x': deleteWord()
@@ -2815,7 +3087,7 @@ restrictions compared to a more flexible if/elif statement:
 
 The variable after the [.term]#case# keyword must have a so called ordinal type like
 int, char or string, while float would not work. And the values
-after each [.term]#of# keyword must be constant, that is single constant value,
+after each [.term]#of# keyword must be constant, that is a single constant value,
 multiple constant values or a constant range like [.term]#'a' .. 'd'# for
 the 4 first lower case letters. Of course these constants must have a type
 compatible to the type of the variable after the case keyword. A case
@@ -2829,6 +3101,7 @@ that program execution continues after the whole case construct.
 
 The case construct can also be used as an expression like in
 
+[source, nim]
 ----
 var j: int
 var i: int =
@@ -2844,7 +3117,7 @@ we can also indent the block after the case keyword if we want.
 
 === The While Loop
 
-The [.term]#while# loop is used when we want to do conditional repetitions, that is we want to
+The [.term]#while# loop is used when we want to do conditional repetitions, that is if we want to
 check a condition and want to execute a block of statements only as long as the
 condition is true. If the condition is false in advance or becomes false after some
 repetitions then the program execution proceeds after the indented block.
@@ -2858,6 +3131,7 @@ while condition:
 firstStatementAfterTheWhileLoop
 ----
 
+[source, nim]
 ----
 var repetitions = 3
 while repetitions > 0:
@@ -2882,6 +3156,7 @@ after the loop body. And a continue statement in the body skips the following
 statements in the body and starts at the top again, the while condition is evaluated
 again.
 
+[source, nim]
 ----
 var input = ""
 while input != "quit":
@@ -2913,7 +3188,7 @@ invalid data for the first iteration. Later we will see how we can use Nim macro
 extend Nim by a repeat loop that can be used as it would be part of Nim core
 functionality.
 
-=== For loops and Iterators
+=== For Loops and Iterators
 
 These are very useful and important in Nim and other languages. For loops are most
 often used to iterate over containers or collections. We have not discussed the
@@ -2924,10 +3199,11 @@ access single characters of a string with the subscript operator [.term]#[]# whi
 position of the desired character as argument. So we could print the single
 characters of a string, in this way:
 
+[source, nim]
 ----
 var
   s = "Nim is not always that easy?"
-  pos = 0
+pos = 0
 while s[pos] != '?':
   echo "-->", s[pos]
   inc(pos)
@@ -2939,6 +3215,7 @@ variable to do that. And this way is susceptible to errors, maybe we forget
 increasing the pos variable in the loop body. So most modern languages provide us
 with iterators for this purpose:
 
+[source, nim]
 ----
 var
   s = "Nim is not always that easy?"
@@ -2962,8 +3239,8 @@ construct when no iterator name is explicitly given, so we could also write shor
 [.term]#for ch in s:# in this use case.
 
 You may recognize that the output of the above for loop is not identical to the
-output of the previous while loop. The while loops stops when the last char, that is
-'?' is reached, while the for loops processes this last character still. That is
+output of the previous while loop. The while loops stops when the last character, that is
+'?', is reached, while the for loop processes this last character still. That is
 intended for the for loop, its general purpose is to process all the elements in
 containers or collections.
 
@@ -2971,6 +3248,7 @@ The above for loop does a read access to the string, that is we get basically a 
 of each character, and we can not modify the actual string in this way. When we want
 to modify the string, there is a variant available.
 
+[source, nim]
 ----
 var
   s = "Nim is not always that easy?"
@@ -2994,6 +3272,7 @@ manufacturer, quantity available, and actual selling price.
 We can create a custom object data type with fields containing the desired data for
 this purpose:
 
+[source, nim]
 ----
 type
   Computer = object
@@ -3020,13 +3299,14 @@ That is similar like a plain variable declaration.
 
 Objects in Nim are similar to structs in C. Unlike classes in Java Nim objects
 contain only the fields, sometimes also called member variables, but no procedures,
-functions or methods, and no initializers or destructors as in C++. In Nim we keep
+functions or methods, and no initializers or destructors as in {cpp}. In Nim we keep
 the data objects, and the procedures, functions, methods and also optional
 initializers and destructors that work with that data objects separated.
 
 Now that we have defined our own new object type, we can declare variables of that
 type and store content in its fields.
 
+[source, nim]
 ----
 var
   computer: Computer
@@ -3048,15 +3328,32 @@ It may look a bit ugly that we have to write [.term]#computer.# before each fiel
 access the fields. Indeed in recent Nim versions that is not necessary, you may use
 the [.term]#with# construct now instead.
 
-You can use the fields like ordinary variables:
+[source, nim]
+----
+import std/with
+var
+  computer: Computer
+with computer:
+	manufacturer = "bananas"
+	cpu = "x7"
+	powerConsumption = 17
+	ram = 32
+	ssd = 1024
+	quantity = 3
+	price = 499.99
+----
 
+We can use the fields like ordinary variables:
+
+[source, nim]
 ----
 computer.quantity = computer.quantity - 1 # we sold one piece
 echo computer.quantity
 ----
 
 As you already know, the right side of the assignment operator is evaluated first,
-then the result is stored in the variable on the left side.
+then the result is stored in the variable on the left side. But we can also just write
+[.term]#computer.quantity -= 1# or [.term]#dec(computer.quantity)#.
 
 Generally a computer store would offer many different types of computers, so it would
 make sense to store all the different devices in a container like a sequence, called
@@ -3064,15 +3361,18 @@ short seq in Nim.
 
 == Arrays and Sequences
 
-Sequences and arrays are so called containers, they can contain multiple other
-elements, while a plain variable like a float or an int only contains a single value.
-We could regard objects also as containers, because objects contain multiple fields,
-well maybe. The same holds for tuples -- tuples are a very simple, restricted form
+Sequences and arrays are homogeneous containers, they can contain multiple other
+elements of the same data type, while a plain variable like a float or an int only contains a single value.
+In some way we could regard objects also as containers, because objects contain multiple fields.
+The same holds for tuples -- tuples are a very simple, restricted form
 of objects and also contain fields. But more typical container data types are the
 built in arrays and sequences, or for example hash tables which are provided by the
 Nim standard library. Arrays, sequences and hash tables can contain multiple
-elements, but all elements must have the same type.footnote:[But the types can be
-sum types, we will discuss them later.] Arrays have a fixed, predefined
+elements, but all elements must have the same data type, which we call the base type.footnote:[The base types can be
+sum types, we will discuss them later.] 
+The data type of the base type is not restricted, it can be even again array or sequence types, so we can built
+multidimensional matrices in this way.
+Arrays have a fixed, predefined
 size, they can not grow or shrink during runtime of our program. Sequences and hash
 tables can grow and shrink.
 
@@ -3090,9 +3390,10 @@ block of memory first, copy the already existing elements at the new location, a
 then release the old, now unnecessary memory block. And this is an relative slow
 operation. The reason why this process can be necessary is, that the initially
 allocated memory block may not increase in size because the neighborhood in the RAM
-is already occupied by other data. Now let us see want we can do with arrays and
-sequences
+is already occupied by other data. Now let us see what we can do with arrays and
+sequences:
 
+[source, nim]
 ----
 var
   a: array[8, int]
@@ -3106,9 +3407,19 @@ for square in a:
   echo square
 ----
 
-In the second line we declare a variable named a of array type -- we want to use an
-array with exactly 8 elements, and each element should have the data type int. The
-first for loop fills our array, that is for each of the 8 storage places in the array
+In the second line of the code above we declare a variable named a of array type -- we want to use an
+array with exactly 8 elements, and each element should have the data type int.
+To declare a variable of array data type we use the array keyword followed
+in square brackets by the number of the elements, and separated by a comma, the
+data type of the elements. We can also specify the range of the
+indices explicitly by specifying a range like array[0 .. 7, int] or array[-4 .. 3, int].
+The first specification is identical to the one in above example program, and
+the second one would allow us to access array elements with index positions
+from -4 up to 3.footnote:[It can be difficult to remember if we have to write [8, int] or
+[int, 8]. It may help to remember that for plain variables the data type comes last also like in var i: int.]
+
+The
+first for loop of above program fills our array -- that is for each of the 8 storage places in the array
 we fill in some well defined data. We use the [.term]#mitems()# iterator here, because we want
 to modify the content of our array -- we fill in numbers 1 .. 8. In the next for loop
 we square each storage location, and finally we print the content. In the last for
@@ -3117,6 +3428,7 @@ but we already learned that we have not to write the plain items at all in this 
 
 Sequences work very similar like arrays, but they can grow:
 
+[source, nim]
 ----
 var
   s: seq[int]
@@ -3134,18 +3446,25 @@ We start with an empty seq here, and use the [.term]#add()# procedure to append 
 After that we can iterate over the seq as we did for the array.
 
 In the same way as we accessed single characters of a string with the subscript
-operator, we can use that operator to access single elements like in a[myPos]. The
+operator, we can use that operator to access single elements like in a[myPos].
+The slice operator is available for arrays and sequences too and can be used
+to extract sub-ranges or to replace multiple elements. As arrays have a fixed length,
+the slice operator can only replace elements in arrays, but not remove or insert
+ranges. 
+The
 first element position is generally 0 for arrays and sequences. Arrays can even be
 defined in a way that the index position starts with an arbitrary value, but that is
-not used that often. Whenever you use the subscript operator you have to ensure that
-you access only valid position, that is positions that really exists. a[8] or s[8]
+not used that often. Whenever you use the subscript or slice operator you have to ensure that
+you access only valid positions, that is positions that really exists. a[8] or s[8]
 would be invalid in our above example -- the array has only places numbered 0 .. 7,
 and for the seq we have added 8 values which now occupy positions 0 .. 7 also,
 position 8 in the seq is still undefined. We would get a runtime error if we would
 try to access position 8, as well when we would try to access negative positions.
+You might think that an assignment for a seq like s[s.length] = 9 is the same
+as s.add(9), but only the add() operation works in this case.
 
 Note that in some languages like Julia arrays start at position 1. Nim array can
-have arbitrary integral start position, including negative start positions, but start
+have an arbitrary integral start position, including negative start positions, but start
 position as well as highest subscript position are determined in the program source
 code and can not change at runtime. We say that arrays have fixed compile-time
 bounds. Seqs start always at position 0, we can specify an initial size, and we can
@@ -3177,7 +3496,11 @@ many it could contain at most. The element counter must be updated when we add o
 delete elements, and when the counters tells that there is currently no more space
 available for more elements, then a new block of memory must be allocated, and the
 existing elements must be copied from the old location into the newly allocated
-memory region, before the old memory region can be released. Due to this additional
+memory region, before the old memory region can be released.footnote:[Well with some
+luck the RAM area after the currently used memory block is still unused. For this case
+the OS may offer functions like realloc() to just increase our memory block size, so we can avoid
+the copying of the contained data.]
+Due to this additional
 effort appending elements to a seq by using the add() procedure is not extremely
 fast. You may wonder why we have not to save a size information for arrays. Well
 arrays have fixed size, so it is obvious that we never have to adjust something like
@@ -3193,7 +3516,7 @@ error the compiler has to store the fixed array size somewhere and to check agai
 that value when an array access by using the subscript operator with a non constant
 argument occurs, as the a[i] above. One related remark: Accessing array elements is
 as fast as ordinary variable access when we use a constant value as index, that is a
-constant literal or a named constant. The reason for this is, that when index is a
+constant literal or a named constant. The reason for this is, that when the index is a
 constant, then the compiler just knows the exact position of that array element in
 memory, just as it knows the address of plain variables, so there is no need for
 address calculations at runtime.
@@ -3203,36 +3526,55 @@ times slower than access to an array element by its index using the subscript op
 seq will have to contain at least an initial amount of elements, then it can be useful
 for maximum performance, that we allocate the seq from the beginning for this size
 and than fill in the content by use of the subscript operator instead that we append
-all the elements one by one.
+all the elements one by one. Here is one example:
 
+[source, nim]
 ----
-var s: seq[int] = newSeq[8, int]()
+var s: seq[int] = newSeq[int](8)
 var i: int
 while i < 8:
   s[i] = i * i
   inc(i)
 ----
 
-Here we used the newSeq() procedure to initialize the seq for us, the content of the
-square brackets tells the newSeq() procedure that we want a sequence with 8 elements
-of type int. The call of the newSeq() procedure may look a bit strange indeed. That
+We use the newSeq() procedure to initialize the seq for us, the content of the
+square brackets tells the newSeq() procedure that we want a sequence with base type int, and the number 8
+as argument tells it that the newly created seq should have 8 elements with default value (0).
+This
 procedure is a so called generic procedure, it needs additional information, which is
-how many entries the returned sequence should have, and what data type the elements
-should have. Don't confuse the square bracket in the newSeq[8, int]() call with the
-subscript operator a[i] which we have used for array access, bot are completely
-unrelated. And note that the empty parameter list after the square bracket in the
-newSeq() call is necessary to tell the compiler that we want to call a procedure.
-Also note that the initialization of the seq above does not restrict its use in any
-way, we can still use it as an uninitialized seq, that is we can use the add()
+the data type that the elements
+should have. Don't confuse the square bracket in the newSeq[int]() call with the
+subscript operator a[i] which we have used for array access, both are completely
+unrelated.
+Note that the initialization of the seq above does not restrict its use in any
+way, we can still use it like an uninitialized seq, that is we can use the add()
 operator to add more elements, we can insert or delete elements and all that.
 
+****
+In the section about strings we said that strings have value semantic, that is that
+an assignment like str1 = str2 creates a copy of str2 and that after that assignment
+str1 and str2 are fully independent entities -- modifying one does not change
+the content of the other one. Array and sequences behave in the same way, both
+have value semantic too. Indeed arrays are true value types in Nim, as they live
+on the stack in the same way as plain variables like integers, floats or characters.
+Sequences  have a dynamic data buffer which is allocated on the heap, so
+it would be possible that an assignment like seq1 = seq2 would not copy
+the data buffer but reuse the old one. In that case both sequences would be
+not independent, seq2 would be an alias for seq1. This is called reference semantic, some languages like Ruby
+behave in this way. But in Nim arrays, strings and sequences have value semantic,
+an assignment creates an independent copy. We will learn more details about
+reference semantic and the use of the stack or heap to store data soon when
+we discuss references to objects.
+****
+ 
 == Slices
 
-Nim slices are objects of type Slice that contain a lower bound [.ndef]#a# and an upper bound [.nedef]#b#.
-Slice objects are used by functions of the standard library or by user defined functions to
+Nim slices are objects of type Slice that contain a lower bound [.ndef]#a# and an upper bound [.ndef]#b#.
+Slice objects are used by functions of the standard library or by user defined functions
 to access sub-ranges of strings, arrays and sequences. Applied on these container data types slices
 look syntactically like sub-ranges:
 
+[source, nim]
 ----
 var
   m = "Nim programming is difficult."
@@ -3250,14 +3592,15 @@ in the strings section already, we can use the [.op]#^# operator to access eleme
 counted from the end of the container, so we could have written line three
 also as  [.code]#m[19 .. ^1] = "not easy."#.
 
-Slices can be used in the same way for arrays and sequences. But we have to remember that
+Slices can be used in a similar way for arrays, strings and sequences. But we have to remember that
 slices are only objects with a lower and an upper bound, so there must be always a
 {proc} that accepts the container and the slice as arguments to do the real work.
 
-When we care for utmost performance, then we have to be a bit careful with slices, as
+When we care for utmost performance, then we have to be a bit carefully with slices, as
 slices can generate copies. Consider this example:
 
-```nim
+[source, nim]
+----
 type
   O = object
     i: int
@@ -3271,13 +3614,14 @@ proc main =
   var sum = 0
   for x in s[1 .. ^1]:
     sum += x.i
-```
+----
 
-Here we used the slice operator to exclude the first element
-from our summing operation. Unfortunately in current Nim version 1.3.x
+Here we use the slice operator to exclude the first element
+from our summing operation. Unfortunately in current {curnim}
 use of the slice operation in this way creates a copy of our sequence,
 which increases the run-time and memory consumption. We may try to use the new toOpenArray() expression and try a construct like
 
+[source, nim]
 ----
   for x in items(s.toOpenArray(1, s.high)):
 ----
@@ -3286,6 +3630,7 @@ but that does currently not compile.
 
 One option is currently that we create a custom iterator like
 
+[source, nim]
 ----
 iterator span*[T](a: openArray[T]; j, k: Natural): T {.inline.} =
   assert k < a.len
@@ -3297,6 +3642,7 @@ iterator span*[T](a: openArray[T]; j, k: Natural): T {.inline.} =
 
 and use
 
+[source, nim]
 ----
 for x in s.span(1, s.high):
 ----
@@ -3304,12 +3650,14 @@ for x in s.span(1, s.high):
 Or we may do the summing in a {proc} and pass that proc
 an openArray created with toOpenArray() like
 
+[source, nim]
 ----
 proc sum(x: openArray[O]): int =
   for el in x:
     inc(result, el.i)
 ----
 
+[source, nim]
 ----
 echo sum(s.toOpenArray(1, s.high))
 ----
@@ -3329,6 +3677,7 @@ value objects.
 
 Value objects always implies copies when we do an assignment
 
+[source, nim]
 ----
 var i, j: int
 i = 7
@@ -3352,11 +3701,11 @@ easy to use.
 
 But there exist situations where we need some sort of indirection, and then
 references and pointers come into play. For example when the data entities depend in
-some form on another, the elements may build linked lists, threes or other
+some form on each other, the elements may build linked lists, threes or other
 structures. The entities may have some neighborhood relation, also called some one to
 many relation.
 
-Indeed value objects and references occur in reals life also:
+Indeed value objects and references occur in real life also:
 
 Imagine you have baked a cake for your family, and you know that your friendly
 neighbor loves cakes too. As you have still a lot of all necessary ingredients and
@@ -3368,14 +3717,14 @@ exist.
 
 Now imagine that you know a good car repair shop. You can give the telephone number
 or location of that car repair shop to your neighbor, so he can use that shop too. So
-you gave him a reference to the shop, but you gave him not a copy. You can although
+you gave him a reference to the shop, but you gave him not a copy. You can also
 give some of your other friends each a reference to that shop, which is nearly no
 effort for you. While backing a cake for all of them would be some effort.
 
 You can regard names of persons as some sort of reference too. Imagine you have a
 list with the names of all the people you intend to invite to your birthday party,
 and another list with names of people who owe you money. Some names may be on both
-list, this it is refer to the same person.
+list, this is it refers to the same person.
 
 In computers the dynamic storage, called RAM, consists of consecutive, numbered
 storage locations, called words. Each individual word has its address, which is a
@@ -3391,20 +3740,20 @@ address in the RAM, without the address you can not access it. But what is with 
 the plain, value object variables we have used before, we have never used addresses?
 That is true -- we used only names to access our variables, and the compiler mapped
 our chosen name to the actual address of the variables in memory whenever we accessed
-the variable. For most simple cases this is best way to access variables. Now let us
+the variable. For most simple cases this is the best way to access variables. Now let us
 assume we have such value object type of variable declared in our program, can we
 access it without using its name? When we have declared it, it should reside
 somewhere in the RAM when the program is executed. Well, when we do really not want
 to access it by variable name, then there is still one chance: We can search in the
 whole RAM for the desired content. In practice we would never do that, as it is
 stupid and would take very long, but we could do. But how can we detect our
-variable? How can we be sure that is is indeed ours? Generally we can not. Even when
+variable? How can we be sure that it is indeed ours? Generally we can not. Even when
 we are sure that the variable must reside somewhere in the RAM, generally the
 variable is marked in no way of course. Even when we would know the value which is
 stored in that variable, we would only know what bit pattern it should have, so for
 most words of the RAM with a different bit pattern we could say for sure that it can
 not be our variable, but whenever we find the expected bit pattern than it can be
-just an coincidence, there can be many more words in RAM with that content. In some
+just a coincidence, there can be many more words in RAM with that content. In some
 way it is as you would search a person and you know that that person lives in a long
 road with numbered houses. If you only know that the person wears brown shoes but you
 know not the number of the house nor the name of the person and no other unique
@@ -3414,7 +3763,7 @@ property of that person, then you have not much luck.
 
 === Introduction to Pointers
 
-In Nim references are some form of smart or managed pointer, we will learn more about
+In Nim references are some form of smart or managed pointers, we will learn more about
 references later. The plain pointer data type is nothing more than a memory address,
 it is similar to a (unsigned) integer number. We say that a pointer points
 to an entity when the pointer contains the memory address of that entity.
@@ -3423,6 +3772,7 @@ Beside the pointer data type, which is only some RAM address, we have also the p
 entity. Ptr is not a datatype for its own, it is always used in conjunction with
 another data type:
 
+[source, nim]
 ----
 var
  p: pointer 
@@ -3484,14 +3834,14 @@ The first two echo statements should print the decimal value 0, as the pointers 
 the initial default value nil.
 
 The echos in the last two lines should print a value different from 0, as we have
-assigned the valid address of a ordinary variable that resides somewhere in the RAM
+assigned the valid address of an ordinary variable that resides somewhere in the RAM
 when the program is executed. Both outputs should be identical, as we have assigned
 for both pointers addr(number) each.
 
 Maybe a funny fact is, that when you run the program multiple times the output of the
 last two echo() statements print different values. But that is not really surprising
 -- whenever you launch the program, then for our variable number a storage location
-in RAM is reserved. And that can differ for each new program execution. For your
+in RAM is reserved. And that location can differ for each new program execution. For your
 next holiday in the same hotel, you may get a different room also.
 
 So when we have the pointer ip pointing to a valid address, can we recover the
@@ -3544,13 +3894,53 @@ assignment operator is copied into the variable on the left site. Now ip[] stand
 exactly for the same content as the name number, and so assigning to ip[] is the same
 as assigning to number.
 
+=== Pointer Arithmetic
+
+In low level programming languages pointer arithmetic can be useful.
+For example old C code often iterates with pointer arithmetic
+over arrays by use of constructs like [.term]#sum += *(myIntPtr{pp})#. This was done
+to maximize performance. Modern C compiler generally understands
+statements like [.term]#sum += el[i]; i{pp}# well and generates very good assembly instructions
+for it. So pointer arithmetic is not necessary in C that often today.
+
+Nim does not provide math operations for pointers directly, but we can
+always cast pointers to integers and do arbitrary math. And of course
+we could define our own operators for that purpose, but generally
+we should avoid that, as it is dangerous, error prone and generally not
+necessary. As an example let us sum up some array elements:
+
+[source, nim]
+----
+proc main =
+  var
+    a: array[8, int] = [0, 1, 2, 3, 4, 5, 6, 7]
+    sum = 0
+  var p: ptr int = addr(a[0])
+  for i in a.low .. a.high:
+    echo p[]
+    sum += p[]
+    echo cast[int](p)
+    var h = cast[int](p); h +=  sizeof(a[0]); p = cast[ptr int](h)
+    #cast[var int](p) += sizeof(a[0]) # this compiles but does not work currently
+
+  echo sum
+  echo typeof(sizeof(a[0]))
+
+main()
+----
+
+When we do pointer arithmetic or similar math to calculate the
+address of variables in the computer memory, then memory addresses
+are used like integer numbers, and so it makes same sense that Nim's
+integers have the same byte size as pointers. 
+
 === Allocating Objects
 
 In the previous section we learned the basics about pointers. We used the
 addr() operator to initialize the pointer by assigning the address of an already existing
 object. This is in practice not that often done, and it can be a bit dangerous, as
 it is not always guaranteed that the variable on which we applied addr() will
-exists as long as our pointer exists. So the pointer may point later to a memory location
+exist as long as our pointer exist. So the pointer may point later to a memory location
 that is already freed or used by a totally different object already. So the use
 of addr() is more reserved for advanced programmers who know well what they do, and 
 most of the time addr() is not necessary at all or is only necessary for really
@@ -3558,6 +3948,7 @@ low level code, maybe when interfacing with external libraries written in C.
 Instead of using addr() to assigning to pointers a valid address, often procedures
 like alloc() or create() are used to reserve a block of memory:
 
+[source, nim]
 ----
 var ip: ptr int
 ip = create(int)
@@ -3575,11 +3966,12 @@ we can store a value in that memory location and read it again. Note that multip
 can point to the same memory location: We declared one more int ptr called ip2. But for
 that pointer we do not allocate a new block, but we assign the old block that we
 allocated for ip to ip2. Now both pointers points to the same object, the int value 13.
+We may call ip2 an alias, as it is a different way to access the same object.
 
 When we use alloc() or create() to allocate memory blocks, then we have
 to deallocate them when we need them not any more. Otherwise that memory
 blocks couldn't be reused. If we would continuously allocate memory blocks  and never
-deallocate, that is free then, then at some point in time all memory would be
+deallocate, that is free them, then at some point in time all memory would be
 occupied -- not only for our own program, but for all programs running
 currently on the same computer. We had to terminate our program -- when
 a program is terminated then all resources get freed automatically by the OS.
@@ -3603,15 +3995,15 @@ is a Garbage-Collector (GC). The GC does the dangerous and inconvenient
 task of deallocating unused memory blocks for us automatically.
 
 To distinct the GC managed "pointers" cleanly from the manually
-managed onces, we call them in Nim [.term]#references#, in some
+managed ones, we call them in Nim [.term]#references#, in some
 other languages they are called traced pointers. References
 are always typed like ptr, there is no equivalent to
 the untyped pointer type for references.
 
 For References we have still to do the allocation our self, then we
-can use the references, and when we are not using then any more, then
+can use the references, and when we are not using them any more, then
 the GC frees the corresponding memory block. A typical scenario is
-that we use references in a procedure or in a otherwise
+that we use references in a procedure or in an otherwise
 limited block of code: We declare the reference in that code block,
 allocated and use it, and when the code block is left the GC frees
 the allocated memory for us. You may think that the fact that we still have to
@@ -3624,6 +4016,7 @@ and more dangerous.
 
 With references we can rewrite our previous example code in this way:
 
+[source, nim]
 ----
 var ip: ref int
 new(ip)
@@ -3648,6 +4041,7 @@ To verify that in the example code above both references really
 reference the same object in memory, we could add two more lines
 of code:
 
+[source, nim]
 ----
 ip2[] = 7
 echo ip[]
@@ -3660,13 +4054,13 @@ both echo statements would display that new content.
 
 Using references and pointers to store basic data types
 like integers is not done that often, in most cases 
-we work with larger objects, and we create some relation
+we work with larger objects, and we create some relations
 between the objects. We will try that in the next section.
 
 === References to Objects
 
 You should still wonder for what references are really useful --
-they seems to be only a more complicated version of plain
+they seem to be only a more complicated version of plain
 value type variables.
 
 Now let us assume we want to create a list of things or persons,
@@ -3679,6 +4073,7 @@ a new Friend data type which should store only the friends
 name for the beginning -- we may add more fields later
 when necessary. So we may have
 
+[source, nim]
 ----
 type
   Friend = object
@@ -3688,6 +4083,7 @@ type
 With that declaration we could declare a few friends variables
 like
 
+[source, nim]
 ----
   var harry, clint, eastwood: Friend
 ----
@@ -3701,6 +4097,7 @@ But let us assume we could not use that predefined Nim data
 type for some reason. Then we could create a list of linked
 references to Person.
 
+[source, nim]
 ----
 type
   Friend = ref object
@@ -3834,7 +4231,7 @@ name which we just entered and also a reference to the next object in the list.
 Note that we add the new elements at the top of the list in this way. We have done it that way
 because it is very easy in this way. For adding at the end of the list, we would have to
 use one more reference variable which allows us always access to the current end of the list, or
-we would have travel the list from head to tail whenever we would like to
+we would have to travel the list from head to tail whenever we would like to
 add elements at the tail.
 
 For one more exercise let us consider deleting entries in our list. Basically
@@ -3850,7 +4247,7 @@ while f != nil:
     break
   if f.name == n:
     f = f.next
-  else;
+  else:
     while f.next != nil:
       if f.next.name == n:
         f.next = f.next.next
@@ -3887,7 +4284,7 @@ the next entry, which may or may not be nil.
 
 This is one way to solve the task, for operations on lists there exist in most
 cases various solutions, some optimized to easy or short code, some for performance.
-You may copy the code segment below to the end of the former code, and maybe 
+You may copy the code segment above to the end of the former code, and maybe 
 add one more copy of our printing loop at the end again. Then you should have a program
 that reads in a list, prints the contents, then ask for names to delete, and finally
 prints the resulting list. Maybe you can improve the code, or maybe you can detect
@@ -3897,12 +4294,28 @@ add more fields to your Friend data type. Maybe a textual field with
 content male or female, and you can report the ratio of male to female.
 And maybe remove males from the list when we have more males then females?
 
+For references to objects the assignment operator [.op]#=# copies the references, but not
+the object. In the same way the operator [.op]#==# for equality test compares the references, but
+not the content of the objects to which the references point. If you want to compare
+the content of the objects, you can apply the dereference operator [.op]#[]# on both references:
 
+[source, nim]
+----
+type
+  RO = ref object
+    i: int
 
+var
+  ro1 = RO(i: 1)
+  ro2 = RO(i: 1)
+  ro3 = ro1
 
+echo ro1 == ro2 # false
+echo ro1[] == ro2[] # true
+echo ro1 == ro3 # true
+---- 
 
-
-== Arithmetic -- Integers and Floats
+//== Arithmetic -- Integers and Floats
 
 == Procedures and Functions
 
@@ -3926,10 +4339,10 @@ we say that we jump into a procedure and jump back when that
 procedure terminates.
 
 In Nim functions are a special form of procedures that return
-a result and does not modify the current state of the program.
+a result and do not modify the current state of the program.
 Modifying a global variable or an output operation would be
 examples for modifying the state. We have already used some
-predefined procs like echo() for output operations, add() for
+predefined procedures like echo() for output operations, add() for
 appending single characters to strings, and readLine() for
 reading in textual user input. And we talked
 about math functions like sin(), cos(), pow() -- these
@@ -3948,6 +4361,7 @@ speak about procedures, even when a function would do.
 
 Let us start with a very simple function called sqr() for square.
 
+[source, nim]
 ----
 func sqr(i: int): int =
   i * i
@@ -3981,6 +4395,7 @@ The sqr() proc above accepts an integer argument and
 returns its square of same data type. We would
 call that proc like
 
+[source, nim]
 ----
 var j: int
 j = 7
@@ -3998,9 +4413,17 @@ For the program execution  we have to know that
 procs are only executed when we call them. That is, when 
 we write a proc at the top of our source code, then that
 proc is processed by the compiler, but it is not executed
-during program runtime before we call it. 
+during program runtime before we call it.
 
-==== Procedure parameters of Var type
+****
+The procedure body builds a new scope. We can declare entities
+like variables, constants, types or other {profus} in that scope.
+These entities are only visible in the procedure body but
+not outside of the proc. Will will learn more about scopes
+and visibility soon.
+****
+
+==== Procedure Parameters of Var Type
 
 Our sqr() function above accepts only one parameter and
 that
@@ -4019,7 +4442,7 @@ characters instead of the asterisk, maybe a + sign.
 [source, nim]
 ----
 proc frame(s: var string; c: char = '*') =
-  let cs = newString(2)
+  var cs = newString(2)
   cs[0] = c
   cs[1] = ' '
   insert(s, cs)
@@ -4028,8 +4451,8 @@ proc frame(s: var string; c: char = '*') =
 
 # we can call that proc like
 var message = "Hello World"
-echo frame(message)
-echo frame(message, '#')
+frame(message)
+echo message
 ----
 
 The frame proc above accepts two parameters and returns no
@@ -4041,7 +4464,10 @@ that we used earlier to declare variables. The main  reason that we
 use again the same keyword is that we do not want to use a new one --
 var proc parameters are different from var declarations.
 Var parameters can be modified in the
-procedure body, and that modification is visible after the proc call.
+procedure body, and that modification is visible after the proc call.footnote:[We
+learned already about pointers, and passing var parameters
+to {profus} is closely related to pointers: The compiler passes indeed the address
+of the var parameter. But we have not to care about these details.]
 The second proc parameter is a plain value type, it is a character
 which has the default value '*'. Default values are useful for
 parameters that have in most cases the same value, but can be
@@ -4072,7 +4498,7 @@ When we call a proc or function with multiple arguments, then we have
 to pass the arguments in the same order as they are specified
 in the proc declaration.
 
-Our frame() proc above modified the passed string. We could have
+Our frame() proc above modifies the passed string. We could have
 instead decided that the proc should not modify the string, but should
 return a new string consisting of the frame and the passed string in the center.
 Generally when creating procs we have to decide what is more useful -- modifying a 
@@ -4086,9 +4512,102 @@ a really cheap operation, and maybe when we insert a lot, the
 string buffer must be even enlarged, which is again expensive.
 So for this use case it is not really clear what approach is better -- 
 we used the var parameter mainly to introduce var parameters.
+OK, let us investigate how a function that returns a modified
+string may look:
+
+[source, nim]
+----
+func framed(s: string; c: char = '*'): string =
+  var res = newStringOfCap(s.len + 4)
+  add(res, c)
+  add(res, ' ')
+  add(res, s)
+  add(res, ' ')
+  add(res, c)
+  return res
+
+# we can call that proc like
+echo framed("Hello World")
+echo framed("Hello World", '#')
+----
+
+Above code is one possible solution. We can use the keyword func instead of proc
+here as we only return a result but modify no states. We pass
+the initial string and the character for the frame both as plain value parameters
+and return a newly created framed string. In the function body we start with an
+optimized version of the procedure newString() from the system module,
+called newStringOfCap(). Like newString() that procedure creates an empty
+string variable, but it ensures that the data buffer of the new string has exactly the
+specified size. That is an optimization, which makes sense in our use case, as we
+know that our newly created string will have 4 characters more than the passed
+string. So we can avoid that the result string has to be enlarged while we add
+characters or the initial string, and we ensure at the same time that no space is wasted --
+the data buffer size of the new string will be a perfect fit for the desired result.
+The rest of the function body is not really interesting, we just add() what is needed
+and return the result. Well, earlier we said that add() is not extremely fast. So when you
+have to frame millions of strings each day you may consider avoiding add(), and
+you know already enough about Nim to do it. Just try it. You may start with an
+string of right size containing undefined content created by  newString(s.len + 4)
+and then you may copy in the required data in a loop chararcter for character.
+Or you may use the slice operator to insert the passed string into the new string.
+
+.Click to see a possible solution
+[%collapsible]
+====
+[source, nim]
+----
+func framed(s: string; c: char = '*'): string =
+  var res = newString(s.len + 4)
+  res[0] = c
+  res[1] = ' '
+  res[2 .. s.high + 2] = s # we may insert the string by using the slice operator or
+  # for p in 0 .. s.high: # we can use a for loop and 
+  #   res[p + 2] = s[p] # the subscript operator
+  res[^2] = ' '
+  res[^1] = c
+  return res
+----
+====
+
+The situation that we may need a procedure that works on a var parameter in one case and
+returns a modified copy in another case is not that rare. So for example Nim's standard library
+contains a procedure called sort() which can sort container data types in place, and a procedure
+called sorted() which returns a sorted copy. This code duplication is not really that nice. Of course sorted()
+is the more universal solution, as we can always replace sort(data) with data = sorted(data).
+But the later creates a temporary copy, which may not be optimal for performance.
+Since Nim version 1.2 a dup() macro is available from sugar module which creates
+copies of variables and then applies one or multiple in place procs on the copy.
+So the procs sorted() or our proc framed() would be unnecessary. We can use dup()
+as in this example:
+
+[source, nim]
+----
+from sugar import dup
+
+proc frame(s: var string; c: char = '*') =
+  var cs = newString(2)
+  cs[0] = c
+  cs[1] = ' '
+  insert(s, cs)
+  add(s, ' ')
+  add(s, c)
+
+echo "Hello World".dup(frame)
+echo "Hello World".dup(frame, frame)
+echo "Hello World".dup(frame('#'))
+----
+
+Note that we apply frame() two times in the line before the last one -- in the same
+way we could apply a sequence of different procs. The result of above program is
+
+----
+* Hello World *
+* * Hello World * *
+# Hello World #
+----
 
 The execution of a procedure terminates when the
-last statement of the procedure body has be processed.
+last statement of the procedure body has been processed.
 We can also terminate a procedure earlier when we
 specify a [.term]#return# statement somewhere.
 
@@ -4100,6 +4619,7 @@ declare automatically a result variable for us, which we may
 use or just ignore. So for our previous sqr() function we have
 various ways to write it:
 
+[source, nim]
 ----
 func sqr1(i: int): int =
   i * i
@@ -4125,6 +4645,19 @@ square root of an integer value. (Well in Nim we have
 other and sometimes better ways to catch errors, we
 will learn about that later.)
 
+Generally we should avoid writing something like
+
+[source, nim]
+----
+func sqr(i: int): int =
+  result = i
+  i * i
+----
+
+as it may be unclear in this case if the expression i * i is returned or
+the result variable with value i. For {curnim} we will get
+a warning or an error message in such a case.
+
 Note that we used the proc names sqr1, sqr2 and sqr3 above.
 Using the same name with the same argument types multiple
 times would result in a redefinition error, as the
@@ -4136,6 +4669,7 @@ we can use the same name when the parameter list is different,
 as the compiler can select from the parameters in the proc call
 which proc has to be called:
 
+[source, nim]
 ----
 func sqr(i: real): real =
   i * i
@@ -4147,7 +4681,7 @@ we defined for integers. Note that Nim use only
 the parameter list for overload resolution, but not the
 result type of a proc or function. The reason for that
 is that Nim supports type inference, and that would not work
-when we would have two procs with same name each accepting a int parameter 
+when we would have two procs with same name each accepting an int parameter 
 but one returning an int and one returning a float number.
 
 Nim does also support named arguments in proc calls, that is we could invoke
@@ -4163,7 +4697,7 @@ when the procedure should be able to mutate the variable permanently.
 This is also valid when the parameters are objects. When a
 procedure should modify fields of an object parameter, then we have to
 pass that object as a var parameter. In the following example proc t1
-gives a compiler error because that proc tries to modify a field of
+gives a compiler error because that procedure tries to modify a field of
 an object while the object instance is not passed as a var parameter.
 If we remove proc t1 then we can compile and run the example:
 
@@ -4187,7 +4721,7 @@ proc main =
 main()
 ----
 
-The otput is:
+The output is:
 
 ----
 [i = 3]
@@ -4198,7 +4732,7 @@ Proc t2 gets a var parameter and can modify fields of the passed object.
 Here we used the expression echo x.repr to print the whole object.
 Strings and sequences are value objects in Nim, so you have to
 pass them as var parameters when you want to change their length
-or when you want to modify elements. THis code would give you compile
+or when you want to modify elements. This code would give you compile
 errors, unless you add the var keyword to make the proc parameters mutable:
 
 [source, nim]
@@ -4212,16 +4746,15 @@ proc t2(s: seq[int]) =
   s[0] = 13
 ----
 
-
 This was not really surprising. But what when we use a reference to
-an object and pass that to procs as value and as var parameter?
+an object and pass that to procedures as value and as var parameter?
 In the code below proc t1 gets a variable of type ref object and
-the proc can modify fields of the passed instance. That can be
+the procedure can modify fields of the passed instance. That can be
 indeed surprising. In this case passing the ref object without use of the
 var keyword means only that we can not mutate the ref value itself in
-the proc, but we are allowed to modify the fields of the object.
+the procedure, but we are allowed to modify the fields of the object.
 For proc t2 we pass a var parameter. As always we can modify a var 
-parameter in the proc, so we can assign it a newly created instance.
+parameter in the procedure, so we can assign it a newly created instance.
 
 [source, nim]
 ----
@@ -4243,7 +4776,6 @@ proc main =
   echo x.repr
 
 main()
-
 ----
 
 When we compile and run above code we get:
@@ -4258,31 +4790,31 @@ ref 0x7f054a904070 --> [i = 11]
 
 For a ref object the repr function gives us
 the address of the object instance in memory and the
-contents of its fields. The first two echo staements
-shows the same address, indicationg that proc t1 has
+contents of its fields. The first two echo statements
+shows the same address, indicating that proc t1 has
 modified only a field of our instance, the instance 
-itself (its address im memory) was not changed.
+itself (its address in memory) was not changed.
 But proc t2 has created a new instance and assigned that value
-to the variable x in the main proc. We notice this as
-the adress of variable x has changed. The old instance variable
-with adress 0x7f054a904050 is now unused and will be
+to the variable x in the main procedure. We notice this as
+the address of variable x has changed. The old instance variable
+with address 0x7f054a904050 is now unused and will be
 freed by the Nim memory management.
 
-=== Special argument types: OpenArray and Varargs
+=== Special Argument Types: OpenArray and Varargs
 
 The openArray and varargs data types can be used only in 
 parameter lists.
-OpenArray is a type which allows to pass arrays and seqs
+OpenArray is a type which allows to pass arrays and sequences
 to the procedure or function. Allowing that makes
 sense as arrays as well as seqs store their content
 in a block of memory, which can be processed uniformly.
 Although arrays generally do not have to start with index
-number 0, when passed as openarray the first element
+number 0, when passed as openArray the first element
 is mapped to index 0, and the index of the last element is
 available by using the high() function on the passed array
-parameter. Whenever we write a proc that accepts an array
-or a seq, we should consider using the openArray parameter type
-to allow passing in both data types. Strings can be passed although
+parameter. Whenever we write a procedure that accepts an array
+or a sequence, we should consider using the openArray parameter type
+to allow passing in both data types. Strings can be passed also
 to procs accepting openArrays with char base type. Note that a
 proc with openArray parameter type can not change the length of a passed seq,
 as for the openArray parameter type sequences are handled like arrays.
@@ -4300,7 +4832,8 @@ proc t2(x: var seq[int]) =
 
 The varargs parameter type is similar to the openArray type, but
 it additional allows passing an arbitrary number of single arguments.
-The compiler automatically collects the single arguments into an array for us.
+The compiler automatically collects the single arguments into an array for us,
+so in the proc body we can use it like an array, ie. iterating over it.
 
 [source, nim]
 ----
@@ -4311,12 +4844,12 @@ proc print(s: varargs[string]) =
   stdout.write('\n')
 
 print("Hello", "World") # compiler builds the array for us
-print(["Hello", "World"]) # we generate the arry our self
+print(["Hello", "World"]) # we generate the array our self
 ----
 
-There exists a variant of the varargs data type that
+There exists a variant of the varargs argument type that
 performs a type conversion automatically by applying a
-proc on the arguments. For example varargs[string, `$`]
+proc on all arguments. For example varargs[string, `$`]
 would apply the stringify operation on the passed arguments
 automatically. That is what echo does.
 
@@ -4327,7 +4860,7 @@ Finally we may wonder if it makes sense to specify a parameter of
 type var varargs. If we try to pass a constant string this will
 obviously not work, and if the compiler generates an array for us
 it does also not work, the automatically generated array seems to behave
-like a constant array. But may we pass a array variable? Let us try:
+like a constant array. But may we pass an array variable? Let us try:
 
 [source, nim]
 ----
@@ -4343,13 +4876,34 @@ print(msg)
 ----
 
 Surprisingly that does not compile, while it works when
-we replace varargs with openarray.
+we replace varargs with openArray.
 
+=== Procedures bound to a Data Type
+
+In some other programming languages like Python or Ruby we can define
+class methods or static methods which are bound to a class or type
+and can be called as MyType.myProc. In Nim we can do something similar
+by use of the typedesc proc parameter type:
+
+[source, nim]
+----
+type
+    Factory = object
+        name: string
+
+proc start(t: typedesc[Factory]) =
+    echo "Factory.start"
+    
+Factory.start
+----
+
+Here we used the method call syntax instead of start(Factory). We will learn
+more about the typedesc data type later.
 
 === Scoping , Visibility and Locality
 
 Scoping, visibility and locality is an important concept in computer programming
-to keep the source code clear. Imagine that a variable which we declare at some point
+to keep the source code clean. Imagine that a variable which we declare at some point
 in our program would be visible everywhere. That would even for medium size
 programs generate a lot of confusion -- whenever we would need a variable we would
 have to carefully check which names are already in use. And for performance it would be
@@ -4367,6 +4921,7 @@ well defined visibility rules, we will discuss modules later.
 
 Visibility is really a simple concept, let us regard this useless example:
 
+[source, nim]
 ----
 var e: float = 2.7
 
@@ -4396,17 +4951,17 @@ Related to visibility of variables is their lifetime, that is
 the duration how long they exist and how long they can store a value.
 Global variables exist for the whole program runtime -- when you have
 assigned a value to it that value can be used everywhere as long as the program
-runs, and as long you do not assign a different value of course.
+runs, and as long as you do not assign a different value of course.
 Global variables are generally stored in a special memory region that is called the BSS
 region.
 
-Variables of value type defined locally inside a procedure or function do exists
+Variables of value type defined locally inside a procedure or function do exist
 only for the execution time of that proc, that is they are created when the proc
 is invoked and vanish when the proc terminates, that is when execution
 continues with the statement following on the proc call.
 
 Local variables declared in a proc reside in a special memory region of the RAM which is called
-the stack. The stack is nothing more than an arbitrary part of the hole ram that is used in some
+the stack. The stack is nothing more than an arbitrary part of the hole RAM that is used in some
 clever fashion: The memory words in it are used in consecutive order. A so called stack
 pointer is used to indicate the address of the first free area in that stack. So when a 
 proc is called, which may have n bytes of local variables, then the compiler can use
@@ -4428,7 +4983,7 @@ may point and that is allocated by alloc() or new() is different: That memory bl
 are not allocated on the stack, but in the ordinary RAM which we call heap to
 separate it from the stack.
 
-So why can the stack not be used for memory blocks which alloc() or new provides for us:
+So why can the stack not be used for memory blocks which alloc() or new() provides for us:
 An important fact for the use of the stack to store variables is that
 the total size which is needed by a proc for all the static variables must be a
 compile time constant. The stack pointer is adjusted by that amount when the
@@ -4451,6 +5006,7 @@ function and all program code is contained in this function
 or in other functions which are called from this main function, in Nim we have
 also global code as in scripting languages Ruby or Python:
 
+[source, nim]
 ----
 var i: int
 while i < 100:
@@ -4470,19 +5026,23 @@ so there may be no stack? The variable j may reside in the
 BSS segment too? That is not really clear and may be different
 for different Nim compilers maybe. But why should we care for
 that detail at all? Well it may be important for performance.
-Local proc parameters allocated on the stack are generally
+Local proc variables allocated on the stack are generally
 optimal for performance, and they are optimized by the compiler very
 well. We will learn more about the reasons for that later when we discuss
 the data cache. For now we should only remember that it may be
 a good idea to avoid global code and put all code in procs. We
 may have an arbitrary named main() proc then and call that from
-global scope only. At least for the current Nim compiler V 1.2 that
+global scope only. At least for the current {curnim}  that
 seems to be a good idea, maybe later versions or other implementations
 will automatically move all global code into a hidden proc for us.
+
+NOTE: For optimal performance put all your code in procedures
+or functions and avoid global code and when possible global variables.
 
 Let us discuss above while loop again, but this time
 in the body of a proc:
 
+[source, nim]
 ----
 proc p =
   var i: int
@@ -4504,6 +5064,7 @@ So let is OK and the compiler does not complain.
 
 We can test that fact with this simple program:
 
+[source, nim]
 ----
 proc main =
   var i: int
@@ -4534,6 +5095,7 @@ for ints and one for float numbers. Both procs
 look nearly identical, only the data types differ.
 For that case we can use so called generic procedures.
 
+[source, nim]
 ----
 func sqr[T](v: T): T =
   var p: T
@@ -4566,6 +5128,7 @@ types do not support multiplication with itself.
 
 A slightly different notation is available by so called or types:
 
+[source, nim]
 ----
 func sqr(v: int or float): auto =
   var p: typeof(v)
@@ -4592,6 +5155,7 @@ the compiler may be smart and guess that we want to return the float literal 2.0
 
 A bit care is needed when we define procs for mutable [.code]#or types#:
 
+[source, nim]
 ----
 # proc t(s: var seq[uint8] | var seq[char]) =
 proc t(s: var (seq[uint8] | seq[char])) =
@@ -4604,7 +5168,7 @@ is shown in the second line. This behavior was labeled "won't fix" in
 github issue tracker, so we have to remember this case, see
 https://github.com/nim-lang/Nim/issues/15063#issue-665553657.
 
-=== xxx
+//=== xxx
 
 Let us assume that you want to define a proc that accepts two
 numbers of type int or float and that returns a float. You may write
@@ -4649,7 +5213,7 @@ list that work not only for strings, but that can work with other data
 types like numbers or sequences in a very similar way. We may explain
 that in more detail later.
 
-=== Method call syntax
+=== Method Call Syntax
 
 A useful coding style introduced by OPP languages is the method call
 syntax, which was initially used in OOP programming style
@@ -4675,7 +5239,7 @@ later add more operations.
 Nim simple allows that notation generally, as did the D language, but D used
 the tern [.ndef]#Uniform Function Call Syntax# (UFCS) for it.
 
-=== Procedure variables
+=== Procedure Variables
 
 Procedures and functions are not always fully static entities.
 We can assign procedures and functions to variables, and we
@@ -4684,6 +5248,7 @@ to other procedures or functions. And functions can even
 generate and return new functions. Let us investigate how
 procedure variables work:
 
+[source, nim]
 ----
 var
   p: proc(i: int): int
@@ -4710,6 +5275,7 @@ have to match, that is the parameter list and the result have to be compatible.
 
 Now we use a function as a proc argument.
 
+[source, nim]
 ----
 type
   EchoProc = proc (x: float)
@@ -4717,7 +5283,6 @@ type
 proc t(ep: EchoProc; x: float) =
   echo "The value is"
   ep(x)
-
 
 proc ep1(x: float) =
   echo "==> ", x
@@ -4733,6 +5298,7 @@ A common use case for a function as a proc parameter is sorting.
 We can use the same sort procedure for different data types
 when we provide cmp proc that can compare that data type.
 
+[source, nim]
 ----
 from algorithm import sort
 
@@ -4774,6 +5340,7 @@ procedures can contain other procedures. A special case
 occurs when the sub-procedures do access variables of the outer
 scope. In this case the sub-procedure is called a closure:
 
+[source, nim]
 ----
 proc digitScanner(s: string) =
 
@@ -4814,13 +5381,14 @@ the position in the string is still valid, that is if it is still
 smaller than the length of the string, and also checks if the 
 current character is a digit. The first check uses the standard procedure
 len() which return the length of a passed string parameter, that is how
-many characters the string contains. We have used the method call syntax here instead
+many characters the string contains. We have used the method call syntax here instead of
 using the ordinary proc call len(s). The next check test if the current
 character is not  a decimal digit. For that test we could use a series of compares
 like if c == '0' or c == '1' or ... or c == '9'. But to make such tests
 easier and faster, Nim offers one more data type, the set type. And the notin
-operator test if an value is not contained in a set constant. We will
-learn more about the set datatype later. An important point for the expression
+operator test if an value is not contained in a set constant.
+//We will learn more about the set datatype later.
+An important point for the expression
 after the while statement is, that it is processed from left to right.
 That fact is here important, because we have first to check if pos
 is still a valid position, before we can use the subscript operator []
@@ -4837,8 +5405,7 @@ is a very special character, that is used in C to mark the end of strings.
 It is the first character in  the ASCII table and has the decimal value 0.
 We said earlier that characters are encoded in 8 bit and correspond to
 the unsigned integer numbers 0 up to 255. '\x0' is just a special notation
-for the first character which corresponds to integer value 0. We may later say
-some more about these magic characters. Well, when the end of the string is reached 
+for the first character which corresponds to integer value 0. Well, when the end of the string is reached 
 then we return that character. Otherwise we return the current character. Remember,
 from the while condition we know  that string end is reached, or current
 character is a digit. As we tested for string end before, we can only have the case
@@ -4856,6 +5423,7 @@ and terminate the loop when we get the special Null character.
 And finally an example where one proc returns
 another procedure:
 
+[source, nim]
 ----
 proc addN(n: int): auto = (proc(x: int): int = x + n)
  
@@ -4871,6 +5439,7 @@ construct is sometimes named currying.
 Nim's converters are a special variant of functions that are called
 automatically by the compiler when argument types do not match.
 
+[source, nim]
 ----
 converter myIntToBool(i: int): bool =
   if i == 0:
@@ -4896,19 +5465,28 @@ With above converter we can pass an integer to a proc that expects a bool
 parameter, and we can even use an integer as a logical expression in an
 if condition in the same way as it is done in C language.
 Converters do work only in a direct way, that is automatic chaining is not supported:
-If we have on converter from character to int and one from int to boolean, that
+If we have one converter from character to int and one from int to boolean, that
 does not mean that we can pass a character to a proc that expects a boolean. We would
 have to declare one more converter that directly converts character to bool.
 
 Whenever we do consider using converters we should think twice -- converters
 may be confusing, may have some strange effects and may increase compile time.
 
+Maybe you wondered why we wrote above converter in such a verbose way? Well
+it was done intentionally, but you are right of course, we can write it just as
+
+[source, nim]
+----
+converter myIntToBool(i: int): bool =
+  i != 0
+---- 
+
 == Object Orientated Programming and Inheritance
 
 Object Orientated Programming and Inheritance became very popular
 in the early nineties of the last century. Java is a prominent
 representative of that programming paradigm, but most languages
-created in the nineties of the last century support is, like C++,
+created in the nineties of the last century support it, like {cpp},
 Ruby and Python.
 
 The idea of OOP is that objects and procedures working on that objects
@@ -4934,10 +5512,11 @@ the matching method for each instance is called.
 A classical example is a drawing program, where we have different geometrical shapes
 like rectangle, circle and many more. All the geometrical objects
 are stored is some form of list, and when we want to draw all of them
-on the screen then we have to call only a unspecific draw() method, and
+on the screen then we have to call only an unspecific draw() method, and
 the compiler ensures that for each shape the matching draw method
 is called. In Nim that may look like
 
+[source, nim]
 ----
 type
   Shape = ref object of RootRef
@@ -4996,7 +5575,7 @@ the purpose of pragmas later. In the example we have used only one
 level of sub-classing, but of course we can use many levels, for example
 we can again subclass the Circle by a FilledCircle with a color field.
 
-The OOP coding style can be very convenient for some task, one
+The OOP coding style can be very convenient for some tasks, one
 important use case could be graphical user interfaces where
 the graphical elements like labels, buttons, frames built
 in natural way a hierarchical structure. Another typical 
@@ -5015,7 +5594,7 @@ the dispatching itself needs some time, and as the ref objects
 are not contained in a single block of memory, but are distributed
 in the whole RAM, which is not cache friendly.
 
-== Other builtin Data Types
+== Other Builtin Data Types
 
 === Tuples
 
@@ -5023,6 +5602,7 @@ Tuples can be regarded as some form of lightweight objects without
 inheritance support, but mostly tuples are used when
 functions has to return multiple arguments.
 
+[source, nim]
 ----
 type
   Move = tuple
@@ -5069,6 +5649,7 @@ So we may like to have a value type with different content, so
 that we can store all the value types in a seq and all
 entities reside in a compact block of memory for good cache use.
 
+[source, nim]
 ----
 type
   ShapeKind = enum
@@ -5117,10 +5698,12 @@ We have already used some of Nim's standard iterators to iterate over the
 characters of a string or the content of a sequence. Declaring
 iterators is similar to declaring procedures, but we use the yield
 keyword to return a single value back to the caller of the iterator.
-When the body of the iterator declaration is reached the iterator terminates.
+Iterators are used in for loops, and the iteration continues until
+the end of the body of the iterator declaration is reached the iterator terminates.
 In an earlier section we declared a procedure that extracted the decimal
 digits from a string. We can do the same with a iterator:
 
+[source, nim]
 ----
 iterator decDigits(s: string) =
   var pos = 0
@@ -5157,6 +5740,7 @@ that is then called multiple times, templates work
 like C macros as textual substitution. Wherever we call
 a template the template source code is inserted.
 
+[source, nim]
 ----
 template sqr(i: int): int =
   i * i
@@ -5165,7 +5749,7 @@ var j: 7
 echo sqr(j)
 ----
 
-== Casts and type Conversion
+== Casts and Type Conversion
 
 While we have various types of casts in C++, we have only one cast
 and type conversions in Nim. In Nim casts just reinterpret the same
@@ -5189,6 +5773,7 @@ but we have to think what may really happen. When we cast between a bool and a i
 padding necessary. We do a cast by writing after the keyword cast in square brackets the
 desired type followed by parenthesis enclosing the source variable:
 
+[source, nim]
 ----
 var i: uint8 = cast[unint8](myBoolVar)
 ----
@@ -5202,7 +5787,7 @@ instructions for basic conversion.
 Nim generally only allows type conversions that involve not too much effort.
 So we should not expect var i ="1234"; echo i.int * 7 to be available. Such a conversion
 is expensive, at runtime it costs many CPU cycles as we would have to extract the digits, multiply
-with it weight and sum then up. So for that operation functions like parseInt() are available
+with it weight and sum them up. So for that operation functions like parseInt() are available from the Nim standard library
 that accept a string as argument and return an int. There exists different variants of parseInt(),
 one may raise exceptions for invalid input, the other may return a boolean.
  
@@ -5220,6 +5805,7 @@ success. As we have to return the result for success also, the
 parseInt() proc may return a tuple, or may get a var parameter in which the result
 is returned. Another solutions are exceptions as known from C++.
 
+[source, nim]
 ----
 proc charToInt(c: char): int =
   if c in {'0' .. '9'}:
@@ -5260,7 +5846,7 @@ data types or procedures have to be exported to make them visible and usable
 by other modules. That is done like in Oberon by appending an asterisk 
 character to all names that should be exported. These restricted
 exports allows to hide implementation details -- all symbols
-not exported are private to that module and can at be changed and improved 
+not exported are private to that module and can be changed and improved 
 at any time without noticing the importing module.
 
 We can import whole modules, that is all symbols that are marked for
@@ -5269,10 +5855,12 @@ by specifying their names. Let us create a module that declares a
 single procedure to remove all characters from a string that are not
 letters:
 
+[source, nim]
 ----
 # save this textfile with name mystrops.nim
 proc remNoneLetters*(s: string): string =
   result = newString(s.len)
+  var pos = 0
   for c in s:
     if c in {'a' .. 'z', 'A' .. 'Z'}:
       result[pos] = c
@@ -5283,6 +5871,7 @@ proc remNoneLetters*(s: string): string =
 We save above text file with our Nim source code with
 name mystrops.nim and can import it like
 
+[source, nim]
 ----
 import mystrops
 
@@ -5290,12 +5879,13 @@ echo remNoneLetters("3h7.5g:8h")
 ----
 
 Module names should be lower case and may as other Nim symbols only contain
-letters and the underscore character.  
+letters, decimal digits and the underscore character.  
 
 Note the export marker after the proc name. Instead
 of importing whole modules we can import only single symbols
 with the from x import y, z syntax like
 
+[source, nim]
 ----
 from mystrops import remNoneLetters
 
@@ -5316,7 +5906,7 @@ may indeed pollute the name space and generate many name
 conflicts, but in statically typed languages like Nim
 unqualified import seems to generate name conflicts
 only in very rare cases. Procedures with the same
-name generally have different parameter list, so
+name generally have different parameter lists, so
 the overload resolution of the compiler can decide
 what proc is to be used. And when really a name conflict
 occurs then the compiler will tell us, and we can easily fix
@@ -5327,6 +5917,7 @@ may be not that tiny, so we may have to use qualified names.
 
 We can also enforce a fully qualified import in Nim by a notation like
 
+[source, nim]
 ----
 from mystrops import nil
 ----
@@ -5339,6 +5930,7 @@ Imagine strutils.add(s, '\n'), how should that look with method call syntax?
 
 For imports we have also the except keyword, so we may do something like
 
+[source, nim]
 ----
 import strutils except toUpper
 ----
@@ -5365,6 +5957,7 @@ imports in the form import package/[mod1, mod2, mod3] are permitted.
 Finally you can also import modules under another name using the [.key]#as#
 keyword like
 
+[source, nim]
 ----
 import tables as maps
 ----
@@ -5372,6 +5965,7 @@ import tables as maps
 With the recent Nim compiler you can also enforce full qualified import and use of
 an alternate module name by using an import statement like
 
+[source, nim]
 ----
 from tables as maps import nil
 ----
@@ -5382,36 +5976,35 @@ only by use of the maps module prefix like maps.newTable().
 == Include
 
 The include statement should be not confused with the import statement.
-Include just insert a textfile at the position where the include
+Include just insert a text file at the position where the include
 statement occurs. Include can be used to split very large modules
 in smaller entities.
 
+//= Part III: The standard library
 
-= Part III: The standard library
+//== Standard Container
 
-== Standard Container
+//= Part IV: External packages
 
-= Part IV: External packages
+//== xxx
 
-== xxx
+//xxx
 
-xxx
+//= Part V: Advanced topics
 
-= Part V: Advanced topics
+//== Macros
 
-== Macros
+//== Async
 
-== Async
+//== Parallel Processing
 
-== Parallel Processing
+//== FFI
 
-== FFI
+//== Concepts
 
-== Concepts
+//= Part VI: Advanced examples
 
-= Part VI: Advanced examples
-
-== something
+//== something
 
 = Appendix
 
@@ -5422,17 +6015,17 @@ some advice for English grammar and spelling.
 
 == Strange Questions
 
-=== How do i make an sequence with multiple data types?
+=== How do I make a sequence with multiple data types?
 
-=== Is there a way to return multiple different data types from a function
+=== Is there a way to return multiple different data types from a function?
 
 === Is it possible to import a file from a variable?
 
-=== How can I delete a variable
-
+=== How can I delete a variable?
 
 == ASCII Table
 
+[source, nim]
 ----
 proc print(i: int) =
   let c =
@@ -5466,6 +6059,7 @@ main()
 
 == Div and Mod operation
 
+[source, nim]
 ----
 type
   T = array[-5 .. 4, int]
@@ -5505,3 +6099,4 @@ for d in 0 .. 1:
         stdout.write(t[i][j], " ")
     echo ""
 ----
+
