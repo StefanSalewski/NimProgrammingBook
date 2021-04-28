@@ -1,14 +1,17 @@
 = Computer Programming with the Nim Programming Language
-A gentle Introduction
-(C) Dr. Stefan Salewski 2020
-//v0.1, 2020-DEC-15
+A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
+//v0.1, 2021-APR-28
 :doctype: book
 :toc: left
 :icons: font
 //:experimental:
 :imagesdir: http://ssalewski.de/tmp
-:source-highlighter: pygments
-:pygments-style: monokai
+//:source-highlighter: pygments
+//:pygments-style: monokai
+:source-highlighter: rouge
+//:rouge-style: monokai
+//:rouge-style: magritte
+:rouge-style: molokai
 :stylesheet: nimbook.css
 
 // all terms in lower case letters!
@@ -311,7 +314,7 @@ Most computers, from cellphones to large super computers, use an [.ndef]#{os}# (
 A well known OS is the GNU/Linux kernel. Operating Systems can be seen as the initial
 program that is loaded and started when we switch the computer on and that works as
 some kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
-often another tiny program called a [.new]#Boot Manager# is launched. Boot managers
+often another tiny program called a [.ndef]#Boot Manager# is launched. Boot managers
 are used to select different {os} to boot, maybe Linux or Windows, or too pass
 parameters as the hard disk boot partition number to the OS.] it can load other
 programs and it distributes resources like CPU cores or RAM between multiple running
@@ -5380,6 +5383,279 @@ for example create lists like we did for our names list that work not only for
 strings, but that can work with other data types like numbers or sequences in a very
 similar way. We may explain that in more detail later.
 
+=== Example for the use of Generics
+
+Generics are used a lot in Nim's standard library. Most container types like sequences or tables
+accept generic types, and generic procedures like sort() are provided which can easily sort
+arbitrary data types and objects. We have only to provide a cmp() proc for our user defined
+data types which sort() can call to compare the values during the sorting process.
+
+We will demonstrate the use of generics for library modules with a few tiny examples: Assume
+we create a library which should be able to store and process arbitrary data types. The stored values
+may have well defined relations, which enables ordering or much more complicated spatial
+relations. Triangulation of spatial data points or grouping the data in structures like
+RTrees for fast point location as well as geometric processing with algorithm like
+finding the convex hull are some examples. To make our example simple and compact, we define
+a generic container type which can store only two values of arbitrary data type. The container allows to sort
+the elements by size. The following code example defines a generic container called MyGenericContainer,
+a proc to add() data object into the container instance and a sortBySize() proc to sort the two elements: 
+
+[source, nim]
+----
+type
+  MyGenericContainer[T] = object
+    storage: array[2, T]
+
+proc add[T](c: var MyGenericContainer[T]; x, y: T) =
+  c.storage[0] = x
+  c.storage[1] = y
+
+# sort by direct field access
+proc sortBySize[T](c: var MyGenericContainer[T]) =
+  if c.storage[0].size > c.storage[1].size:
+    swap(c.storage[0], c.storage[1])
+
+# a simple stringify proc for our container data type
+proc `$`[T](c: MyGenericContainer[T]): string =
+  `$`(c.storage[0]) & ", " & `$`(c.storage[1])
+
+type
+  TestObj1 = object
+    name: string
+    size: int
+
+proc main =
+  var c: MyGenericContainer[TestObj1]
+  var a = TestObj1(name: "Alice", size: 162)
+  var b = TestObj1(name: "Bob", size: 184)
+
+  add(c, b, a)
+  echo c
+  c.sortBySize
+  echo c
+
+main()
+----
+
+The sortBySize() proc of the above examples accesses the size field of our data objects directly, so we can
+use the container for arbitrary data types as long as the data types have a size field and as long as
+a `>` proc is defined for the data type of the size field. In the above example we have defined a `$` procedure
+to convert instances of our container to a string, which allows us to call the echo function on it.
+The output of our program looks like
+
+----
+(name: "Bob", size: 184), (name: "Alice", size: 162)
+(name: "Alice", size: 162), (name: "Bob", size: 184)
+---- 
+ 
+We can avoid the restriction of a matching field name when we provide getter and setter procedures
+which the library procs can use to access the important fields:
+
+[source, nim]
+----
+type
+  MyGenericContainer[T] = object
+    storage: array[2, T]
+
+proc add[T](c: var MyGenericContainer[T]; x, y: T) =
+  c.storage[0] = x
+  c.storage[1] = y
+
+proc sortBySize[T](c: var MyGenericContainer[T]) =
+  if c.storage[0].size > c.storage[1].size:
+    swap(c.storage[0], c.storage[1])
+
+proc `$`[T](c: MyGenericContainer[T]): string =
+  `$`(c.storage[0]) & ", " & `$`(c.storage[1])
+
+type
+  TestObj1 = object # arbitrary field names
+    name: string
+    length: int
+
+# this getter proc enables sorting
+proc size(t: TestObj1): int =
+  t.length
+
+proc main =
+  var c: MyGenericContainer[TestObj1]
+  var a = TestObj1(name: "Alice", length: 162)
+  var b = TestObj1(name: "Bob", length: 184)
+
+  add(c, b, a)
+  echo c
+  c.sortBySize
+  echo c
+
+main()
+----
+
+In the example above our TestObj1 data type has no field with a name matching for the
+sortBySize() proc, but we define a size() proc for our data type which that library function
+can use. This solution is more flexible, and when we add the inline pragma to the used size() proc
+or when we compile with link time optimization (LTO) enabled, then the overhead should be negligible.
+The two examples above are located in a single file each, but of course for practical use
+we would use separate modules for the library and the application part as in
+
+[source, nim]
+----
+#module t3.nim
+type
+  MyGenericContainer*[T] = object
+    storage: array[2, T]
+
+proc add*[T](c: var MyGenericContainer[T]; x, y: T) =
+  c.storage[0] = x
+  c.storage[1] = y
+
+proc sortBySize*[T](c: var MyGenericContainer[T]) =
+  if c.storage[0].size > c.storage[1].size:
+    swap(c.storage[0], c.storage[1])
+
+proc `$`*[T](c: MyGenericContainer[T]): string =
+  `$`(c.storage[0]) & ", " & `$`(c.storage[1])
+----
+
+[source, nim]
+----
+import t3
+
+type
+  TestObj1 = object # arbitrary field names
+    name: string
+    length: int
+
+proc size(t: TestObj1): int =
+  t.length
+
+proc main =
+  var c: MyGenericContainer[TestObj1]
+  var a = TestObj1(name: "Alice", length: 162)
+  var b = TestObj1(name: "Bob", length: 184)
+
+  add(c, b, a)
+  echo c
+  c.sortBySize
+  echo c
+
+main()
+----
+
+The example with direct field access would look for different modules like this:
+
+[source, nim]
+----
+# module t4.nim
+type
+  MyGenericContainer*[T] = object
+    storage: array[2, T]
+
+proc add*[T](c: var MyGenericContainer[T]; x, y: T) =
+  c.storage[0] = x
+  c.storage[1] = y
+
+proc sortBySize*[T](c: var MyGenericContainer[T]) =
+  if c.storage[0].size > c.storage[1].size:
+    swap(c.storage[0], c.storage[1])
+
+proc `$`*[T](c: MyGenericContainer[T]): string =
+  `$`(c.storage[0]) & ", " & `$`(c.storage[1])
+----
+
+[source, nim]
+----
+import t4
+
+type
+  TestObj1 = object
+    name: string
+    size: int
+
+proc main =
+  var c: MyGenericContainer[TestObj1]
+  var a = TestObj1(name: "Alice", size: 162)
+  var b = TestObj1(name: "Bob", size: 184)
+
+  add(c, b, a)
+  echo c
+  c.sortBySize
+  echo c
+
+main()
+----
+
+You may wonder why we do not have to export the size field of our TestObj1 (or maybe the object itself also) as
+it is used from code defined in a different module. The reason why we do not need export markers is that
+the sortBySize() is defined in the library module, but as it is a generic procedure, it is
+instantiated and executed in the application module. For the same reason we had not to export the 
+size() getter procedure before.
+
+Finally one more way to use generic library modules is by passing procedure variables
+to the library functions. The passed in procedures may provide access to
+properties or attributes of the stored objects, or they may offer relations between the
+objects. The later is often used for sorting purposes:
+
+[source, nim]
+----
+# module tx.nim
+type
+  MyGenericContainer*[T] = object
+    storage: array[2, T]
+
+proc add*[T](c: var MyGenericContainer[T]; x, y: T) =
+  c.storage[0] = x
+  c.storage[1] = y
+
+proc sortBy*[T](c: var MyGenericContainer[T]; smaller: proc(a, b: T): bool) =
+  if smaller(c.storage[1], c.storage[0]):
+    swap(c.storage[0], c.storage[1])
+
+proc `$`*[T](c: MyGenericContainer[T]): string =
+  `$`(c.storage[0]) & ", " & `$`(c.storage[1])
+----
+
+[source, nim]
+----
+import tx
+
+type
+  TestObj1 = object
+    name: string
+    size: int
+
+proc smaller(a, b: TestObj1): bool =
+  a.size < b.size
+
+proc main =
+  var c: MyGenericContainer[TestObj1]
+  var a = TestObj1(name: "Alice", size: 162)
+  var b = TestObj1(name: "Bob", size: 184)
+
+  add(c, b, a)
+  echo c
+  c.sortBy(smaller)
+  echo c
+
+main()
+----
+
+Here we have modified the sort() proc of our library module in a way that it takes
+an additional procedure parameter. In this case we use a procedure signature that takes two object instances
+and returns a boolean value indicating if the first parameter is smaller than the second.
+In our application module we define a matching procedure and pass that one to the sortBy()
+procedure. Again we get the desired sorted output:
+
+----
+(name: "Bob", size: 184), (name: "Alice", size: 162)
+(name: "Alice", size: 162), (name: "Bob", size: 184)
+----
+
+This last method is used often in Nim's standard library, e.g. for sorting
+sequences with custom objects. Unfortunately this way can introduce some performance
+regression, as the procedure variable has to be passed to the called proc and so
+inlining of that passed proc is not possible for the compiler. footnote:[Of course compiler
+become smarter every day, so that restriction may disappear in future.]
+
 === Method Call Syntax
 
 A useful coding style introduced by OPP languages is the method call syntax, which
@@ -5876,7 +6152,7 @@ we call a template the template source code is inserted.
 template sqr(i: int): int =
   i * i
 
-var j: 7
+var j = 7
 echo sqr(j)
 ----
 
@@ -6100,7 +6376,546 @@ The include statement should be not confused with the import statement.  Include
 insert a text file at the position where the include statement occurs. Include can be
 used to split very large modules in smaller entities.
 
-//= Part III: The standard library
+= Part III: The Nim Standard Library
+
+In this part of the book we will introduce you to some of the most important
+modules of the Nim standard library. This includes modules for common operations
+like the serialization of Nim data types to write them
+to external nonvolatile storage and read them back into the program later, or handling command
+line options and parameters for programs launched from within a terminal window.
+Further we will introduce you to important container data types like hash tables
+(sometimes called hash maps in other programming languages) and and various kinds
+of set data types. We will also introduce modules for working with regular expressions, 
+and we will show how simple modules like the times or the random module can
+be used. Most modules mentioned in this part will be from the Nim standard library, so that
+you will not have to install external packages for that. But there may be some exceptions, e.g. for
+some  external nimble packages with a very useful functionality and an easy user interface.
+
+== Serialization -- storing data permanently on external storage
+
+When you start writing larger programs, these programs may create data which you may want to
+store permanently on external nonvolatile storage like SSDs or traditional harddisks of your computer.
+For textual data this is very easy, as you basically only has to write and read a stream
+of unstructured bytes. But when your program deals with object instances, container data
+types like sequences or references, things become more complicated. Writing the data
+is always easy -- you can just convert all the fields of your object data type to strings
+and write them to a stream or a file. But the reading back part is much more difficult: You would
+have to read in the data as strings and then process each string -- maybe converting to a float number --
+and then assign to the matching field of an object instance.
+
+When your data consists only of value objects and no references, then you may consider
+just writing that data in plain binary form to a file and read it back. This strategy seems
+to be simple and it is very fast, as no type conversion steps are involved. But at the same time it has some
+drawbacks: The stored data can not be checked with tools like a text editor, it can generally not
+be used from other programs, and when you should change the data types used in your program, you could
+not read back stored files any more.
+
+So we will explain how you can store Nim data types in a human readable text format first.
+Two popular text formats are [.ndef]#JSON# and  [.ndef]#YAML#. JSON is a simple format, which is easy to parse, but not
+very good readable for humans. YAML is more complicated, but more flexible and is very good
+readable for humans.
+
+For Nim we have already many modules which we can use for storing data in JSON or YAML format available.
+The Nim standard library includes  the marshal and the json module. The marshal module uses like
+the json module the json data file format, is easy to use and simple, but is not really designed
+to generate human readable data files, as the stored data is not stored as a sequence of individual lines.
+So we will describe and use the json module in this section, which is also easy to use, but has some larger
+set of functionality and can generate real human readable text files by use of the pretty() function.
+
+Other available external packages for data serialization are the  nim-serialization module set from (https://github.com/status-im/nim-serialization)
+and the very powerful but complicated NimYaml implementation (https://nimyaml.org/). We may describe these packages
+in part V of the book.
+
+When we have to store and read back Nim data to nonvolatile storage media, we have some serious
+points to consider: First we have to handle various data types like integers, floats, strings, objects -- and
+even the container types like sequences. And we may have to support reference types and maybe also inherited types
+and containers filled with heterogeneous, subclassed reference objects. The json module supports all Nim data types
+including containers and references, but not heterogeneous sequences.
+
+For our first json example let us assume that we have written a small tool that
+let the user create some geometrical shapes, and we want to store the shapes
+to a file and read it back. For that we generally use an intermediate step, which
+converts the data to a string and the string back to the data object. The string is
+then written to a file or stream and read back. Let us start with the string conversion --
+storing that string and reading it back from the file will be explained soon.
+
+[source, nim]
+----
+import json
+
+type
+  Line = object
+    x1, y1, x2, y2: float
+
+  Circ = ref object of RootRef
+    x0, y0: float
+    radius: float
+
+  Data = object
+    lines: seq[Line]
+    circs: seq[Circ]
+
+var
+  l1 = Line(x1: 0, y1: 0, x2: 5, y2: 10)
+  c1 = Circ(x0: 7, y0: 3, radius: 20)
+  d1, d2: Data
+
+d1.lines.add(l1)
+d1.circs.add(c1)
+d1.lines.add(Line(x1: 3, y1: 2, x2: 7, y2: 9))
+d1.circs.add(Circ(x0: 9, y0: 7, radius: 2))
+
+let str1 = pretty(%* d1) # convert the content of variable d1 to a string
+echo str1 # let us see how the strings looks
+d2 = to(parseJson(str1), Data) # read the string back into a data instance
+let str2 = pretty(%* d2) # and verify that we got back the original content
+echo str2
+
+# assert d1 == d2 would fail
+assert str1 == str2
+----
+
+When we run the program we would get this output:
+
+----
+{
+  "lines": [
+    {
+      "x1": 0.0,
+      "y1": 0.0,
+      "x2": 5.0,
+      "y2": 10.0
+    },
+    {
+      "x1": 3.0,
+      "y1": 2.0,
+      "x2": 7.0,
+      "y2": 9.0
+    }
+  ],
+  "circs": [
+    {
+      "x0": 7.0,
+      "y0": 3.0,
+      "radius": 20.0
+    },
+    {
+      "x0": 9.0,
+      "y0": 7.0,
+      "radius": 2.0
+    }
+  ]
+}
+{
+  "lines": [
+    {
+      "x1": 0.0,
+      "y1": 0.0,
+      "x2": 5.0,
+      "y2": 10.0
+    },
+    {
+      "x1": 3.0,
+      "y1": 2.0,
+      "x2": 7.0,
+      "y2": 9.0
+    }
+  ],
+  "circs": [
+    {
+      "x0": 7.0,
+      "y0": 3.0,
+      "radius": 20.0
+    },
+    {
+      "x0": 9.0,
+      "y0": 7.0,
+      "radius": 2.0
+    }
+  ]
+}
+----
+
+As you can see we converted the instance d1 of type Data to a string and then we convert
+that string back to variable d2 with matching content. We have made intentionally 
+the Circ a ref object, so we can see that the conversion works for value and reference objects.
+In the example program we applied the %* macro to our data instance d1 to get a JsonNode, and
+finally use the pretty() function to get a nice multi-line string. To fill the variable d2 with
+the content stored in str1, we first have to apply  parseJson() on the string and then use to() to
+unmarshal the json node into the matching object type.
+
+Now let us investigate what happens when we try to use the json module with
+a container with heterogeneous ref objects. For that we subclass the Disc type
+creating a new Arc type:
+
+[source, nim]
+----
+import json
+from math import PI
+
+type
+  Line = object
+    x1, y1, x2, y2: float
+
+  Circ = ref object of RootRef
+    x0, y0: float
+    radius: float
+
+  Arc = ref object of Circ
+    startAngle, endAngle: float
+
+  Data = object
+    lines: seq[Line]
+    circs: seq[Circ]
+
+var
+  d1, d2: Data
+
+d1.lines.add(Line(x1: 0, y1: 0, x2: 5, y2: 10))
+d1.circs.add(Circ(x0: 7, y0: 3, radius: 20))
+d1.lines.add(Line(x1: 3, y1: 2, x2: 7, y2: 9))
+d1.circs.add(Arc(x0: 9, y0: 7, radius: 2, startAngle: 0, endAngle: PI))
+
+echo d1.circs[1] of Arc, " ", Arc(d1.circs[1]).endAngle 
+
+let str1 = pretty(%* d1)
+d2 = to(parseJson(str1), Data)
+let str2 = pretty(%* d2)
+echo str2
+echo d2.circs[1] of Arc
+----
+
+The output of that program looks like this:
+
+----
+true 3.141592653589793
+{
+  "lines": [
+    {
+      "x1": 0.0,
+      "y1": 0.0,
+      "x2": 5.0,
+      "y2": 10.0
+    },
+    {
+      "x1": 3.0,
+      "y1": 2.0,
+      "x2": 7.0,
+      "y2": 9.0
+    }
+  ],
+  "circs": [
+    {
+      "x0": 7.0,
+      "y0": 3.0,
+      "radius": 20.0
+    },
+    {
+      "x0": 9.0,
+      "y0": 7.0,
+      "radius": 2.0
+    }
+  ]
+}
+false
+----
+
+While our initial instance d1 contains a run-time value of Arc type and so we can access
+the endAngle field, we get false as result for the of Arc test for the d2 instance. So run-time type
+information is lost.
+
+When we have to store different data types in one container, then one solution is to use
+object variants, which should work with the json module. Another obvious possibility is
+to just copy the data into containers with the appropriate static type before storing to
+an external medium and copy them back when we read the data back from external storage.
+Will will show an example for that now: 
+
+[source, nim]
+----
+import json
+from math import PI
+
+type
+  Line = ref object of RootRef
+    x1, y1, x2, y2: float
+
+  Circ = ref object of RootRef
+    x0, y0: float
+    radius: float
+
+  Arc = ref object of Circ
+    startAngle, endAngle: float
+
+  Data = object
+    elements: seq[RootRef]
+
+  Storage = object
+    lines: seq[Line]
+    circs: seq[Circ]
+    arcs: seq[Arc]
+
+const
+  DataFileName = "MyJsonTest.json"
+
+var
+  d1, d2: Data
+  storage1, storage2: Storage
+  outFile, inFile: File
+
+d1.elements.add(Line(x1: 0, y1: 0, x2: 5, y2: 10))
+d1.elements.add(Circ(x0: 7, y0: 3, radius: 20))
+d1.elements.add(Line(x1: 3, y1: 2, x2: 7, y2: 9))
+d1.elements.add(Arc(x0: 9, y0: 7, radius: 2, startAngle: 0, endAngle: PI))
+
+for el in d1.elements:
+  if el of Arc:
+    storage1.arcs.add(Arc(el))
+  elif el of Circ:
+    storage1.circs.add(Circ(el))
+  elif el of Line:
+    storage1.lines.add(Line(el))
+  else:
+    assert(false)
+
+let str1 = pretty(%* storage1)
+
+if not open(outFile, DataFilename, fmWrite):
+  echo "Could not open file for storing data"
+  quit()
+outFile.write(str1)
+outFile.close
+
+if not open(inFile, DataFilename, fmRead):
+  echo "Could not open file for recovering data"
+  quit()
+let str2 = inFile.readAll()
+inFile.close
+
+assert str1 == str2
+
+storage2 = to(parseJson(str2), Storage)
+
+for el in storage2.lines:
+  d2.elements.add(el)
+for el in storage2.circs:
+  d2.elements.add(el)
+for el in storage2.arcs:
+  d2.elements.add(el)
+
+for el in d2.elements:
+  if el of Arc:
+    echo "found arc with endAngle: ", Arc(el).endAngle
+----
+
+For this example program we use OOP programming style and keep all the geometric object instances as
+references in a single sequence. Note that doing this is not always a good idea, as this OOP style with
+the use of references and dynamic run-time dispatch can be slower due to many small heap allocations for
+each ref object and due to the dynamic dispatch ([.key]#if# el [.key]#of# ...) overhead. Using multiple, homogeneous sequences with value types for each of our
+data types can be a better solution, and in that way you have more control whenever you process the data, for drawing
+them on the screen or user interaction for example. Maybe you want to draw all the lines first?
+But there can be situations where we really need to have all the objects as references in a single container.
+A typical situation is, that we use an RTree for fast object location. [.ndef]#RTrees# are data structures, that can store
+two dimensional or multidimensional geometric object and their rectangular bounding boxes in a tree-like fashion
+for fast object location. This may be used in a drawing program, so that coordinates of a user mouse click can be fast
+matched to an object. For such a use case we would really prefer to have all the object instances available in one single RTree,
+and not use one RTree data structure for each object shape.
+
+Our program defines an additional  Storage data type, which contains homogeneous sequences for each possible geometric shape.
+We then copy all our ref objects from the elements sequence in the matching sequences of the storage object using the
+dynamic [.key]#of# type query to select the exactly matching sequence.
+
+After that we can use the already known json functions to serialize the storage object into a string, store the string
+to a file, read it back and deserialize the data again into a different variable of Storage data type. Finally we use a simple for loop
+to copy the ref objects from the temporary storage object into a Data variable called d2. For storing the data to a external
+nonvolatile medium we use the File data type and the related functions open(), close, write() and read(). Their use should be
+obvious: We pass a uninitialized variable of File data type, a file name and a file mode to open(), use write() to write
+the whole string, and use readAll() to read the data back. When done with each file we use close() to close the file.
+The File data type is part of the io module, which is again part of module system, so we don't have to import these modules.
+We could have used as an alternative also the streams module. We will learn some more details about the File data type
+and the streams module in later sections of the book. 
+
+NOTE: We should mention that unfortunately live is not always that easy, as sometimes we can not
+freely select the textual output format. Imagine that you create a CAD (computer aided design) tool
+that should be compatible with another existing tool. In this case the textual storage format
+is already defined by the existing tool, and generally that format does not match the json or
+yaml file format. Even when the format should be one of these, matching it exactly would be difficult.
+While writing out own data in that foreign format is still not really difficult, as we can just write
+single matching strings, reading in the textual data is more complicated: Generally we would read the input file line by line and
+we would have to inspect and interpret each input string, maybe by use of regular expressions or a custom parser.
+That generally includes handling of missing or invalid data.
+
+References:
+
+* https://nim-lang.org/docs/json.html
+* https://nim-lang.org/docs/io.html
+* https://nim-lang.org/docs/marshal.html
+* https://github.com/status-im/nim-serialization
+* https://nimyaml.org/
+
+== Timers
+
+Sometimes we may want to measure the execution time of a code segment of
+our program. For this the Nim standard library provides various modules
+including the larger times module and the monotimes module.
+The times module provides many functions and data types for handling
+dates and times, while the small monotimes module is more specialized for measuring
+of time intervals. For our first test we will use the times.cpuTime() function and
+the monotimes.getMonoTime() function. The former gives us time values as seconds
+in float format, while the later returns an int64 nanosecond value. To measure execution
+times of code segments we ask for the current time at the start and at the end of that segment and
+build the difference. Actually we will try to measure the time needed for a float square root calculation.
+In the past calculating square roots was considered a relatively slow operation, slow compared to
+a plain floating point math operation like multiplication or division. But on most modern hardware
+square root calculation is really fast actually as we will see.
+
+[source, nim]
+----
+import std/[random, times, monotimes]
+from std/math import sqrt
+
+proc warmup =
+  var x: float
+  for i in 1 .. 1e10.int:
+    x += 1.0 / i.float
+  echo x
+
+proc main1 =
+  let x = rand(3.0)
+  let y = rand(7.0)
+  let start = cpuTime()
+  let res = sqrt(x) + y
+  let stop = cpuTime()
+  echo stop - start
+  echo res
+
+proc main2 =
+  let x = rand(3.0)
+  let y = rand(7.0)
+  let start = getMonoTime()
+  let res = sqrt(x) + y
+  let stop = getMonoTime()
+  echo stop - start
+  echo res
+
+randomize()
+warmup()
+main1()
+main2()
+----
+
+To get meaningful results we have to take some care: Most important is, that
+the code segment that we want to measure is really executed. This may sound odd, but
+assume that the code produces no noticeable result at all. In that case the compiler may just remove
+that code fragment from the generated executable, as it is not needed for correct program execution. Or assume
+that the code fragment uses only data which is already known at compile time. Then
+the compiler may do all of the calculations already at compile time, and the whole
+code fragment is removed again and replaced by the pre-calculated values. And finally we
+have to remember that our computer may execute other task at the same time or may be in
+various power saving states with reduced CPU clock frequency, from which it takes some time to wake up. To take care of this we
+try to execute some warmup code before our actual timing task, and we do use the rand() function
+from the
+random module to provide input values for our code that are not known during compile time.
+Finally we output the result of the calculation by use of an echo statement to make clear
+to the
+compiler that the result of the calculation is really needed.  Now let us compile and run this program.
+We compile with option -d:release or -d:danger to enable optimizations and avoid generation of debugging code
+that may distort our timing. The result is still a bit surprising:
+ 
+----
+$ ./t1
+23.6030665949975
+4.98999998654881e-07
+4.676567857718999
+42 nanoseconds
+8.527354349689125
+----
+
+Lines tree and five are the results of our timing attempt. Both values are obvious too large and do
+not match. The reason for the wrong results is the overhead by the function calls itself. That overhead seems
+to be much larger for the cpuTime() call, as we get result of about 500 nanoseconds. Maybe the reason for this is
+that cpuTime() works with floats internally. At least we see that getMonoTime() can measure time intervals
+in the range of a few hundred nanoseconds. When we run the program a few times the printed time intervals
+may vary. The reason for that are internal processes in the CPU like clock rate and state changes. Generally the
+smallest time value of multiple program executions is the most important for us, as that is the minimal
+time which is actually needed for the program execution. With this example we have learned how we can measure
+time differences in our program, and that measuring really small time intervals is difficult.
+
+Fortunately measuring such tiny time intervals is supported by the criterion package, which we may describe
+in later sections of the book.
+
+For now we will present another example program, where we measure program code with longer running times.
+For that we create a loop that is executed many times. So the offset of the timer functions calls can be neglected
+compared to the actual running time of the loop, and due to the longer running time the printed time values get
+more reliable with low variations:
+
+[source, nim]
+----
+import std/[random, times, monotimes]
+from std/math import sqrt
+
+proc main3 =
+  var s: array[64 * 1024, float]
+  var res: float
+  for i in 0 .. s.high:
+    s[i] = rand(100.0)
+  let start = getMonoTime()
+  for i in 0 .. s.high:
+    res += sqrt(s[i])
+  let stop = getMonoTime()
+  echo stop - start
+  echo res
+
+proc main4 =
+  var s: array[64 * 1024, float]
+  var res: float
+  for i in 0 .. s.high:
+    s[i] = rand(100.0)
+  let start = cpuTime()
+  for i in 0 .. s.high:
+    res += sqrt(s[i])
+  let stop = cpuTime()
+  echo stop - start
+  echo res
+
+randomize()
+main3()
+main4()
+----
+
+For this example program we first fill an array with 64k random float numbers and than sum the square root of these numbers.
+As the total running time of our loops is not that tiny, we do not need a special warmup
+function which is executed in front of the timed code. The output of our program show that
+both timing functions match well for longer time periods:
+
+----
+$ ./t2
+112 microseconds and 701 nanoseconds
+436909.89897942
+0.0001135580000000001 # 114 microseconds
+437222.3001038401
+----
+
+The float result in line 4 is 114 microseconds which matches well with the 112 microseconds
+from line two. When you run this program multiple times you may notice that you may
+get sometimes much lager results for both or for only one of the two values. That is not
+surprising, as the computer is processing not only our program but many more, and due to task
+switching our program may be suspended for some time. When we divide that 114 microseconds
+by the number of loop iterations (64 * 1024) we get 1.7 nanoseconds, which is really surprising fast
+for a square root calculation. The concrete value is for a modern Intel I7 CPU. Of course these 1.7
+nanoseconds is not only the time needed for the square root calculation, but it includes
+the operations with the loop counter and the time needed to fetch and to access the actual array elements.
+
+As timing code segments is not an uncommon use case, there exists some external package which
+improve or simplify these operations, like the criterion or benchy package. A related task is profiling
+our program to find the part which takes the most CPU time, so that we can concentrate on these parts
+to improve the total performance of our program. For profiling various tools like the linux perf tool
+are available, which we will discuss in more detail later in this book.
+
+References:
+
+* https://github.com/LemonBoy/criterion.nim
+* https://github.com/disruptek/criterion
+* https://github.com/treeform/benchy
 
 //== Standard Container
 
@@ -6134,15 +6949,17 @@ Special thanks go to Mr. Jim Wilcoxson (https://github.com/hashbackup) who did p
 reading of the first dozen pages of the book and gave some advice for English grammar
 and spelling.
 
-== Strange Questions
+//== Strange Questions
 
-=== How do I make a sequence with multiple data types?
+//=== How do I make a sequence with multiple data types?
 
-=== Is there a way to return multiple different data types from a function?
+//=== Is there a way to return multiple different data types from a function?
 
-=== Is it possible to import a file from a variable?
+//=== Is it possible to import a file from a variable?
 
-=== How can I delete a variable?
+//=== How can I delete a variable?
+
+//=== Is there a way I could get a `ref` from a non-ref object?
 
 == ASCII Table
 
