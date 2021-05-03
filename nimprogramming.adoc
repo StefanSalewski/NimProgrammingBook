@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-APR-28
+//v0.1, 2021-APR-29
 :doctype: book
 :toc: left
 :icons: font
@@ -6752,6 +6752,143 @@ References:
 * https://github.com/status-im/nim-serialization
 * https://nimyaml.org/
 
+== Random Numbers
+
+Most computer programs work fully deterministic, that is one input data set
+generates exactly one well defined output data set. This behavior is not
+desired when we create games or simulations: The actions of computer controlled characters
+should not do exactly the same again and again when we restart the game, and maybe
+the computer generated landscape in the game should look different when we restart the game too.
+
+To generate such an unpredictable behavior we use random number generators, which can generate
+sequences of random number of integer or float type. The most important property of true random numbers is
+that we can not predict the next one from the sequence of all values seen before. Random number sources have no memory!
+Children often think they have. If a child got value six in a dice game tree times in sequence, its often assumes that it is extremely
+unlikely that next roll will give again the value 6. But as the dice has no memory, chance to get a specific number is always
+1/6, as we have 6 possible values all with same probability. At least when the dice is not manipulated.
+Another important property of random numbers is the distribution of the possible values. For most random
+number sources we would expect a uniform distribution of all possible values: For a dice with numbers 1 .. 6 we
+would expect that we get all these numbers with nearly the same total quantity when we roll the dice for a long time again and again.
+But of course not all random quantities are distributes uniformly. The distribution can have different shapes. An important non uniform
+distribution is the Gauss distribution, where the final result depends on many random decisions. So an average value
+is more likely than extreme values. You may know the marble nail board with multiple slots as an example: Marbles are thrown in at the
+top, and whenever they hit a nail, they get distracted to the left or right. 
+
+To built a perfect random generator we would have to use some physical noise sources like photons emitted by a thermal light source
+falling on a light detector with single photon resolution (Photo-multiplier), radioactive decay, thermal noise or similar physical entropy sources. But using real physically
+sources for random numbers is difficult and the random number generation is slow. So in computer programming
+we generally use so called pseudo-random-numbers, which are sequences of numbers calculated based on a given starting
+number. A mathematical function gets the last n numbers seen before and generates the next one from that. If that function uses a
+smart mathematical expression, its results looks really like random numbers. For games the generated sequences are generally good enough,
+for cryptographic applications they may be not good enough. So what we need for a random number generator is 
+a sequence of start numbers, and a mathematical function with internal state. For each call of that
+function a new random number is returned and the internal stage is changed so that next call
+will result in a different number. When we use always the same sequence of starting numbers, then
+our generator would generate always the same sequence of random numbers. Sometimes this is desired, e.g. when we want
+a behavior that looks random, but is reproducible, maybe for debugging tasks. But in most cases we would use
+starting numbers that are different for each program start. To get well suited start numbers we can just use the current
+time with nanosecond resolution which most computer hardware do provide.
+
+Most simple and fast random number generators use for its internal state two integer numbers. From these
+two numbers the next random value is calculated and then the numbers representing the
+internal state are modified also, to ensure that the next generated number is again different.
+
+Nim uses in its random module an implementation of the xoroshiro128+ (xor/rotate/shift/rotate) library.
+A Rand object with two integer fields is used to store the actual state, and some simple and fast
+logic operations as bit shift, logical xor and addition is used to update state and to generate the
+next number:
+
+[source, nim]
+----
+type
+when defined(js):
+  type Ui = uint32
+  const randMax = 4_294_967_295u32
+else:
+  type Ui = uint64
+
+  Rand* = object # State of a random number generator.
+    a0, a1: Ui
+
+proc rotl(x, k: Ui): Ui =
+  result = (x shl k) or (x shr (Ui(64) - k))
+
+proc next*(r: var Rand): uint64 =
+  let s0 = r.a0
+  var s1 = r.a1
+  result = s0 + s1
+  s1 = s1 xor s0
+  r.a0 = rotl(s0, 55) xor s1 xor (s1 shl 14) # a, b
+  r.a1 = rotl(s1, 36) # c
+----
+
+The Rand object stores the internal state, rotl() is a helper function which
+updates the state for each call, and next() is the actual generator procedure
+returning an uint64 value. Note that the addition used in next() does
+wraps around instead of giving an overflow error as unsigned integers
+are used. The numbers returned by the rand() proc are the foundation for
+all the other random number types provided by the random module.
+To get integers with reduced numeric range, we can just use the modulo
+operation, and to get float results we may convert the integer value to float and apply
+some basic mathematical  operations like division for range reduction.
+
+The most basic functions provided by the random module are the overloaded rand()
+functions. Rand() called with an integer parameter n gives us integer random numbers in the
+range from 0 up to n, and rand() called with a float parameter x will give us 
+random float numbers in the range 0 ..x. When we just use the rand() functions in this way
+we would get the same sequence of numbers for each run of our program, as the generator
+always starts with the same well defined initial state.  We can call
+the proc randomize() before calling rand() to initialize the generator to a different
+state based on the current time. Then rand() will provide us with different
+number sequences for each start of our program.
+
+Generally it is a good idea to not use the one internal global state of the random module
+for generation our random number, but to use our own state variable. That way we
+prevent conflicts with other modules which may use the random module as well. Imagine that
+we want to get the same sequence of random numbers for each run of our program
+as we are debugging our game, but another module initialize the internal state
+of module random with a value based on the current time.
+
+So the module random provides overloaded rand() functions that gets a state variable:
+
+[source, nim]
+----
+from times import getTime, toUnix, nanosecond
+import random
+
+let now = getTime()
+var rstate = initRand(now.toUnix * 1_000_000_000 + now.nanosecond)
+
+for i in 0 .. 5:
+  echo rstate.rand(5) + 1 # dice roll
+  
+for i in 0 .. 2:
+  echo rstate.rand(100.0) # float random number in range 0.0 .. 100.0
+----
+
+Unfortunately the initRand() call to initialize it with a current time value is a bit complicated, as
+we have to provide the current time value directly. Note that you generally should call
+initRand() only once in your program. A common mistake of beginners is to call
+initRand() each time directly in from of the rand() call. That is not only not needed and
+slows down the generation process, it also can lead to strange number sequences.
+
+At the end of this section we will discuss the problem of filling a container with random but unique
+numbers. For example assume that we want to generate a sequence of 100 random numbers in the range 1 .. 100, 
+with the restriction that each number should occur exactly once in the sequence. Of course a code
+segment like s[i] = (rand(99) + 1) would not work, as the same numbers could be generated multiple times
+or not at all. The obvious solution for this task is to fill an array first with consecutive numbers 1 to 100 and
+then exchange the initial positions with destination positions determined by (rand(99))  
+The random module provides the shuffle() function for this shaking of a container.
+A related function is sample(), which is used to randomly select an element from an openArray or a set.
+ 
+References:
+
+* https://en.wikipedia.org/wiki/Random_number_generation
+* https://en.wikipedia.org/wiki/Applications_of_randomness
+* https://en.wikipedia.org/wiki/Pseudorandom_number_generator
+* https://nim-lang.org/docs/random.html
+* https://prng.di.unimi.it/
+
 == Timers
 
 Sometimes we may want to measure the execution time of a code segment of
@@ -6916,6 +7053,406 @@ References:
 * https://github.com/LemonBoy/criterion.nim
 * https://github.com/disruptek/criterion
 * https://github.com/treeform/benchy
+
+== Hash Tables
+
+A common task in computer programming is the storing and retrieving of
+data records. The situation is very easy whenever each data record is directly
+mapped to
+continuous integer number n0, n0+1, n0+2, ..., n0+M. In that case we can
+use that numbers as index keys to access the data records and store the data as objects
+or references to objects in a sequence, or maybe when the data set in small and the maximal
+number of entries is known at compile time in an array.
+
+In the past it was a common practice to give hardware parts in a shop and  even customers
+an unique id number from a continues range, so that storing and fast access in indexed containers
+is possible. This works well when we really use the numbers as keys. But actually we generally
+work with data which is already labeled by names expressed as sequences of ASCII character:
+Customers in a hardware store, food in a super marked. Assigning id numbers to people is possible, but generally
+people do not like to have to remember the assigned id number when they want to buy something
+in a online shop. 
+
+So let us investigate how we can store and retrieve data objects without the use of continues
+numbers as key. Assume we have a customer data base
+
+[source, nim]
+----
+type
+  Customer = object
+    lastName: string
+    firstName: string
+    age: int
+    postalAdress: string
+    phone: string
+    credit: float
+----    
+    
+Of course we can store the customers just in a seq, and do a linear search when we want to
+access a person by name:
+
+[source, nim]
+----
+customers: seq[Customer]
+
+# ...
+
+var found = false
+for c in customers:
+  if c.lastName == queryName:
+    found = true
+    echo "Person ", queryName, " has a credit limit of ", c.credit
+if not found:
+  echo queryName,  "not found"
+----
+
+Such a plain linear search is not very fast of course. An obvious improvement would
+be to sort the customers by names, as we can do a so called binary  search in that case
+as we did long time ago in printed telephone registers: Open the telephone book somewhere
+in the middle, and when the names on that page are all greater than our friends name, then continue the
+search in the first half of the book, otherwise in the last half. We continue the halving strategy
+until we find the name. As we half the data set in each step this way, we say that the algorithm has
+log2(N) cost, where log2 is the logarithm with base two and N is the size of the data set.
+
+A similar solution would be to use some form of an ordered binary tree, which has also
+log2(N) costs for retrieving operations. We will learn more about sorting sequences,
+doing a binary search in a sorted seq and about tree structures later in the book.
+
+A hash table, called only table in Nim, is a homogeneous resizeable   container that behaves similar
+as the Nim sequences, but releases the restriction that for direct accessing an element its position in
+the sequence has to be known.
+
+The idea of a hash table is to use an arbitrary data type to directly access
+objects stored in a container in a similar way as we can do it for arrays and
+sequences with integer keys. The first step is to use a so called hash function to
+map key objects, which are not already of integer type, to the integer type.
+We would try to use a hash function which can be evaluated fast and which
+maps our data to integer values distributed to the whole integer value space
+without clustering. The integers generated by a hash function look in some way like 
+random numbers, they are distributed over the full integer value range without 
+an obvious order or systematic. Mapping arbitrary objects to integers is generally not
+difficult. For as string a first attempt would be to use the characters of a string
+in the same way as we calculate the value of a number literal by summing up
+the digits each multiplied with powers of ten given by the position. For
+a string that may look like
+
+[source, nim]
+----
+intVal = uint(s[0]) * 256^0 + uint(s[1]) * 256^1 + uint(s[2]) * 256^2 + ...
+----
+
+We multiply with powers of 256 as we have 256 different ASCII characters.
+
+That would be not really a good hash function, as all short strings would be mapped
+to low integer values, not distributed over the full value range. But similar, smarter
+has functions are available.
+
+So a hash function can map arbitrary data types to integers. But what we really want 
+is a sequence of continues integer values, which the hash functions does not provide
+by design. But that is no real problem: In the same way as we can do a range reduction 
+for a random number generator function generating random numbers using the full
+integer range by just applying a modulo operation, we can apply the modulo
+operation on the value returned by a hash function.
+
+Range reduction by modulo gives us smaller integer numbers, which may
+already be some form of index values for an array or a seq. With two
+restrictions: Index collisions can occur, as applying the hash function and the modulo range reduction on
+different strings may give us the same index value. And some index values may be never generated.
+The later is not that serious, some positions in the container would be remain unpopulated.
+Collisions are much more serious of course, we have to handle them somehow. One solution
+is, that we make each storage location in our container again a sequence, which can store
+all the colliding data sets. That way our hash table would be a sequence, where each element is again
+a short sequence containing all the colliding data record. For a data retrieving operation applying
+the hash function with modulo data reduction would give us the position in the larger seq, and we
+then would have to check all the elements in the short seq to find the actual record. In best case
+the short seq contains only one entry, when no collision has occurred. For a customer data
+base this strategy may be indeed the best solution, as in rare cases multiple different customers
+may have exactly the same name. So it would be nice if for query operations in that case
+a list of all customers with exactly that name is returned.
+
+In practice often a modified strategy is applied preventing the seq in seq container type: We use
+only one loosely populated seq, and whenever a collision occur, we just put the colliding data
+record at some free index position after the position determined by the hash index value.
+That way data retrieving starts by the position given by the hash key and then checks the data record
+at that position and the following positions, until a matching record or an empty position is
+found, the later case indicates that the queried data record is not contained in the data base.
+Storing data records works similar: When the position given by the hash key is void, then the
+new entry is stored at that position. If the index position is already occupied, then following
+positions are examined until a void one is found and the data is stored there.
+
+Hash tables work well generally when they are not too dense populated. Generally
+we make the number of available index position double the size as the number
+of expected entries. Then the change of collisions is not too large, and when a collisions
+occurs, then chances are high that one of the next positions are still unpopulated.
+
+When by inserting more and more data records the population density becomes too high, then generally
+a new, larger table is allocated and the data records are moved from the old to the new table, in a similar
+way as it is done for plain sequences when all capacity is occupied.
+
+Now let us see how we can us the tables module of the Nim standard library to store the customer
+record we introduced above:
+
+
+[source, nim]
+----
+import std/tables
+
+type
+  Customer = object
+    lastName: string
+    firstName: string
+    yearOfBirth: int
+    postalAdress: string
+    phone: string
+    credit: float
+    
+var customers: Table[string, Customer]
+
+proc addNewCustomers =
+  var c: Customer
+  c = Customer(lastName: "Turing", firstName: "Alan")
+  c.postalAdress = "England"
+  c.yearOfBirth = 1912
+  customers["Turing, Alan"] = c
+  
+  c = Customer(lastName: "Zuse", firstName: "Konrad")
+  c.postalAdress = "Germany"
+  c.yearOfBirth = 1910
+  customers["Zuse, Konrad"] = c
+
+proc queryCustomer(key: string) =
+  if customers.hasKey(key):
+    echo "known customer:"
+    echo customers[key]
+  else:
+    echo "customer key not found in data base"
+    
+addNewCustomers()
+
+queryCustomer("Zuse, Konrad")
+queryCustomer("Gates, Bill")
+----    
+
+The basic usage of Nim tables is very similar to the use of sequences. While we have to specify only the
+base type for a Nim seq, we have to specify the type of the key and the type of the stored entities
+for a hash table. The line var customers: Table[string, Customer] defines a variable with a generic table type.
+The table uses strings as keys and stores Customer objects. We can then use the [] subscript operator
+to store Customer objects in the Table. As we created a table with string key type, we have to specify strings
+when we use the subscript operator or other functions to access entries of our table. For the query operation
+we first call the function hasKey() to check if the customer with that name is contained in the data base and
+then use again the subscript operator to access the data record.
+
+The tables module of the Nim standard library provides many more functions for interacting with tables.
+Most are easy to understand and use. When you inspect the API docs of the tables module you will
+discover that beside the Table data type also a TableRef exists. The Table type has value semantics, that
+is if you copy a whole table instance, then the whole content is copied. TableRef instances have reference semantics,
+the content is not copied when you assign one instance of a TableRef to another variable.
+
+In the example above we called hasKey() to check if a data record is available before we accessed that record.
+Access with the subscript operator [] would raise an exception when an entity is not available in the table.
+HasKey() and [] both would have to locate the data record. A faster way to access data record when we are not sure
+if they exists in the table is the getOrDefault() proc:
+
+[source, nim]
+----
+let dummy = Customer()
+let query = customers.getOrDefault(name, dummy)
+if query.lastName.len == 0: # we know all entries in the database have a lastName, so we got the dummy default value
+  echo name, "not found"
+else:
+  process(query)
+----
+
+A useful variant of the Table data type is the CountTable, which we can use to count data object, maybe words in a text:
+
+[source, nim]
+----
+import tables
+var ct: CountTable[string]
+ct.add("Nim")
+cd.add("Rust")
+ct.add("Nim")
+
+echo ct["Nim"]
+for k, v in ct:
+  echo k, ":v", v 
+----
+
+A table instance stores entries not in the order of insertion. When we iterate over the table,
+we get the results not back in the order of insertion. If we really should need to preserve
+the insertion order we may use the OrderedTable variant. Note that nn OrderedTable
+does not sort its entries, it remembers insertion order. Ordered Tables have some internal
+overhead, so we should use them only when necessary.
+
+For all the various table variants we can use procs like clear(), len() or del() to remove all entries
+from a table, to check for the number of entries or to delete entries. Note that some functions
+may throw exceptions when we try to access entries that are not available. And note that
+the subscript operator =[] overwrites already existing entries.
+
+For our initial customer data base the current table implementation may still be not optimal, as
+it is not clear how to handle different customers with the same name. But customer data
+bases are really special cases, in most cases different things have different names.
+
+=== User defined hash values
+
+The tables module uses the hashes module to calculate the hash value for the keys that
+we use to access table content. For many data types the hashes module already defines
+a hash function. When we would like to use tuples or object data types as keys for table access, then we would have to
+define a hash function for that key objects first. The API documentation of the tables module
+contains an example for this, where as key an object data type with firstName and lastName fields is used
+to store salary entries in the table. While firstName and lastName are strings, and for single strings a predefined
+hash function is available, we have to declare another hash function for objects with twow strings:
+
+[source, nim]
+----
+import tables, hashes
+
+type
+  Person = object
+    firstName, lastName: string
+
+proc hash(x: Person): Hash =
+  ## Piggyback on the already available string hash proc.
+  ##
+  ## Without this proc nothing works!
+  result = x.firstName.hash !& x.lastName.hash
+  result = !$result
+
+var
+  salaries = initTable[Person, int]()
+  p1, p2: Person
+
+p1.firstName = "Jon"
+p1.lastName = "Ross"
+salaries[p1] = 30_000
+----
+
+The hash generation is a bit cryptic: First we mix various existing hash values using the !& operator, and finally
+we use the !$ operator to generate the final hash value. For details please see the API documentation of the hashes module.
+
+Hash tables can be seen as a way to attach arbitrary data to other data. The above example attaches a "salary" to
+a person object. In most cases we would just create one more object field when we have to store more data, but sometimes
+that is not easily possible. One example is when we use a low level C library, which gives us some C objects back. Maybe
+we use an advanced C or C++ math library like CGAL, and we get some abstract low level objects from it, maybe circles
+with center coordinate and diameter. As that objects are not Nim object, but C or C++ entities, we can not easily subclass
+them to attach more properties like a color attribute. But as each entity has a unique address, we can just use a
+table with key type address and all the needed values like color as data. That would be some overhead of course, as
+each color lookup would mean a table access, but it is a simple solution.
+
+We can even attach properties to plain data types this way:
+
+[source, nim]
+----
+import tables
+
+var t: Table[float, string]
+
+let PI = 3.1415
+t[PI] = "Pi"
+t[2.0] = "two" 
+
+echo t[PI]
+echo t[2.0]
+echo t[5.0 - 3.0]
+----
+
+For floats a predefined hash function is available, so the code above should work. But floats as keys are a bit fragile due
+to the fact that float math is not really exact. So the last line in above code may raise an exception due to
+access of a non existent entry, as the difference 5.0 - 3.0 may not exactly be identical to the value 2.0.
+
+Hash tables can be even useful containers, when we already have numeric data as possible keys for indices in a 
+sequence: In mathematics we could have a two dimensional array, that is an array of array in Nim, to store matrices.
+This is ok when the matrix is really populated, that is most entries have meaningful non trivial values. But for
+very large, loosely populated matrices, with mostly just zero or one entries, storing the whole matrix
+as a table using a row, column tuple as key, may save a lot of RAM.
+
+=== Equality and Identity
+
+When we use objects or references to objects as keys for tables, we have to remember
+how Nim compares value and reference types:
+
+[source, nim]
+----
+import tables, hashes
+
+type
+
+  O = object
+    i: int
+   
+  R = ref object
+    j: int
+     
+proc hash(o: O): Hash = hash(o.i)
+
+proc hash(r: R): Hash = hash(cast[int](addr(r[])))
+
+var o1 = O(i: 7)
+var o2 = O(i: 7)
+var r1 = R(j: 13)
+var r2 = R(j: 13)
+
+echo o1 == o2
+echo r1 == r2
+
+var t1: Table[O, float]
+t1[o1] = 3.1415
+echo t1.hasKey(o2)
+
+var t2: Table[R, float]
+t2[r1] = 2.7
+echo t2.hasKey(r2)
+----
+
+The output of above program is
+
+----
+true
+false
+true
+false
+----
+
+By default the == operator compares content for value objects, but the instance addresses for references.
+Because of this it makes sense to define hash functions for object types and ref object types
+in a compatible way: We use the hash value of the single integer field of our value object as hash result
+for the whole object, and we use the address of the instance for the hash value of the reference object.
+As different instances of ref objects have always different addresses, the hasKey() does return false
+when we use as argument a different instance variable, independent on the content of its fields.
+
+For special use cases we may redefine the == operator, but we have to ensure that the defined hash function
+matches the == operator: When a == b is true, then hash(a) has to be identical to hash(b)! The reason is
+that tables first compare the hash value of query key with key of entities in the table, and only for matching
+hash value do comparison of the actual data content.
+
+=== Performance
+
+Hash table lookup is fast. We say that hash table lookup is a O(1) operation, which shall indicate that
+the time needed for  doing a table lookup does not depend on the total number of entries stored in the table.
+The reason for that is that for a lookup it is necessary to calculate the hash value, do the modulo operation and
+access the table content and maybe a few of the following table entries in the case that the first entry is not a match.
+Storing data is also an O(1) operation, as it works very similar, as long as the table is not already too dense populated
+so that a recreation is necessary. In that case that single storing operation is obviously very slow, but that
+occurs very rarely, and maybe not at all when we use a large enough table from the beginning.
+Still small tables are much faster than larger tables due to cache effects. For small tables
+all data may fit into the caches of the CPU, while for large tables most data is located outside of caches in RAM, and RAM
+access is magnitudes  slower than cache access.
+
+And hash table lookup is slower than array or seq access. To access an element from an array or seq
+we have only to multiply the index value with the byte size of the stored elements type and maybe
+to add an offset when the array does not start at index 0. For tables we have to calculate the hash value,
+do the modulo operation, access some elements at the calculated position, and most importantly, to compare
+the content at that positions with the actual key data. If the key is a string, a few string comparisons (at least one) are necessary
+to determine if the query element is available in the table. So while array access may take less than a nanosecond on modern hardware,
+table lookup  may take a few dozens of nanoseconds. Lookup with string keys is generally slower than for
+other key types likes integer, as for string comparison it may be necessary to compare many characters to get a result
+and because strings generates some memory indirection by the fact that string content is stored somewhere in the heap
+outside of any cache.
+
+References:
+
+* https://nim-lang.org/docs/tables.html
+* https://nim-lang.org/docs/hashes.html
+
 
 //== Standard Container
 
