@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-APR-29
+//v0.1, 2021-MAI-05
 :doctype: book
 :toc: left
 :icons: font
@@ -7447,6 +7447,86 @@ table lookup  may take a few dozens of nanoseconds. Lookup with string keys is g
 other key types likes integer, as for string comparison it may be necessary to compare many characters to get a result
 and because strings generates some memory indirection by the fact that string content is stored somewhere in the heap
 outside of any cache.
+
+=== Tuples or other containers as Keys
+
+At the end of our introduction to hash tables we will present a very useful, but maybe not
+that obvious property of hash tables: The keys used for table access don't have to be simple data types,
+but can be container types like tuples or arrays. Imagine  you have a map in 2d with a set of points on that
+map each presented by an x, y coordinate pair. That points could be cities, and some cities may have a direct connection
+by a road. So how can we test if two cities are directly connected and get the distance between the two cities?
+With a hash table using a tuple of two city coordinates as key it is easy:
+
+[source, nim]
+----
+import tables, math
+
+const
+  InvalidFloat = 1e30 # arbitrary marker that in not a valid value
+  InvalidCoord = (InvalidFloat, InvalidFloat)
+
+type
+  Coord = tuple
+    x: float
+    y: float
+
+  Cities = Table[string, Coord]
+  Distances = Table[(Coord, Coord), float]
+
+var cities: Cities
+var distances: Distances
+ 
+proc insertCity(name: string; coord: Coord) =
+  cities[name] = coord
+  
+proc insertDist(a, b: string) =
+  var (a, b) = (a, b)
+  if a > b: swap(a, b)
+  let ca = cities[a] # caution, will raise an exception if name is not a know city
+  let cb = cities[b]
+  distances[(ca, cb)] = math.hypot(ca.x - cb.x, ca.y - cb.y)
+  
+proc checkDirectConnection(a, b: string): float =
+  var (a, b) = (a, b)
+  if a > b: swap(a, b)
+  let ca = cities.getOrDefault(a, InvalidCoord)
+  let cb = cities.getOrDefault(b, InvalidCoord)
+  if ca == InvalidCoord or cb == InvalidCoord:
+    return -1 # marker when cities are unknown
+  result = distances.getOrDefault((ca, cb), InvalidFloat)
+
+insertCity("aTown", (2.0, 7.0))
+insertCity("bTown", (2.0, 11.0))
+insertCity("cTown", (17.0, 23.0))
+
+insertDist("aTown", "bTown")
+
+var d = checkDirectConnection("aTown", "bTown")
+if d == -1:
+  echo "query for unknown town"
+elif d == InvalidFloat:
+  echo "Cities have no direct connection"
+else:
+  echo "Distance: ", d
+
+echo checkDirectConnection("bTown", "aTown") # 4, same as above
+echo checkDirectConnection("aTown", "cTown") # 1e30
+echo checkDirectConnection("aTown", "xTown") # -1
+----
+
+For the procs insertDist() and checkDirectConnection() we use a trick to get the same
+results when we exchange the names: We sort the names alphabetically when we insert
+the distances and also when we query the distances. So we get the same result.
+Of course we could insert the tuple also twice instead, but as distances is the same
+in both direction sorting and inserting only ones makes some sense. Note that
+we used tuples for the coordinate pairs in the distances tables. Maybe the more obvious
+data type would be an array with two entries, as the array type is a container for
+homogeneous data, while a tuple can also contain different data types. But currently
+Nim supports tuples better in some situations, e.g. for automatic tuple unpacking.
+So often we use tuples when array would be the first choice maybe. Array type would have
+the benefit of iteration over elements at runtime, while tuples have the benefit
+that we can access elements by names and by an integer constant. For performance array
+or tuple should make no difference here.
 
 References:
 
