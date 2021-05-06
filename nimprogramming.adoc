@@ -750,7 +750,7 @@ shrink the executable size of "Hello World" programs to about 10 kB for use on t
 {uc}s.
 
 * Nim is fast. Generally performance is very close to other
-high-performance languages such as C or C++. There are some exceptions still: other
+high-performance languages such as C or {cpp}. There are some exceptions still: other
 languages may have libraries or applications that have been tuned for performance for
 many years, while similar Nim applications are so far less tuned for performance, or
 maybe are more written with a priority of short and clean code or run-time safety.
@@ -798,6 +798,29 @@ languages, for example there are some Nim +<->+ Python interfaces available.
 * Many popular editors have support for Nim syntax highlighting and other
 IDE functionality like on-the-fly checking for errors and displaying detailed
 information about imported functions.
+
+* In the last few years Nim has reached some important milestones: Version 1.0
+with some stability promises was released, and with the ARC and ORC
+memory management strategies and full destructor support fully deterministic
+memory management comparable to memory management in {cpp} or Rust
+is available. So problems of conventional garbage collectors like delayed memory
+deallocation or longer pausing of programs due to the GC process are gone. And some
+larger companies have started using Nim in production, the most important
+may be currently the Status Corp. with their Etherium client development.  
+
+== Why should I not use Nim?
+
+Maybe it is just not the ideal solution for you. A racing bicycle or a mountain bike are
+both great devices, but for cycling a few hundred meters to the bakers shop both may
+be not the perfect solution. A plain old bicycle would do better. Even as Nim
+seems to join the benefits of a  racing bicycle and a mountain bike well -- high performance and
+robust design -- and is not expensive, it is just not the optimal solution for everybody.
+People who write only tiny scripts and have not to care about performance can continue
+using Python. People who are only interested in special applications, maybe only
+in web development or only in tiny 8 bit micro-controllers may not really need Nim. Nim can 
+do this and much more well, but for special use cases better suited languages may still
+exist. And someone who has managed to learn {cpp} really well over a period of
+many years may decide to continue with {cpp} also.
 
 == Our first Nim Program
 
@@ -3620,6 +3643,21 @@ which we have used for array access, both are completely unrelated.  Note that t
 initialization of the seq above does not restrict its use in any way, we can still
 use it like an uninitialized seq, that is we can use the add() operator to add more
 elements, we can insert or delete elements and all that.
+
+Deleting elements from an array or from a sequence can be very slow. It is slow
+when we use the naive approach and move all the elements located after the element
+one position forward. This would obtain the order in the container, so sometimes this
+is the only solution, but of course moving all the entries is expensive for large containers.
+Nim standard library provides the delete() function for this order maintaining delete
+operation. A much faster way to delete an entry in a seq or array is to remove the last entry
+and replace the one that should be deleted with that last entry. This operation moves the last entry 
+to the front, so order of elements in not maintained. Nim standard library provides the del() function
+for this faster, but order changing delete operation. Of course, whenever the order is not important,
+we should use del().footnote:[In some special cases it may be useful to just overwrite entries with special
+marker values, instead of actual deleting them. That operation is fast, order is maintained, and 
+for operations like data output we can just ignore the marker entries. But this is really only
+a good solution is special cases, maybe just using a different container type like a list or hash table
+is a preferable solution.]
 
 ****
 
@@ -7533,6 +7571,181 @@ References:
 * https://nim-lang.org/docs/tables.html
 * https://nim-lang.org/docs/hashes.html
 
+
+= Part IV: A few small Programming Tasks
+
+In this section we will present a few simple programming exercises.
+
+== Sorting
+
+Sorting a sequence or an array of numbers is generally a component of
+each computer programming course. While we would not really
+code sorting algorithm for the actual software that we write, but use
+the generic sorting algorithm from the standard library, sorting
+algorithm can teach us some basic programming skills. When we
+sort a small number of items manually, we would generally use selection or
+insertion sort intuitively: For selection sort we pick the smallest element and
+move it at position one, then pick next smallest item and move it at position two.
+This strategy is easy to implement and works not bad for small quantities. For larger
+containers algorithm like quicksort or mergesort gives better performance.
+
+=== Selection Sort
+
+[source, nim]
+----
+#[ <--s.len
+5 
+7 <-- i
+4 <-- k, x == 4
+6 <-- j
+3 
+2 first tree entries are already sorted
+1
+]#
+
+proc selectionSort(s: var seq[int]) =
+  var i: int # used to step through the still unsorted range
+  var j = 0 # lower bound for still unsorted range
+  var k: int # position of currently smallest candidate
+  var x: int # and its value
+
+  while j < s.len: # while there is an unsorted section left
+    i = j # start with i one above the already sorted range 
+    x = s[i]; k = i # assume first element is the smallest
+    inc(i) # continue with next one in the still unsoprted range
+    while i < s.len: # while there are unchecked candidates 
+      if s[i] < x: # that one is smaller than current candidate
+        x = s[i] # remember its value
+        k = i # and remember its position
+      inc(i) # examine next candidate
+    swap(s[j], s[k]) # exchange smallest value with the one currently at position k
+    inc(j) # sorted range increased by one
+
+import random
+proc main =
+  var s: seq[int]
+  for i in 0 .. 9:
+    s.add(rand(100))
+  s.selectionSort
+  echo s
+
+main()
+----
+
+The comment on the top of the above example shows a partly sorted list of 7 integer
+numbers. The lowest three positions already contains the sorted numbers 1 to 3. The
+next four positions are still unsorted. For the sorting process we need the three indices
+i, j, k and the variable x to store an actual value for the comparison. The index j
+is the lower bound for the still unsorted range, j starts at zero obviously. 
+The variable x stores the currently smallest value of the still unsorted range, and k is
+the index position of that value. Finally i is a counter that is used to step through all
+the values of the unsorted range. The outer loop is executed as long as j is smaller than the length of
+the sequence that we want to sort. We set i to the value of j, k to the same value and assume initially
+that s[i] is the smallest value from the still unsorted range. That value is stored in x.
+Then we execute the inner while loop until we have processed all elements of the
+still unsorted range. Whenever we find an element that is smaller than x, we store that position
+in k and the value in x. When the inner loop has finished, we exchange the smallest value
+with the first element of the still unsorted range. This way the sorted range increases, and the unsorted
+range decreases by one.
+
+To test our sorting procedure we generate some random numbers, sort them and print the result.
+Selection sort is said to be of order O(n^2), with n being the number of values to sort. So the effort
+increases quadratic with the number of values. This is because we have to test all the still unsorted
+values just to increase the number of sorted values by one. Selection sort has a natural behavior,
+that is for an already sorted array the test s[i] < x would be always false and we would have
+to do no movement of values in that case. So performance is best for an already sorted or partly sorted list,
+and the sorting is stable in the sense that we do not move elements when it is not really necessary.
+In one of the following sections we will discuss the quicksort algorithm, which is not a
+stable sorting method: Elements with equal value may be move with quicksort. For plain
+numbers that does not really matter for the result, as numbers are indistinguishable. But
+when we sort objects, maybe persons by age, persons of same age would be exchanged
+by quicksort, which may not be desired.
+
+Note that the code above is not really optimized for performance yet. One possible improvement
+may be to iterate the two loops not from zero to s.len, but in the opposite direction.
+In that way comparison of loop indices with a constant value, zero in this case, could
+be used to terminate the loop. Comparison with constants can be faster than comparison with
+actual variables, and comparison with zero is generally fastest. Note that we compared indices with s.len()
+in above code, which is not that bad, as len is a field in the seq data structure, so the compiler should be smart
+and replace s.len with just a field access without proc call overhead.
+
+****
+We started this section with thinking about how we would sort a small quantity of items
+lying on the table manually. This strategy is generally a a good one. Sometimes
+it can even help to ask how a child would solve a problem to find a way how to
+do it with the computer. 
+****
+
+=== Insertion Sort
+
+Insertion sort is another simple sorting method, which some
+card players like to use:
+They hold two sets of cards in their hand, one unsorted set, and one sorted which
+is initially empty. They pick one card from the unsorted set and insert it at the right
+position in the already sorted set. That action is repeated until the unsorted set is empty.
+For our next example we sort our data not in place as we did it in the previous
+example, but we generate a new sorted copy:
+
+[source, nim]
+----
+#[
+unsorted     sorted
+<-- k
+4
+7                     3 <-- result.high
+5                     2
+6                     1
+]#
+
+proc insertionSort(s: seq[int]): seq[int] =
+  var j: int # current position in the new, sorted range
+  var k = s.len # index one above the still unprocessed range 
+  var x: int # the value we have to insert next
+  while k > 0: # as long as we have still unprocesed entries
+    dec(k)
+    x = s[k]
+    j = result.high # top of sorted range
+    result.setLen(result.len + 1) # reserve space for one more entry
+    while j >= 0 and x < result[j]: # move the already sorted entries up
+      result[j + 1] = result[j]
+      dec(j)
+    result[j + 1] = x # insert x
+
+import random
+proc main =
+  var s: seq[int]
+  for i in 0 .. 9:
+    s.add(rand(100))
+  echo s.insertionSort
+
+main()
+----
+
+The commented code in front of the above program code shows at the left the
+still unsorted numbers and at the right 3 already sorted numbers. For the sorting
+process we need two index variables j and k, and one variable to store the actual value that we have to
+insert called x. The variable k is used as the index of the top entry of the still unsorted range.
+To insert the value x in the already sorted result, we first reserve space for one more entry by
+calling setLen() and then iterate over the sorted values and move them one place to the top.
+We do that moving to the top as long as we have not already reached the bottom of the sorted range
+and as long as the current entry is larger than the value x which we want to insert.
+We take the values from the top of the unsorted range, as that is convenient, but of course we could pick
+an arbitrary element from the unsorted range.
+
+Insertion sort has O(n^2) cost, as for each element that we take from the unsorted range we have to
+iterate over the sorted range to insert it. As we have to move elements before we can insert an element, insertion
+sort is slow for larger containers. Selection sort, which is also of O(n^2) should be faster, as it does not
+use an expensive shift of many elements.
+
+When you look at the example code you may immediately find two possible improvements:
+We do not really need the variable x, as we can just use s[k] instead. The compiler should optimize the
+code so that the subscript operator is not executed multiple time for the same index k, so use of s[k] or x
+should make no difference for performance. And we call setLen() in the outer loop to increase the
+capacity of the result sequence by one each. Of course setting capacity only one time to the value
+of s would suffer, as obviously result has the same length as out input data. Another possible optimization would be to
+take advantage of the fact that the destination sequence is sorted, so that we would not have to do linear search to find
+the insertion position, but we could use a binary search. But that would be more complicated and the benefit would be
+not large.
 
 //== Standard Container
 
