@@ -7816,9 +7816,9 @@ import std/monotimes
 proc qsort(s: var seq[int]; a, b: int) =
   assert a >= 0 # a .. b is the range that we have to sort
   assert b < s.len
-  assert b - a > 1 # it may work for smaller intervalls, but this is the intended use case
+  assert b - a > 1 # it may work for smaller intervals, but this is the intended use case
   let x = s[(a + b) div 2] # use element from center of range
-  # var x = s[a] div 2 + s[b] div 2 # that does not work as so x may be smaller than smallest entry in range
+  # var x = s[a] div 2 + s[b] div 2 # bad, x may be smaller than smallest entry in range
   # x = s[a .. b].min # worst case test!
   var i = a
   var j = b
@@ -7981,7 +7981,7 @@ proc qsort(s: var seq[int]) =
       else:
         break
     dec(i); inc(j)
-    assert(i >= a and j <= b)
+    # assert(i >= a and j <= b) caution, this is not always true!
     if i - a > 1:
       stack.add((a, i))
     elif i - a > 0:
@@ -8078,7 +8078,7 @@ proc qsort(s: var seq[int]) =
       else:
         break
     dec(i); inc(j)
-    assert(i >= a and j <= b)
+    # assert(i >= a and j <= b) caution, this is not always true!
     var c, d: int
     for u in 0 .. 1:
       if (i - a > b - j) == (u == 0):
@@ -8137,11 +8137,151 @@ a boolean loop variable and a xor operator like
     for u in [false, true]:
       if (i - a > b - j) xor u:
 ----
-Well maybe the other way round, you can try that your own.
+//Well maybe the other way round, you can try that your own.
 
-Note that a similar trick to reduce the worst case recursion dept should work also
-for the recursive function from the beginning: We would have to ensure that we call
-qsort() on the smaller partition always first, so that the recursion stops fast. 
+==== We should not believe all what we think
+
+And what seems to be correct. Our nonrecursive function seems to be fine, and indeed inverting the
+== (u == 0) condition makes a difference for random data, so it is correct?
+Well when we think about it again the next day we may get some doubts. The outer loop
+pops one entry from the stack, but in the loop we may push two new entries. Pushing the
+smaller interval helps, as we continue with the smaller interval in the next iteration
+and remove it so from the stack. But the net effect is still that we push one interval
+onto the stack for each iteration, and for the worst case that interval shrinks only by one
+in each iteration. So it should still not work.
+
+But well, there are rumors that solutions exists. When we think about it, we may ask
+our self if we can just continue with one interval in a loop and push only the other one
+on the stack. And indeed, that is possible, and this time we did testing for worst case
+scenario:
+
+[source, nim]
+----
+from algorithm import isSorted, sort
+import std/monotimes
+
+proc qsort(s: var seq[int]) =
+  var stack: array[64, (int, int)]
+  var stackPtr: int = -1 # empty
+  var maxStackLen: int
+  var a = s.low
+  var b = s.high
+  while true:
+    if b - a == 1: # done with actual interval, but we may have to swap()
+      if s[a] > s[b]:
+        swap(s[a], s[b])
+    if b - a > 1: # interval has still more than two entries, so continue
+      discard
+    elif stackPtr >= 0: # get next interval from stack
+      (a, b) = stack[stackPtr]; dec(stackPtr)
+    else:
+      break # all done
+    if stackPtr > maxStackLen:
+      maxStackLen = stackPtr
+    assert(a >= 0 and b < s.len and b - a > 1)
+    let x = s[(a + b) div 2]
+    # let x = s[a .. b].max # worst case test! Slow, test with smaller container size.
+    var (i, j) = (a, b)
+    while true:
+      while s[i] < x:
+        inc(i)
+      while s[j] > x:
+        dec(j)
+      if i < j:
+        swap(s[i], s[j])
+        inc(i); dec(j)
+      else:
+        break
+    dec(i); inc(j)
+    # assert(i >= a and j <= b) caution, this is not always true!
+    if (i - a < b - j): # put large interval on stack and cont. directly with the small 
+      swap(i, b)
+      swap(a, j)
+    if i - a > 1: # interval has more than two entries, needs further processing
+      inc(stackPtr) # inc before push!
+      stack[stackPtr] = (a, i)
+    elif i - a > 0: # two entries, we may have to swap()
+      if s[a] > s[i]:
+        swap(s[a], s[i])
+    (a, b) = (j, b) # the smaller interval, we continue with that one 
+  echo "Max Stack Length: ", maxStackLen
+
+proc quickSort(s: var seq[int]) =
+  if s.len == 2 and s[0] > s[1]: swap(s[0], s[1])
+  if s.len > 2:
+    qsort(s)
+
+import random
+proc main =
+  var s: seq[int]
+  var start: MonoTime
+  randomize()
+  for i in 0 .. 1e5.int:
+    s.add(rand(1e8.int))
+  for i in 0 .. 9:
+    s.shuffle
+    s.quickSort
+    assert(isSorted(s))
+  for i in 0 .. 1e7.int:
+    s.add(rand(1e8.int))
+  start = getMonotime()
+  s.quickSort
+  echo getMonotime() - start
+  assert(isSorted(s))
+  s.shuffle
+  start = getMonotime()
+  s.sort()
+  echo getMonotime() - start
+main()
+----
+
+The modifications to the code are again tiny. We use an outer while true: loop, which
+continues with interval a .. b until its size is less than three entries. Then its
+pops() a new interval from the stack.
+At the end of that outer loop, we put only one interval on the stack and directly
+continue with the other interval. But which interval should we push on the stack and which
+one should we process directly further in the outer loop?
+The solution is to process the smaller interval in the outer loop further, as we are soon
+done with it.  For processing that smaller interval, we may push some more ranges
+onto the stack, but we come to interval sizes of less than three soon and then we start popping
+intervals from the stack. And when we are done with that, we pop
+the larger interval again from the stack. This way the worst case, where we pick each time a
+min or max value as median, has the smallest stack consumption, that is one entry. 
+We push the large interval with size n - 1 on the stack, continue with the tiny one entry
+range, which signals that we are done with that interval in the next loop iteration and
+so the just pushed n - 1 interval is popped from the stack again. This continues in this way. Slow, but
+minimal stack consumption.
+
+From the above code it becomes clear that for our initial recursive qsort() function
+changing the order in which we process the partitions would not really help, as
+we continue the recursion until all is processed. There is no intermediate pop()
+involved.
+
+Maybe you still wonder why the tiny inner loops use the conditions
+[.code]#while s[i] < x:# and not [.code]#while s[i] \<= x:# as we said that both partitions
+are allowed to contain the median element. Well with +<=+ there would be no guaranteed
+stop condition for the interval, so indices could run out of the interval. Using
+an additional condition like [.code]#and i \<= b# would make it slower. Another possible modification 
+would be to not use inner while loops at all. Tiny while loops with only one simple
+termination condition are fast, but the inner while loops would always terminate fast for random data.
+So we may try instead something like 
+
+[source, nim]
+----
+    while true:
+      if s[i] < x:
+        inc(i)
+      elif s[j] > x:
+        dec(j)
+      elif i < j:
+        swap(s[i], s[j])
+      else:
+        break
+----
+
+You may try that variant yourself, or maybe look for other variants in internet sources or
+textbooks. Our intention in this section was not to present a perfect sorting function,
+but to teach you some basic coding strategies and related traps.
 
 We will terminate our sorting exercises for now. Another important sorting algorithm is
 MergeSort, which is used by Nim's standard library and is also fast and guaranties 
