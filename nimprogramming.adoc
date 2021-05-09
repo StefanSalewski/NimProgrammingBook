@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-05
+//v0.1, 2021-MAI-09
 :doctype: book
 :toc: left
 :icons: font
@@ -7572,7 +7572,7 @@ References:
 * https://nim-lang.org/docs/hashes.html
 
 
-= Part IV: A few small Programming Tasks
+= Part IV: Some Programming Tasks
 
 In this section we will present a few simple programming exercises.
 
@@ -7746,6 +7746,418 @@ of s would suffer, as obviously result has the same length as out input data. An
 take advantage of the fact that the destination sequence is sorted, so that we would not have to do linear search to find
 the insertion position, but we could use a binary search. But that would be more complicated and the benefit would be
 not large.
+
+=== Quick Sort
+
+As the name implies this sorting method is one of the fastest. We will explain it in
+some detail with various variants as it can teach us two important concepts:
+Recursion and avoiding recursion by use of a stack container.
+
+The idea of the QuickSort algorithm is simple, and the code is also simple and short, but we have to care for some details
+like exact index stop positions. Generally sorting seems to be a O(n^2) operation, at least from the two traditional
+sorting methods, Insertion- and Selection-Sort it seems to be the case. So doubling the container size seems to increase
+the needed sorting time by a factor of four, which is really bad for large arrays or sequences. The trick
+of QuickSort is, that instead of sorting a container with n elements, we just sort the first half and the second
+half separately, each with approx n / 2 entries. This would be faster, as 2 * (n/2)^2 is only half of (n)^2. And we
+do apply this trick in a recursive manner on each halved range, until the range is reduced to only one
+or two entries. But to make this work we have to partition the full range in the first half r1 so that all
+entries of range r1 are smaller or equal to a median value x, and so that all entries in the second half
+r2 are all greater or equal to the median x. Let us consider an example with six numbers:
+
+----
+5 3 2 8 1 7
+1 3 2 8 5 7
+----
+
+To partition that set of numbers we have only to exchange the numbers 5 and 1, with the value 5 or 4
+being a possible median. Exchanging numbers in an array or a seq is a fast O(n) operation, we
+have to iterate the container only once. The problem is finding the median. For picking a perfect
+median we would need a sorted container so that we could pick the center entry. But of course
+our container is unsorted, if it would be sorted our work would be done already. Note that
+even summing up all entries and dividing by n would give only the average value, not the median.
+Average and median can be very different, e.g. for many small numbers and a few very large ones.
+But in practice picking an estimation for the median, maybe picking one by random from the whole
+range or picking the center entry is good enough. That choice will not really half the whole
+range in each step, but on average it splits the range in two parts with not too different size.
+This works really well when the input data looks like random numbers, but it may work bad
+in some unlikely cases when all the input numbers are equal or are already sorted.
+Already sorted can indeed occur -- for that case picking the center elements of the range gives
+the perfect median, so we will choose that strategy.
+
+Partitioning the full range is basically very simple: We move from the left to right with index i and stop
+when we find a value s[i] that is not smaller than our median x. And we do the same from the right to the
+left with index j until we find a value that is not greater than median x. After we have done that,
+we can just exchange the values at s[i] and s[j] and continue. We continue until i is close to j. The difficult part
+is to handle this terminating condition exactly, that is to stop exactly at the right position so
+that the first half really contains all entries with value less or equal to median x, and that the second half contains only
+entries with value equal or greater than median x. To make it more clear: Such a partition decouples the two
+ranges. Sorting the whole range would result in the same state as sorting first and second range on its own.
+
+For writing our actual sorting function we use the fact that Nim like most modern programming languages support
+recursion, that is a function can call itself again. We saw at the beginning of the book a few examples for that.
+So we can pass our function the initial full container, then the function can partition the container in
+first and second half and call itself again on the two parts. This way the actual size of the ranges to sort
+decreases, and finally recursion stops when the range contains only one or two elements. For size one
+we have to do nothing at all, but for size two we may have to exchange the two elements if order is wrong.
+
+A naive implementation may create for each function call two new sequences for the two parts, partition
+the initial sequence by inserting the values in one of the new shorter sequences, call itself
+on both parts and finally join the parts and return it -- as result or as var parameter.
+But that would be really slow.  A much simpler and faster solution is, when we work all the
+time on the same container, and just tell the function which range the function has to work on.
+So we pass to the function the whole sequence and two integers a and b which tell it the range to process:
+s[a], s[a +1] .. s[b]. 
+
+[source, nim]
+----
+from algorithm import isSorted, sort
+import std/monotimes
+
+proc qsort(s: var seq[int]; a, b: int) =
+  assert a >= 0 # a .. b is the range that we have to sort
+  assert b < s.len
+  assert b - a > 1 # it may work for smaller intervalls, but this is the intended use case
+  let x = s[(a + b) div 2] # use element from center of range
+  # var x = s[a] div 2 + s[b] div 2 # that does not work as so x may be smaller than smallest entry in range
+  # x = s[a .. b].min # worst case test!
+  var i = a
+  var j = b
+  while true:
+    while s[i] < x:
+      inc(i)
+    while s[j] > x:
+      dec(j)
+    if i < j:
+      swap(s[i], s[j])
+      inc(i)
+      dec(j)
+    else:
+      break
+  dec(i)
+  inc(j)
+  assert i >= a
+  assert j <= b
+  if i - a > 1: # still more than 2 entries
+    qsort(s, a, i)
+  elif i - a > 0: # two entries
+    if s[i] < s[a]: # wrong order
+      swap(s[i], s[a])
+  if b - j > 1: # and the same for the other half
+    qsort(s, j, b)
+  elif b - j > 0:
+    if s[b] < s[j]:
+      swap(s[b], s[j])
+
+proc quickSort(s: var seq[int]) =
+  if s.len == 2 and s[0] > s[1]: swap(s[0], s[1])
+  if s.len > 2:
+    qsort(s, 0, s.high)
+
+import random
+proc main =
+  var s: seq[int]
+  var start: MonoTime
+  randomize() # give us different random numbers for each program run
+  for i in 0 .. 1e5.int:
+    s.add(rand(1e8.int))
+  for i in 0 .. 9:
+    s.shuffle
+    s.quickSort
+    assert(isSorted(s))
+  for i in 0 .. 1e7.int:
+    s.add(rand(1e8.int))
+  start = getMonotime()
+  s.quickSort
+  echo getMonotime() - start
+  assert(isSorted(s))
+  s.shuffle
+  start = getMonotime()
+  s.sort()
+  echo getMonotime() - start
+main()
+----
+
+The function qsort() does the whole work. It is called from function quicksort()
+passing it the whole sequence and the interval to sort. For the first
+call the interval is the whole content of the seq, from s.low to s.high.
+Function qsort() first asserts that the range is valid, that is that
+b > a and that both indices are valid positions in the sequence s. That
+check makes it easier to find stupid errors, the assert is automatically
+removed when we compile finally with -d:release.
+We set the iterating indices i and j to the interval boundaries a and b and
+enter an outer loop. In that outer loop we let run i and j to the center of the interval
+as long as the actual entry at the position i or j belongs in the range. If both
+inner loops have stopped, we swap the entries at position i and j. As 
+positions i and j contain now again valid entries, we can move both indices
+one step further to the center. If i and j becomes the same we are done.
+Unfortunately both may stop too late, so we move both one position back
+after the outer loop has terminated.
+You may create a small example with pen and paper to recognize
+how the indices behave in detail and why fixing by one is necessary.
+The remainder of the qsort proc is really easy: For both partitions we check if the interval size is
+still larger than two entries, in that case we call qsort() again to continue with
+partition and sorting. But if the size is two entries, then we just swap() them if the order is
+wrong. If the size of the range is just one, we have nothing to do at all.
+
+We test our quicksort proc by calling it from another proc called main.
+In that main() we fill a seq with random integer values, and shuffle()
+and sort() it a few times. Shuffle() reorders the entries by random. After our call
+of quicksort() we call isSorted() from Nim's standard library to check the success
+of our sorting. After these tests, which does some warmup of the CPU for us, we
+add more random entries and again sort and test it, while we record the needed time
+with module monotimes as we did before in the Timers section. To get a feeling
+about the performance of our sorting proc we shuffle() again and sort this time
+with the sort() proc from Nim's algorithm module. Sort() from algorithm module
+uses currently another sorting method called merge sort, which has the advantage that
+it is a stable sorting algorithm, but it may be a bit slower than quicksort. And sort()
+from algorithm may pass a cmp() proc around, which may cost some performance, while
+our plain, non generic proc compares entries directly with < and > operators. So it is not
+surprising that our proc is a bit faster.
+
+You may wonder if it is really necessary to pass the sequence s for each call of qsort(), as
+for all time the same seq is used. Indeed Nim support nested procs, so we could just make
+qsort() proc local to quicksort() proc and let qsort work (as a closure) on the s variable
+of proc quicksort. But this does not compile currently, sequences can not be used by
+closure procs. But actually passing the sequence to proc qsort() should be only a minimal overhead. 
+
+One general problem of QuickSort is that the sort is not stable. When we sort an already sorted
+sequence again, entries with same value may move. For plain numbers that is not really a problem,
+we do not really notice it, as we can't mark a number in some way, plain numbers are 
+indistinguishable just as elementary particles like electrons and protons are. But when we sort a container
+with objects by some field, then we notice that objects with same value for sorting may move.
+The other problem of QuickSort is a generally problem of recursive algorithm: Each new call of a 
+proc generates some stack usage, as proc parameters may be passed on the stack and because
+the proc may allocate its local data variables on the stack. So many nested calls may need a very 
+large stack, the program may fail with a stack overflow error. Generally we have no real problem with
+stack overflow, as for each partition the size of the two new partition is nearly halved, so
+that process stops soon. But imagine someone prepares a special data set for our sort proc. That 
+data may be prepared in such a fashion that at the center of each range, where we pick the estimated median value from,
+always an extreme values is stored. So our partition would work very bad, in each step we would get a new range with only
+one element, and one with n - 1 elements. So the recursion dept would go very deep, and the performance would
+be very bad also. Preparing such a data set would be difficult, but possible in theory. One way to protect
+us from that attack would be to select the median by random. But unfortunately all strategies different from
+picking the leftmost, the center, or the rightmost entry as median are not very fast and 
+make the whole sorting significantly slower. Note that the strategy of not picking a single element
+as median, but calculating a median value, works generally, but has some shortcomings: 
+s[a] div 2 + s[b] div 2 would not work when both values are odd, as we then would get a value
+that can be smaller than all of our entries and our function would fail. We would have to add
+one to the average value when both summands are odd, and that fix cost performance again.
+And calculating the average by (s[a] + s[b]) div 2 could generate an overflow when both summands are large.
+
+Because of the stack size restrictions we have a good motivation to show how we can
+replace recursion with plain iteration, when we provide a "buffer" variable that acts as a data stack.
+For each new partition of our data we have to put only the two bounds a and b on that data stack, which
+is not that much as a recursive proc would put on the real computer stack. The modifications to our code
+from above are tiny:footnote:[Unfortunately we have used the term STACK in two different meanings in this section:
+For our recursive sorting proc we are talking about the CPU stack, which is used to pass proc parameters and
+store proc local data -- and can overflow. In our nonrecursive proc we use a variable which is also called stack,
+but that is only an ordinary buffer variable. The term stack is common for such buffers where we can push() and
+pop() values.]
+
+[source, nim]
+----
+from algorithm import isSorted, sort
+import std/monotimes
+
+proc qsort(s: var seq[int]) =
+  var stack: seq[(int, int)]
+  var maxStackLen: int
+  stack.add((s.low, s.high))
+  while stack.len > 0:
+    if stack.len > maxStackLen:
+      maxStackLen = stack.len
+    var (a, b) = stack.pop
+    assert(a >= 0 and b < s.len and b - a > 1)
+    let x = s[(a + b) div 2]
+    var (i, j) = (a, b)
+    while true:
+      while s[i] < x:
+        inc(i)
+      while s[j] > x:
+        dec(j)
+      if i < j:
+        swap(s[i], s[j])
+        inc(i) ; dec(j)
+      else:
+        break
+    dec(i); inc(j)
+    assert(i >= a and j <= b)
+    if i - a > 1:
+      stack.add((a, i))
+    elif i - a > 0:
+      if s[i] < s[a]:
+        swap(s[i], s[a])
+    if b - j > 1:
+      stack.add((j, b))
+    elif b - j > 0:
+      if s[b] < s[j]:
+        swap(s[b], s[j])
+  echo "Max Stack Length: ", maxStackLen
+
+proc quickSort(s: var seq[int]) =
+  if s.len == 2 and s[0] > s[1]: swap(s[0], s[1])
+  if s.len > 2:
+    qsort(s)
+
+import random
+proc main =
+  var s: seq[int]
+  var start: MonoTime
+  randomize()
+  for i in 0 .. 1e5.int:
+    s.add(rand(1e8.int))
+  for i in 0 .. 9:
+    s.shuffle
+    s.quickSort
+    assert(isSorted(s))
+  for i in 0 .. 1e7.int:
+    s.add(rand(1e8.int))
+  start = getMonotime()
+  s.quickSort
+  echo getMonotime() - start
+  assert(isSorted(s))
+  s.shuffle
+  start = getMonotime()
+  s.sort()
+  echo getMonotime() - start
+main()
+
+----
+
+We added a variable called stack which is a seq which stores integer tuples.
+The qsort proc first stores the borders of the whole seq on the stack,
+and then executes a loop which takes in each iteration a set of two
+borders from the stack and processes that range. It may sound a bit strange that we
+start by putting the whole range onto the stack and then took it from stack
+immediately at the start of the loop. But that makes more sense when we look at the
+bottom of the qsort() proc. Instead of recursively calling qsort() again, we just put
+the borders of the two new partitions on the stack and continue. The whole process
+terminates when the stack becomes empty, as then all partitions are processed.
+Note that the actual partition code and the main() proc are still unchanged.
+We added a maxStackLen variable to get a feeling how large our stack has to be.
+Actually not that large, as the partition size shrinks in a logarithmic way.
+So we could replace the seq that we use now as stack with a plain array, as
+sequences have same overhead and the add() is slower than plain index access.
+But how can we prepare for worst case attacks? Indeed there exists a simple
+solution: Worst case occurs, when first we put a tiny one element range on the stack and then 
+the large one, as we would continue with the large one in the same way in the next loop
+iteration. The other way round would be fine. If we put the tiny range on the stack last, next iteration would pick that
+one and iteration would stop immediately or at least very soon, as ranges drops to  two or one entries.
+When an iteration for a range stops, all ranges pushed to the stack are removed already again, so
+total stack size will never become large. So the trick is to just sort the partitions in a way that we 
+put the larger partition first on the stack, and the smaller partition second. So next
+iteration picks the smaller one and the whole process stops soon. This way a stack array
+of 64 entries should be enough, as max needed stack size should be log2(2^64) to sort
+a seq with 2^64 entries. 
+
+[source, nim]
+----
+from algorithm import isSorted, sort
+import std/monotimes
+
+proc qsort(s: var seq[int]) =
+  var stack: array[64, (int, int)]
+  var stackPtr: int
+  var maxStackLen: int
+  stack[0] = (s.low, s.high)
+  while stackPtr >= 0:
+    if stackPtr > maxStackLen:
+      maxStackLen = stackPtr
+    let (a, b) = stack[stackPtr]; dec(stackPtr)
+    assert(a >= 0 and b < s.len and b - a > 1)
+    let x = s[(a + b) div 2]
+    var (i, j) = (a, b)
+    while true:
+      while s[i] < x:
+        inc(i)
+      while s[j] > x:
+        dec(j)
+      if i < j:
+        swap(s[i], s[j])
+        inc(i); dec(j)
+      else:
+        break
+    dec(i); inc(j)
+    assert(i >= a and j <= b)
+    var c, d: int
+    for u in 0 .. 1:
+      if (i - a > b - j) == (u == 0):
+        (c, d) = (a, i)
+      else:
+        (c, d) = (j, b)
+      if d - c > 1:
+        inc(stackPtr) # inc before push!
+        stack[stackPtr] = (c, d)
+      elif d - c > 0:
+        if s[c] > s[d]:
+          swap(s[c], s[d])
+  echo "Max Stack Length: ", maxStackLen
+
+proc quickSort(s: var seq[int]) =
+  if s.len == 2 and s[0] > s[1]: swap(s[0], s[1])
+  if s.len > 2:
+    qsort(s)
+
+import random
+proc main =
+  var s: seq[int]
+  var start: MonoTime
+  randomize()
+  for i in 0 .. 1e5.int:
+    s.add(rand(1e8.int))
+  for i in 0 .. 9:
+    s.shuffle
+    s.quickSort
+    assert(isSorted(s))
+  for i in 0 .. 1e7.int:
+    s.add(rand(1e8.int))
+  start = getMonotime()
+  s.quickSort
+  echo getMonotime() - start
+  assert(isSorted(s))
+  s.shuffle
+  start = getMonotime()
+  s.sort()
+  echo getMonotime() - start
+main()
+----
+
+Instead of processing the two new partitions at the end of the
+qsort() proc each, we apply only one processing code block
+now, which we execute in a loop that is executed two times.
+At the start of that loop we assign the actual interval boundaries
+to the variables c and d. That assignment depends on the actual loop index u,
+so that we push the larger range always first on the stack.
+You may modify the condition u == 0 to u != 0 and observe what happens
+to the maximum used stack dept. We could write that condition also with
+a boolean loop variable and a xor operator like
+
+[source, nim]
+----
+    for u in [false, true]:
+      if (i - a > b - j) xor u:
+----
+Well maybe the other way round, you can try that your own.
+
+Note that a similar trick to reduce the worst case recursion dept should work also
+for the recursive function from the beginning: We would have to ensure that we call
+qsort() on the smaller partition always first, so that the recursion stops fast. 
+
+We will terminate our sorting exercises for now. Another important sorting algorithm is
+MergeSort, which is used by Nim's standard library and is also fast and guaranties 
+a stable sort. MergeSort is a bit more difficult than QuickSort, and for MergeSort
+recursive and iterative algorithm exists. You should find descriptions 
+of MergeSort in the Internet or in text books, converting the algorithm from
+C or Pascal to Nim should be not that hard. Other known sorting algorithms are
+the easy, funny and slow BubbleSort, or Shell- and Shaker-Sort. But these are not used
+in practice. As an exercise you can try to make our QuickSort generic and pass a cmp()
+proc, and make it work for sorting in ascending and descending order. Or, you may 
+try to fall back to selection sort when the partitions become small. In theory
+SelectionSort is faster for ranges of only a few dozen elements, but when we
+have to do a decision which one to use inside of the qsort() proc, then this decision
+compensates generally the advantages again, so that the net benefit is tiny.
+Maybe we should mention that Python uses a different, complicated sort algorithm
+which may be still a bit faster. 
 
 //== Standard Container
 
