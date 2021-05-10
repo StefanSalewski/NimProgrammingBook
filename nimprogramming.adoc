@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-09
+//v0.1, 2021-MAI-10
 :doctype: book
 :toc: left
 :icons: font
@@ -8273,10 +8273,13 @@ So we may try instead something like
         inc(i)
       elif s[j] > x:
         dec(j)
-      elif i < j:
-        swap(s[i], s[j])
       else:
-        break
+        if i < j:
+          swap(s[i], s[j])
+          inc(i); dec(j)
+        else:
+          break
+    dec(i); inc(j)
 ----
 
 You may try that variant yourself, or maybe look for other variants in internet sources or
