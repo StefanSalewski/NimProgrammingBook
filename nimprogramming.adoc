@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-10
+//v0.1, 2021-MAI-13
 :doctype: book
 :toc: left
 :icons: font
@@ -8286,21 +8286,350 @@ You may try that variant yourself, or maybe look for other variants in internet 
 textbooks. Our intention in this section was not to present a perfect sorting function,
 but to teach you some basic coding strategies and related traps.
 
-We will terminate our sorting exercises for now. Another important sorting algorithm is
-MergeSort, which is used by Nim's standard library and is also fast and guaranties 
-a stable sort. MergeSort is a bit more difficult than QuickSort, and for MergeSort
-recursive and iterative algorithm exists. You should find descriptions 
-of MergeSort in the Internet or in text books, converting the algorithm from
-C or Pascal to Nim should be not that hard. Other known sorting algorithms are
+=== Merge Sort
+
+Initially we did not intent to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
+whenever we may have seen a sketch of it somewhere, it is generally
+not easy to remember details.footnote:[From introducing courses to Computer Science
+people generally remembers QuickSort best, just because of its name and its good performance
+as long as we ignoret he worst case scenario and the not stable sorting order.]
+But MergeSort is indeed an important algorithm, it is used by default in Nim's standard library
+and as we have discussed QuickSort already in some detail, we should be prepared for
+MergeSort now. When we regard the name Merge, which is some form of joining multiple sources to one destination,
+we may begin  to remember the idea of MergeSort: The trick of QuickSort was, that we tried to split
+in a recursive manner the set of all container elements into two subsets, which we can process separately.
+That improves performance, as sorting is basically an O(n^2) process, and 2 * (n/2)^2  is only half of n^2.
+For QuickSort we partitioned the initial range into two ranges a and b, where all elements of range a are
+less or equal to a median element x, and all elements of range b are greater or equal to the median x.
+That way we decoupled the two ranges, we can sort a and b independently and get a fully sorted range.
+MergeSort starts also with splitting the full range into two parts, but it really only splits, without
+any form of rearrangement. Then it continues with sorting each part independently.
+That sounds strange at first, as we get two sorted parts a and b, but of course we can not
+simple append one to the other. The idea of the whole algorithm become clear immediately
+when we think about how we can find the smallest elements of the joined content from a and b.
+That one is obviously the smallest value of a, or the smallest value of b, min(a, b) = min(min(a), min(b)).
+But when a and b are already sorted, then the minimal value of each is the first element, and so
+one of these elements at index position zero is the smallest one for a and b joined. And this condition
+holds even when we pick and remove the smallest element from a or b.
+
+So the basic algorithm is this: Split the whole container in parts a and b, sort them separately. Then create a new, sorted
+container by iterative picking the first elements from a or b, which ever is actually the smaller one.
+
+Unfortunately it seems to be impossible to sort the initially container in place in this way, as
+we would take always elements from the front from both and put them at the front of the destination, so
+that newly inserted elements could overwrite still unprocessed elements. So we will
+try to give a sketch of an very slow unoptimized algorithm which creates and returns a new sorted container first
+to lean the fundamental idea of the algorithm:
+
+[source, nim]
+----
+proc msort(s: seq[int]; a, b: int): seq[int] =
+  assert(b - a >= 0)
+  if b - a == 0:
+    result.add(s[a])
+    return
+  elif b - a == 1:
+    var (a, b) = (s[a], s[b])
+    if a > b:
+      swap(a, b)
+    result.add(a)
+    result.add(b)
+    return
+  result = newSeq[int](b - a + 1)
+  var sl = result.len
+  assert b - a > 1
+  var m = (a + b) div 2
+  assert m >= a
+  assert m < b
+  var s1, s2: seq[int]
+  s1 = msort(s, a, m)
+  var (i, j) = (a, m)
+  s2 = msort(s, m + 1, b)
+  assert s1.len + s2.len == result.len
+  var (k, l) = (m + 1, b)
+  var l1 = s1.high
+  var l2 = s2.high
+  while sl > 0:
+    dec(sl)
+    if l1 >= 0 and l2 >= 0: # merge
+      if s1[l1] > s2[l2]:
+        result[sl] = s1[l1]
+        dec(l1)
+      else:
+        result[sl] = s2[l2]
+        dec(l2)
+    else: # plain copy
+      while l1 >= 0:
+        result[sl] = s1[l1]
+        dec(sl); dec(l1)
+      while l2 >= 0:
+        result[sl] = s2[l2]
+        dec(sl); dec(l2)
+
+proc mergeSort(s: seq[int]): seq[int] =
+  if s.len < 2:
+    return s
+  msort(s, s.low, s.high)
+
+import random, algorithm
+proc main =
+  var s, st: seq[int]
+  randomize()
+  for i in 0 .. 9:
+    s.add(rand(100))
+  st = s
+  echo s.mergeSort
+  assert(s.mergeSort == st.sorted)
+
+main()
+----
+
+The example above is indeed not very complicated, the most daunting task is
+to get all the indices right. Due to the involved recursion and the fact that we
+have to do the sorting of the two parts first, before we can join them, debugging
+would be not easy. So we added many asserts to early find stupid errors.
+
+The function mSort() starts by checking if the range to sort has only one or two
+entries and handles this simple case directly. Then we allocate the result
+sequence, find the center position m of the interval a and b and sort
+the intervals a .. m and m + 1 .. b each into a new sequence s1 and s2.
+We have decided that we will do the merging of s1 and s2 into the result
+sequence from the back, starting with the largest elements. This way we can
+count down to zero, which is a bit faster and simpler. We do an actual merging as long as
+s1 and s2 have still elements left. An we do the merge from end to start, we have to always pick the largest
+element from s1 or s2. If we have used all the elements from at least one of the
+sequences s1 or s2, then there is nothing more to merge, we can just copy
+the remaining elements from the other seq that has elements left.
+Of course the above example is very slow, as we allocate the result
+and additional the sequences s1 and s2, and as we have to copy many elements.
+
+When we now think again about the problem, we get the feeling
+that allocating three sequences is really too much. When we regard
+both, in place sorting and sorting with a return value, we may discover
+that in place sorting allows us to partly reuse the passed container, and we have
+only to allocate one additional seq with half the size of the passed container.
+We copy the second half of the passed container into a newly allocated seq, and then can merge
+values from the new seq and from the firt half of the passed seq to positions starting at the end
+of the passed seq, without overwriting values that we still have to process.
+
+This way our code becomes even shorter and basically simpler -- we have only to
+care very exactly to use the right index positions.
+ 
+[source, nim]
+----
+proc msort(s: var seq[int]; a, b: int) =
+  assert(b - a >= 0)
+  if b - a == 0:
+    return
+  elif b - a == 1:
+    if s[a] > s[b]:
+      swap(s[a], s[b])
+    return
+  var m = (a + b) div 2
+  assert(m >= a and m < b and b - a > 1)
+  var sh: seq[int] = s[(m + 1) .. b]
+  var ls = b + 1
+  msort(s, a, m)
+  msort(sh, sh.low, sh.high)
+  var lh = sh.high
+  var lm = m
+  while ls > a:
+    dec(ls)
+    if lh < 0:
+      assert ls == lm 
+      break
+    elif  lm < a:
+      while lh >= 0:
+        s[ls] = sh[lh]
+        dec(ls); dec(lh)
+    else:
+      if sh[lh] > s[lm]:
+        s[ls] = sh[lh]
+        dec(lh)
+      else:
+        s[ls] = s[lm]
+        dec(lm)
+
+proc mergeSort(s: var seq[int]) =
+  msort(s, s.low, s.high)
+
+import random, algorithm, std/monotimes
+proc main =
+  var s: seq[int]
+  var start: MonoTime
+  randomize()
+  for i in 0 .. 1e5.int:
+    s.add(rand(1e8.int))
+  for i in 0 .. 9:
+    s.shuffle
+    s.mergeSort
+    assert(isSorted(s))
+  for i in 0 .. 1e7.int:
+    s.add(rand(1e8.int))
+  var st = s
+  start = getMonotime()
+  s.mergeSort
+  echo getMonotime() - start
+  start = getMonotime()
+  st.sort()
+  echo getMonotime() - start
+  assert s == st
+main()
+
+----
+
+For the merging process, we
+first test if one of the source areas is already exhausted. If all entries
+from the newly allocated seq sh are consumed, then we can just stop, as
+continuing would only copy elements of the passed container with
+equal index positions. And if all elements from the first half of the passed container are
+consumed, we can just copy the elements from sh into the passed var container.
+Only if both sources have elements to process left, we have to do the actual
+merging.
+
+When we run the program above, we may find that it is about 50% slower
+than our QuickSort functions. The reason for that may be that we have to
+allocate the temporary seq sh, fill it with values, and merge it back.
+And the total memory consumption is high, our recursive function calls consumes
+for the buffers sh totally the same amount as the initial container. The advantages of MergeSort is that
+there is no worst case as for QiuckSort, as we have not to select a median but
+can split the range just at the center, and that the sort is stable, that is
+merging does not exchange the position of elements with same value.footnote[
+Well to ensure this, we may have to check  the actual merge condition, do we have
+to test for < or <=. Currently we do not really care for that, but is is clear
+and well known that merge sort can be stable.]
+
+When we think a bit more about the algorithm above and maybe try to
+sketch the recursive steps for a short sequence with pencil and paper we
+get the strong feeling that the additional buffer sh is only needed for the
+merging step, and as the merging process occurs from bottom to top
+(containers with only one or two entries are returned immediately, which
+are merged to a larger section, and these larger section is again merged ...)
+one single buffer could be used. So we have modified our example again.
+Now the quicksort() proc allocates the buffer seq with half the size of the actual
+data container, and we pass that buffer recursively to the qsort proc and
+use it for the merging only. We call recursively qsort() on the first and second half
+of the full range that we have to sort, then copy the sorted second half into
+the buffer and merge the fist half and the buffer into the final
+location.
+
+[source, nim]
+----
+proc msort(s, sh: var openArray[int]; a, b: int) =
+  assert(b - a >= 0)
+  if b - a == 0:
+    return
+  elif b - a == 1:
+    if s[a] > s[b]:
+      swap(s[a], s[b])
+    return
+  var m = (a + b) div 2
+  assert (m >= a and m < b and b - a > 1)
+  msort(s, sh, a, m)
+  msort(s, sh, m + 1, b)
+
+  var ls = b + 1
+  var lh = b - m - 1
+  var lm = m
+  #sh[sh.low .. lh] = s[m + 1 .. b]
+  for i in 0 .. lh: # a bit faster
+    sh[i] = s[m + 1 + i]
+  while ls > a:
+    dec(ls)
+    if lh < 0:
+      assert ls == lm 
+      break
+    elif  lm < a:
+      while lh >= 0:
+        s[ls] = sh[lh]
+        dec(ls); dec(lh)
+    else:
+      if sh[lh] > s[lm]:
+        s[ls] = sh[lh]
+        dec(lh)
+      else:
+        s[ls] = s[lm]
+        dec(lm)
+
+proc mergeSort(s: var seq[int]) =
+  if s.len == 0: return
+  var sh = newSeq[int](s.len div 2)
+  msort(s, sh, s.low, s.high)
+
+import random, algorithm, std/monotimes
+proc main =
+  var s: seq[int]
+  var start: MonoTime
+  randomize()
+  for i in 0 .. 1e5.int:
+    s.add(rand(1e8.int))
+  for i in 0 .. 9:
+    s.shuffle
+    s.mergeSort
+    assert(isSorted(s))
+  for i in 0 .. 1e7.int:
+    s.add(rand(1e8.int))
+  var st = s
+  start = getMonotime()
+  s.mergeSort
+  echo getMonotime() - start
+  start = getMonotime()
+  st.sort()
+  echo getMonotime() - start
+  assert s == st
+main()
+----
+ 
+An additional tiny performance improvement results from the fact that we now pass the seq s
+and the buffer sh as openArrays. This is generally a good idea, as we can so sort
+arrays also with the same sorting proc, and it improves performance, as
+this way the actual data buffer is directly passed to the qsort() proc, while passing
+a seq means that we pass the opaque seq structure which contains a pointer to the
+actual data. In the example above we do not only call isSorted() to prove
+our result, but we really sort a copy of our data with a sorting routine from Nim's standard lib
+to ensure that our result is not only sorted data, but that it is indeed based on the
+actual values. That is a good idea, because although the algorithm is simple, getting
+some indices wrong may give us wrong results.
+ 
+Our recursive merge sort routine is really not that bad. It does a fast stable sort and
+needs only a single buffer of half the size of our actual data. As the interval
+size is halved in each recursion step, the max recursion depth should be only 64
+for a gigantic container with 2^64 elements. As the recursion occurs in a dept first
+fashion, that is msort() calls itself until range size is only one or two elements, then
+recursion continues in other branches of the whole sorting three, there should be
+never more than log2(n) actual recursion steps stored on the CPU stack.
+Non recursive, iterative merge sort algorithm exists, but converting the
+recursive algorithm in an iterative one is not that simple as for the QuickSort case.
+The reason is that qsort() has first to partition the input range, then call
+msort() on both subranges and finally do the merging. We will not try
+to present in this book an iterative msort(), which you may find in textbooks or somewhere in the internet,
+as that would be a bit too much for an introducing course. 
+
+Other known sorting algorithms are
 the easy, funny and slow BubbleSort, or Shell- and Shaker-Sort. But these are not used
-in practice. As an exercise you can try to make our QuickSort generic and pass a cmp()
+in practice. As an exercise you can try to make our QuickSort or MergeSort generic and pass a cmp()
 proc, and make it work for sorting in ascending and descending order. Or, you may 
 try to fall back to selection sort when the partitions become small. In theory
 SelectionSort is faster for ranges of only a few dozen elements, but when we
-have to do a decision which one to use inside of the qsort() proc, then this decision
+have to do a decision which one to use inside of the qsort() or msort() proc, then this decision
 compensates generally the advantages again, so that the net benefit is tiny.
-Maybe we should mention that Python uses a different, complicated sort algorithm
-which may be still a bit faster. 
+Of course we would have to test all of our sorting procs for special cases, that is
+for seqs of length 0, 1 or two, and for sequences with all entries equal, all inversely sorted
+or presorted. And we would have to check how performance is when we sort not containers containing plain data
+like numbers, but containers which elements are objects, strings or again arrays or sequences.
+String sorting is special for various reasons: Strings in Nim
+are an opaque object with a pointer to the actual data. This is some indirection, and the actual data
+can be located somewhere in the RAM in a cache unfriendly manner, so the actual comparison process
+can be slow. Swapping of strings is also special, as swap() generally just does a pointer exchange for
+the data areas, and does not have to copy the actual data. For sorting containers where each entry is
+an array (of characters), swap would have to copy the data content.
+  
+Finally we should mention that the Python language uses a complicated sorting algorithm
+called TimSort which is a smart mix of various sorting algorithm.
+
+References:
+
+* https://en.wikipedia.org/wiki/Timsort
 
 //== Standard Container
 
