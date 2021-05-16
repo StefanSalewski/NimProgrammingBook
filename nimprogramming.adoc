@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-13
+//v0.1, 2021-MAI-16
 :doctype: book
 :toc: left
 :icons: font
@@ -649,6 +649,74 @@ backend generates high quality code for web applications. The integrated
 support of various development environments including debugging and language server
 protocols makes working with Nim productive and enjoyable.
 
+
+=== Some Facts About Nim
+
+* The generated executables are dependence free and small: a simple
+chess program with a plain GTK-based graphical user interface is only 100 kB in size
+and the size of the Nim compiler executable itself is about 5 MB. It is possible to
+shrink the executable size of "Hello World" programs to about 10 kB for use on tiny
+{uc}s.
+
+* Nim is fast. Generally performance is very close to other
+high-performance languages such as C or {cpp}. There are some exceptions still: other
+languages may have libraries or applications that have been tuned for performance for
+many years, while similar Nim applications are so far less tuned for performance, or
+maybe are more written with a priority of short and clean code or run-time safety.
+
+* Clean syntax with significant white-space, no need for block delimiters like
+[.term]#{}# or [.term]#begin/end# keywords, and no need for statement delimiters like
+[.term]#;#
+
+* Safety: Nim program are type- and memory-safe -- memory corruption is prevented by
+the compiler as long as unsafe low level constructs like cast and the addr operator
+are not used.
+
+* Fast compiler. The Nim compiler can compile itself and other medium-size packages
+in less than 10 seconds, and upcoming incremental compilation will increase that
+speed further.
+
+* Nim is statically typed: each object and each variable has a well-defined type,
+which catches most programming errors already at compile time, prevents run-time
+errors, and ensures highest performance.
+
+* Nim supports various memory management strategies, including manually
+allocations for critical low-level tasks as well as various garbage collectors
+including a state-of-the-art, fully deterministic memory manager.
+
+* Nim produces native, highly optimized executables and can also generate
+JavaScript output for web applications.
+
+* Nim has a clean module concept which helps to structure large projects.
+
+* Nim has a well-designed library which supports many basic programming tasks.
+The full source code of the library is included and can be viewed easily from within
+the HTML-based API documentation.
+
+* That library is supported by more than 1000 external packages for a broad range
+of use cases.
+
+* Asynchronous operation, threading and parallel processing is supported.
+
+* Nim supports all popular operating systems like Linux, Windows, MacOS and Android.
+
+* Usage of external libraries written in C is easy and and occurs directly
+without any glue code, and Nim can even work together with code written in other
+languages, for example there are some Nim +<->+ Python interfaces available.
+
+* Many popular editors have support for Nim syntax highlighting and other
+IDE functionality like on-the-fly checking for errors and displaying detailed
+information about imported functions.
+
+* In the last few years Nim has reached some important milestones: Version 1.0
+with some stability promises was released, and with the ARC and ORC
+memory management strategies and full destructor support fully deterministic
+memory management comparable to memory management in {cpp} or Rust
+is available. So problems of conventional garbage collectors like delayed memory
+deallocation or longer pausing of programs due to the GC process are gone. And some
+larger companies have started using Nim in production, the most important
+may be currently the Status Corp. with their Etherium client development.  
+
 === Nim is Efficient
 
 Nim is a compiled and statically-typed language. While for interpreted,
@@ -718,7 +786,7 @@ it reached version 1.2 with some stability guaranties and a new deterministic me
 management system was introduced, which will improve support of parallel processing
 and the use of Nim in the embedded area.
 
-== Why is Nim not a popular mainstream language yet?
+=== Why is Nim not a popular mainstream language yet?
 
 Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally in
 2018 Nim got some significant monetary support by [.ndef]#Status Corp.# and in 2019
@@ -741,74 +809,49 @@ support may stop, or maybe a better language may appear. But even if the develop
 of Nim should stop some day, you will still be able to use it, and many concepts that
 you may have learned with Nim can be used with other modern languages too.
 
-== Some Facts About Nim
+=== Is Nim a good choice as first language for a Beginner?
 
-* The generated executables are dependence free and small: a simple
-chess program with a plain GTK-based graphical user interface is only 100 kB in size
-and the size of the Nim compiler executable itself is about 5 MB. It is possible to
-shrink the executable size of "Hello World" programs to about 10 kB for use on tiny
-{uc}s.
+When you use C as your first language, you may learn well how computers
+really work, but the learning experience is not that nice, progress is slow and
+C lacks many concepts of modern programming languages. {cpp}, Rust or
+Haskell are really too difficult for beginners. So currently many starts with Python.
+While you can learn high level concepts well with Python and you get useful results fast,
+you learn not much about the internal working of computers. So you may never
+understand why your code is slow and consumes so much resources, and you
+will have no idea how to improve the program or how you could run
+it successfully on restricted hardware.  
+Its like learning
+driving a car without any knowledge about how a combustion engine, the
+transmission or the breaks really works. Nim has none of these restrictions, as
+we have high level concepts available as in Python, but we have access to
+low level stuff too, so we can really understand the internal working if we want.
+Learning resources for Nim are still not that good as for mainstream languages,
+but there exists some nice tutorials already, and hopefully this book will help beginners also a bit.
 
-* Nim is fast. Generally performance is very close to other
-high-performance languages such as C or {cpp}. There are some exceptions still: other
-languages may have libraries or applications that have been tuned for performance for
-many years, while similar Nim applications are so far less tuned for performance, or
-maybe are more written with a priority of short and clean code or run-time safety.
+=== Is Nim really a good teaching language
 
-* Clean syntax with significant white-space, no need for block delimiters like
-[.term]#{}# or [.term]#begin/end# keywords, and no need for statement delimiters like
-[.term]#;#
+Generally yes, in the same way as Pascal was in the 1980's, and Modula/Oberon was
+at the end of the last century. But Nim still has the same problems
+as the wirthian languages: They do not really help finding a job. When we teach
+the kids some Javascript or C, they may find at least a simple employment when they
+have to leave the intended education path early for some reason. With niche languages
+this is unfortunately not the case, so teachers should know about their responsibility.
+And of course teaching against the interests of the kids makes not much sense. When
+they want to learn some Javascript to make some visual effects or whatever easily, then it
+is hard to teach another language which may be not  immediately available on the PC at home or
+their smartphone.
 
-* Safety: Nim program are type- and memory-safe -- memory corruption is prevented by
-the compiler as long as unsafe low level constructs like cast and the addr operator
-are not used.
+=== So is Nim really the best start for me?
 
-* Fast compiler. The Nim compiler can compile itself and other medium-size packages
-in less than 10 seconds, and upcoming incremental compilation will increase that
-speed further.
+Maybe not. When you intent to learn a programming language today
+and make a great video game tomorrow, then definitely not. This
+is just not possible. While there are nice libs for making games
+with Nim already available, there exists easier solutions
+in other languages. With some luck you may find some source code
+for that languages, so that you can patch a few strings
+and maybe modify some colors and the background music  and call it your game.
 
-* Nim is statically typed: each object and each variable has a well-defined type,
-which catches most programming errors already at compile time, prevents run-time
-errors, and ensures highest performance.
-
-* Nim supports various memory management strategies, including manually
-allocations for critical low-level tasks as well as various garbage collectors
-including a state-of-the-art, fully deterministic memory manager.
-
-* Nim produces native, highly optimized executables and can also generate
-JavaScript output for web applications.
-
-* Nim has a clean module concept which helps to structure large projects.
-
-* Nim has a well-designed library which supports many basic programming tasks.
-The full source code of the library is included and can be viewed easily from within
-the HTML-based API documentation.
-
-* That library is supported by more than 1000 external packages for a broad range
-of use cases.
-
-* Asynchronous operation, threading and parallel processing is supported.
-
-* Nim supports all popular operating systems like Linux, Windows, MacOS and Android.
-
-* Usage of external libraries written in C is easy and and occurs directly
-without any glue code, and Nim can even work together with code written in other
-languages, for example there are some Nim +<->+ Python interfaces available.
-
-* Many popular editors have support for Nim syntax highlighting and other
-IDE functionality like on-the-fly checking for errors and displaying detailed
-information about imported functions.
-
-* In the last few years Nim has reached some important milestones: Version 1.0
-with some stability promises was released, and with the ARC and ORC
-memory management strategies and full destructor support fully deterministic
-memory management comparable to memory management in {cpp} or Rust
-is available. So problems of conventional garbage collectors like delayed memory
-deallocation or longer pausing of programs due to the GC process are gone. And some
-larger companies have started using Nim in production, the most important
-may be currently the Status Corp. with their Etherium client development.  
-
-== Why should I not use Nim?
+=== Why should I not use Nim?
 
 Maybe it is just not the ideal solution for you. A racing bicycle or a mountain bike are
 both great devices, but for cycling a few hundred meters to the bakers shop both may
@@ -6273,6 +6316,94 @@ main()
 
 This section has to be extended...
 
+== Destructors
+
+Starting with version 1.4 Nim got support for scope based destructors, which
+are automatically enabled when we compile with oprion --gc:arc or --gc:orc.
+So memory is immediately freed when references go out of scope.
+With C++ it is a common practice that resources like files are released and
+closed with destructors automatically when they go out of scope, and now this is also
+possible for Nim. To make use of destructors for our own data types we
+have to define a proc called  `=destroy` which gets an instance of our data type passed as
+a var value object:
+
+[source, nim]
+----
+type
+  O = object
+    i: int
+
+proc `=destroy`(o: var O) =
+  echo "destroying O"
+
+import random
+
+proc test =
+  for i in 0 .. 5:
+    if rand(9) > 1:
+      var o: O
+      o.i = rand(100)
+      echo o.i * o.i
+
+randomize()
+test()
+----
+
+In the for loop we enter a new scope when the if condition is evaluated to true,
+and at the end of the if block we leaf the scope and the destructor is called automatically.
+Inside the destructor proc we could do some cleanup tasks, close files and release resources.
+Destructors are also called when ref objects go out of scope:
+
+[source, nim]
+----
+type
+  O = ref object of RootRef
+    i: int
+
+proc `=destroy`(o: var typeof(O()[])) =
+  echo "destroying O"
+
+import random
+
+proc test =
+  for i in 0 .. 5:
+    if rand(9) > 1:
+      var o: O = O() # new O
+      o.i = rand(100)
+      echo o.i * o.i
+
+randomize()
+test()
+----
+
+But note that destructors do not work with plain pointers:
+
+[source, nim]
+----
+type
+  O = object
+    i: int
+  OP = ptr O
+
+proc `=destroy`(o: var O) =
+  echo "destroying O"
+
+import random
+
+proc test =
+  for i in 0 .. 5:
+    if rand(9) > 1:
+      var o: OP = create(O) # new O
+      o.i = rand(100)
+      echo o.i * o.i
+
+randomize()
+test()
+----
+
+So using destructors to release data from C libraries directly is not possible.
+When we compile without option --gc:arc or --gc:orc destructors are ignored.
+
 == Modules
 
 Modules are Nim's way to divide multiple source codes in clearly separated units and
@@ -6790,6 +6921,228 @@ References:
 * https://github.com/status-im/nim-serialization
 * https://nimyaml.org/
 
+== Streams and Files
+
+In the previous section we learned how we can store structured data like
+a sequence of objects in human readable form to nonvolatile media
+by use of the json module.
+
+Text in form of a single string or in form of a container holding
+multiple strings is some kind of unstructured data which we can
+write directly to nonvolatile storage, and later read it back.
+We can do the same with containers of basic, unstructured data types
+like integer or floating point numbers, and with some restrictions we can even
+write tuples or objects directly as raw bits and bytes to external storage and read
+it back later. Of course this way the stored data is a binary blob, which can not
+be read or modified by other tools like a text editor. But that may be not
+intended or advantageous at all, maybe we do scientific data processing with
+a single tool, and we just want to temporary store the data and continue
+with the processing later.
+
+=== Files
+
+For storing unstructured data Nim provides the io module with the File
+data type and related procs, and the streams module with the Stream data type
+and related procs. While a File in Nim is currently only a pointer to a C file, the streams
+module has a higher abstraction level. Although the Nim language does not directly support
+interfaces, the Stream data type of the streams module is some form of an interface,
+which is implemented by a StringStream and a FileStream data type. Internally this interface
+concept is realized by storing a set of function pointers in the Stream instance.
+
+When we have to store unstructured data like text it is not always clear if we better should use
+Files or Streams. Streams may be the better choice when we (also) want to use a string as data source like a file.
+
+We will use the File data type of the io module first. As the io module is part of the system module, we do
+not have to import it before we can use it. The principle usage of files is, that we call the function open() to open
+a file with given name, call some procs to write or read data, and finally close() the file.
+While Nim support destructors when we compile with --gc:arc or --gc:orc, the io module
+does not yet use them, so we should actually call close() to close the file.
+
+****
+Historically a file is a one dimensional data type which is accessed in sequential order. Up to the end of the
+twenty century it was not uncommon that large files where stored on magnetic tapes,
+which could be read or written only slowly in sequential order. Read or write operations could take
+place only at the actual position, and available functions like f.setFilePos() where very slow
+as it involves moving the tape. The introduction of hard disk and solid state disk removed this restriction,
+and modern {OS} often buffers files in RAM for longer time periods, so that files may have actually
+similar performance as arrays or sequences. The funny fact is, that with the modern CPU caches
+the ordinary RAM storage can look similar slow and sequential compared to the extreme fast cache as
+magnetic tapes in the past.
+****
+
+[source, nim]
+----
+from os import fileExists
+proc main =
+  const FN = "NoImportantData"
+  if os.fileExists(FN):
+    echo "File exists, we may overwrite important data"
+    quit()
+  var f: File = open(FN, fmWrite)
+  f.write("Hello ")
+  f.writeLine("World!")
+  f.writeLine(3.1415)
+  f.close
+main()
+----
+
+Running that program will create a text file with this content in the current working directory:
+
+----
+Hello World!
+3.1415
+----
+
+At the start of our function we check if a file with that name already exists in the current working directory by using the function os.fileExists()
+to ensure that we do not overwrite important data.
+
+Module io provides multiple overloaded open() procs. We use here  a variant
+which returns a file, and raises an exception for the unlikely case of an error.
+We provide a file name and a file mode as parameters. We use mode fmWrite as we want
+to create a new file. Note that fmWrite would clear the content of an existing file, so
+we can not use fmWrite to append data to an existing file. We would have to use 
+fmReadWriteExisting or fmAppend to append data to an already existing file.
+As this open() proc can raise an exception, it may make sense to enclose it
+in a try/except block, or we could use a open() variant which returns a boolean value to indicate success instead.
+When the file is successfully opened, we can use procs like write() or writeLine() to
+write text strings to the file. Both procs accept multiple arguments and apply the stringify operator
+$ on them before writing the content. WriteLine() writes a '\n'  after the last argument to start a new line.
+When done we call close() to close the file. The {OS} would close the file for us when our program terminates, so
+calling close is not that important, but when we open many files without closing them we may get
+errors from the {OS} finally about too many open files and our program may fail or terminate.
+Calling close() on a file which has not been successfully opened or calling close()
+multiple times on the same file again cause a program crash. We can test the file for
+nil before calling close() when we are not sure if the file is really open, or we may use the
+try/finally or the defer construct to ensure that we really close the file when done.
+
+Reading strings from a file works very similar:
+
+[source, nim]
+----
+proc main =
+  var f: File
+  try:
+    f = open("NoImportantData", fmRead)
+    echo f.readLine
+    echo f.readLine
+  finally:
+    if f != nil:
+      f.close
+main()
+----
+
+The readLine() proc reads in a line of text. The LF or CRLF line end markers
+are not part of the returned text string. Of course we may get an
+empty string with length zero back when we read a line which
+immediately starts with LF or CRLF, or we may get back a string
+with no visible characters but only a few spaces or tabulator characters '\t'
+when a line contains only spaces or tabs.
+When our read() operations have moved the actual file io position to the
+end of the file, and we try to read more content, then an exception is raised.
+
+We can use also the lines () iterator to iterate over the lines of a text file, or use the readLines()
+proc to read the content line by line.
+
+[source, nim]
+----
+proc main =
+  var f: File
+  f = open("NoImportantData", fmRead)
+  for str in f.lines: # iterator
+    echo str
+  f.setFilePos(0) # read again from start index 0
+  var s: string
+  while f.readLine(s): # proc
+    echo s
+  f.close
+  var sq = readLines("NoImportantData", 2) # read lines to seq of strings
+  echo sq
+main()
+----
+
+As iterating over the whole file line by line moves
+the actual file position to the end of the file we called setFilePos() to move again to the start position.
+The readLines() proc takes a filename
+and the number of lines to read as parameters and returns a seq of strings. When the
+file does not contain at least the number of requested lines an EOF exception is raised.
+
+We can also write and read binary data directly to a file, without converting it
+to (human readable) strings first:
+
+[source, nim]
+----
+proc main =
+  var f: File
+  f = open("NoImportantData", fmWrite)
+  var i: int = 123
+  var x: float = 3.1415
+  assert f.writeBuffer(addr(x), sizeof(x)) == sizeof(x)
+  assert f.writeBuffer(addr(i), sizeof(i)) == sizeof(i)
+  f.close
+  f = open("NoImportantData", fmRead)
+  assert f.readBuffer(addr(x), sizeof(x)) == sizeof(x)
+  assert f.readBuffer(addr(i), sizeof(i)) == sizeof(i)
+  f.close
+  echo i, " ", x
+main()
+----
+
+Of course these are low level, dangerous operations. While writeBuffer() should never crash
+our program, readBuffer() can do that easily when we specify wrong sizes or destination addresses, as that may overwrite
+other data unintentionally. So we would generally not use these procs directly but write more safe
+helper procs, when we really need or want this form of binary file access. Fast storing big data sets with restricted hardware may
+be a use case, e.g. storing a float32 takes only 4 bytes on the storage medium and file io is fast, while
+that number as human readable digits may need more than 8 bytes (1.234567E3) and converting to
+string and and parsing back costs some time.
+
+In the same way we can use writeBuffer() and readBuffer() to store tuples, objects and arrays
+or sequences of these directly in binary form:
+
+[source, nim]
+----
+type
+  O = object
+    x: float
+    i: int
+    b: bool
+
+proc main =
+  var s: seq[O]
+  s.add(O(x: 3.1415, i: 12, b: true))
+  var f: File
+  f = open("NoImportantData", fmWrite)
+  assert f.writeBuffer(addr(s[0]), sizeof(O) * s.len) == sizeof(O) * s.len
+  f.close
+  f = open("NoImportantData", fmRead)
+  var s2 = newSeq[O](1)
+  assert f.readBuffer(addr(s2[0]), sizeof(O) * s2.len) == sizeof(O) * s2.len
+  f.close
+  echo s2[0]
+main()
+----
+
+Output should look like
+
+----
+(x: 3.1415, i: 12, b: true)
+----
+ 
+But of course this is dangerous and fragile. We just show that example as beginner
+generally ask about it, and may want to try it at least once. Obviously this can
+only
+work when the tuples or objects contain only plain data types, that is no string, no
+references and of course no other nested container types like sequences or tables. And reading back
+data may fail when we use a different OS or a different compiler version.
+
+The io module provides some more useful procedures, but we will
+stop this introducing section here and continue with the streams module in the next section.
+
+References:
+
+* https://nim-lang.org/docs/io.html
+
+=== Streams
+ 
 == Random Numbers
 
 Most computer programs work fully deterministic, that is one input data set
@@ -8603,7 +8956,20 @@ recursive algorithm in an iterative one is not that simple as for the QuickSort 
 The reason is that qsort() has first to partition the input range, then call
 msort() on both subranges and finally do the merging. We will not try
 to present in this book an iterative msort(), which you may find in textbooks or somewhere in the internet,
-as that would be a bit too much for an introducing course. 
+as that would be a bit too much for an introducing course.
+
+We did the QuickSort and the MergeSort in a top down fashion, that is we split
+the initial container in two subpartitions and continue in this way until
+we have only ranges with one or two entries, and than do the merging from bottom
+to top. For MergeSort we could just start from the bottom joining single adjacent elements
+to sorted tuples of two entries, when done with that merging the tuples of two to sorted tuples of 4 and
+so on. This would work really well when the initial number of elements in our container is
+a power of two, and it would work well iterative without recursion. Unfortunately in most
+cases the container size is not a power of two, so such a bottom up merge sort needs
+some math to get all the ranges sizes right. But the bottom up process has a big disadvantage
+on modern hardware, as it has no locality for element access operations: We would iterate
+repeatedly over all the container entries in sequential order, so the CPU cache can 
+not support our element access operation that well.
 
 Other known sorting algorithms are
 the easy, funny and slow BubbleSort, or Shell- and Shaker-Sort. But these are not used
