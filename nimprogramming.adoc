@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-16
+//v0.1, 2021-MAI-22
 :doctype: book
 :toc: left
 :icons: font
@@ -851,6 +851,23 @@ in other languages. With some luck you may find some source code
 for that languages, so that you can patch a few strings
 and maybe modify some colors and the background music  and call it your game.
 
+=== After learning Nim, will I still have to learn other programming languages?
+
+Nim is a quite universal language, so it is a good candidate for
+someone who intents to learn only one single language. But of course it
+is always a good idea to learn a few other languages later. Generally we can not
+really avoid learning C, as so much C code exists world wide. Most algorithm that have
+ever been invented are available as a C implementation somewhere, and most
+libraries are written in C or have at least a C API, which you can use from other languages including
+Nim. As C is a small language without difficult language constructs, some minimal C
+knowledge is generally sufficient to convert a C program to another language. Often that
+conversion process is supported by tools, like the Nim c2nim tool. So learning some C later
+is really a good idea, and when you have some basic understanding of Nim and CS in general,
+learning some C is an easy task. Learning C before Nim would be an option still, as for
+C more learning resources exists. So years ago some people recommended learning C or Python
+before Nim. But Nim has enough learning resources now, so we recommend indeed starting with
+Nim directly. 
+
 === Why should I not use Nim?
 
 Maybe it is just not the ideal solution for you. A racing bicycle or a mountain bike are
@@ -863,7 +880,11 @@ using Python. People who are only interested in special applications, maybe only
 in web development or only in tiny 8 bit micro-controllers may not really need Nim. Nim can 
 do this and much more well, but for special use cases better suited languages may still
 exist. And someone who has managed to learn {cpp} really well over a period of
-many years may decide to continue with {cpp} also.
+many years may decide to continue with {cpp} also. Currently another possible reason for not using Nim
+can be missing libraries. When you need some important libraries for your project, and
+these are currently not available for Nim, this can be of course a big problem in the case that you
+have not the skills or the time to write them from scratch or at least create high level bindings
+to a C library.
 
 == Our first Nim Program
 
@@ -6563,7 +6584,7 @@ some  external nimble packages with a very useful functionality and an easy user
 == Serialization -- storing data permanently on external storage
 
 When you start writing larger programs, these programs may create data which you may want to
-store permanently on external nonvolatile storage like SSDs or traditional harddisks of your computer.
+store permanently on external nonvolatile storage like SSDs or traditional hard disks of your computer.
 For textual data this is very easy, as you basically only has to write and read a stream
 of unstructured bytes. But when your program deals with object instances, container data
 types like sequences or references, things become more complicated. Writing the data
@@ -6950,7 +6971,9 @@ which is implemented by a StringStream and a FileStream data type. Internally th
 concept is realized by storing a set of function pointers in the Stream instance.
 
 When we have to store unstructured data like text it is not always clear if we better should use
-Files or Streams. Streams may be the better choice when we (also) want to use a string as data source like a file.
+Files or Streams. Streams may be the better choice when we (also) want to use a string as data source like a file
+or when we need the peek() functions of the streams module to access data without advancing the position
+in the stream.
 
 We will use the File data type of the io module first. As the io module is part of the system module, we do
 not have to import it before we can use it. The principle usage of files is, that we call the function open() to open
@@ -6963,7 +6986,7 @@ Historically a file is a one dimensional data type which is accessed in sequenti
 twenty century it was not uncommon that large files where stored on magnetic tapes,
 which could be read or written only slowly in sequential order. Read or write operations could take
 place only at the actual position, and available functions like f.setFilePos() where very slow
-as it involves moving the tape. The introduction of hard disk and solid state disk removed this restriction,
+as it involves moving the tape. The introduction of hard disks and solid state disks removed this restriction,
 and modern {OS} often buffers files in RAM for longer time periods, so that files may have actually
 similar performance as arrays or sequences. The funny fact is, that with the modern CPU caches
 the ordinary RAM storage can look similar slow and sequential compared to the extreme fast cache as
@@ -7010,10 +7033,22 @@ $ on them before writing the content. WriteLine() writes a '\n'  after the last 
 When done we call close() to close the file. The {OS} would close the file for us when our program terminates, so
 calling close is not that important, but when we open many files without closing them we may get
 errors from the {OS} finally about too many open files and our program may fail or terminate.
-Calling close() on a file which has not been successfully opened or calling close()
-multiple times on the same file again cause a program crash. We can test the file for
-nil before calling close() when we are not sure if the file is really open, or we may use the
-try/finally or the defer construct to ensure that we really close the file when done.
+
+The close() proc gets passed the file not as a var parameter, so it can not set the file
+to value nil. When the file has the value nil, then the close() call is ignored, but when we would call
+close() multiple times with a non nil argument we get a program crash.
+We may use the try/finally or the defer construct to ensure that we really close the file when done.
+
+The io module provides some procs like writeBuffer(), writeBytes() or writeChars() which gives us
+as return value the actual number of bytes written. This return value should generally match
+the requested number of bytes to write, but can be smaller when the write operation fully
+or partially failed, e.g. because the storage medium had no capacity left. 
+
+When performance really matters, we should note that passing non-string arguments
+to write() or writLine() procs using their optional auto-stringify for us, involves
+allocation of new strings and cost some performance. When we have in our program already
+a string variable available, it can be faster to convert our data into that variable first and then pass
+that variable to the write() or writeLine() procs.
 
 Reading strings from a file works very similar:
 
@@ -7026,19 +7061,31 @@ proc main =
     echo f.readLine
     echo f.readLine
   finally:
-    if f != nil:
+    if f != nil: # test for nil not really necessary, close() would ignore the call for f == nil
       f.close
 main()
 ----
 
-The readLine() proc reads in a line of text. The LF or CRLF line end markers
+The readLine() proc reads in a line of text. The LF, CR  or CRLF line end markers
 are not part of the returned text string. Of course we may get an
 empty string with length zero back when we read a line which
-immediately starts with LF or CRLF, or we may get back a string
+immediately starts with LF, CR or CRLF, or we may get back a string
 with no visible characters but only a few spaces or tabulator characters '\t'
-when a line contains only spaces or tabs.
+when a line contains only white space.
 When our read() operations have moved the actual file io position to the
 end of the file, and we try to read more content, then an exception is raised.
+
+The io module provides a readLine() proc that returns a newly allocated string,
+and one that takes an existing string as var parameter. The later may be a bit faster,
+as it can avoid the allocation of a new buffer when the passed string has already enough capacity. 
+
+The io module provides a function called endOfFile() with a boolean result
+which we can use to check if the end of file position is already reached.
+The provided functions  readBuffer(), readBytes() or readChars() return
+the actual number of bytes read, which can be smaller than the requested value when
+the end of the file is reached earlier. Currently readChars() checks if the passed
+openArray[char] has enough capacity for the request, but readBytes() does no
+check!
 
 We can use also the lines () iterator to iterate over the lines of a text file, or use the readLines()
 proc to read the content line by line.
@@ -7065,6 +7112,9 @@ the actual file position to the end of the file we called setFilePos() to move a
 The readLines() proc takes a filename
 and the number of lines to read as parameters and returns a seq of strings. When the
 file does not contain at least the number of requested lines an EOF exception is raised.
+Another provided proc is readAll() which reads the whole file content into a returned string variable.
+For readAll() to work the actual file position has to be the the start of the file. In case of an
+error an exception is raised.
 
 We can also write and read binary data directly to a file, without converting it
 to (human readable) strings first:
@@ -7091,7 +7141,7 @@ Of course these are low level, dangerous operations. While writeBuffer() should 
 our program, readBuffer() can do that easily when we specify wrong sizes or destination addresses, as that may overwrite
 other data unintentionally. So we would generally not use these procs directly but write more safe
 helper procs, when we really need or want this form of binary file access. Fast storing big data sets with restricted hardware may
-be a use case, e.g. storing a float32 takes only 4 bytes on the storage medium and file io is fast, while
+be an use case, e.g. storing a float32 takes only 4 bytes on the storage medium and file io is fast, while
 that number as human readable digits may need more than 8 bytes (1.234567E3) and converting to
 string and and parsing back costs some time.
 
@@ -7134,6 +7184,20 @@ work when the tuples or objects contain only plain data types, that is no string
 references and of course no other nested container types like sequences or tables. And reading back
 data may fail when we use a different OS or a different compiler version.
 
+The io module provides the File variables stdin, stdout and stderr,
+which are the standard input, output and error streams.
+Sometimes we use
+stdout.write() instead of the common echo() proc when we want to write
+something to the terminal window without moving the cursor to the next line already.
+
+An important function of the io module is flushFile(), which is used to ensure that
+all buffer content of buffered files is actually written to the file. This is important
+when we use the stdout File variable, maybe to ask the user a question in the terminal window.
+We would call sdtout.flushFile() to ensure that the user really sees the text on the screen
+immediately. The echo() proc calls flushFile() automatically after each output operation.
+When we close a file flushFile() should be called automatically, but when
+our program is terminated without calling close() it may depend on the actual implementation and {OS}
+
 The io module provides some more useful procedures, but we will
 stop this introducing section here and continue with the streams module in the next section.
 
@@ -7142,7 +7206,622 @@ References:
 * https://nim-lang.org/docs/io.html
 
 === Streams
+
+A stream is an abstract interface for performing certain I/O operations, which was introduced
+by languages like C or Modula-2 decades ago. The streams module of the Nim standard library
+provides a FileStream and a StringStream implementation, which behaves very similar.
+Nim's streams module provides similar functions as the io module with its File data type,
+but it can operate on strings instead of on Files, and it provides a set of peek() functions
+to access data at the current read position without moving forward. And some functions are
+more robust, for example closing a stream multiple times does not crash the program,
+as the first close() call sets the file variable of file streams to nil, so that following close() calls are ignored.
+Currently the streams module does not support automatically closing of streams when
+they go out of scope.
+
+We can create a new FileStream by calling the overloaded procs newFileStream()
+with an already opened file or a filename as parameter, or we can use  openFileStream().
+The later raises an exception when the stream can not be opened, while the former procs
+just return nil. We can write and read textual data with the streams module in a very similar way as we did it with the
+io module and the File data type:
+
+[source, nim]
+----
+from os import fileExists
+import streams
+
+proc main =
+  const SN = "NoImportantData" # stream name
+  if os.fileExists(SN):
+    echo "File exists, we may overwrite important data"
+    quit()   
+  var fstream = newFileStream(SN, fmReadWrite)
+  if fstream != nil:
+    fstream.write(123, ' ')
+    fstream.writeLine(3.1415)
+    fstream.setPosition(0)
+    let l = fstream.readLine()
+    fstream.close()
+    assert l == "123 3.1415"
+main()
+----
  
+We test again if a file with that name already exists. Then we try to create a
+new FileStream by using file mode fmReadWrite, so that we can write and
+read from that file. Finally we write two numbers, which are automatically
+converted to strings, set the file position back to the beginning and verify
+what we wrote by reading it in again, before we close the stream.
+
+In a very similar way we can write to and read from string streams
+ 
+[source, nim]
+----
+import streams
+proc main =
+  var stream = newStringStream()
+  stream.write(123, ' ')
+  stream.writeLine(3.1415)
+  stream.setPosition(0)
+  let l = stream.readLine()
+  stream.close()
+  assert l == "123 3.1415"
+main()
+----
+ 
+In the example above we do not test if the stream variable is not nil, as
+newStringStream() should never fail.
+
+For buffered streams we can call flush() to ensure that the buffer content (of file streams) is written,
+similar as we can do it for plain Files of the io module. 
+Instead of io.endofFile() we use the proc atEnd() to test if the current stream position
+is already at the end of the stream. Functions getPosition() and setPosition are
+available to query or set the actual position in the stream. While the io module
+with its File data type supports for io.setFilePos() although position modes relative to the actual position or relative to the file end,
+streams.setPosition() use always absolute values, that is positions measured from the beginning of the stream.
+The streams module provides also the low level procs  readData() and readDataStr()
+which reads data to a memory region or into a string and returns the actual number of bytes read
+to indicate success. And as for the io module a proc readAll() is available to read all data
+of a stream into the returned string variable.
+
+The procs writeLine() writes the passed arguments always as strings. The overloaded write()
+procs with varargs arguments write the passed values as strings and apply the stringify operator $
+if necessary. The same does the writeLine() proc, but it writes a newline character
+when all passed variables have been written. One more overloaded write proc for single string parameters exist.
+
+But for single non string arguments a generic write() proc is used, which writes numbers
+(and other data types like boolean types or single characters) directly in binary form without converting them to strings.
+
+To read the binary numbers back we can use functions like readFloat64() which have a
+well defined return type and read a fixed number of bytes. Or we can use the generic read() proc
+which accepts a var parameter which defines the data type that we intend to read in binary form.
+Additional to the various read() procs the streams
+module provides a set of peek() procs which reads data in without moving the actual
+position in the stream forward. This may be useful for parsing of files, as we can
+read the same information multiple times easily. Internally the peek() functions uses
+a call of setPosition() to save the current position and one more call of setPosition()
+to set back the old position to the initial value, so peek() has some overhead. 
+
+[source, nim]
+----
+import streams
+from os import getFileSize
+proc main =
+  const SN = "NoImportantData" # stream name
+  var fstream = newFileStream(SN, fmReadWrite)
+  if fstream != nil:
+    fstream.write("012") # write a 3 byte string
+    var pi: float64 = 3.1415
+    fstream.write(pi) # write as 8 byte binary blob 
+    fstream.setPosition(0) # prepare for reading from start
+    var i16: int16
+    i16 = fstream.peekint16 # read first 2 bytes as int16, do not change actual position
+    assert i16 == '0'.ord + '1'.ord * 256
+    var i8: int8
+    i8 = fstream.readInt8 # read back one byte
+    # fstream.read(i8) # does work also
+    assert i8 == '0'.ord # char(0) has position 48 in ASCII table
+    assert i8 == 48
+    var buffer: array[2, char]
+    fstream.read(buffer)
+    let x = fstream.readFloat64 # read back in binary form
+    assert x == 3.1415
+    fstream.close()
+    assert buffer == ['1', '2']
+    assert os.getFileSize(SN) == 3 + 8 # 3 byte string and a float64
+main()
+----
+
+In the example above we write a three byte long string and a float64 to the file stream.
+We call setPosition(0) to read the stream from the beginning again,and then
+read in a int16 with the function peekint16() without moving the actual position
+forward, followed from readInt8(), which moves the actual position one byte forward.
+(Instead of readInt8() we could also call read() with variable i8 as passed var parameter.)
+Then we read in two bytes and finally the float64 value at the end of the stream.
+Finally we check by use of the function getFileSize() from the os module if
+the file has really the expected size.
+
+The streams module provides many functions, and the possible writing data
+as strings or in binary form can make using that module a bit daunting at first.
+But most procs have examples in the API docs which helps you using it.
+
+****
+For reading strings and whole lines the streams module provides functions like
+readLine(), peekLine(), readStr() and peekStr() each in a variant which returns a newly allocated
+string and one that uses a passed var parameter to return the string. The variants with
+var parameters may be a bit faster, as they can avoid allocating a new string when the passed
+in var parameter has already enough capacity.
+****
+
+References:
+
+* https://nim-lang.org/docs/streams.html
+
+== String Processing
+
+String processing is a wide area. Nim's standard library provides various modules
+like strutils, parseutils and strscan for supporting this task, and external packages
+supports more advanced operation like string pattern matching with regular expressions (regex).
+We will start with the strutils module, which is one of the mostly used modules of
+the Nim standard library. Then we will introduce some more specialized modules like
+strscan, parsecvs, parseutils, strformat, and finally we will give an introduction to use of regular expressions
+(regex) and to the use of the parsing expression grammar (PEG). While we describe generally
+only modules of Nim's standard library in this part III of the book, we will make an exception
+for regex and PEG. The reason for this is, that regex and PEG use is closely related to
+basic string processing and that very powerful external packages exists, which are not
+too difficult to use and so needs not too much introductory explanations.
+
+Whenever we do string processing in Nim we should care a bit for performance,
+as some string operations can be slow by design. For simple tasks we should
+prefer to use functions from the simple modules like strutils when possible, and
+use regex or PEG only when really necessary or when performance is uncritical.
+And even when we use elementary simple functions like a string split, it is
+generally good to have a feeling how the requested operations may work.
+Whenever string functions return a string as a result, this implies an allocation, which
+takes some time and consumes some memory. An example is the split() operation
+which return a sequence of multiple strings. The split() function is easy to use, so
+it is often the first choice when we read in lines of text from files and want to process
+it. But as for each section of the split line a string is allocated, it may be not as fast as desired.
+In some cases the compiler may be able to optimize the slitting process, but
+it may be also a good idea to think about other ways to extract the data, maybe by
+applying procs from the strscan module which can parse lines directly into passed var
+parameters avoiding unnecessary allocations.
+
+****
+Remember that Nim strings are value types and have value semantic.
+String assignment copies the string content and does not create just
+a reference as in some other programming languages. Nim defines also
+a string variant called TaintedString, which is generally just an alias for
+an ordinary  string as long as the taint mode is not turned on. Functions like
+io.readLine() return tainted strings which generally can be used like ordinary strings.
+****
+
+=== Basic string operations
+
+We discussed Nim's string data type already in part II of the book. Remember that a string
+in Nim is a variable size container for ASCII characters. Strings can be plain ASCII strings, or
+the bytes of the string can be interpreted as unicode glyphs. Nim has also a cstring data type,
+which was initially introduced to be compatible with the character arrays used in C libraries
+as strings, but is now called compatible string as cstrings do also support the Javascript backend.
+Nim strings can be passed directly to C libs, as a Nim string contains a Null terminated buffer
+for the actual data, which is identical to a C language string. So whenever we convert a Nim string to a C language string
+or pass a Nim string to a C library, this is free of costs, while converting a C string to a Nim string always
+means allocating a new Nim string and coping the data content. Technically for a Nim string s
+addr s[0] is the C string pointer, called * char in C language. Whenever we pass strings to
+C libraries we have to care for the fact that Nim's garbage collector may deallocate the string
+automatically. Most C libs create copies of passed strings when the libs use the string for
+a longer time span. GTK for example does this with text for its widgets. But when the
+C lib does not copy the string but use it directly for a longer time, then it can occur that
+the Nim code frees the string, as the only one Nim  variable referring to the string goes
+out of scope, but the C library still uses the string. For that rare case we may call
+GC_ref() on the string to prevent garbage collection, but that may generate memory leaks then.
+For the case that C libs create strings, they provide generally also a function to deallocate the
+string. When we use such a C function, it is generally the best solution that we copy
+the string from the C lib to a Nim string and immediately deallocate the C string by a
+call of the provided free/dealloc() function. For most C libs there exist good high level bindings
+which do not have this issues, so we generally can use the C libs like pure Nim libs.
+
+Nim' s system module provides already some basic string operation like accessing single
+characters by the subscript operator [], accessing slices of multiple adjacent characters, or
+joining multiple strings with the & operator. The overloaded add() functions to
+append single characters or other strings to existing string variables are also provided by
+the system module.
+
+[source, nim]
+----
+var s: string = "I like"
+s &= " Nim."
+s[^1] = '!'
+s[0 .. 4] = "We low" # result is: "We love Nim!"
+----
+
+We start above example by assigning to the string variable s a string literal,
+then we append one more string literal, and finally replace the last character
+and the first five characters by another character and by another string.
+Note that by using the slice operator we can not only replace character ranges, but we can also
+replace slices of different length. This way we can also delete ranges in the string
+by replacing it with the empty string "".
+
+The system module also defines the stringify operator $, which converts
+expressions to the string presentation when we put it in from of it. Procs
+like echo() apply the stringify operator automatically on all of its arguments when necessary.
+And the system module provides the contains() function which we can use to
+test if a string contains a character. Instead of contains we can also use the in operator.
+
+----
+echo $7
+echo "Nim".contains('i')
+echo 'i' in "Nim"
+----
+
+The system module also provides the procs newString() and newStringOfCap()
+which are mostly used for optimizing purposes. The function newString(n) creates a string
+of length n, but with uninitialized content. We would have to assign characters
+to the positions 0 .. n-1 to create a valid string. Function newStringOfCap() creates
+a string with length zero, but with a buffer capacity of n characters.
+When we know the needed buffer capacity, or at least a lower bound of it, it makes sense
+to create the string with newStringOfCap() with optimal buffer size to avoid reallocations.
+Of course we could still append more data, Nim would allocate a larger buffer and copy content.
+
+[source, nim]
+----
+var s1 = newString('z'.ord - 'a'.ord + 1)
+for c in items('a' .. 'z'):
+  s1[c.ord - 'a'.ord] = c
+  
+var s2 = newStringOfCap(32) # we intent to append not more than 32 characters, but we could do.
+for c in 'a' .. 'z':
+  s2.add(c)
+# s1, s2 is abcdefghijklmnopqrstuvwxyz
+----
+
+Filling in characters into an existing string by use of the subscript operator
+[] is faster than appending single characters with the add() function, because
+the add() function has to check if the string  has still enough capacity and because
+add() has to increase the actual string length by one for each call. 
+
+Note that a single character like 'a' is very different from a string with only
+one character like "a". A character in Nim is nothing more than a single byte, while
+a string -- even one with only one character or an empty one -- is an opaque entity with length, capacity and a pointer to a data buffer.
+When a single character is sufficient, we should
+use that and not a string containing a single character. A function call like s.add("a")
+may produce less optimized code than s.add('a'), but maybe the compiler optimized
+the former for us. When we consider optimization we may wonder if
+in
+
+[source, nim]
+----
+var s = "Hello!"
+echo s
+s = "Bye."
+echo s
+----
+
+line 3 allocates a new string or just copies the string literal "Bye."
+in the existing data area. Well we would hope for the later of course.
+
+Another interesting question is if in
+
+----
+var s = "Result is: "
+var x = 12.34
+echo s, x
+echo s & $x
+----
+
+we should better use line 3 or line 4. Line 3 looks more clear and we assume that
+it also would produce better code, as the actual append operation is avoided. 
+
+Often used functions are len() and setLen() to query and set
+the length of a string. While len() looks like a function call,
+it is a compiler intern function, so calls are fully optimized. So it is OK to write
+
+[source, nim]
+----
+for i in 0 .. s.len():
+  echo '*'
+----
+
+It is not necessary to introduce a temporary variable like let l = s.len() to avoid
+many function calls. In C this is different, as in C a call of function strLen() would not only
+imply a function call, but that function would really have to count all characters up to
+the terminating '\x0' as C strings have no length field.  
+The function setLen() is generally used to truncate strings. A call like s.setLen(0) 
+makes s look like a newly allocated string, but its data buffer can be reused. Reusing
+strings is generally better for performance than allocating many new strings.
+The setLen() function is rarely used to increase the string length -- in that case an allocation
+of a larger data buffer can occur, and the string would still look the same
+as initially all the new string positions would still contain the default binary zero content.
+We would have to fill in actual characters by use of the [] subscript operator.
+To get the lowest and highest character index of a string we can use s.low and s.high.
+s.low should be always return zero, and high() is identical to len() - 1, so high() is
+-1 for an empty string. Note that while calling high() and len() on a Nim string
+has  no costs, this may be different to C strings as these have no length field.
+
+The system module provides the overloaded & operator which we can use
+to concatenate chars and strings, the &= operator to append a new string to an existing string, and
+the add() functions to append characters or strings to an existing string. For
+best performance we should try to use always the most simple, "native" operations,
+at least as that does not make the code ugly or we know for sure that the compiler optimizes
+it for us.
+
+[source, nim]
+----
+var s = "Ni"
+s = s & "m" # maybe not a good idea for optimal performance
+s.add('m') # better
+----
+
+The function add() can be also used to add a cstring to a string, and the JS backend
+allows even to append one cstring to another one by add() calls.
+
+Module system also exports a substr() proc which copies and return a slice of a string.
+Overloads with optional first index with default 0 and optional last index with default
+s.high exists.
+
+[source, nim]
+----
+var s = "Hello!"
+assert s.substr(2, 3) == s[2 .. 3]
+
+s = "ABC"
+echo s[0 .. 5] # fail
+echo s.substr(0, 5) # index is clipped to s.high
+s[0 .. 5] = "" # fail
+----
+
+And of course == and != operators for string comparison are provided.
+To test if a string is empty we can compare with an empty string literal
+or test if len() is zero. The later is guaranteed to have best performance, but
+the former is a bit shorter and should be not bad  performance wise. Some other languages
+provide an empty() test function for this, we may define our own when we really want.
+
+[source, nim]
+----
+if s != "":
+if s.len != 0:
+----
+
+When we pass a string to a proc that does no operations with it, maybe
+it only calls echo() or stdout.write() to print it, then it may have
+a tiny performance advantage to pass it as cstring. This is similar
+as we may pass sequences as openArray to functions, which
+also avoids one level of indirection. Also note, that while a Nim string is
+a value type, so we can not test it for nil or return nil from a proc
+that shall return a string, this restriction does not hold for cstrings.
+
+=== Module stringutils
+
+Module stringutils provides a set of functions (120 currently) and a few iterators
+for simple string operations. Using that functions and iterators is simple in most cases and
+generally well explained in the API docs. Remembering which functions exists, their exact name
+and the function arguments can be a bit difficult at first. We will introduce in this section some of the
+most used or more difficult functions, and give some warnings when the actual performance
+may be not as good as expected.
+
+Performance critical operations are generally that one which has to allocate new strings or that has
+to shift many characters, like text inserting operations. Note that some functions of this module
+like toUpperAscii() work only with the lower and upper ASCII letters. For unicode operations
+we may need the unicode module. 
+
+****
+In this section we use the term whitespace, which refers to the invisible characters
+{' ', '\t', '\v', '\c', '\n', '\f'} (space, tab, vertical tab, carriage return, new line, form feed).
+Note that we have two possible newline characters {'\c', '\n'} that starts a new line, and that older
+windows text files may still use the two character string "\c\n" to start a new line.
+The character set {'A'..'Z', 'a'..'z'} is called (ASCII) letters, the set {'0'..'9'} (decimal) digits and the
+set {'0'..'9', 'A'..'F', 'a'..'f'} hexdigits used to represent  hexadecimal numbers.
+****
+
+The stringutils module support string interpolation by use of the `%` operator.
+
+[source, nim]
+----
+echo "The $1 programming language is $2." % ["best", "Nim"]
+echo "The $# programming languages are $#." % ["most difficult", "C++, Rust and Haskell"]
+echo "A $adj programming language is $lang." % ["adj", "low level", "lang", "assembly"]
+echo "Let's learn $#" % "Nim!"
+echo format("I know $# programming languages.", 2)
+----
+
+We can use $1 up to $9 to mark positions where string n from the array should be inserted, or
+just $# to insert the strings in the order as they appear in the array. We can also use
+named insert markers and specify name-value string pairs in the array. For a single
+string we can omit the array and pass just as string, and finally we can use the format
+proc to enable stringify for the parameters.
+
+We mentioned already the useful but performance critical set of split() functions:
+
+[source, nim]
+----
+import strutils
+let str = "Zero, first, second, third"
+var s: seq[string] = str.split(", ")
+echo s
+echo str.split(", ", 0)
+echo str.split(", ", 1)
+echo str.split(", ", 3)
+echo str.split(", ", 4)
+----
+----
+@["Zero", "first", "second", "third"]
+@["Zero, first, second, third"]
+@["Zero", "first, second, third"]
+@["Zero", "first", "second", "third"]
+@["Zero", "first", "second", "third"]
+----
+
+We used the split() variant which accepts a string as split marker. This function
+accepts one optional parameter for the number of splits to execute and returns 
+a sequence containing the single strings. The split marker string, also called separator,
+is removed from the strings. The default value for the number of splits  is -1 indicating
+that we want a split at each separator position. If we specify a positive number n, then only
+n splits are executed and the last element of the returned sequence will contain the remainder
+of the string. When we specify for the intended splits a value which is larger than the number of contained
+split markers, then we get a full split.
+
+The reason why this function is not very fast is that it has to allocate a sequence for the return value
+and a new string for each split and one more for the last string or the remainder. For the case that we
+do need only the first few strings of the split, it is a good idea to specify the number of actual splits
+to increase performance.
+
+The strutils module provides overloaded functions which use single characters as separators or
+which accepts a set of characters as separators, so we may split at space, tabulator, comma or semicolon
+with {' ', '\t', ',', ';'}. And a 
+function splitWhitespace() is available to split at whitespace like spaces and tabulators, which
+removes all the whitespace between the strings. Notice that the split() function for strings or single characters does
+one split for each separator, so we can get empty strings as result as in
+
+[source, nim]
+----
+import strutils
+let str = "Zero___first_second__third"
+let str2 = "Zero first\tsecond           third"
+echo str.split('_')
+echo str2.splitWhiteSpace()
+# @["Zero", "", "", "first", "second", "", "third"]
+# @["Zero", "first", "second", "third"]
+----
+
+An interesting behavior of splitWhiteSpace() is that whitespace at the start or
+end of a string is just ignored, while the split() function returns additional empty strings
+when the string to split starts or ends with the separator:
+
+[source, nim]
+----
+import strutils
+let str = "_Zero_first_second_third_"
+let str2 = "   Zero first\tsecond           third   "
+echo str.split('_')
+echo str2.splitWhiteSpace()
+# @["", "Zero", "first", "second", "third", ""]
+# @["Zero", "first", "second", "third"]
+----
+
+Another function is splitLines() which splits a string at CR, LF or  CR-LF characters.
+
+For these splitting functions also iterator variants exists, which behave
+like the functions with same name. When we limit for the iterators
+the number of splits to perform, we may get as last returned value
+the remained string. You may consult the API docs for details if necessary.
+
+Functions with names rsplit() are also available which behave like split but start
+the splitting process from the end of the string, so we can get the file extension of
+a file name with something like filename.rsplit(1)[^1].
+
+The functions removePrefix() and removeSuffix() can sometimes help to avoid
+expensive split operations. There is an overloaded function that removes all single characters,
+all characters from a set or a single string:
+
+[source, nim]
+----
+import strutils
+var s = "NNimmm Language"
+s.removePrefix('N'); echo s # immm Language
+s.removePrefix({'N', 'i', 'm', ' '}); echo s # Language
+s.removePrefix("Langu"); echo s # age
+s. removeSuffix("ge"); echo s # a
+----
+
+Other useful functions are startsWith() and endsWith() which accept a single character or a string
+and return a boolean value:
+
+[source, nim]
+----
+import strutils
+var s = "Nim Language"
+echo s.startsWith('N') # true
+echo s.startsWith("Nim") # true
+echo s.endsWith('e') # true
+echo s.endsWith("Programming") # false
+----
+
+An efficient function similar to find() is continuesWith() use like "Nim Language".continuesWith("Lang", 4)
+which tests is a string contains a substring at position n.
+
+We can use the join() proc to join strings in arrays or sequences to single strings with an optional glue string. Join() works
+also when the elements are not already strings -- in that case the stringify operator is applied first:
+
+[source, nim]
+----
+import strutils
+var a = ["Nim", "Rust", "Julia"]
+var s = a.join(", ")
+echo s
+echo s.split(", ").join("; ")
+echo [1, 2, 3].join("; ")
+# Nim, Rust, Julia
+# Nim; Rust; Julia
+# 1; 2; 3
+----
+
+The overloaded find() functions accepts optional start and end positions and returns
+the index position of the first match or -1 when the search gave no result:
+
+[source, nim]
+----
+import strutils
+var s = "Nim Language"
+echo s.find('L') # 4
+echo s.find({' ', 'a'}) # 3
+echo s.find("age") # 9
+echo s.find("Rust") # -1
+----
+
+The contains() function can be used to test if a character, a set of characters or a substring
+in contained in a string. Instead of conatains(s, sub) we can write sub in s. Note that the a function variant for
+single characters is defined in the system module.
+
+The replace() function can be used to replace all occurrences of a character or a substring
+in a string and to return the new string. We can use replace() with an empty replacement to delete a substring.
+The also available delete() function is used to delete a range specified by two indices in place.
+
+Additional a replaceWord() function exists, which does only replaces whole words, i.e. words that
+are surrounded by word boundary characters like  spaces, tabulators or newlines.
+
+The function multiReplace() is a variant that can replace  multiple substring/replacement pairs passed as tuples in one pass.
+
+The function strip() can be used to remove multiple characters from a set at the start and the end of a string. The default 
+character set is whitespace, and per default strip removes characters at both ends of the string. The function stripLineEnd()
+removes a single line end marker as \r, \n, \r\n, \f, \v from the end of the string, but only once.
+
+Sometimes useful is the boolean function isEmptyOrWhitespace() which checks if a string is empty or contains
+only whitespace. Also useful can be the function repeat() which returns a string that contains the passed
+character or the passed string n times, and the function spaces() which returns a string containing only n spaces.
+
+For single character tests we have functions like isDigit(), isUpperAscii, isLowerAscii, isSpaceAscii, isAlphaNumeric.
+Function isDigit() test for characters '0'..'9', isUpperAscii() for 'A'..'Z', islowerAscii() for 'a'..'z', isSpaceAsccii() for ASCII witetespace (' ', '\t')
+and is AlphaNumeric() test for lower or upper case ASCII letter or a decimal digit.
+
+Function toLowerAscii() convert all the characters 'A'..'Z' to lower case, and toUpperAscii() converts all the characters
+'a'..'z' to upper case. The function argument can be a string or just a single character. With capitalizeAscii() we can
+convert the first ASCII character of a string to upper case.
+
+The overloaded functions count() can be used to count the characters or substrings in a string, and
+countLines() is available to count the number of lines, where lines are separated by CR, LF or  CR-LF.
+
+Sometimes we may also need functions like formatFloat(), formatBiggestFloat() or formatEng() to
+format float numbers for output purposes. You would have to consult the strutils API docs
+for all the format details. An intToStr() function with an argument to specify the minimal string
+length is also available. The string may get leading zeros for alignment.
+
+Finally some important functions are the parsing functions like parseFloat() or parseInt() which converts
+strings to float or integer numbers. Both raises an exception when the string does not contain a valid number.
+
+The strutils module contains some more not that often used function, like functions to
+convert data to hexadecimal, octal or binary representation, or to parse numbers back from that
+string representation into numbers. Other functions like align(), center() and indent() are available
+for string positioning. We will not try to describe these seldom used functions here, as it is hard
+to remember the detailed behavior. You should skim the API docs and consult them
+when you need one of the exotic functions or when you have forgotten how to use a concrete
+function.footnote:[And in case you find out for what these SkipTable is used, let us know :-)]
+
+References:
+
+* https://nim-lang.org/docs/strscans.html
+* https://nim-lang.org/docs/strutils.html
+* https://en.wikipedia.org/wiki/Regular_expression
+* https://en.wikipedia.org/wiki/Parsing_expression_grammar
+* https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions
+
 == Random Numbers
 
 Most computer programs work fully deterministic, that is one input data set
@@ -9118,3 +9797,6 @@ for d in 0 .. 1:
     echo ""
 ----
 
+////
+
+////
