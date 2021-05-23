@@ -7814,10 +7814,105 @@ to remember the detailed behavior. You should skim the API docs and consult them
 when you need one of the exotic functions or when you have forgotten how to use a concrete
 function.footnote:[And in case you find out for what these SkipTable is used, let us know :-)]
 
+=== Module parseutils
+
+The module parseutils provides a set of functions for
+efficient and fast parsing of strings. The functions avoids the allocation
+of new strings by passing back results in var string parameters and by
+returning the number of processed characters. The module parseutils is a good choice
+when we need efficient parsing of strings and the input strings have
+a simple structure. For more complicated input data we may have to use
+RegEx  or PEGs. Let us assume that we have a set of library names which
+includes the version numbers, but we need the plain names. The function
+parseWhile() is a good candidate for this task:
+
+[source, nim]
+----
+import parseutils
+var libs = ["libdconf.so.1.0.0", "libnice.so.10.11.0", "libwebkit2gtk-5.0.so.0.0.0"]
+var l = newStringOfCap(128)
+for s in libs:
+  echo s.parseUntil(l, {'.', '-'})
+  echo l
+  echo s.parseWhile(l, {'a'..'z'})
+  echo l
+----
+
+First we allocate a string with enough capacity, so that the parse() functions
+can use it without having to do allocations.  As we want to receive the plain names,
+using parseWhile() with a charset as last parameter may be a possible solution.
+But as we see this will not really work for webkit2gtk which contains a digit in its
+name:
+
+----
+8
+libdconf
+8
+libdconf
+7
+libnice
+7
+libnice
+13
+libwebkit2gtk
+9
+libwebkit
+----
+
+We can fix this by passing the extended char set {'a'..'z', '0'..'9'} to parseWhile() or by use of parseUntil()
+with a character set that does not belong to a name.
+Both functions return the number of processed characters and provide the captured string
+in the passed var parameter. Not the we can use the slice operator .. to specify character ranges for the charset parameter when
+the characters build a continues sequence in the ASCII table. 
+
+A related function is skipUntil(), which we may use when we are more interested in
+the version numbers after the name:
+
+[source, nim]
+----
+  let p = s.skipUntil({'.', '-'})
+  echo s[p .. ^1]
+----
+
+All these functions accept an optional start parameter as last argument.
+A common use case is to use an integer position variable initialized with zero,
+which we increase by the returned value so that the parsing can continue
+at the current position in the string. The next example will use this strategy.
+For parseUntil()
+overloaded functions are available which gets not a char set but a single character or a substring
+as parameter. These functions stops parsing when the character or the substring is found and return
+that position.
+
+Functions like parseInt() and parseFloat() can be used to extract numbers from strings:
+
+[source, nim]
+----
+import parseutils
+var s = "In the year 2020 I gain 2.5 kg more fat."
+var year: int
+var value: float
+var p = s.skipUntil({'0'..'9'})
+p += parseUtils.parseInt(s, year, p)
+p += s.skipUntil({'0'..'9'}, p)
+p += parseUtils.parseFloat(s, value, p)
+echo year, ": ", value # 2020: 2.5
+----
+
+In above example we used the module prefix as strutils contains also a parseInt() and a parseFloat() function.
+The functions parseBin(), parseOct() and parseHex() behave in a similar way. Returned is the number
+of processed characters. We add the returned value to the start position so that parsing can continue
+at the new position.
+
+There are some more functions available in this module, which we will not discuss further. It is enough
+that you know that this module exists and provides some efficient parsing functions. Whenever you
+should really need one of these procs you would have to consult the API documentation for details.
+
 References:
 
-* https://nim-lang.org/docs/strscans.html
 * https://nim-lang.org/docs/strutils.html
+* https://nim-lang.org/docs/parseutils.html
+* https://nim-lang.org/docs/strscans.html
+* https://nim-lang.org/docs/strformat.html
 * https://en.wikipedia.org/wiki/Regular_expression
 * https://en.wikipedia.org/wiki/Parsing_expression_grammar
 * https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions
