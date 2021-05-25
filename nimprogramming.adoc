@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-22
+//v0.1, 2021-MAI-25
 :doctype: book
 :toc: left
 :icons: font
@@ -6425,6 +6425,52 @@ test()
 So using destructors to release data from C libraries directly is not possible.
 When we compile without option --gc:arc or --gc:orc destructors are ignored.
 
+=== Update for Nim >= 1.6
+
+As recently someone reported on the Nim forum Destructors work now
+for distinct pointers:
+
+[source, nim]
+----
+type
+  O = object
+    i: int
+  OP1 = ptr O
+  OP = distinct ptr O
+
+proc `=destroy`(o: var OP) =
+  echo "destroying OP"
+
+import random
+
+proc test =
+  for i in 0 .. 5:
+    if rand(9) > 1:
+      var o: OP = OP(create(O)) # new O
+      OP1(o).i = rand(100)
+      echo OP1(o).i * OP1(o).i
+
+randomize()
+test()
+----
+
+----
+81
+destroying OP
+3600
+destroying OP
+2401
+destroying OP
+9025
+destroying OP
+----
+
+So using destructors to destroy data from C libraries should be possible now.
+
+References:
+
+* https://forum.nim-lang.org/t/8013
+
 == Modules
 
 Modules are Nim's way to divide multiple source codes in clearly separated units and
@@ -7916,6 +7962,365 @@ References:
 * https://en.wikipedia.org/wiki/Regular_expression
 * https://en.wikipedia.org/wiki/Parsing_expression_grammar
 * https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions
+
+== Arrays and Sequences
+
+Together with strings arrays and sequences are the most important built-in containers for the Nim language.
+While arrays have a fixed size defined already at compile time, sequences are like strings of dynamic size and
+can grow when we append more elements. As arrays have fixed size they can be allocated on the stack, while
+due to the dynamic size of sequences the actual data buffer has to be allocated on the heap. We explained some details
+about sequences already in part II of the book. One important aspect was that sequences use a continues data
+buffer with a fixed capacity to store the actual elements. When that data buffer is fully occupied, and we try to
+add more elements, then a new larger buffer is allocated on the heap and the contained elements have
+to been copied from the old to the new  larger buffer before the old buffer can be deallocated.
+
+When we pass arrays or sequences to procs, then we can use the special data type openArray when we define the proc to 
+allow passing both arrays and sequences. Note that this is very different from generic procs: When we define
+a generic proc, then the compiler creates a new proc instance for each of the generic data type that we use, so when we
+call a generic proc which accepts floats and signed and unsigned integers, and we call it a few times
+with float and with signed integer arguments, then the compiler has to create two distinct instances of the
+proc. For openArray parameters all the time only one proc instance is necessary as sequences behave like arrays
+in many ways. Both use a continues block of memory where the elements are stored, and the position of an
+entry is given by the start address of this memory block and an offset given by the index multiplied with the size
+of an array element. So when passing the actual parameter to the proc, the compiler passes the array and the data
+section of the sequence in the same manner. Both can be passed by copy or by address. The compiler passes
+also the actual size, the lower index is always zero for openArrays. Of course when we pass a seq as openArray,
+there are some restrictions, e.g. we could not add elements in the proc as the passed variable behaves like an array.
+
+Memory layout of sequences and strings is very similar, both have length, capacity and a data buffer on the heap,
+and some procs that work on the data structure has the same names like add(), len() and setlen() and both support
+operators like [], & and  .. for access to single elements, and for concatenation and slicing.
+
+Some often used functions and operators for sequences and arrays are defined in the system module, like creating
+new sequences, converting arrays to sequences, joining sequences or adding elements to it.
+Other important functions, operators and iterators are defined in the sequtils module which we
+describe in the next section.
+
+[source, nim]
+----
+var s0: seq[int]
+var s1: seq[int] = newSeqOfCap[int](2)
+var s2: seq[int] = newSeq[int](2)
+
+s0.add(3)
+s0.add(5)
+s1.add(3)
+s1.add(5)
+s2[0] = 3
+s2[1] = 5
+echo s0; echo s1; echo s2 # @[3, 5] for each
+----
+
+We can initialize sequences by a call of newSeq(), newSeqOfCap() or not at all.
+When we use newSeq(n) we get a seq with n elements initialized to binary zero each, and
+we then can just overwrite the elements by use of the subscript operator []
+which is faster than appending elements with add() to an empty seq.
+With newSeqOfCap() we can allocate a seq of size zero but with a buffer size
+of that specified capacity. We can append elements by calling the add()
+function, and as long we append not more elements as specified in the
+newSeqOfCap() call we can avoid reallocations of the internal seq buffer. When performance
+in not that critical we can just use a uninitialized seq and add() elements --
+when the default capacity is exhausted a reallocation occurs, generally with
+doubled data buffer size.
+
+We can use the overloaded add() proc to append single elements or to append
+an whole array to a seq, and the  & operator is available to join two sequences:
+
+[source, nim]
+----
+s0.add([7, 9])
+s0 &= s1
+s1 = s0 & s2
+echo s1 # @[3, 5, 7, 9, 3, 5, 3, 5]
+----
+
+We can use len() to query the length of a seq and setLen() to set a new length.
+In most cases setLen(n) is used to shorten a seq, that is to keep the first n
+elements, but we can also use setLen() to increase the length of a seq. In  that
+case the new entries get the value binary zero as default and we can use the subscript
+operator [] to fill in actual content. Increasing the length with setLen() may cause
+a reallocation if the current capacity is not sufficient. Functions low() and high() are
+available to get the lowest and the highest index position of an array or a seq.
+While arrays can have negative indices, low can be less than zero for arrays, but for
+sequences and openArray proc parameters low is always zero.
+
+Module system provides also the @ array to seq operator:
+
+[source, nim]
+----
+var i = 7
+var j = 9
+var s0 = @[1, 2]
+s0 = s0 & @[i, j] # don't use this variant!
+s0.add([i, j]) # faster
+echo s0 # @[1, 2, 7, 9, 7, 9]
+----
+
+Note that the code in line 4 would be really slow as that would have to allocate a temporary seq.
+Using add to add a temporary array to the seq should be faster.
+
+Slicing is also supported by the system module:
+[source, nim]
+----
+var s0 = @[1, 3, 5]
+var s1 = s0[1 .. 2] # @[3, 5]
+for el in s0[1 .. 2]: # may create a copy of the seq
+  echo el
+----
+
+Note that line three may create a temporary copy of the sequence,
+which may be not that nice for optimal performance. We discussed that
+topic already in part II of the book, Nim 2.0 may improve the situation further by
+introducing views which create no copies. Beside the s[a .. b] slice operator which includes
+the elements at position a and b, there is s[a ..< b]  which does not include position b and and s[a .. ^b]
+where position b is taken from the end of the seq or array, e.g. ^1 is the last position, ^2 the second last.
+
+For deleting elements from a sequence we have del() which replaces the element at the specified position with the
+last element of the seq and reduces the seq length by one, and the delete() function which shifts all elements after
+the specified position one step forward. Obviously the later is slower, but it preserves  the order of elements.
+The function pop() deletes and returns the last item of a seq. For using pop() on an empty seq we may
+expect a raised exception. With insert we can insert an item at the specified position by moving all the elements
+after this position upwards.
+Note that del(), delete(), pop() and insert() are not available for arrays.
+
+Comparison of two arrays or sequences by the == operator returns true when the length as well as all
+contained items matches.
+
+With the function contains() we can test if an item is contained in a seq or an array. We can also use the operators
+a in b and a notin b instead. The elements are tested from the start of the container until a match is found
+or the last position in the container is reached, so this is a O(n) operation.
+
+=== Module sequtils
+
+This module defines some useful procs, iterators and templates for working with arrays and sequences.
+Some functions of module sequtils use an generic openArray parameter and so can be used for strings as well. 
+While the max() and min() procs are available from the system module, the minIndex() and maxIndex()
+procs are provided by sequtils: 
+
+[source, nim]
+----
+import sequtils
+var s = @[7, 3, 5]
+echo s.min, " ", s.max # 3 7
+echo s.minIndex, " ", s.maxIndex # 1 0
+----
+
+Sometimes we may need a minmax() proc which gives us both values, but that one is currently not available.
+We have to create it our self if needed, when performnce is not that critical we can call min() and max()
+separately.footnote:[A nimMax() is supposed to be faster than separate min() and max() calls, as minMax()
+would have to iterate through all the items in RAM only once.]
+
+The functions minIndex() and maxIndex() as well as count() or deduplicate can work with strings also:
+
+[source, nim]
+----
+import sequtils
+var s = @[3, 5, 1, 7, 3, 3, 5]
+echo s.count(5) # 2
+echo s.deduplicate # @[3, 5, 1, 7]
+echo "abc".maxIndex() #2
+----
+
+The function name deduplicate may be irritating, as the function does not work in place,
+we may expect the name deduplicated() as for sort() and sorted(). Other programming languages
+use the name uniq() instead. Deduplication is easy when the elements are sorted, as for that case
+we can just iterate over the seq and ignore equal adjacent items. That is why deduplicate() accepts
+an optional boolean parameter indicating if the seq is sorted. If the seq is not sorted, it may be necessary
+to create a temporary set to store the already seen items so that they can be ignored the next time
+when they occur again in the seq.
+
+The function concat() can join multiple sequences (yes only sequences, it does not work with arrays currently),
+maybe that is more efficient than using the & operator.
+And insert() can insert a new value at a position by shifting following items, and delete()
+allows to remove a range of items from the seq when we specify two index positions: 
+
+[source, nim]
+----
+import sequtils
+var s: seq[int]
+s = concat(@[1, 2], @[3, 4], @[5, 6])
+echo s # @[1, 2, 3, 4, 5, 6]
+echo @[1, 2] & @[3, 4] & @[5, 6] # @[1, 2, 3, 4, 5, 6]
+s.insert(7, 2)
+s.delete(3, s.high)
+echo s # @[1, 2, 7]
+----
+
+Proc repeat() is used to create a seq which contains a single value multiple times, and cycle()
+repeats the items of an existing seq multiple times:
+
+[source, nim]
+----
+import sequtils
+echo 2.repeat(4) # @[2, 2, 2, 2]
+echo @[1, 2].cycle(3) # @[1, 2, 1, 2, 1, 2]
+----
+
+A bit more complicated but really useful are functions like map(), filter(), keep() and the corresponding ...It() templates:
+
+[source, nim]
+----
+import sequtils, sugar
+var s = (0 .. 9).toSeq
+echo s.map(proc(x: int): int = x * x) # always @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+echo s.map(x => x * x) # from sugar module
+echo s.mapIt(it * it)
+
+echo s.mapIt("*" & $it & "*") # @["*0*", "*1*", "*2*", "*3*", "*4*", "*5*", "*6*", "*7*", "*8*", "*9*"]
+
+echo s.filter(proc(x: int): bool = (x and 1) == 0) # both @[0, 2, 4, 6, 8]
+echo s.filterIt((it and 1) == 0)
+----
+
+The map variants return a new seq, with an operation performed on all items.
+The returned seq can have a different base type. In line 4 we used the => operator from
+the sugar module for a simpler notation
+
+The filter() variants apply a proc with boolean result type on the seq items and
+return the items for which the result is true. Remembering if the elements for
+which the procs gives a true result are returned or removed from the initial
+seq may be not easy. It helps to remember that filter() behaves like the keepIf() procs --
+items with positive result survive.
+
+[source, nim]
+----
+import sequtils, sugar
+var s = (0 .. 9).toSeq
+var s1 = s
+s1.apply(x => x * x) # @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+s1 = s
+s1.keepIf(proc(x: int): bool = (x and 1) == 0) # @[0, 2, 4, 6, 8]
+----
+
+In above code we used toSeq() with a slice argument to create
+an initial sequence with continues integers from the slice.
+The apply() function performs a transformation operation on all the items,
+and keepIf() preserve only the items for which a boolean predicate evaluates to true. 
+
+Two useful predicate functions are any() and all() to check if at least one item fulfills
+a condition or if all items fulfill a condition:
+
+[source, nim]
+----
+import sequtils
+var s = (0 .. 9).toSeq
+echo s.all(proc(x: int): bool = x < 10) # true
+echo s.any(proc(x: int): bool = x * x == 25) # true
+----
+
+With zip() we can join the items of two sequences to tuples, and with unzip() we
+can separate the tuple items again in two separate sequences:
+
+[source, nim]
+----
+import sequtils
+var s = (0 .. 9).toSeq
+var s1 = s.mapIt(it * it)
+var z = zip(s, s1)
+echo z
+echo z.unzip
+# @[(0, 0), (1, 1), (2, 4), (3, 9), (4, 16), (5, 25), (6, 36), (7, 49), (8, 64), (9, 81)]
+# (@[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81])
+----
+
+Finally sometimes the templates foldl() and foldr() can be useful for folding a sequence, that
+is to generate one final value from all the items. The fold templates uses the variables a and b
+to generate the result, a + b would sum all the items. Foldl() performs the operation
+from left to right, returning the accumulation and accepts an optional start value, while
+foldr() starts from right, i.e. with the item at the end of the seq.
+
+[source, nim]
+----
+import sequtils
+var s = (0 .. 9).toSeq
+echo s.foldl(a + b, 100) # 145
+echo s.foldr(a + b) #45
+----
+
+The sequtils module contains some more procs, templates and macros that are not needed that often.
+It would not make much sense to mention all of them here, as it is already not easy to remember
+the ones that we have introduced above. You should skim the sequtils API docs from time to time
+to remember what is available.
+
+Maybe you have missed the difference of two sequences which some other programming languages
+provide:
+
+[source, nim]
+----
+[1, 2, 3, 4, 1,  5] - [2, 4] # [1, 3, 5]
+----
+
+Well that is an expensive operation, O(n^2) if implemented in a naive way, as it may iterate for all
+items in the second seq over the whole first seq to remove the unwanted items.
+A better approach is to convert the items in the second seq to a temporary (hash) set to allow faster query:
+
+A fast on the fly solution is this, as suggested by someone in the Nim forum:
+
+[source, nim]
+----
+import sequtils, sets, sugar
+let a = [1, 2, 5, 2, 9, 7, 0]
+let b = [7, 4, 1, 10, 7]
+let bSet = b.toHashSet()
+echo a.filter((x) => x notin bSet) # @[2, 5, 2, 9, 0]
+----
+ 
+When we should need this operation often, we may define our own proc like
+
+[source, nim]
+----
+# https://ruby-doc.org/core-2.6/Array.html#method-i-2D
+# Array Difference
+import sets
+
+proc `-`*[T](a, b: openArray[T]): seq[T] =
+  let s = b.toHashSet
+  result = newSeq[T](a.len)
+  var i = 0
+  for el in a:
+    if el notin s:
+      result[i] = el
+      inc(i)
+  result.setLen(i)
+
+proc `-=`*[T](a: var seq[T]; b: openArray[T]) =
+  let s = b.toHashSet
+  var i = 0
+  var j = 0
+  while i < a.len:
+    if a[i] notin s:
+      a[j] = a[i]
+      inc(j)
+    inc(i)
+  a.setLen(a.len - (i - j))
+
+proc main =
+  let a = [1, 2, 5, 2, 9, 7, 0]
+  let b = [7, 4, 1, 10, 7]
+  echo a - b
+  echo b - a
+  
+  var x = @a
+  x -= b
+  echo x
+
+main()
+----
+
+----
+@[2, 5, 2, 9, 0]
+@[4, 10]
+@[2, 5, 2, 9, 0]
+----
+
+Note that this preserves the order in the first seq, which is often requested. If order is not
+important, then we could convert both sequences to a set and build the set difference --
+but when order does not matter we may use sets instead of sequences from the beginning.
+
+References:
+
+* https://nim-lang.org/docs/sequtils.html
+* https://forum.nim-lang.org/t/7753#49189
 
 == Random Numbers
 
