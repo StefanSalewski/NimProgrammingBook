@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-25
+//v0.1, 2021-MAI-27
 :doctype: book
 :toc: left
 :icons: font
@@ -7953,6 +7953,103 @@ There are some more functions available in this module, which we will not discus
 that you know that this module exists and provides some efficient parsing functions. Whenever you
 should really need one of these procs you would have to consult the API documentation for details.
 
+=== Module strformat
+
+With the fmt() macro from the strformat module we can format and interpolate strings similar as Python3 with its f-strings.
+
+//Module strsformat provides with the fmt() macro a way for string formating similar to Python3 f-strings:
+
+[source, nim]
+----
+import strformat
+from strutils import `%`
+var lang = "C"
+var year = 1972
+stdout.write "The programming language ", $lang, " was created in ", $year, ".\n"
+echo "The programming language " & $lang & " was created in " & $year, "."
+echo "The programming language $# was created in $#." % [$lang, $year]
+echo fmt"The programming language {lang} was created in {year}."
+# The programming language C was created in 1972.
+----
+
+From the four ways to print some text the last one with fmt() is the shortest and maybe the cleanest.
+As fmt() is a macro which is processed at compile time there is no unnecessary run-time
+overhead involved. A small restriction of fmt() is, that it's argument is regarded as
+a generalized raw string literal. So we can not use escape sequences like "\n" in the string literal.
+But the strformat API docs mention various solutions for this: We can use the unary `&` operator instead of the fmt() call,
+or we can use the notations {'\n'}, fmt() or "".fmt.
+
+[source, nim]
+----
+import strformat
+var lang = "Fortran"
+var year = 1957
+stdout.write &"The programming language {lang} was created in {year}.\n"
+stdout.write fmt"The programming language {lang} was created in {year}.{'\n'}"
+stdout.write fmt("The programming language {lang} was created in {year}.\n")
+stdout.write "The programming language {lang} was created in {year}.\n".fmt
+# The programming language Fortran was created in 1957.
+----
+
+The fmt() macro works also with multi-line raw strings:
+
+[source, nim]
+----
+import strformat
+echo fmt"""This is a {1 + 1 + 1} lines
+multiline
+string."""
+----
+
+The fmt() macro accept a few directives for the formating of integer and floating point numbers like
+
+[source, nim]
+----
+import strformat
+var pi = 3.1415
+var people = 123
+echo fmt"The number{pi:>8.2f} is called PI by {people:>8} people."
+----
+
+The basic pattern is, that the numeric variable is followed by a colon
+and the total number of desired characters. We can precede the number with a
+< or > to indicate left or right alignment, and for floating point numbers
+we can use a notation similar as used for printf() in the C language:
+n.mf stands for a float formated with n characters total and m decimal places.
+As in C we can use e instead of f to indicate scientific notation. If the value which specifies
+the total number of characters starts with a zero digit, then the formated
+number uses zeros instead spaces for leading digits. And #X after the colon
+generates hexadecimal value for integer numbers.
+
+A useful property of the fmt() macro is, that we can put an equal sign into the curly braces
+to get the initial expression both as string and as interpolated value, as in
+
+[source, nim]
+----
+import strformat
+var pi = 3.1415
+echo fmt"{2 * pi = }" # 2 * pi = 6.283
+----
+
+This is similar as the dump() macro from the sugar module and is mostly used for debugging purposes.
+
+To use curly braces as literals in a fmt() argument we can use character literals with a backslash
+as we did to include a newline character, or we can use an extended fmt() macro with two additional
+arguments which specifies the two characters that should be used instead of {} to mark the
+expression which should be interpolated:
+
+[source, nim]
+----
+import strformat
+echo fmt"{2} curly braces {'\{'} {'\}'}." # 2 curly braces { }.
+echo "three time three is <3 * 3>".fmt('<', '>') # three time three is 9
+----
+
+We will
+not try to explain all these various formating options in detail, as it is
+really hard to remember. It is enough that you know that these options exists, so
+you can consult the API docs for details when you would  need it.
+
 References:
 
 * https://nim-lang.org/docs/strutils.html
@@ -8316,6 +8413,13 @@ main()
 Note that this preserves the order in the first seq, which is often requested. If order is not
 important, then we could convert both sequences to a set and build the set difference --
 but when order does not matter we may use sets instead of sequences from the beginning.
+
+Maybe you missed also a shift() function which other container types or programming languages may provide, that is
+used similar to pop(), but deletes and returns the the first item of a seq? Well it should be obvious why a
+shift() is not provided by default and why such a function would generally be avoided -- the function
+name gives you already a good hint. And if you should need such a function it should be no problem
+to implement one if efficiency is really not important. But maybe in that case it would be better to
+use a different container type, maybe the double-ended queue provided by the deques module.
 
 References:
 
