@@ -843,7 +843,7 @@ their smartphone.
 
 === So is Nim really the best start for me?
 
-Maybe not. When you intent to learn a programming language today
+Maybe not. When you intend to learn a programming language today
 and make a great video game tomorrow, then definitely not. This
 is just not possible. While there are nice libs for making games
 with Nim already available, there exists easier solutions
@@ -4571,7 +4571,7 @@ user.] Then we assign the read in friend's name n to the name field.  The last t
 statements of the loop body are a bit demanding: First we assign to node.next the
 value of f. Now node is basically the start of our list, and it next field refers to
 the first element of the current list. Fine, but we said that the node variable is
-only a temporary variable, we do not intent to use it longer as necessary.  But
+only a temporary variable, we do not intend to use it longer as necessary.  But
 currently node is so useful, it is the head of our list. On the other hand, the
 former list start f is now useless, current f is identical with node.next. So the
 trick is, we just assign to f the value of node. Now f is the complete list, and we
@@ -7513,7 +7513,7 @@ var s1 = newString('z'.ord - 'a'.ord + 1)
 for c in items('a' .. 'z'):
   s1[c.ord - 'a'.ord] = c
   
-var s2 = newStringOfCap(32) # we intent to append not more than 32 characters, but we could do.
+var s2 = newStringOfCap(32) # we intend to append not more than 32 characters, but we could do.
 for c in 'a' .. 'z':
   s2.add(c)
 # s1, s2 is abcdefghijklmnopqrstuvwxyz
@@ -9924,11 +9924,11 @@ but to teach you some basic coding strategies and related traps.
 
 === Merge Sort
 
-Initially we did not intent to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
+Initially we did not intend to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
 whenever we may have seen a sketch of it somewhere, it is generally
 not easy to remember details.footnote:[From introducing courses to Computer Science
 people generally remembers QuickSort best, just because of its name and its good performance
-as long as we ignoret he worst case scenario and the not stable sorting order.]
+as long as we ignore the worst case scenario and the not stable sorting order.]
 But MergeSort is indeed an important algorithm, it is used by default in Nim's standard library
 and as we have discussed QuickSort already in some detail, we should be prepared for
 MergeSort now. When we regard the name Merge, which is some form of joining multiple sources to one destination,
