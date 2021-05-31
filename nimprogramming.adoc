@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-27
+//v0.1, 2021-MAI-31
 :doctype: book
 :toc: left
 :icons: font
@@ -27,6 +27,9 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
 :pp: ++
 
 ////
+
+https://irclogs.nim-lang.org/30-05-2021.html#02:49:02
+<ElegantBeef> stefansalewski dont know if you'll see this but in your book, every use of the word `intent` should be `intend`
 
 asciidoctor -a stylesheet=asciidoctor.css nimprogramming.adoc
 
@@ -843,7 +846,7 @@ their smartphone.
 
 === So is Nim really the best start for me?
 
-Maybe not. When you intent to learn a programming language today
+Maybe not. When you intend to learn a programming language today
 and make a great video game tomorrow, then definitely not. This
 is just not possible. While there are nice libs for making games
 with Nim already available, there exists easier solutions
@@ -854,7 +857,7 @@ and maybe modify some colors and the background music  and call it your game.
 === After learning Nim, will I still have to learn other programming languages?
 
 Nim is a quite universal language, so it is a good candidate for
-someone who intents to learn only one single language. But of course it
+someone who intends to learn only one single language. But of course it
 is always a good idea to learn a few other languages later. Generally we can not
 really avoid learning C, as so much C code exists world wide. Most algorithm that have
 ever been invented are available as a C implementation somewhere, and most
@@ -4571,7 +4574,7 @@ user.] Then we assign the read in friend's name n to the name field.  The last t
 statements of the loop body are a bit demanding: First we assign to node.next the
 value of f. Now node is basically the start of our list, and it next field refers to
 the first element of the current list. Fine, but we said that the node variable is
-only a temporary variable, we do not intent to use it longer as necessary.  But
+only a temporary variable, we do not intend to use it longer as necessary.  But
 currently node is so useful, it is the head of our list. On the other hand, the
 former list start f is now useless, current f is identical with node.next. So the
 trick is, we just assign to f the value of node. Now f is the complete list, and we
@@ -6339,11 +6342,29 @@ This section has to be extended...
 
 == Destructors
 
-Starting with version 1.4 Nim got support for scope based destructors, which
-are automatically enabled when we compile with oprion --gc:arc or --gc:orc.
-So memory is immediately freed when references go out of scope.
-With C++ it is a common practice that resources like files are released and
-closed with destructors automatically when they go out of scope, and now this is also
+Destructors and finalizers are used for automatic resource management.
+For example files can be closed automatically when a file variable goes out of scope,
+or when we create high level Nim bindings to C libraries we can use
+finalizers or destructors to deallocate entities of the C libs when a corresponding
+Nim (proxy) object is freed. Libraries like the gintro GTK bindings make use of this.
+
+Finalizers are procedures that can be passed as a second optional parameter to the
+system new() proc. That way the finalizer proc is attached to the data type of the variable which
+we pass as first parameter to new() and that finalizer proc is
+automatically called whenever that variable is freed by the Nim memory management system.
+As finalizers are passed as a parameter to a new() call, and new() is only used for
+references, finalizers work only for ref data types.
+
+Destructors do not have this restriction. We define the destructor for a value type, but
+it is also called for reference types by the compiler.
+
+Starting with version 1.4 Nim got scope based resource management when
+the program is compiled with --gc:arc or --gc:orc. In that case
+variables are immediately deallocated when they go out of scope, and if
+a destructor was defined for the data type of that variable it is called automatically.
+
+For the programming language {cpp} it is a common practice that resources like files are closed and released
+automatically by destructors when they go out of scope, and now this is also
 possible for Nim. To make use of destructors for our own data types we
 have to define a proc called  `=destroy` which gets an instance of our data type passed as
 a var value object:
@@ -6397,7 +6418,11 @@ randomize()
 test()
 ----
 
-But note that destructors do not work with plain pointers:
+To use destructors we have to compile with the option --gc:arc or --gc:orc, otherwise
+the specified destructor procs are just ignored. In our code we can test for working destructors with
+a construct like "when defined(gcDestructors):". 
+
+Note that destructors do not work for plain pointer types:
 
 [source, nim]
 ----
@@ -6423,12 +6448,7 @@ test()
 ----
 
 So using destructors to release data from C libraries directly is not possible.
-When we compile without option --gc:arc or --gc:orc destructors are ignored.
-
-=== Update for Nim >= 1.6
-
-As recently someone reported on the Nim forum Destructors work now
-for distinct pointers:
+But at least for Nim >= v1.6 destructors work for distinct pointer types:
 
 [source, nim]
 ----
@@ -6467,9 +6487,208 @@ destroying OP
 
 So using destructors to destroy data from C libraries should be possible now.
 
+=== Destructors and Inheritance
+
+When we use OOP style programming with subclassing of ref objects, then
+it is useful to know that for subclassed ref objects the destructor of the
+parent class is automatically invoked when we do not define our own one
+for our subclassed type. This works also when we import the parent
+type from another module, at least since Nim v1.6:
+
+[source, nim]
+----
+# module tt.nim
+type
+  O1* = ref object of Rootref
+    i*: int
+
+when defined(gcDestructors): # check not really needed, as =destroy call is just ignored when condition is false
+  proc `=destroy`*(o1: var typeof(O1()[])) =
+    echo "destroy O1 ", typeof(o1)
+----
+
+[source, nim]
+----
+# module t.nim
+import tt
+
+type
+  O2 = ref object of tt.O1
+    j: int
+
+type
+  O3 = ref object
+    o1: tt.O1
+
+type
+  O4 = object
+    o1: tt.O1
+
+type
+  O5 = ref object of tt.O1
+    x: float
+
+when defined(gcDestructors):
+  proc `=destroy`(o5: var typeof(O5()[])) =
+    echo "destroy O5 ", typeof(o5)
+    tt.`=destroy`(o5)
+
+proc main =
+  var o1: tt.O1
+  new o1
+  echo o1.i
+  
+  var o2: O2
+  new o2
+  echo o2.j
+  
+  var o3: O3
+  new o3
+  new o3.o1
+  
+  var o4: O4
+  new o4.o1
+
+  var o5: O5 = O5(x: 3.1415)
+  echo o5.x
+
+main()
+----
+
+When we compile module t.nim with --gc:arc or --gc:orc and run it, we get this output:
+
+----
+0
+0
+3.1415
+destroy O5 O5:ObjectType
+destroy O1 O1:ObjectType
+destroy O1 O1:ObjectType
+destroy O1 O1:ObjectType
+destroy O1 O1:ObjectType
+destroy O1 O1:ObjectType
+----
+
+So when our variables o1 to o5 go out of scope, then the destructors are called.
+Module tt.nim defines a ref object type, but the destructor proc takes a var value
+parameter. The destructor is called when a value object or a ref object goes out of scope.
+Our variable o1 has type tt.O1, so it was indeed expected that its destructor from module tt.nim
+is called. Variable o2 is a ref object with parent O1, as we define no destructor for this type, the destructor
+of the parent type is called. The variabales o3 and o4 are of ref object and of value object types, each with
+a field of type O1, and for that field the destructor for O1 is called. Finally for type O5 we define
+our own destructor, which then additional calls the destructor of module tt.
+
+Destructors are mostly used for library implementations, e.g. for a file data type which is 
+automatically closed when a file variable goes out of scope. As you may never have to use
+destructors yourself, it is not necessary to remember all these details. But it is good to know
+that destructors behave in a way as we may have expected, and when you later wants to use
+a destructor in your own code, you can consult again this section or maybe better the Nim
+manual.
+
 References:
 
 * https://forum.nim-lang.org/t/8013
+* https://forum.nim-lang.org/t/7360
+
+== Finalizers
+
+In Nim finalizers are procedures, that we can specify as an optional second parameter
+when we call the system new() proc to allocate heap memory for a reference type variable.
+That specified finalizer proc is then later called by the Nim memory management system
+when the ref variable is freed:
+
+[source, nim]
+----
+type
+  O = ref object of RootRef
+    i: int
+
+proc finO(o: O) =
+  echo "finalize O"
+
+proc newO: O =
+  new(result, finO)
+
+proc main =
+  var o = newO()
+  var o2 = new(O)
+  var o3 = O(i: 7)
+
+main()
+----
+
+----
+finalize O
+finalize O
+finalize O
+----
+
+The output of above program is really surprising at first: Only for variable o we call the
+proc newO() to initialize it, which then calls new() by passing a finalizer proc named finO().
+For o2 and o3 we allocate memory as usual, without use of a finalizer proc.
+But when o2 and o3 goes out of scope, even for these two variables the finalizer proc finO()
+is called. The reason for this is, that the system proc new() binds the optional finalizer proc
+to the data type of the passed ref variable. This binding process occurs for the first
+call with a passed finalizer proc and can not be reverted. We can later call new() without
+finalizer or use the similar O() call to initialize the ref variable, but that can not undo the binding. And using a
+different finalizer proc for the same data type would not work any more. Passing the same finalizer
+proc multiple times is OK and may be a common use case, but it has no real effect, as the first call
+did the binding already.
+
+This behaviour of finalizers in Nim is indeed a bit confusing and error prone. Maybe somewhere
+in a large program we pass a finalizer proc to new() and forget about it. Later we use
+new () without a finalizer or use the O() notation to reserve the memory for our ref variable.
+So we think that no finalizer is involved, but as a finalizer was used somewhere at least once,
+it is now bound to all of our allocations of that data type. That can easily lead to bugs
+as the unintended called finalizers may do things that it should not do with our data.
+
+Finalizer procs have to be defined always in the same module as the type for
+which the finalizer shall be used is defined:
+
+[source, nim]
+----
+# module tt.nim
+type
+  O* = ref object of RootRef
+    i: int
+
+proc fin*[T](o: T) =
+  echo "finalize T"
+
+proc newO*: O =
+  new(result, fin)
+----
+
+[source, nim]
+----
+import tt
+
+type
+  OO = ref object of tt.O
+    x: float
+
+proc finn[T](o: T) =
+  echo "finalize O"
+
+proc main =
+  var oo: OO
+  new(oo, finn)
+
+main()
+----
+
+We import module tt.nim and subclass the ref object type tt.O.
+While module tt.nim defines a generic finalizer proc fin(), we can
+not use that one for our subclased type OO, but have to copy it
+from module tt.nim into our main module and we may have even to use a different
+proc name. Otherwise we get the compiler message
+
+----
+Error: type bound operation `fin` can be defined only in the same module with its type (OO:ObjectType)
+----
+
+Whenever we should really need a finalizer or a destructor, we should prefer destructors
+when we can compile our code with the compiler options --gc:arc or --gc:orc.
 
 == Modules
 
@@ -7513,7 +7732,7 @@ var s1 = newString('z'.ord - 'a'.ord + 1)
 for c in items('a' .. 'z'):
   s1[c.ord - 'a'.ord] = c
   
-var s2 = newStringOfCap(32) # we intent to append not more than 32 characters, but we could do.
+var s2 = newStringOfCap(32) # we intend to append not more than 32 characters, but we could do.
 for c in 'a' .. 'z':
   s2.add(c)
 # s1, s2 is abcdefghijklmnopqrstuvwxyz
@@ -9924,11 +10143,11 @@ but to teach you some basic coding strategies and related traps.
 
 === Merge Sort
 
-Initially we did not intent to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
+Initially we did not intend to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
 whenever we may have seen a sketch of it somewhere, it is generally
 not easy to remember details.footnote:[From introducing courses to Computer Science
 people generally remembers QuickSort best, just because of its name and its good performance
-as long as we ignoret he worst case scenario and the not stable sorting order.]
+as long as we ignore the worst case scenario and the not stable sorting order.]
 But MergeSort is indeed an important algorithm, it is used by default in Nim's standard library
 and as we have discussed QuickSort already in some detail, we should be prepared for
 MergeSort now. When we regard the name Merge, which is some form of joining multiple sources to one destination,
