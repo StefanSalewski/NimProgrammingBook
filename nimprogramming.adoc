@@ -102,11 +102,11 @@ JavaScript backend, then you may also consult the book [.ndef]#Nim in Action# of
 Dominik Picheta, which gives some detailed examples for the development of web based
 software with the Nim programming language, including a simple chat application and
 the skeleton of a microblogging and social networking service.  And you may consult
-the tutorials and manuals of Nim web packages like [.ndef]#Karax# and
-[.ndef]#Jester#.
+the tutorials and manuals of Nim web packages like [.ndef]#Karax#, [.ndef]#Jester#, or
+[.ndef]#basolato#.
 
 This book is based on the Nim reference implementation ({curnim}) of the team around
-Mr. A. Rumpf -- other implementations were not available in 2020 when the initial
+Mr. A. Rumpf -- other implementations were not available in 2020, when the initial
 version of the book was created.  If this should change later and Nim implementations
 with significantly different behaviour may become available, then we may add remarks
 where necessary.
@@ -125,7 +125,7 @@ all the technical components, and finally, a lot of practice.
 
 A computer is primarily a device which can run computer programs.  Nearly all
 computers currently in use, from the tiny ones integrated in electronic gadgets, the
-well known desktop computers (PC), to large and powerful super computers filling
+well known desktop computers (PCs), to large and powerful super computers filling
 whole rooms, work internally with digital data only.footnote:[In the past some form
 of analog computers existed, some worked mechanically, some used analog voltages or
 currents as input and output signals. Indeed one important device which is still very
