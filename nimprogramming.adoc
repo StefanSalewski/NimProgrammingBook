@@ -784,18 +784,18 @@ Real-time chat is supported by IRC, Gitter and others.
 Started more than 12 years ago as a small community project of some bright CS
 students led by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most
 interesting and promising programming languages, supported by countless individuals
-and leading companies of the computer industry, for instance those, that are active
+and leading companies of the computer industry, for instance, it's actively used
 in the areas of game, web and crypto-currency development. Nim has made a large amount
-of progress in the last few years: it reached version 1.2 with some stability guaranties
+of progress in the last few years: it reached version 1.2 with some stability guarantees
 and a new deterministic memory management system was introduced, which will improve support
-of parallel processing and the use of Nim in the embedded area.
+for parallel processing, and the use of Nim in the area of embedded systems development.
 
 === Why is Nim not a popular mainstream language yet?
 
-Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally in
+Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally, in
 2018 Nim got some significant monetary support by [.ndef]#Status Corp.# and in 2019
-stable Nim version 1.0 was released. But still Nim is developed by a small core team
-and some volunteers, while some other languages like Java, C#, Go or Rust are
+the stable Nim version 1.0 was released. But still Nim is developed by a small core team
+and some volunteers, while some other languages like Java, C#, Go, or Rust are
 supported by large companies, or like C and {cpp} have a very long history and
 well-trained users. And finally there are many competing languages, some with a
 longer history, and some maybe better suited for special purposes, like JavaScript,
