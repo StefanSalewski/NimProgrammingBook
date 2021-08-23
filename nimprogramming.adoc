@@ -756,9 +756,9 @@ advanced data types like dynamic containers, sets, and strings with full UTF sup
 are completed by a large collection of library types like hash tables and regular
 expressions. While the traditional {oop} programming style with inheritance and
 dynamic dispatch is supported, Nim does not enforce this programming paradigm and
-offers modern concepts like procedural and functional programming. The powerful
+offers modern concepts, like procedural and functional programming. The powerful
 AST-based hygienic macro system offers nearly unlimited possibilities for the
-advanced programmer. These macro and meta-programming system allows compiler-guided
+advanced programmer. These macro and meta-programming systems allow compiler-guided
 code generation at compile time, so the Nim core language can be kept small and
 compact, while many advanced features are enabled by user defined macros. For example
 the support of asynchronous IO operations has been created with these forms of
@@ -771,7 +771,7 @@ code is available under the less restricted MIT license.
 
 === Nim has a friendly and helpful growing community
 
-The Nim forum is hosted at
+The Nim forum is hosted at:
 
 https://forum.nim-lang.org/
 
@@ -779,16 +779,16 @@ and the software running the forum is coded in Nim.
 
 Real-time chat is supported by IRC, Gitter and others.
 
-=== Nim has a encouraging future
+=== Nim has an encouraging future
 
 Started more than 12 years ago as a small community project of some bright CS
 students led by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most
-interesting and promising programming languages supported by uncounted individuals
-and companies of leading computer industry, for instance in the areas of game, web
-and crypto-currency development. Nim has made large progress in the last few years:
-it reached version 1.2 with some stability guaranties and a new deterministic memory
-management system was introduced, which will improve support of parallel processing
-and the use of Nim in the embedded area.
+interesting and promising programming languages, supported by countless individuals
+and leading companies of the computer industry, for instance those, that are active
+in the areas of game, web and crypto-currency development. Nim has made a large amount
+of progress in the last few years: it reached version 1.2 with some stability guaranties
+and a new deterministic memory management system was introduced, which will improve support
+of parallel processing and the use of Nim in the embedded area.
 
 === Why is Nim not a popular mainstream language yet?
 
