@@ -832,11 +832,11 @@ low level stuff too, so we can really understand the internal working if we want
 Learning resources for Nim are still not that good as for mainstream languages,
 but there exists some nice tutorials already, and hopefully this book will help beginners also a bit.
 
-=== Is Nim really a good teaching language
+=== Is Nim really a good teaching language?
 
-Generally yes, in the same way as Pascal was in the 1980's, and Modula/Oberon was
-at the end of the last century. But Nim still has the same problems
-as the wirthian languages: They do not really help finding a job. When we teach
+Generally yes, in the same way as Pascal was in the 1980's, and Modula/Oberon were
+at the end of the last century. But Nim too also has some of the same general problems
+as these wirthian languages: They do not really help with finding a job. When we teach
 the kids some Javascript or C, they may find at least a simple employment when they
 have to leave the intended education path early for some reason. With niche languages
 this is unfortunately not the case, so teachers should know about their responsibility.
