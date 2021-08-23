@@ -284,14 +284,15 @@ requested.
 // I think you should leave the following statement out, or omit the whole paragraph. -Jim
 //But the field of data transmission and its error detection is not the topic of this book.
 
-The opposite of digital is generally called analogue, a term which is used for data
+The opposite of digital, is generally called analogue, a term which is used for data
 which have or seems to have no granularity. For example we speak of an analogue
 voltage when the voltage can have each value in a given range and when the voltage
 does not "jump" but change continuous.footnote:[Of course even digital electric
 signals can not really "jump" from one digital state to another, but the transition
 time is much shorter than the time duration of the steady state, so the signal has a
 rectangular shape when we watch it on an oscilloscope, it looks like +__--__--__+.]
-For observing analogue voltages or currents one can use a moving coil meter, a device
+
+For observing analogue voltages or currents, one can use a moving coil meter, a device
 where the current flows through a coil in a magnetic field and the magnetic force
 moves the hand/pointer.
 
@@ -331,7 +332,7 @@ processor or a game, and the hardware of the computer. The OS allows user progra
 work on a higher level of abstraction, so they do not need to know much about the low
 level hardware details.
 
-Current Linux kernel version 5.6 has 28 million lines of source code!
+The current Linux kernel version 5.6 has 28 million lines of source code!
 
 Small {uc}s and embedded devices often do not need to use an {os}, as they generally
 run only one single user program and because they usually do not have a large variety
@@ -364,7 +365,7 @@ sets, with similar, but not identical instructions. The rules that describe how 
 basic instructions have to look are called the [.ndef]#syntax# of the assembly
 language.
 
-The numerical machine code or the corresponding assembly language is the most basic
+The numerical machine code, or the corresponding assembly language, is the most basic
 instruction set for a CPU. Every instruction which a CPU can execute maps to a
 well-defined assembly instruction. So each operation that a computer may be able to
 perform can be expressed in a sequence of assembly instructions. But complicated
@@ -383,7 +384,7 @@ kept.]
 Just a few years after the invention of the first computers, people recognized that
 they would need even more abstract instruction sets, like repeated execution,
 composed conditionals, or other data types than plain numbers as operands. So higher
-level programming languages like Algol, Fortran, C, Pascal or Basic where created.
+level programming languages like Algol, Fortran, C, Pascal or Basic were created.
 
 //Simple C program here, with its assembly code from godbolt.org.
 
