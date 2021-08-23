@@ -534,12 +534,12 @@ of course there are the new concepts of [.ndef]#artificial intelligence# (AI) an
 [.ndef]#machine learning# (ML), which are less based on algorithms and more on neural
 nets which are trained with a lot of data until it provides the desired results. Nim,
 the computer language this book is about, is an imperative language, so we will focus
-on the imperative programming style in this book. But of course Nim can be used to
+on the imperative programming style in this book. But of course, Nim can also be used to
 create AI applications.
 
-Further, we differentiate between languages like C, {cpp}, Rust, Nim and many more
+Further still, we can differentiate between languages like C, {cpp}, Rust, Nim and many more,
 that compile to native executables and can run directly on the hardware of the
-computer, languages like Java, Scala, Julia and some more that use a large
+computer, contrasted with languages like Java, Scala, Julia and some more, that use a large
 [.ndef]#Virtual Machine# (VM) as an intermediate layer between the program and the
 hardware, and interpreted languages like Ruby and Python.  Languages using a virtual
 machine generally need some startup time when a program is invoked, as the VM must be
