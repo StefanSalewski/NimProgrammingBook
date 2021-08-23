@@ -106,7 +106,7 @@ the tutorials and manuals of Nim web packages like [.ndef]#Karax# and
 [.ndef]#Jester#.
 
 This book is based on the Nim reference implementation ({curnim}) of the team around
-Mr. A. Rumpf -- other implementations where not available in 2020 when the initial
+Mr. A. Rumpf -- other implementations were not available in 2020 when the initial
 version of the book was created.  If this should change later and Nim implementations
 with significantly different behaviour may become available, then we may add remarks
 where necessary.
@@ -115,7 +115,7 @@ where necessary.
 
 [.normal]
 
-For using computers and writing computer programs you initially do not have to know
+For using computers and writing computer programs, you initially do not have to know
 many details. It is basically like driving a car: Although a car is a powerful and
 complicated tool, kids generally can drive it after a 3-minute introduction. Still,
 good racing drivers generally need a much broader insight into the inner working of
