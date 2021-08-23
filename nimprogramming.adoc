@@ -439,8 +439,8 @@ provide some sort of support.
 We already learned that the CPU in the computer can execute only simple instructions,
 which we call numeric machine code or assembly instructions.
 
-To run a program written in a high level language with many abstractions we need some
-sort of converter to transfer that program to the basic instructions that the CPU can
+To run a program written in a high level language with many abstractions, we need some
+sort of a converter to transform that program into the basic instructions that the CPU can
 execute. For the conversion process we have basically two options: We can convert the
 whole program into machine code, store it to disk, and than run it on the CPU. Or we
 can convert it in small portions, maybe line by line, and run each portion whenever
