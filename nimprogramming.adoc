@@ -128,7 +128,7 @@ computers currently in use, from the tiny ones integrated in electronic gadgets,
 well known desktop computers (PCs), to large and powerful super computers filling
 whole rooms, work internally with digital data only.footnote:[In the past some form
 of analog computers existed, some worked mechanically, some used analog voltages or
-currents as input and output signals. Indeed one important device which is still very
+currents as input and output signals. Indeed, one important device which is still very
 common in analog electronics is the summing amplifier, which can sum up multiple
 electric voltages.] Digital data is basically integer (whole) numbers encoded in
 binary form, represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.  We
@@ -672,7 +672,7 @@ maybe are more written with a priority of short and clean code or run-time safet
 [.term]#{}# or [.term]#begin/end# keywords, and no need for statement delimiters like
 [.term]#;#
 
-* Safety: Nim program are type- and memory-safe -- memory corruption is prevented by
+* Safety: Nim programs are type- and memory-safe -- memory corruption is prevented by
 the compiler as long as unsafe low level constructs like cast and the addr operator
 are not used.
 
