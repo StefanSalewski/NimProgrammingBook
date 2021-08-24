@@ -390,9 +390,10 @@ level programming languages like Algol, Fortran, C, Pascal or Basic were created
 
 == What is an Algorithm?
 
-An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
+An [.ndef]#algorithm# is a detailed sequence of more - or less abstract instructions to
 solve a specific task or to reach a goal. Cooking recipe books and car repair
-instructions are examples of algorithms. The basic math operations kids learn in
+instructions are examples of algorithms. They are a description of a general pattern that is
+necessary to follow for acomplishing a certain task. The basic math operations kids learn in
 school to add, multiply or divide two numbers with paper and pencil are algorithms
 too. Even starting a car follows an algorithm -- when the temperature is below zero
 and snow covers the vehicle, than you first have to clean the windows and lights. And
@@ -427,11 +428,13 @@ generally can be split into various logical parts, which may include reading in 
 multiple processing steps, and storing or displaying data as plain text, graphic or
 animation. This splitting into parts is mapped to programming languages by grouping
 tasks into subroutines, functions or procedures which accept a set of input
-parameters and can return a result. As algorithms often work not only with numbers,
-but also with text, it makes sense to have a form of textual data type in a
-programming language too. And all the data types can be grouped in various ways, for
-example as sequences of multiple data of the same type, like lists of numbers or
-names. Or as collections of different types, like name, age and profession of a
+parameters and can return a result.
+
+As algorithms often work not only with numbers,but also with text, it makes sense
+to have a form of textual data type in a programming language too.
+And all the data types can be grouped in various ways, for example, as sequences
+of multiple data of the same type, like lists of numbers, or names.
+Or as collections of different types, like name, age and profession of a
 citizen in an income tax database. For all these use cases programming languages
 provide some sort of support.
 
