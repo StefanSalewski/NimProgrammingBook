@@ -332,7 +332,7 @@ processor or a game, and the hardware of the computer. The OS allows user progra
 work on a higher level of abstraction, so they do not need to know much about the low
 level hardware details.
 
-The current Linux kernel version 5.6 has 28 million lines of source code!
+The current Linux kernel version 5.13 has 28 million lines of source code!
 
 Small {uc}s and embedded devices often do not need to use an {os}, as they generally
 run only one single user program and because they usually do not have a large variety
@@ -394,7 +394,7 @@ An [.ndef]#algorithm# is a detailed sequence of more - or less abstract instruct
 solve a specific task or to reach a goal. Cooking recipe books and car repair
 instructions are examples of algorithms. They are a description of a general pattern that is
 necessary to follow for acomplishing a certain task. The basic math operations kids learn in
-school to add, multiply or divide two numbers with paper and pencil are algorithms
+school - to add, multiply or divide two numbers with paper and pencil are algorithms
 too. Even starting a car follows an algorithm -- when the temperature is below zero
 and snow covers the vehicle, than you first have to clean the windows and lights. And
 when you first drive again after a longer break you would have to check the tires
@@ -405,7 +405,7 @@ So an algorithm is a perfect fit for a computer, as computers are really good at
 following instructions without really understanding what they are trying to
 accomplish.
 
-A math algorithm to sum up the first 100 natural numbers may look like
+A math algorithm to sum up the first 100 natural numbers may look like:
 
 [source]
 ----
@@ -468,10 +468,11 @@ programmers as they may have to do much testing. Some use a programming style th
 is: change a tiny bit of the source code, then run it and see what is does. But a
 more common practice is that you think about the problem first and then write the
 code, that then in most cases does nearly that what you intended. For this style of
-programming you do not have to compile and execute your code that often. Compilers
+programming, you do not have to compile and execute your code that often. Compilers
 have one important benefit: they can detect many bugs, mostly typing errors, already
 in the compile phase, and they give you a detailed error message. Interpreters have
 the advantage that you can modify your code and immediately execute it without delay.
+
 That is nice for learning a new language and for some fast tests, but even simple
 typing errors can only be detected when they are encountered while running the
 program. If your test does not try to run a faulty statement, there will be no error,
@@ -490,7 +491,7 @@ the source code while the program is running. For that process a so called virtu
 machine is used, that builds an intermediate layer between the hardware and the user
 program.
 
-== Types of Programming Languages
+== The Types of Programming Languages
 
 We already mentioned the assembly languages, which provide only the basic operations
 that the CPU can perform. Assembly languages provide no abstractions, so maybe we
@@ -547,12 +548,12 @@ computer, contrasted with languages like Java, Scala, Julia and some more, that 
 hardware, and interpreted languages like Ruby and Python.  Languages using a virtual
 machine generally need some startup time when a program is invoked, as the VM must be
 loaded and initialized, and interpreted languages are generally not very
-fast.footnote:[Exactly speaking Ruby and Python do not really interpret the source
+fast.footnote:[Exactly speaking, Ruby and Python do not really interpret the source
 code, but compile it on the fly to byte-code, which is then interpreted. And there
 exists some variants of Ruby and Python that compile with some success to native
-machine code. Crystal is a variant of Ruby, with some significant differences that
+machine code. Crystal is a variant of Ruby, with some significant differences, that
 compiles to fast native machine code.] The distinction between languages that compile
-to native executables or that are executed on a virtual machine is not really sharp.
+to native executables, and those that are executed on a virtual machine, is not really sharp.
 For example Kotlin and Julia where executed on a virtual machine initially, but now
 can compile the source code to native executables.
 
