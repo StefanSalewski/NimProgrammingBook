@@ -835,7 +835,7 @@ understand why your code is slow and consumes so much resources, and you
 will have no idea how to improve the program or how you could run
 it successfully on restricted hardware.
 
-Its like learning to drive a car, without any knowledge about how a combustion engine, the
+It's like learning to drive a car, without any knowledge about how a combustion engine, the
 transmission, or the brakes really work. Nim has none of these restrictions, as
 we have high level concepts available as in Python, but we have access to
 low level stuff too, so we can really understand the internal working if we want.
