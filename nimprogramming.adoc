@@ -390,14 +390,13 @@ level programming languages like Algol, Fortran, C, Pascal or Basic were created
 
 == What is an Algorithm?
 
-An [.ndef]#algorithm# is a detailed sequence of more - or less abstract instructions to
+An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
 solve a specific task, or to reach a goal. Cooking recipe books and car repair
-instructions are examples of algorithms. They are a generalized, symbolically
-represented step-by-step pattern of all the necessary steps required to perform
-and follow, in order to acomplish a certain task.
+instructions are examples of algorithms. They are a generalized, only a symbolically
+represented pattern of all the necessary steps required to perform a certain task.
 
 The basic math operations that kids learn in school - to add, multiply or divide two numbers
-with paper and pencil are algorithms too. Even starting a car follows an algorithm -- 
+with paper and pencil - are algorithms too. Even starting a car follows an algorithm -- 
 when the temperature is below zero, and snow covers the vehicle, than you first have to
 clean the windows and lights. And when you first drive again after a longer break, you
 would have to check the tires before you start the engine. Algorithm can be carried
