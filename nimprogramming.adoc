@@ -145,7 +145,7 @@ many more numbers and allow fast access to these numbers, and to a [.ndef]#Hardd
 or [.ndef]#SSD# device which can permanently store the numbers, but does not allow
 such fast access. The stored numbers are most often called just [.ndef]#data# --
 basically that data is nothing more than numbers, but it can be interpreted in many
-different ways, as pictures, sounds and much more.
+different ways, such as pictures, sounds and much more.
 
 Nearly all of today's desktop computers, and even most notebooks and cellphones
 contain not only a single CPU, but multiple CPUs, also called "Cores", so they can
@@ -244,7 +244,7 @@ charge only, never fractions of it. And of course light and electromagnetic radi
 also has some form of granularity, which the photoelectric effect as well as compton
 scattering proves.
 
-An important and useful property of digital signals and digital data is that they map
+An important and useful property of digital signals and digital data, is that they map
 directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
@@ -478,18 +478,19 @@ typing errors can only be detected when they are encountered while running the
 program. If your test does not try to run a faulty statement, there will be no error,
 but it may occur later. Generally interpreted program execution is much slower than
 running compiled executables, as the interpreter has to continually process the
-source code, while the compiler does it only once before the program is run. At the
-end of this section a few additional notes: Compilers are sometimes supported by so
-called linkers. In that case the compiler converts the source code, that can be
-stored in multiple text files, each in a sequence of machine code instructions, and
-finally the linker joins all these machine code files to the final executable. Some
-compilers do not need the linking step or call the linker automatically. And some
-interpreters convert the textual source code in one very fast, initial pre-processing
-step ("on the fly") to so called byte code, that can then be interpreted faster. The
-languages Ruby and Python do that. Some languages like Java can compile and optimize
-the source code while the program is running. For that process a so called virtual
-machine is used, that builds an intermediate layer between the hardware and the user
-program.
+source code in real-time as it's being run, while the compiler does it only once
+before the program is run. At the end of this section, a few additional notes:
+
+Compilers are sometimes supported by so called linkers. In that case the compiler
+converts the source code, that can be stored in multiple text files, each in a sequence
+of machine code instructions, and finally the linker joins all these machine code
+files to the final executable. Some compilers do not need the linking step or call
+the linker automatically. And some interpreters convert the textual source code in one
+very fast, initial pre-processing step ("on the fly") to so called byte code, that can
+then be interpreted faster. The languages Ruby and Python do that. Some languages, like
+Java, can compile and optimize the source code while the program is running. For that process,
+a so called virtual machine is used, which builds an intermediate layer between the hardware
+and the user program.
 
 == The Types of Programming Languages
 
@@ -499,7 +500,7 @@ should not even call them programming languages at all. Then there are low level
 languages like Fortran or C, with some basic abstractions which still work close to
 the hardware and which are mostly designed for high performance and low resource
 consumption (RAM) but not to detect and prevent programming errors or to make life
-easy for programmers.  These languages supports already some higher order data types
+easy for programmers.  These languages already support some higher order data types
 like floating point numbers or text (strings), and homogeneous, fixed size containers
 (called arrays in C) or heterogeneous fixed size containers (called structs in C).
 
