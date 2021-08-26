@@ -514,24 +514,24 @@ dynamic containers which can grow and shrink, or advanced data structures like h
 tables (maps) or support for textual pattern matching by regular expressions (regex).
 
 Another way to differentiate programming languages is if they are statically or
-dynamically typed. Ruby and Python are two examples of dynamically typed languages,
+dynamically typed. Ruby, Perl and Python are all examples of dynamically typed languages,
 that is, they use variables which can store any data type, and the variable's type
-can change during program execution. That seems comfortable for the user, and
-sometimes it is, especially for short programs which may be written for one-time use
-only and are sometimes called scripts. But dynamic typing makes discovery of logical
-errors harder -- an illegal addition of a number to a letter may be detected only at
-run-time. And dynamically typed languages generally waste a lot of memory and their
-performance is not that great.  It is as you would own many moving boxes and you
+can change during program execution depending on declarations made during its runtine.
+That seems comfortable for the user, and sometimes it is, especially for short programs
+which may be written for one-time use only and are sometimes called scripts. But dynamic
+typing makes discovery of logical errors harder -- an illegal addition of a number to a letter
+may be detected only at run-time. And dynamically typed languages generally waste a lot of
+memory and their performance is not that great.  It is as you would own many moving boxes and you
 store all your goods in it, each piece in one box.
 
-For statically typed languages each variable has a well defined data type like
+For statically typed languages, each variable has a well defined data type like
 integer number, real number, a single letter, a text element and many more. The data
-type is assigned by the author of the program with a type declaration or is detected
-by the compiler when processing the program source code, called type inference, and
-the variable's type does never change. In this way the compiler can check for logical
-errors early in the compile process, and the compiler can reserve memory blocks
-exactly customized to the variables that we want to store, so total memory
-consumption and performance can be optimized.  Referring again to our boxes example,
+type is either assigned by the author of the program with a type declaration before
+compilation, or is detected by the compiler itself when processing the program source code,
+called type inference, and the variable's type does never change. In this way the compiler
+can check for logical errors early in the compile process, and the compiler can reserve memory
+blocks exactly customized to the variables that we want to store, so total memory
+consumption and performance can be optimized. Referring again to our boxes example,
 statically typing is like using customized boxes for all your goods.
 
 All these types of programming languages are often called imperative programming
