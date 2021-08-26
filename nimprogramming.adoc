@@ -513,10 +513,10 @@ protection against errors, but are not as efficient. These languages support als
 dynamic containers which can grow and shrink, or advanced data structures like hash
 tables (maps) or support for textual pattern matching by regular expressions (regex).
 
-Another way to differentiate programming languages is if they are statically or
-dynamically typed. Ruby, Perl and Python are all examples of dynamically typed languages,
-that is, they use variables which can store any data type, and the variable's type
-can change during program execution depending on declarations made during its runtine.
+Another way to differentiate programming languages is if they are statically, or
+dynamically typed. Ruby, Python and JavaScript are all examples of dynamically typed
+languages, that is, they use variables which can store any data type, and the variable's type
+of data it accepts can therefore dynamically change during program execution.
 That seems comfortable for the user, and sometimes it is, especially for short programs
 which may be written for one-time use only and are sometimes called scripts. But dynamic
 typing makes discovery of logical errors harder -- an illegal addition of a number to a letter
