@@ -432,11 +432,11 @@ animation. This splitting into parts is mapped to programming languages by group
 tasks into subroutines, functions or procedures which accept a set of input
 parameters and can return a result.
 
-As algorithms often work not only with numbers,but also with text, it makes sense
+As algorithms often work not only with numbers, but also with text, it makes sense
 to have a form of textual data type in a programming language too.
 And all the data types can be grouped in various ways, for example, as sequences
-of multiple data of the same type, like lists of numbers, or names.
-Or as collections of different types, like name, age and profession of a
+of multiple data of the same type - like lists and numbers, or names, or
+as collections of different types, like name, age and profession of a
 citizen in an income tax database. For all these use cases programming languages
 provide some sort of support.
 
