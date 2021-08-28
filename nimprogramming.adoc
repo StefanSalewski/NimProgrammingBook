@@ -436,8 +436,8 @@ As algorithms often work not only with numbers, but also with text, it makes sen
 to have a form of textual data type in a programming language too.
 And all the data types can be grouped in various ways, for example, as sequences
 of multiple data of the same type - like lists and numbers, or names, or
-as collections of different types, like name, age and profession of a
-citizen in an income tax database. For all these use cases programming languages
+as collections of different types - like name, age and profession of a
+citizen in an income tax database. For all these use cases, programming languages
 provide some sort of support.
 
 == Compilers and Interpreters
