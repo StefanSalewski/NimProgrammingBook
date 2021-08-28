@@ -284,7 +284,7 @@ requested.
 // I think you should leave the following statement out, or omit the whole paragraph. -Jim
 //But the field of data transmission and its error detection is not the topic of this book.
 
-The opposite of digital, is generally called analogue, a term which is used for data
+The opposite of digital, is generally called analogue a term which is used for data
 which have or seems to have no granularity. For example we speak of an analogue
 voltage when the voltage can have each value in a given range and when the voltage
 does not "jump" but change continuous.footnote:[Of course even digital electric
@@ -392,7 +392,7 @@ level programming languages like Algol, Fortran, C, Pascal or Basic were created
 
 An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
 solve a specific task, or to reach a goal. Cooking recipe books and car repair
-instructions are examples of algorithms. They are a generalized, only a symbolically
+instructions are examples of algorithms. They are a generalized, only symbolically
 represented pattern of all the necessary steps required to perform a certain task.
 
 The basic math operations that kids learn in school - to add, multiply or divide two numbers
