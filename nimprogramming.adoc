@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-MAI-31
+//v0.1, 2021-AUG-28
 :doctype: book
 :toc: left
 :icons: font
@@ -102,11 +102,11 @@ JavaScript backend, then you may also consult the book [.ndef]#Nim in Action# of
 Dominik Picheta, which gives some detailed examples for the development of web based
 software with the Nim programming language, including a simple chat application and
 the skeleton of a microblogging and social networking service.  And you may consult
-the tutorials and manuals of Nim web packages like [.ndef]#Karax# and
-[.ndef]#Jester#.
+the tutorials and manuals of Nim web packages like [.ndef]#Karax#, 
+[.ndef]#Jester# or [.ndef]#basolato#.
 
 This book is based on the Nim reference implementation ({curnim}) of the team around
-Mr. A. Rumpf -- other implementations where not available in 2020 when the initial
+Mr. A. Rumpf -- other implementations were not available in 2020, when the initial
 version of the book was created.  If this should change later and Nim implementations
 with significantly different behaviour may become available, then we may add remarks
 where necessary.
@@ -115,7 +115,7 @@ where necessary.
 
 [.normal]
 
-For using computers and writing computer programs you initially do not have to know
+For using computers and writing computer programs, you initially do not have to know
 many details. It is basically like driving a car: Although a car is a powerful and
 complicated tool, kids generally can drive it after a 3-minute introduction. Still,
 good racing drivers generally need a much broader insight into the inner working of
@@ -125,10 +125,10 @@ all the technical components, and finally, a lot of practice.
 
 A computer is primarily a device which can run computer programs.  Nearly all
 computers currently in use, from the tiny ones integrated in electronic gadgets, the
-well known desktop computers (PC), to large and powerful super computers filling
+well known desktop computers (PCs), to large and powerful super computers filling
 whole rooms, work internally with digital data only.footnote:[In the past some form
 of analog computers existed, some worked mechanically, some used analog voltages or
-currents as input and output signals. Indeed one important device which is still very
+currents as input and output signals. Indeed, one important device which is still very
 common in analog electronics is the summing amplifier, which can sum up multiple
 electric voltages.] Digital data is basically integer (whole) numbers encoded in
 binary form, represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.  We
@@ -145,7 +145,7 @@ many more numbers and allow fast access to these numbers, and to a [.ndef]#Hardd
 or [.ndef]#SSD# device which can permanently store the numbers, but does not allow
 such fast access. The stored numbers are most often called just [.ndef]#data# --
 basically that data is nothing more than numbers, but it can be interpreted in many
-different ways, as pictures, sounds and much more.
+different ways, such as pictures, sounds and much more.
 
 Nearly all of today's desktop computers, and even most notebooks and cellphones
 contain not only a single CPU, but multiple CPUs, also called "Cores", so they can
@@ -244,7 +244,7 @@ charge only, never fractions of it. And of course light and electromagnetic radi
 also has some form of granularity, which the photoelectric effect as well as compton
 scattering proves.
 
-An important and useful property of digital signals and digital data is that they map
+An important and useful property of digital signals and digital data, is that they map
 directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
@@ -291,7 +291,7 @@ does not "jump" but change continuous.footnote:[Of course even digital electric
 signals can not really "jump" from one digital state to another, but the transition
 time is much shorter than the time duration of the steady state, so the signal has a
 rectangular shape when we watch it on an oscilloscope, it looks like +__--__--__+.]
-For observing analogue voltages or currents one can use a moving coil meter, a device
+For observing analogue voltages or currents, one can use a moving coil meter, a device
 where the current flows through a coil in a magnetic field and the magnetic force
 moves the hand/pointer.
 
@@ -331,7 +331,7 @@ processor or a game, and the hardware of the computer. The OS allows user progra
 work on a higher level of abstraction, so they do not need to know much about the low
 level hardware details.
 
-Current Linux kernel version 5.6 has 28 million lines of source code!
+Current Linux kernel version 5.13 has 30 million lines of source code!
 
 Small {uc}s and embedded devices often do not need to use an {os}, as they generally
 run only one single user program and because they usually do not have a large variety
@@ -364,7 +364,7 @@ sets, with similar, but not identical instructions. The rules that describe how 
 basic instructions have to look are called the [.ndef]#syntax# of the assembly
 language.
 
-The numerical machine code or the corresponding assembly language is the most basic
+The numerical machine code, or the corresponding assembly language, is the most basic
 instruction set for a CPU. Every instruction which a CPU can execute maps to a
 well-defined assembly instruction. So each operation that a computer may be able to
 perform can be expressed in a sequence of assembly instructions. But complicated
@@ -383,19 +383,23 @@ kept.]
 Just a few years after the invention of the first computers, people recognized that
 they would need even more abstract instruction sets, like repeated execution,
 composed conditionals, or other data types than plain numbers as operands. So higher
-level programming languages like Algol, Fortran, C, Pascal or Basic where created.
+level programming languages like Algol, Fortran, C, Pascal or Basic were created.
 
 //Simple C program here, with its assembly code from godbolt.org.
 
 == What is an Algorithm?
 
 An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
-solve a specific task or to reach a goal. Cooking recipe books and car repair
-instructions are examples of algorithms. The basic math operations kids learn in
-school to add, multiply or divide two numbers with paper and pencil are algorithms
-too. Even starting a car follows an algorithm -- when the temperature is below zero
+solve a specific task, or to reach a goal. Cooking recipe books and car repair
+instructions are examples of algorithms.
+They are a generalized, only symbolically
+represented pattern of all the necessary steps required to perform a certain task.
+
+The basic math operations kids learn in
+school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
+too. Even starting a car follows an algorithm -- when the temperature is below zero,
 and snow covers the vehicle, than you first have to clean the windows and lights. And
-when you first drive again after a longer break you would have to check the tires
+when you first drive again after a longer break, you would have to check the tires
 before you start the engine. Algorithm can be carried out by strictly following the
 instructions -- it is not necessary to really understand how and why it works.
 
@@ -403,7 +407,7 @@ So an algorithm is a perfect fit for a computer, as computers are really good at
 following instructions without really understanding what they are trying to
 accomplish.
 
-A math algorithm to sum up the first 100 natural numbers may look like
+A math algorithm to sum up the first 100 natural numbers may look like:
 
 [source]
 ----
@@ -426,10 +430,12 @@ generally can be split into various logical parts, which may include reading in 
 multiple processing steps, and storing or displaying data as plain text, graphic or
 animation. This splitting into parts is mapped to programming languages by grouping
 tasks into subroutines, functions or procedures which accept a set of input
-parameters and can return a result. As algorithms often work not only with numbers,
+parameters and can return a result.
+
+As algorithms often work not only with numbers,
 but also with text, it makes sense to have a form of textual data type in a
 programming language too. And all the data types can be grouped in various ways, for
-example as sequences of multiple data of the same type, like lists of numbers or
+example, as sequences of multiple data of the same type, like lists of numbers or
 names. Or as collections of different types, like name, age and profession of a
 citizen in an income tax database. For all these use cases programming languages
 provide some sort of support.
@@ -439,15 +445,17 @@ provide some sort of support.
 We already learned that the CPU in the computer can execute only simple instructions,
 which we call numeric machine code or assembly instructions.
 
-To run a program written in a high level language with many abstractions we need some
-sort of converter to transfer that program to the basic instructions that the CPU can
+To run a program written in a high level language with many abstractions, we need some
+sort of a converter to transform that program into the basic instructions that the CPU can
 execute. For the conversion process we have basically two options: We can convert the
 whole program into machine code, store it to disk, and than run it on the CPU. Or we
 can convert it in small portions, maybe line by line, and run each portion whenever
 we have converted it. Tools that convert the whole program first are called
 compilers. [.ndef]#Compilers# process the program that we have written, include other
 source code like needed library modules, check the code for obvious errors and then
-generate and store the machine code that we then can run. Tools that process the
+generate and store the machine code that we then can run.
+
+Tools that process the
 source code in small portions, like single statements, are called
 [.ndef]#interpreters#. They read in a line of source code, investigate it to check if
 it is a valid statement, and then feed the CPU with corresponding instructions to
@@ -464,26 +472,29 @@ programmers as they may have to do much testing. Some use a programming style th
 is: change a tiny bit of the source code, then run it and see what is does. But a
 more common practice is that you think about the problem first and then write the
 code, that then in most cases does nearly that what you intended. For this style of
-programming you do not have to compile and execute your code that often. Compilers
+programming, you do not have to compile and execute your code that often. Compilers
 have one important benefit: they can detect many bugs, mostly typing errors, already
 in the compile phase, and they give you a detailed error message. Interpreters have
 the advantage that you can modify your code and immediately execute it without delay.
+
 That is nice for learning a new language and for some fast tests, but even simple
 typing errors can only be detected when they are encountered while running the
 program. If your test does not try to run a faulty statement, there will be no error,
 but it may occur later. Generally interpreted program execution is much slower than
 running compiled executables, as the interpreter has to continually process the
-source code, while the compiler does it only once before the program is run. At the
-end of this section a few additional notes: Compilers are sometimes supported by so
+source code in real-time as it's being run, while the compiler does it only once before the program is run. At the
+end of this section, a few additional notes:
+
+Compilers are sometimes supported by so
 called linkers. In that case the compiler converts the source code, that can be
 stored in multiple text files, each in a sequence of machine code instructions, and
 finally the linker joins all these machine code files to the final executable. Some
 compilers do not need the linking step or call the linker automatically. And some
 interpreters convert the textual source code in one very fast, initial pre-processing
 step ("on the fly") to so called byte code, that can then be interpreted faster. The
-languages Ruby and Python do that. Some languages like Java can compile and optimize
+languages Ruby and Python do that. Some languages, like Java, can compile and optimize
 the source code while the program is running. For that process a so called virtual
-machine is used, that builds an intermediate layer between the hardware and the user
+machine is used, which builds an intermediate layer between the hardware and the user
 program.
 
 == Types of Programming Languages
@@ -494,7 +505,7 @@ should not even call them programming languages at all. Then there are low level
 languages like Fortran or C, with some basic abstractions which still work close to
 the hardware and which are mostly designed for high performance and low resource
 consumption (RAM) but not to detect and prevent programming errors or to make life
-easy for programmers.  These languages supports already some higher order data types
+easy for programmers.  These languages already support some higher order data types
 like floating point numbers or text (strings), and homogeneous, fixed size containers
 (called arrays in C) or heterogeneous fixed size containers (called structs in C).
 
@@ -504,10 +515,10 @@ protection against errors, but are not as efficient. These languages support als
 dynamic containers which can grow and shrink, or advanced data structures like hash
 tables (maps) or support for textual pattern matching by regular expressions (regex).
 
-Another way to differentiate programming languages is if they are statically or
-dynamically typed. Ruby and Python are two examples of dynamically typed languages,
+Another way to differentiate programming languages is if they are statically, or
+dynamically typed. Ruby, Python and JavaScript are all examples of dynamically typed languages,
 that is, they use variables which can store any data type, and the variable's type
-can change during program execution. That seems comfortable for the user, and
+of data it accepts can therefore dynamically change during program execution. That seems comfortable for the user, and
 sometimes it is, especially for short programs which may be written for one-time use
 only and are sometimes called scripts. But dynamic typing makes discovery of logical
 errors harder -- an illegal addition of a number to a letter may be detected only at
@@ -515,10 +526,10 @@ run-time. And dynamically typed languages generally waste a lot of memory and th
 performance is not that great.  It is as you would own many moving boxes and you
 store all your goods in it, each piece in one box.
 
-For statically typed languages each variable has a well defined data type like
+For statically typed languages, each variable has a well defined data type like
 integer number, real number, a single letter, a text element and many more. The data
-type is assigned by the author of the program with a type declaration or is detected
-by the compiler when processing the program source code, called type inference, and
+type is either assigned by the author of the program with a type declaration, or is detected
+by the compiler itself  when processing the program source code, called type inference, and
 the variable's type does never change. In this way the compiler can check for logical
 errors early in the compile process, and the compiler can reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
@@ -531,24 +542,24 @@ programming languages too, for example languages like Prolog, which try to give 
 a set of rules and then let the computer try to solve a problem with these rules. And
 of course there are the new concepts of [.ndef]#artificial intelligence# (AI) and
 [.ndef]#machine learning# (ML), which are less based on algorithms and more on neural
-nets which are trained with a lot of data until it provides the desired results. Nim,
+nets which are trained with a lot of data until it can provide the desired results. Nim,
 the computer language this book is about, is an imperative language, so we will focus
-on the imperative programming style in this book. But of course Nim can be used to
+on the imperative programming style in this book. But of course, Nim can be used to
 create AI applications.
 
-Further, we differentiate between languages like C, {cpp}, Rust, Nim and many more
+Further still, we can differentiate between languages like C, {cpp}, Rust, Nim and many more
 that compile to native executables and can run directly on the hardware of the
-computer, languages like Java, Scala, Julia and some more that use a large
+computer, contrasted with languages like Java, Scala, Julia and some more, that use a large
 [.ndef]#Virtual Machine# (VM) as an intermediate layer between the program and the
 hardware, and interpreted languages like Ruby and Python.  Languages using a virtual
 machine generally need some startup time when a program is invoked, as the VM must be
 loaded and initialized, and interpreted languages are generally not very
-fast.footnote:[Exactly speaking Ruby and Python do not really interpret the source
+fast.footnote:[Exactly speaking, Ruby and Python do not really interpret the source
 code, but compile it on the fly to byte-code, which is then interpreted. And there
 exists some variants of Ruby and Python that compile with some success to native
-machine code. Crystal is a variant of Ruby, with some significant differences that
+machine code. Crystal is a variant of Ruby, with some significant differences, that
 compiles to fast native machine code.] The distinction between languages that compile
-to native executables or that are executed on a virtual machine is not really sharp.
+to native executables, and those that are executed on a virtual machine, is not really sharp.
 For example Kotlin and Julia where executed on a virtual machine initially, but now
 can compile the source code to native executables.
 
@@ -588,7 +599,7 @@ undefined behavior to the source languages. But these well known problems of C o
 only when humans write C code directly, in the same way when humans write assembly
 code directly.  Automatic conversions are well defined and well tested, which means
 they are free of errors to the same degree as direct machine code generation would
-be. But indeed there are some small drawbacks when C or {cpp} is used as backend of a
+be. But indeed there are some small drawbacks when C or {cpp} is used as a backend of a
 programming language: C does not always allow direct access to all CPU instructions,
 which may make it difficult to generate optimal code for some special constructs like
 exceptions. And C uses wrap around arithmetic for unsigned integer types, which may
@@ -671,7 +682,7 @@ maybe are more written with a priority of short and clean code or run-time safet
 [.term]#{}# or [.term]#begin/end# keywords, and no need for statement delimiters like
 [.term]#;#
 
-* Safety: Nim program are type- and memory-safe -- memory corruption is prevented by
+* Safety: Nim programs are type- and memory-safe -- memory corruption is prevented by
 the compiler as long as unsafe low level constructs like cast and the addr operator
 are not used.
 
@@ -755,9 +766,9 @@ advanced data types like dynamic containers, sets, and strings with full UTF sup
 are completed by a large collection of library types like hash tables and regular
 expressions. While the traditional {oop} programming style with inheritance and
 dynamic dispatch is supported, Nim does not enforce this programming paradigm and
-offers modern concepts like procedural and functional programming. The powerful
+offers modern concepts, like procedural and functional programming. The powerful
 AST-based hygienic macro system offers nearly unlimited possibilities for the
-advanced programmer. These macro and meta-programming system allows compiler-guided
+advanced programmer. This macro and meta-programming system allows compiler-guided
 code generation at compile time, so the Nim core language can be kept small and
 compact, while many advanced features are enabled by user defined macros. For example
 the support of asynchronous IO operations has been created with these forms of
@@ -770,7 +781,7 @@ code is available under the less restricted MIT license.
 
 === Nim has a friendly and helpful growing community
 
-The Nim forum is hosted at
+The Nim forum is hosted at:
 
 https://forum.nim-lang.org/
 
@@ -782,19 +793,19 @@ Real-time chat is supported by IRC, Gitter and others.
 
 Started more than 12 years ago as a small community project of some bright CS
 students led by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most
-interesting and promising programming languages supported by uncounted individuals
-and companies of leading computer industry, for instance in the areas of game, web
-and crypto-currency development. Nim has made large progress in the last few years:
-it reached version 1.2 with some stability guaranties and a new deterministic memory
+interesting and promising programming languages, supported by countless individuals
+and leading companies of the computer industry, for instance, it's actively used in the areas of game, web
+and crypto-currency development. Nim has made a large amount of progress in the last few years:
+it reached version 1.4 with some stability guarantees and a new deterministic memory
 management system was introduced, which will improve support of parallel processing
-and the use of Nim in the embedded area.
+and the use of Nim in the area of embedded systems development.
 
 === Why is Nim not a popular mainstream language yet?
 
-Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally in
+Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally, in
 2018 Nim got some significant monetary support by [.ndef]#Status Corp.# and in 2019
-stable Nim version 1.0 was released. But still Nim is developed by a small core team
-and some volunteers, while some other languages like Java, C#, Go or Rust are
+the stable Nim version 1.0 was released. But still Nim is developed by a small core team
+and some volunteers, while some other languages like Java, C#, Go, or Rust are
 supported by large companies, or like C and {cpp} have a very long history and
 well-trained users. And finally there are many competing languages, some with a
 longer history, and some maybe better suited for special purposes, like JavaScript,
@@ -822,20 +833,20 @@ While you can learn high level concepts well with Python and you get useful resu
 you learn not much about the internal working of computers. So you may never
 understand why your code is slow and consumes so much resources, and you
 will have no idea how to improve the program or how you could run
-it successfully on restricted hardware.  
-Its like learning
-driving a car without any knowledge about how a combustion engine, the
-transmission or the breaks really works. Nim has none of these restrictions, as
+it successfully on restricted hardware.
+It's like learning
+to drive a car, without any knowledge about how a combustion engine, the
+transmission, or the brakes really work. Nim has none of these restrictions, as
 we have high level concepts available as in Python, but we have access to
 low level stuff too, so we can really understand the internal working if we want.
 Learning resources for Nim are still not that good as for mainstream languages,
 but there exists some nice tutorials already, and hopefully this book will help beginners also a bit.
 
-=== Is Nim really a good teaching language
+=== Is Nim really a good teaching language?
 
-Generally yes, in the same way as Pascal was in the 1980's, and Modula/Oberon was
+Generally yes, in the same way as Pascal was in the 1980's, and Modula/Oberon were
 at the end of the last century. But Nim still has the same problems
-as the wirthian languages: They do not really help finding a job. When we teach
+as the wirthian languages: They do not really help with finding a job. When we teach
 the kids some Javascript or C, they may find at least a simple employment when they
 have to leave the intended education path early for some reason. With niche languages
 this is unfortunately not the case, so teachers should know about their responsibility.
@@ -7623,11 +7634,11 @@ References:
 == String Processing
 
 String processing is a wide area. Nim's standard library provides various modules
-like strutils, parseutils and strscan for supporting this task, and external packages
+like strutils, parseutils and strscans for supporting this task, and external packages
 supports more advanced operation like string pattern matching with regular expressions (regex).
 We will start with the strutils module, which is one of the mostly used modules of
 the Nim standard library. Then we will introduce some more specialized modules like
-strscan, parsecvs, parseutils, strformat, and finally we will give an introduction to use of regular expressions
+strscans, parsecvs, parseutils, strformat, and finally we will give an introduction to use of regular expressions
 (regex) and to the use of the parsing expression grammar (PEG). While we describe generally
 only modules of Nim's standard library in this part III of the book, we will make an exception
 for regex and PEG. The reason for this is, that regex and PEG use is closely related to
@@ -7647,7 +7658,7 @@ it is often the first choice when we read in lines of text from files and want t
 it. But as for each section of the split line a string is allocated, it may be not as fast as desired.
 In some cases the compiler may be able to optimize the slitting process, but
 it may be also a good idea to think about other ways to extract the data, maybe by
-applying procs from the strscan module which can parse lines directly into passed var
+applying procs from the strscans module which can parse lines directly into passed var
 parameters avoiding unnecessary allocations.
 
 ****
@@ -8171,6 +8182,290 @@ at the new position.
 There are some more functions available in this module, which we will not discuss further. It is enough
 that you know that this module exists and provides some efficient parsing functions. Whenever you
 should really need one of these procs you would have to consult the API documentation for details.
+
+=== Module strscans
+
+The strscans module provides a scanf() macro
+which can be used to extract substrings from textual user input. The content of the substrings is automatically
+converted to Nim variables of matching data types.
+
+Processing of well defined strings is easy, and with user defined matcher functions even
+text input with less strict shape can be processed. 
+
+Let us start with a simple example: We may have to create a program where the user should be able
+to create rectangles by entering the coordinates of two opposite corners in the form
+
+----
+Rect x1,y1,x2,y2
+----
+
+[source, nim]
+----
+import std/strscans
+
+var x1, y1, x2, y2: float
+var name: string
+
+let input = "Rect 10.0,20.0,100,200"
+
+if scanf(input, "$w $f,$f,$f,$f", name, x1, y1, x2, y2):
+  echo name, ' ',  x1, ' ', y1, ' ',  x2, ' ',  y2 # Rect 10.0 20.0 100.0 200.0
+----
+
+The first parameter for the scanf() macro is the user input string, and the second
+parameter is a pattern string that specifies how the input string should be processed. The following
+parameters are variables that gets the results of the input evaluation.
+The second parameter has some similarity with a regular expression. The letters
+after the dollar sign specifies the data type of the substrings, $i or $f ask to process
+an integer or a floating point number, and $w requests to process an ASCII identifier. Other
+characters are captured verbatim, that is the space character after $w has to match a space
+in the input string, and the comma characters that separates the $f has to match commas
+in the input string. The scanf() macro supports capturing of some more data types, i.e. $c for an arbitrary character
+or $s for optional white space. The optional white space is not captured, just ignored. With the use of $s
+our program allows already a more flexible input string:
+
+[source, nim]
+----
+let input = "Rect10.0,    20.0,100,200"
+
+if scanf(input, "$w$s$f,$s$f,$s$f,$s$f", name, x1, y1, x2, y2):
+  echo name, ' ',  x1, ' ', y1, ' ',  x2, ' ',  y2 # Rect 10.0 20.0 100.0 200.0
+----
+
+To allow to process even more flexible input strings
+it is possible to use user definable matchers in form of Nim procs
+with a well defined parameter signature. There are two different types of matcher
+procs supported -- matchers to just skip a part of the input string, and capturing matchers.
+For the next example we will use a proc which can skip various separators like comma, semicolon or
+white space. And we will use a capturing matcher proc for the object name.
+
+[source, nim]
+----
+import std/strscans
+
+proc sep(input: string; start: int; seps: set[char] = {' ',',',';'}): int =
+  while start + result < input.len and input[start + result] in {' ','\t'}:
+    inc(result)
+  if start + result < input.len and input[start + result] in {';',','}:
+    inc(result)
+  while start + result < input.len and input[start + result] in {' ','\t'}:
+    inc(result)
+
+proc stt(input: string; strVal: var string; start: int; n: int): int =
+  if input[start .. start + "Rect".high] == "Rect":
+    strVal = "Rect"
+    result = "Rect".len
+
+var x1, y1, x2, y2: float
+var name: string
+
+let input = "Rect 10.0    ;20.0,100  ,  200"
+
+if scanf(input, "${stt(0)}$s$f$[sep]$f$[sep]$f$[sep]$f", name, x1, y1, x2, y2):
+  echo name, ' ',  x1, ' ', y1, ' ',  x2, ' ',  y2 # Rect 10.0 20.0 100.0 200.0
+----
+
+The use of our user definable matcher sep() allows to separate the four numbers
+with a colon or a semicolon with arbitrary leading or trailing white space, or with
+only white space. Multiple colons or semicolons between two numbers resulting
+from a typo would be not permitted.
+
+The signature for this matcher proc has this shape:
+
+[source, nim]
+----
+proc sep(input: string; start: int; seps: set[char] = {' ',',',';'}): int =
+----
+
+The first parameter is the string to process, and the second parameter is
+the position at which the processing should start. (Or in other words, the second
+parameter of integer type is the actual position in the input string, that position
+moves during the whole capering process from the start of the input string to
+its end. The end may not be reached if the capering fails at some point.)
+The last parameter
+has always the type set[char] with a default value indication which
+characters that proc can process. Actually a default value seems to be necessary, but the
+actual value seems not to matter.
+The proc returns the number of
+characters that should be skipped. Zero is a valid return value, so
+we can support optional separators. In most cases separators are
+necessary to process the input string, but we can imagine input
+formats where separators are optional, e.g. when an integer number
+is followed by a name. A name never starts with a digit, so the boundary
+between the two values is well defined. This none capturing matcher proc is called by use of
+$[sep] in the pattern string.
+
+The signature of the capturing matcher proc has this shape:
+
+[source, nim]
+----
+proc stt(input: string; strVal: var string; start: int; n: int): int =
+----
+
+That proc also gets as parameters the input string and the start position, and has to
+return the number of processed characters. But additional a var parameter of arbitrary data type
+is used to return the result of the capture, and the last parameter with arbitrary data type can
+influence the capturing process. One possible use of the last parameter is to use an integer value
+to limit the maximum number of characters to process. This proc is called in the pattern string
+by using curly braces like ${stt(0)}.
+
+Scanf() returns true when all the parameters match, for that case all the passed in variables get
+assigned a value. Currently scanf() does not support the capturing of optionally data, as the whole
+processing stops when one capture fails, i.e. when $i is used to request the capture of an integer value
+but the input string does not contain decimal digits at the current capture position. In the
+same way the whole capturing process stops when a user defined capturing matcher returns zero
+as no capturing is possible. So intermediate optional arguments are currently not supported.
+When the processing stops due to missing arguments, scanf() returns false, but the already processed captures
+still have a valid value assigned. In this way we can use at least optional trailing arguments.
+
+As next example for the use of the scanf() macro we will give a real world example: A simple CAD (Computer Aided Design) program
+has a PCB (Printed Circuit Board) mode, in which the user can create new PCB pads by entering the pad data in a text entry widget.
+A PCB pad is a rectangular shaped copper field which has an associated number and a name and maybe rounded corners.
+The user should be able to enter two 2D coordinates, the corner radius, an optional x/y translation for the
+next pad of same size, followed by the number of pads to create and the pad number and name. That is
+
+----
+pad x1 y1 x2 y2 r dx dy n num name
+----
+
+The first five arguments are mandatory, the rest is optional with default values. The user should
+be able to separate the arguments with white space or with a colon or a semicolon. Additional
+the values x2 and y2 can be preceded with a '+'  character to indicate that the x2, y2 tuple is not
+an absolute coordinate value but the width and high of the pad.
+
+A program fragment to process this form of user input may look like
+
+[source, nim]
+----
+import std/strscans
+
+proc jecho(x: varargs[string, `$`]) =
+  for el in x:
+    stdout.write(el & " ")
+  stdout.write('\n')
+  stdout.flushfile
+
+proc stt(input: string; strVal: var string; start: int; n: int): int =
+  if input[start .. start + "pad".high] == "pad":
+    strVal = "pad"
+    result = "pad".len
+
+proc pls(input: string; plusVal: var int; start: int; n: int): int =
+  if input[start] == '+':
+    plusVal = 1 # bool
+    result = 1
+
+proc sep(input: string; start: int; seps: set[char] = {' ',',',';'}): int =
+  while start + result < input.len and input[start + result] in {' ','\t'}:
+    inc(result)
+  if start + result < input.len and input[start + result] in {';',','}:
+    inc(result)
+  while start + result < input.len and input[start + result] in {' ','\t'}:
+    inc(result)
+
+proc plus(input: string; plusVal: var int; start: int; n: int): int =
+  result = sep(input, start)
+  if input[start + result] == '+':
+    plusVal = 1 # bool
+    result += 1
+
+var st: string
+var x1, y1, x2, y2, dx, dy: float
+var px2, py2: int # bool
+var n: int
+var number, name: string
+
+(st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name) = ("pad", NaN, NaN, 0, NaN, 0, NaN, NaN, NaN, 0, "", "") # defaults
+
+var res: bool
+var input = "pad 10.0, 10   12 +12.0 ;20 0 8 Num Name"
+
+# unfortunately the input start with "pad" is needed for unpatched strscan!
+
+# using the pls matcher, this fails when there is no '+'
+res = scanf(input, "${stt(0)}$[sep]$f$[sep]$f$[sep]${pls(0)}$f$[sep]${pls(0)}$f$[sep]$f$[sep]$f$[sep]$i$[sep]$w$[sep]$w", st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name)
+jecho(res, st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name)
+
+# using the plus matcher, so the '+' is optional
+res = scanf(input, "${stt(0)}$[sep]$f$[sep]$f${plus(0)}$f${plus(0)}$f$[sep]$f$[sep]$f$[sep]$i$[sep]$w$[sep]$w", st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name)
+jecho(res, st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name)
+
+input = "pad 10.0, 10   12 +12.0" # test with missing optional values
+(st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name) = ("pad", NaN, NaN, 0, NaN, 0, NaN, NaN, NaN, 0, "", "") # defaults
+# using the plus matcher, so the '+' is optional
+res = scanf(input, "${stt(0)}$[sep]$f$[sep]$f${plus(0)}$f${plus(0)}$f$[sep]$f$[sep]$f$[sep]$i$[sep]$w$[sep]$w", st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name)
+jecho(res, st, x1, y1, px2, x2, py2, y2, dx, dy, n, number, name)
+----
+
+When we compile and run this program we get this output:
+
+----
+false pad 10.0 10.0 0 nan 0 nan nan nan 0   
+true pad 10.0 10.0 0 12.0 1 12.0 20.0 0.0 8 Num Name 
+false pad 10.0 10.0 0 12.0 1 12.0 nan nan 0
+----
+
+The first scanf() call uses the sequence $[sep]${pls(0)} which fails when the float value has no leading '+' sign, so this call
+is of no real use. The second and third scanf() call uses instead a ${plus(0)} call, where the plus() proc processes
+the separators as well as the optional '+' character, so that proc has never to return zero, and the capturing process continues.
+For the last scanf() call we give as input only five values, so scanf() returns false, but the first five values gets assigned values, and the
+rest has default values. One restriction of above code is, that we have always to start the input string with "pad", otherwise
+the processing stops immediately. As scanf() does not support the capture of boolean values, we uses the integer data type
+for the variables px2 and py2. The value zero means that there is no '+' prefix, and 1 indicates that there is a plus prefix.footnote:[The carefully reader may
+notice that we forget to process the float value for the corner radius in this example.]
+
+The next tiny example shows how we can use the last parameter of the user defined matcher proc to
+control the matching process:
+
+[source, nim]
+----
+import strscans
+
+proc ndigits(input: string; intVal: var int; start: int; n: int): int =
+  var i, x: int
+  while i < n and i + start < input.len and input[i + start] in {'0'..'9'}:
+    x = x * 10 + input[i + start].ord - '0'.ord
+    inc(i)
+  # only overwrite if we had a match
+  if i == n:
+    result = n
+    intVal = x
+
+var input = "1234"
+var a, b: int
+
+if scanf(input, "${ndigits(2)}$s${ndigits(2)}$.", a, b):
+  echo "Input is OK:", a, " ", b
+----
+
+We want to capture two integer values, each with one or two decimal digits.
+By passing the upper limit of digits to the ndigits() proc, we get the intended result
+even when the user does not separate the two numbers with white space. Additional
+we have used $. at the end of the pattern string. The $. matches only when the end of the input
+string is reached, so that scanf() would return false if there are more characters in 
+the input string left.
+
+The latest version of the strscans module provides also a variant of the scanf() macro
+called scanTuple() which returns a tuple. We could use it in this way in our example above:
+
+[source, nim]
+----
+let (res, a, b) = scanTuple(input, "${ndigits(2)}$s${ndigits(2)}$.", int, int)
+echo res, " ", a, " ", b
+----
+
+So we have not to declare the capering variables in advance. The final result of the
+scan process is returned in an additional boolean variable. When we use user defined matchers
+as above, we have to specify the data types of the returned values as additional parameters
+after the pattern string.
+
+Additional the strscans module provides a scanp() macro which works somewhat similar as
+PEG or RegEx libraries. We will not try to explain the scanp() macro, as its use may be too
+difficult for a beginner book. And when we really have to process text strings with
+regular expression grammars, then we can use the available RegEx or PEG modules
+which have no restrictions and work for Nim in a similar way as for other programming languages.
+We will introduce the Nim RegEx and PEG modules later in the book -- maybe we will compare
+the scanp() macro there.
 
 === Module strformat
 
@@ -10529,7 +10824,8 @@ References:
 
 Special thanks go to Mr. Jim Wilcoxson (https://github.com/hashbackup) who did proof
 reading of the first dozen pages of the book and gave some advice for English grammar
-and spelling.
+and spelling. Thanks go also to Mr. Marek Ľach (https://github.com/marek-lach) for fixing some more spelling and grammar
+errors.
 
 //== Strange Questions
 
