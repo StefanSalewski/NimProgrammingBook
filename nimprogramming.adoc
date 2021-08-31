@@ -1706,9 +1706,9 @@ a value assigned, while var is used when we want to change the content of the
 variable during program execution. Let seems to be similar to const, but in const
 declarations we can use only values that are known at compile time. Let allows us to
 assign to variables values that are only available at program run time, maybe because
-the value is a result of a prior calculation. But let indicates at the same time that
-the assignment occurs only once, the content does not change later.  We say that the
-variable is immutable.  Use of the let keyword may help the human reader of the
+the value is a result of a prior calculation. But let indicates, at the same time, that
+the assignment occurs only once, the content does not change later during execution.
+We say that the variable is immutable.  Use of the let keyword may help the human reader of the
 source code understanding what in going on, and it may also help the compiler doing
 optimizations to get faster or more compact code. For now we can just ignore let
 declarations and use var instead -- later we may use let where appropriate, and the
