@@ -249,7 +249,7 @@ directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
 values. When you use a mechanical switch to turn the light bulb in your house on, or
-of, you change the binary state of the bulb. And your neighbor, when watching your
+off, you change the binary state of the bulb. And your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
 notice that the signal is not really digital -- when we switch on, the filament may
 take a few milliseconds to heat up, and when we switch off, the filament takes again
