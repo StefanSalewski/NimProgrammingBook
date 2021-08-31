@@ -80,7 +80,7 @@ Most books about programming languages concentrate on the language itself and as
 that the reader is already familiar with the foundations of computer hardware and
 already has some programming experience. This is generally a valid approach, as today
 most people are taught this fundamental knowledge, sometimes called [.ndef]#Computer
-Science# (CS) in school. But still there are people who missed this introduction in
+Science# (CS) in school. But still, there are people who missed this introduction in
 school for various reasons and decide later that they need some programming skills,
 maybe for a technical job. And there may exist some children that are not satisfied
 with the introduction to computer science taught at school. So we have decided to
@@ -248,7 +248,7 @@ An important and useful property of digital signals and digital data, is that th
 directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
-values. When you use a mechanical switch to turn the light bulb in your house on or
+values. When you use a mechanical switch to turn the light bulb in your house on, or
 of, you change the binary state of the bulb. And your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
 notice that the signal is not really digital -- when we switch on, the filament may
