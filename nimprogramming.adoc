@@ -130,9 +130,9 @@ whole rooms, work internally with digital data only.footnote:[In the past some f
 of analog computers existed, some worked mechanically, some used analog voltages or
 currents as input and output signals. Indeed, one important device which is still very
 common in analog electronics is the summing amplifier, which can sum up multiple
-electric voltages.] Digital data is basically integer (whole) numbers encoded in
-binary form, represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.  We
-will discuss the term digital in the next section in more detail.
+electric voltages.] Digital data are basically integer (whole) numbers encoded in
+binary form, which's represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.
+We will discuss the term digital in the next section in more detail.
 
 The most important part of a digital computer is the [.ndef]#CPU#, the
 [.ndef]#Central Processing Unit#. That tiny device is built of digital electronic
@@ -393,7 +393,7 @@ An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructio
 solve a specific task, or to reach a goal. Cooking recipe books and car repair
 instructions are examples of algorithms.
 They are a generalized, only symbolically
-represented pattern of all the necessary steps required to perform a certain task.
+representative pattern of all the necessary steps required to perform a certain task.
 
 The basic math operations kids learn in
 school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
@@ -455,7 +455,7 @@ compilers. [.ndef]#Compilers# process the program that we have written, include 
 source code like needed library modules, check the code for obvious errors and then
 generate and store the machine code that we then can run.
 
-Tools that process the
+The tools that process the
 source code in small portions, like single statements, are called
 [.ndef]#interpreters#. They read in a line of source code, investigate it to check if
 it is a valid statement, and then feed the CPU with corresponding instructions to
@@ -10440,8 +10440,8 @@ but to teach you some basic coding strategies and related traps.
 
 Initially we did not intend to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
 whenever we may have seen a sketch of it somewhere, it is generally
-not easy to remember details.footnote:[From introducing courses to Computer Science
-people generally remembers QuickSort best, just because of its name and its good performance
+not easy to remember details.footnote:[From introducing courses to Computer Science,
+people generally remembers QuickSort best, just because of its name and its good performance,
 as long as we ignore the worst case scenario and the not stable sorting order.]
 But MergeSort is indeed an important algorithm, it is used by default in Nim's standard library
 and as we have discussed QuickSort already in some detail, we should be prepared for
