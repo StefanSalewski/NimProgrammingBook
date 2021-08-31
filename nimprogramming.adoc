@@ -10440,8 +10440,8 @@ but to teach you some basic coding strategies and related traps.
 
 Initially we did not intend to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
 whenever we may have seen a sketch of it somewhere, it is generally
-not easy to remember details.footnote:[From introducing courses to Computer Science,
-people generally remembers QuickSort best, just because of its name and its good performance,
+not easy to remember details.footnote:[From introductory courses to Computer Science,
+people generally remember QuickSort best, just because of its name and its good performance,
 as long as we ignore the worst case scenario and the not stable sorting order.]
 But MergeSort is indeed an important algorithm, it is used by default in Nim's standard library
 and as we have discussed QuickSort already in some detail, we should be prepared for
