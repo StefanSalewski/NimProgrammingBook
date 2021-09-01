@@ -505,9 +505,10 @@ should not even call them programming languages at all. Then there are low level
 languages like Fortran or C, with some basic abstractions which still work close to
 the hardware and which are mostly designed for high performance and low resource
 consumption (RAM) but not to detect and prevent programming errors or to make life
-easy for programmers.  These languages already support some higher order data types
-like floating point numbers or text (strings), and homogeneous, fixed size containers
-(called arrays in C) or heterogeneous fixed size containers (called structs in C).
+easy for programmers.  These languages already support some higher order data types,
+the kinds of data like floating point numbers, or text (strings), and homogeneous,
+fixed size containers (called arrays in C) or heterogeneous fixed size containers
+(called structs in C).
 
 A different approach is taken by languages like Python or Ruby, which try to make
 writing code easier by offering many high level abstractions and which have better
