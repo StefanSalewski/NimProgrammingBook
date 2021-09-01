@@ -3216,9 +3216,9 @@ If we declare a variable in this way using the var or let keyword then that vari
 is only visible in the bracket expression itself and in the following indented block.
 
 Note that if-expressions must always return a well defined value, so they must
-contain an else. A plain if without else, or an if/elif without an else does not
-work. And as Nim is a statically typed language and all variables have a well defined
-type, the if-expression must return the same type for all branches!
+contain an else. A plain _if_, without _else_, or an if/elif without an else does not
+work. And as Nim is a statically typed language and all variables have a strictly well
+defined type, the if-expression must return the same type for all branches!
 
 [source, nim]
 ----
