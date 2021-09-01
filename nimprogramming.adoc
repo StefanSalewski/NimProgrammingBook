@@ -357,12 +357,12 @@ the CPU. As plain numbers do not match well human thinking, soon more abstract c
 where used. A very direct code, which matches numerical instructions to symbols, is
 the [.ndef]#assembly language#. In that language for example the character sequence
 "add A0, $8" may map directly to a sequence of numbers which instructs the CPU to add
-the constant integer number 8 to CPU register A0, where A0 is a storage area in the
-CPU where numbers can be stored. As there exists many different types of CPUs all
-with their own instruction sets, there exists many different assembly instruction
-sets, with similar, but not identical instructions. The rules that describe how these
-basic instructions have to look are called the [.ndef]#syntax# of the assembly
-language.
+the constant (as in unchanging, once it's set) integer number 8 to CPU register A0,
+where A0 is a storage area in the CPU where numbers can be stored. As there exists many
+different types of CPUs, all with their own instruction sets, there exists many different
+assembly instruction sets, with similar, but not identical instructions.
+The rules that describe how these basic instructions have to look are called
+the [.ndef]#syntax# of the assembly language.
 
 The numerical machine code, or the corresponding assembly language, is the most basic
 instruction set for a CPU. Every instruction which a CPU can execute maps to a
