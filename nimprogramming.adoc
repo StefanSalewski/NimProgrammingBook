@@ -431,8 +431,8 @@ in data at one point, multiple processing steps at another, and storing, or disp
 as plain text, graphic, or animation yet other one. This splitting of the various distinct types of
 data manipulating structures into parts, according to the nature of the data manipulation operations
 that they process for the larger program, is mapped onto programming languages, by grouping tasks
-into their own subroutines, functions or procedures, which accept a set of input parameters
-and can return a result. 
+into their own subroutines, functions or procedures, which accept a set of input parameters and can
+return a result. 
 
 As algorithms often work not only with numbers,
 but also with text, it makes sense to have a form of textual data type in a
