@@ -10079,11 +10079,11 @@ with objects by some field, then we notice that objects with same value for sort
 The other problem of QuickSort is a generally problem of recursive algorithm: Each new call of a 
 proc generates some stack usage, as proc parameters may be passed on the stack and because
 the proc may allocate its local data variables on the stack. So many nested calls may need a very 
-large stack, the program may fail with a stack overflow error. Generally we have no real problem with
+large stack, the program may fail with a stack overflow error. Generally, we have no real problem with
 stack overflow, as for each partition the size of the two new partition is nearly halved, so
 that process stops soon. But imagine someone prepares a special data set for our sort proc. That 
 data may be prepared in such a fashion that at the center of each range, where we pick the estimated median value from,
-always an extreme values is stored. So our partition would work very bad, in each step we would get a new range with only
+always an extreme values is stored. So our partition would work very badly, in each step we would get a new range with only
 one element, and one with n - 1 elements. So the recursion dept would go very deep, and the performance would
 be very bad also. Preparing such a data set would be difficult, but possible in theory. One way to protect
 us from that attack would be to select the median by random. But unfortunately all strategies different from
@@ -10099,7 +10099,7 @@ Because of the stack size restrictions we have a good motivation to show how we 
 replace recursion with plain iteration, when we provide a "buffer" variable that acts as a data stack.
 For each new partition of our data we have to put only the two bounds a and b on that data stack, which
 is not that much as a recursive proc would put on the real computer stack. The modifications to our code
-from above are tiny:footnote:[Unfortunately we have used the term STACK in two different meanings in this section:
+from above are tiny:footnote:[Unfortunately, we have used the term STACK in two different meanings in this section:
 For our recursive sorting proc we are talking about the CPU stack, which is used to pass proc parameters and
 store proc local data -- and can overflow. In our nonrecursive proc we use a variable which is also called stack,
 but that is only an ordinary buffer variable. The term stack is common for such buffers where we can push() and
