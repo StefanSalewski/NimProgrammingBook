@@ -1710,8 +1710,8 @@ assign to variables values that are only available at program run time, maybe be
 the value is a result of a prior calculation. But let indicates, at the same time, that
 the assignment occurs only once, the content does not change later, during the program's execution.
 We say that the variable is immutable.  Use of the _let_ keyword may help the human reader of the
-source code understanding what in going on, and it may also help the compiler doing
-optimizations to get faster or more compact code. For now we can just ignore let
+source code with understanding what is going on, and it may also help the compiler doing
+optimizations to get faster, or more compact code. For now, we can just ignore let
 declarations and use var instead -- later we may use let where appropriate, and the
 compiler will tell us when let will not work and we have to use var.
 
