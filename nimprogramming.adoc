@@ -425,12 +425,13 @@ optionally print the final value of sum
 
 Most traditional programming languages were created to map algorithms to elementary
 CPU instructions. Algorithms generally contain nested conditionals, repetition, math
-operations, recovery from errors and maybe plausibility checks. Complicated algorithm
-generally can be split into various logical parts, which may include reading in data,
-multiple processing steps, and storing or displaying data as plain text, graphic or
-animation. This splitting into parts is mapped to programming languages by grouping
-tasks into subroutines, functions or procedures which accept a set of input
-parameters and can return a result.
+operations, recovery from errors and maybe plausibility checks. A more complicated
+algorithm generally can be split into various separate logical parts, which may include reading
+in data at one point, multiple processing steps at another, and storing, or displaying data
+as plain text, graphic, or animation yet another one. This splitting of the various distinct types of
+data manipulation structures, into parts according to what sort of data manipulation produces their
+functionality for the larger program, is mapped onto programming languages, by grouping tasks into their own
+subroutines, functions or procedures, which accept a set of input parameters and can return a result. 
 
 As algorithms often work not only with numbers,
 but also with text, it makes sense to have a form of textual data type in a
