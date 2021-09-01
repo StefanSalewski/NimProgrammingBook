@@ -428,9 +428,9 @@ CPU instructions. Algorithms generally contain nested conditionals, repetition, 
 operations, recovery from errors and maybe plausibility checks. A more complicated
 algorithm generally can be split into various separate logical parts, which may include reading
 in data at one point, multiple processing steps at another, and storing, or displaying data
-as plain text, graphic, or animation yet another one. This splitting of the various distinct types of
-data manipulation structures, into parts according to what sort of data manipulation produces their
-functionality for the larger program, is mapped onto programming languages, by grouping tasks into their own
+as plain text, graphic, or animation yet other one. This splitting of the various distinct types of
+data manipulation structures, into parts according to the nature of the data manipulation that they
+process for the larger program, is mapped onto programming languages, by grouping tasks into their own
 subroutines, functions or procedures, which accept a set of input parameters and can return a result. 
 
 As algorithms often work not only with numbers,
