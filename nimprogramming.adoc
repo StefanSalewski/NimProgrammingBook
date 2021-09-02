@@ -123,15 +123,15 @@ all the technical components, and finally, a lot of practice.
 
 == What is a Computer?
 
-A computer is primarily a device which can run computer programs.  Nearly all
-computers currently in use, from the tiny ones integrated in electronic gadgets, the
-well known desktop computers (PCs), to large and powerful super computers filling
-whole rooms, work internally with digital data only.footnote:[In the past some form
-of analog computers existed, some worked mechanically, some used analog voltages or
-currents as input and output signals. Indeed, one important device which is still very
-common in analog electronics is the summing amplifier, which can sum up multiple
-electric voltages.] Digital data are basically integer (whole) numbers encoded in
-binary form, which's represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.
+A computer is primarily a device which can run computer programs, by following instructons
+about how to manipulate data. Nearly all of the computers currently in use, from the tiny
+ones integrated in electronic gadgets, the well known desktop computers (PCs), to large
+and powerful super computers filling out entire rooms, work internally with digital data
+only.footnote:[In the past, some form of analog computers existed, some worked mechanically,
+some used analog voltages, or currents as input and output signals. Indeed, one important
+device which is still very common in analog electronics is the summing amplifier,
+which can sum up multiple electric voltages.] Digital data are basically integer (whole)
+numbers encoded in binary form, which's represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.
 We will discuss the term digital in the next section in more detail.
 
 The most important part of a digital computer is the [.ndef]#CPU#, the
