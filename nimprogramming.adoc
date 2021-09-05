@@ -484,8 +484,8 @@ typing errors can only be detected when they are encountered while running the
 program. If your test does not try to run a faulty statement, there will be no error,
 but it may occur later. Generally interpreted program execution is much slower than
 running compiled executables, as the interpreter has to continually process the
-source code in real-time as it's being run, while the compiler does it only once before the program is run. At the
-end of this section, a few additional notes:
+source code in real-time as it's being run, while the compiler does it only once
+before the program is run. At the end of this section, a few additional notes:
 
 Compilers are sometimes supported by so
 called linkers. In that case the compiler converts the source code, that can be
@@ -520,10 +520,10 @@ tables (maps) or support for textual pattern matching by regular expressions (re
 
 Another way to differentiate programming languages is if they are statically, or
 dynamically typed. Ruby, Python and JavaScript are all examples of dynamically typed languages,
-that is, they use variables which can store any data type, and the variable's type
-of data it accepts can therefore dynamically change during program execution. That seems comfortable for the user, and
-sometimes it is, especially for short programs which may be written for one-time use
-only and are sometimes called scripts. But dynamic typing makes discovery of logical
+that is, they use variables which can store, or collect any data type, so
+the variable's type of data that it accepts can therefore dynamically change during program execution.
+That seems comfortable for the user, and sometimes it is, especially for short programs which may be
+written for one-time use only and are sometimes called scripts. But dynamic typing makes discovery of logical
 errors harder -- an illegal addition of a number to a letter may be detected only at
 run-time. And dynamically typed languages generally waste a lot of memory and their
 performance is not that great.  It is as you would own many moving boxes and you
@@ -533,8 +533,8 @@ For statically typed languages, each variable has a well defined data type like
 integer number, real number, a single letter, a text element and many more. The data
 type is either assigned by the author of the program with a type declaration, or is detected
 by the compiler itself  when processing the program source code, called type inference, and
-the variable's type does never change. In this way the compiler can check for logical
-errors early in the compile process, and the compiler can reserve memory blocks
+the variable's type does never change. In this way, the compiler can check for logical
+errors early in the compile process, and the compiler can then reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
 consumption and performance can be optimized.  Referring again to our boxes example,
 statically typing is like using customized boxes for all your goods.
@@ -586,7 +586,7 @@ JavaScript backend, so it supports web development well.
 
 ****
 
-Sometimes source code written in one programming language is converted into another
+Sometimes, a source code written in one programming language is converted into another
 one. A prominent target for such conversions is JavaScript, as JavaScript enables
 execution of programs in web browsers. Another important target language is C or
 {cpp}. Creating intermediate C code, which is then compiled by a C compiler to native
@@ -600,7 +600,9 @@ languages may manage to do. Some people fear that intermediate C code carries th
 problems of the C language, like verbosity, confusing and error-prone code or
 undefined behavior to the source languages. But these well known problems of C occur
 only when humans write C code directly, in the same way when humans write assembly
-code directly.  Automatic conversions are well defined and well tested, which means
+code directly.
+
+Automatic conversions are well defined and well tested, which means
 they are free of errors to the same degree as direct machine code generation would
 be. But indeed there are some small drawbacks when C or {cpp} is used as a backend of a
 programming language: C does not always allow direct access to all CPU instructions,
@@ -837,11 +839,10 @@ you learn not much about the internal working of computers. So you may never
 understand why your code is slow and consumes so much resources, and you
 will have no idea how to improve the program or how you could run
 it successfully on restricted hardware.
-It's like learning
-to drive a car, without any knowledge about how a combustion engine, the
+It's like learning to drive a car, without any knowledge about how a combustion engine, the
 transmission, or the brakes really work. Nim has none of these restrictions, as
-we have high level concepts available as in Python, but we have access to
-low level stuff too, so we can really understand the internal working if we want.
+we have high level concepts available like in Python, but we have access to
+low level stuff too, so we can really understand the internal workings, if we want.
 Learning resources for Nim are still not that good as for mainstream languages,
 but there exists some nice tutorials already, and hopefully this book will help beginners also a bit.
 
@@ -945,14 +946,14 @@ but numeric machine code that may confuse the editor. On the Windows OS, executa
 files generally get a special name extension [.term]#.exe#, but on Linux no special
 name extensions are used.
 
-Elementary entities of computer programs are variables, which are basically named
-storage areas in the computer. As Nim is a compiled and statically-typed language, we
-have to declare each variable before we can use it. We do that by choosing a
-meaningful name for the variable and specifying its data type. To tell the compiler
-about our intention to declare a variable, we start the line with the [.term]#var#
-keyword, followed by the chosen name, a colon and the data type of our variable. The
-first line of our program declares a new variable named sum of data type int. Int is
-short for integer and indicates that our variable should be able to store negative or
+Elementary entities of computer programs are variables, which are basically specifically
+designated and named storage areas in the computer by the programmer to hold a certain value.
+As Nim is a compiled and statically-typed language, we have to first declare each variable before
+we can use it. We do that by choosing a meaningful name for the variable and specifying
+its data type. To tell the compiler about our intention to declare a variable, we start
+the line with the [.term]#var# keyword, followed by the chosen name, a colon and the data
+type of our variable. The first line of our program declares a new variable named sum of data type int.
+_Int_ is short for integer and indicates that our variable should be able to store negative or
 positive integer numbers. The [.key]#var# at the start of the line is a
 [ndef]#keyword#. Keywords are reserved symbols which have a special meaning for the
 compiler. Var indicates that we want to introduce a new variable. The compiler will
