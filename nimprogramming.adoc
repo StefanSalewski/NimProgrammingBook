@@ -953,7 +953,7 @@ we can use it. We do that by choosing a meaningful name for the variable and spe
 its data type. To tell the compiler about our intention to declare a variable, we start
 the line with the [.term]#var# keyword, followed by the chosen name, a colon and the data
 type of our variable. The first line of our program declares a new variable named sum of data type int.
-_Int_ is short for integer and indicates that our variable should be able to store negative or
+_Int_ is short for integer and indicates, that our variable should be able to store negative or
 positive integer numbers. The [.key]#var# at the start of the line is a
 [ndef]#keyword#. Keywords are reserved symbols which have a special meaning for the
 compiler. Var indicates that we want to introduce a new variable. The compiler will
