@@ -3029,7 +3029,7 @@ terminal when the editor or terminal supports unicode properly and when all nece
 fonts are installed. That may be the case for your local computer, but what when
 someone other may edit your source code?
 
-Nim does currently not allow to insert tabular characters (tabs) in your source code,
+Nim currently does not allow to insert tabular characters (tabs) in your source code,
 so you have to do the indentation of blocks by spaces only. Generally we use two
 spaces for each indentation level. Other numbers work also but you should stick to a
 fixed value.
