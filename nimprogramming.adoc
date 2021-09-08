@@ -428,7 +428,7 @@ CPU instructions. Algorithms generally contain nested conditionals, repetition, 
 operations, recovery from errors and maybe plausibility checks. A more complicated
 algorithm generally can be split into various separate logical parts, which may include reading
 in data at one point, multiple processing steps at another, and storing, or displaying data
-as plain text, graphic, or animation yet other one. This splitting of the various distinct types of
+as plain text, graphic, or animation at yet another point. This splitting of the various distinct types of
 data manipulating structures into parts, an overarching problem into small, single-purposed sequence
 of actions, ordered according to the nature of the data manipulation operations that they process for
 the larger program between each-other, is mapped onto programming languages, by grouping tasks
@@ -508,10 +508,11 @@ should not even call them programming languages at all. Then there are low level
 languages like Fortran or C, with some basic abstractions which still work close to
 the hardware and which are mostly designed for high performance and low resource
 consumption (RAM) but not to detect and prevent programming errors or to make life
-easy for programmers.  These languages already support some higher order data types,
-the kinds of data like floating point numbers, or text (strings), and homogeneous,
-fixed size containers (called arrays in C) or heterogeneous fixed size containers
-(called structs in C).
+easy for programmers. These languages already support some higher order data types,
+which are data categorizations, according to the kinds of operations that
+can be performed on the data, such as floating point numbers, or with text (strings),
+and homogeneous, fixed size containers (called arrays in C) or heterogeneous fixed
+size containers (called structs in C).
 
 A different approach is taken by languages like Python or Ruby, which try to make
 writing code easier by offering many high level abstractions and which have better
