@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-AUG-28
+//v0.1, 2021-SEP-16
 :doctype: book
 :toc: left
 :icons: font
@@ -80,7 +80,7 @@ Most books about programming languages concentrate on the language itself and as
 that the reader is already familiar with the foundations of computer hardware and
 already has some programming experience. This is generally a valid approach, as today
 most people are taught this fundamental knowledge, sometimes called [.ndef]#Computer
-Science# (CS) in school. But still there are people who missed this introduction in
+Science# (CS) in school. But still, there are people who missed this introduction in
 school for various reasons and decide later that they need some programming skills,
 maybe for a technical job. And there may exist some children that are not satisfied
 with the introduction to computer science taught at school. So we have decided to
@@ -123,15 +123,18 @@ all the technical components, and finally, a lot of practice.
 
 == What is a Computer?
 
-A computer is primarily a device which can run computer programs.  Nearly all
+A computer is primarily a device which can run computer programs, by following
+instructions about how to manipulate data.
+
+Nearly all of the
 computers currently in use, from the tiny ones integrated in electronic gadgets, the
-well known desktop computers (PCs), to large and powerful super computers filling
-whole rooms, work internally with digital data only.footnote:[In the past some form
+well known desktop computers (PCs), to large and powerful super computers filling out
+entire rooms, work internally with digital data only.footnote:[In the past, some form
 of analog computers existed, some worked mechanically, some used analog voltages or
 currents as input and output signals. Indeed, one important device which is still very
 common in analog electronics is the summing amplifier, which can sum up multiple
-electric voltages.] Digital data is basically integer (whole) numbers encoded in
-binary form, represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.  We
+electric voltages.] Digital data are basically integer (whole) numbers encoded in
+binary form, which are represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.  We
 will discuss the term digital in the next section in more detail.
 
 The most important part of a digital computer is the [.ndef]#CPU#, the
@@ -248,7 +251,7 @@ An important and useful property of digital signals and digital data, is that th
 directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
-values. When you use a mechanical switch to turn the light bulb in your house on or
+values. When you use a mechanical switch to turn the light bulb in your house on, or
 of, you change the binary state of the bulb. And your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
 notice that the signal is not really digital -- when we switch on, the filament may
@@ -358,7 +361,7 @@ where used. A very direct code, which matches numerical instructions to symbols,
 the [.ndef]#assembly language#. In that language for example the character sequence
 "add A0, $8" may map directly to a sequence of numbers which instructs the CPU to add
 the constant integer number 8 to CPU register A0, where A0 is a storage area in the
-CPU where numbers can be stored. As there exists many different types of CPUs all
+CPU where numbers can be stored. As there exist many different types of CPUs, all
 with their own instruction sets, there exists many different assembly instruction
 sets, with similar, but not identical instructions. The rules that describe how these
 basic instructions have to look are called the [.ndef]#syntax# of the assembly
@@ -393,7 +396,7 @@ An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructio
 solve a specific task, or to reach a goal. Cooking recipe books and car repair
 instructions are examples of algorithms.
 They are a generalized, only symbolically
-represented pattern of all the necessary steps required to perform a certain task.
+representative pattern of all the necessary steps required to perform a certain task.
 
 The basic math operations kids learn in
 school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
@@ -425,12 +428,20 @@ optionally print the final value of sum
 
 Most traditional programming languages were created to map algorithms to elementary
 CPU instructions. Algorithms generally contain nested conditionals, repetition, math
-operations, recovery from errors and maybe plausibility checks. Complicated algorithm
-generally can be split into various logical parts, which may include reading in data,
-multiple processing steps, and storing or displaying data as plain text, graphic or
-animation. This splitting into parts is mapped to programming languages by grouping
+operations, recovery from errors and maybe plausibility checks. A more complicated algorithm
+generally can be split into various separate logical parts, which may include reading in data at one point,
+multiple processing steps at another, and storing, or displaying data as plain text, graphic or
+animation at yet another point. This splitting into parts is mapped to programming languages by grouping
 tasks into subroutines, functions or procedures which accept a set of input
 parameters and can return a result.
+
+# Propose of
+#This splitting of the various distinct types of
+#data manipulating structures into parts, an overarching problem into small, single-purposed sequence
+#of actions, ordered according to the nature of the data manipulation operations that they process for
+#the larger program between each-other, is mapped onto programming languages, by grouping tasks
+#into their own subroutines, functions or procedures, which accept a set of input parameters and can
+#return a result. 
 
 As algorithms often work not only with numbers,
 but also with text, it makes sense to have a form of textual data type in a
@@ -505,7 +516,9 @@ should not even call them programming languages at all. Then there are low level
 languages like Fortran or C, with some basic abstractions which still work close to
 the hardware and which are mostly designed for high performance and low resource
 consumption (RAM) but not to detect and prevent programming errors or to make life
-easy for programmers.  These languages already support some higher order data types
+easy for programmers.  These languages already support some higher order data types,
+#which are data categorizations, according to the kinds of operations that
+#can be performed on the data, such as floating
 like floating point numbers or text (strings), and homogeneous, fixed size containers
 (called arrays in C) or heterogeneous fixed size containers (called structs in C).
 
@@ -517,8 +530,8 @@ tables (maps) or support for textual pattern matching by regular expressions (re
 
 Another way to differentiate programming languages is if they are statically, or
 dynamically typed. Ruby, Python and JavaScript are all examples of dynamically typed languages,
-that is, they use variables which can store any data type, and the variable's type
-of data it accepts can therefore dynamically change during program execution. That seems comfortable for the user, and
+that is, they use variables which can store any data type, so the variable's type
+of data that it accepts can therefore dynamically change during program execution. That seems comfortable for the user, and
 sometimes it is, especially for short programs which may be written for one-time use
 only and are sometimes called scripts. But dynamic typing makes discovery of logical
 errors harder -- an illegal addition of a number to a letter may be detected only at
@@ -530,7 +543,7 @@ For statically typed languages, each variable has a well defined data type like
 integer number, real number, a single letter, a text element and many more. The data
 type is either assigned by the author of the program with a type declaration, or is detected
 by the compiler itself  when processing the program source code, called type inference, and
-the variable's type does never change. In this way the compiler can check for logical
+the variable's type does never change. In this way, the compiler can check for logical
 errors early in the compile process, and the compiler can reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
 consumption and performance can be optimized.  Referring again to our boxes example,
@@ -837,8 +850,8 @@ it successfully on restricted hardware.
 It's like learning
 to drive a car, without any knowledge about how a combustion engine, the
 transmission, or the brakes really work. Nim has none of these restrictions, as
-we have high level concepts available as in Python, but we have access to
-low level stuff too, so we can really understand the internal working if we want.
+we have high level concepts available like in Python, but we have access to
+low level stuff too, so we can really understand the internal workings, if we want.
 Learning resources for Nim are still not that good as for mainstream languages,
 but there exists some nice tutorials already, and hopefully this book will help beginners also a bit.
 
@@ -949,7 +962,7 @@ meaningful name for the variable and specifying its data type. To tell the compi
 about our intention to declare a variable, we start the line with the [.term]#var#
 keyword, followed by the chosen name, a colon and the data type of our variable. The
 first line of our program declares a new variable named sum of data type int. Int is
-short for integer and indicates that our variable should be able to store negative or
+short for integer and indicates, that our variable should be able to store negative or
 positive integer numbers. The [.key]#var# at the start of the line is a
 [ndef]#keyword#. Keywords are reserved symbols which have a special meaning for the
 compiler. Var indicates that we want to introduce a new variable. The compiler will
@@ -1706,11 +1719,11 @@ a value assigned, while var is used when we want to change the content of the
 variable during program execution. Let seems to be similar to const, but in const
 declarations we can use only values that are known at compile time. Let allows us to
 assign to variables values that are only available at program run time, maybe because
-the value is a result of a prior calculation. But let indicates at the same time that
-the assignment occurs only once, the content does not change later.  We say that the
+the value is a result of a prior calculation. But let indicates, at the same time, that
+the assignment occurs only once, the content does not change later, during the program's execution. We say that the
 variable is immutable.  Use of the let keyword may help the human reader of the
-source code understanding what in going on, and it may also help the compiler doing
-optimizations to get faster or more compact code. For now we can just ignore let
+source code with understanding what is going on, and it may also help the compiler doing
+optimizations to get faster, or more compact code. For now, we can just ignore let
 declarations and use var instead -- later we may use let where appropriate, and the
 compiler will tell us when let will not work and we have to use var.
 
@@ -3023,7 +3036,7 @@ terminal when the editor or terminal supports unicode properly and when all nece
 fonts are installed. That may be the case for your local computer, but what when
 someone other may edit your source code?
 
-Nim does currently not allow to insert tabular characters (tabs) in your source code,
+Nim currently doess not allow to insert tabular characters (tabs) in your source code,
 so you have to do the indentation of blocks by spaces only. Generally we use two
 spaces for each indentation level. Other numbers work also but you should stick to a
 fixed value.
@@ -3215,8 +3228,8 @@ If we declare a variable in this way using the var or let keyword then that vari
 is only visible in the bracket expression itself and in the following indented block.
 
 Note that if-expressions must always return a well defined value, so they must
-contain an else. A plain if without else, or an if/elif without an else does not
-work. And as Nim is a statically typed language and all variables have a well defined
+contain an else. A plain if, without else, or an if/elif without an else does not
+work. And as Nim is a statically typed language and all variables have a strictly well defined
 type, the if-expression must return the same type for all branches!
 
 [source, nim]
@@ -10078,11 +10091,11 @@ with objects by some field, then we notice that objects with same value for sort
 The other problem of QuickSort is a generally problem of recursive algorithm: Each new call of a 
 proc generates some stack usage, as proc parameters may be passed on the stack and because
 the proc may allocate its local data variables on the stack. So many nested calls may need a very 
-large stack, the program may fail with a stack overflow error. Generally we have no real problem with
+large stack, the program may fail with a stack overflow error. Generally, we have no real problem with
 stack overflow, as for each partition the size of the two new partition is nearly halved, so
 that process stops soon. But imagine someone prepares a special data set for our sort proc. That 
 data may be prepared in such a fashion that at the center of each range, where we pick the estimated median value from,
-always an extreme values is stored. So our partition would work very bad, in each step we would get a new range with only
+always an extreme values is stored. So our partition would work very badly, in each step we would get a new range with only
 one element, and one with n - 1 elements. So the recursion dept would go very deep, and the performance would
 be very bad also. Preparing such a data set would be difficult, but possible in theory. One way to protect
 us from that attack would be to select the median by random. But unfortunately all strategies different from
@@ -10098,7 +10111,7 @@ Because of the stack size restrictions we have a good motivation to show how we 
 replace recursion with plain iteration, when we provide a "buffer" variable that acts as a data stack.
 For each new partition of our data we have to put only the two bounds a and b on that data stack, which
 is not that much as a recursive proc would put on the real computer stack. The modifications to our code
-from above are tiny:footnote:[Unfortunately we have used the term STACK in two different meanings in this section:
+from above are tiny:footnote:[Unfortunately, we have used the term STACK in two different meanings in this section:
 For our recursive sorting proc we are talking about the CPU stack, which is used to pass proc parameters and
 store proc local data -- and can overflow. In our nonrecursive proc we use a variable which is also called stack,
 but that is only an ordinary buffer variable. The term stack is common for such buffers where we can push() and
@@ -10440,8 +10453,8 @@ but to teach you some basic coding strategies and related traps.
 
 Initially we did not intend to discuss the actual MergeSort algorithm at all, as it is a bit more complicated and
 whenever we may have seen a sketch of it somewhere, it is generally
-not easy to remember details.footnote:[From introducing courses to Computer Science
-people generally remembers QuickSort best, just because of its name and its good performance
+not easy to remember details.footnote:[From introductory courses to Computer Science,
+people generally remember QuickSort best, just because of its name and its good performance,
 as long as we ignore the worst case scenario and the not stable sorting order.]
 But MergeSort is indeed an important algorithm, it is used by default in Nim's standard library
 and as we have discussed QuickSort already in some detail, we should be prepared for
