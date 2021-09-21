@@ -9469,9 +9469,9 @@ A useful variant of the Table data type is the CountTable, which we can use to c
 ----
 import tables
 var ct: CountTable[string]
-ct.add("Nim")
-cd.add("Rust")
-ct.add("Nim")
+ct.inc("Nim")
+ct.inc("Rust")
+ct.inc("Nim")
 
 echo ct["Nim"]
 for k, v in ct:
