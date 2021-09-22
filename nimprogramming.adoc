@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-SEP-16
+//v0.1, 2021-SEP-22
 :doctype: book
 :toc: left
 :icons: font
@@ -9246,7 +9246,7 @@ the operations with the loop counter and the time needed to fetch and to access 
 As timing code segments is not an uncommon use case, there exists some external package which
 improve or simplify these operations, like the criterion or benchy package. A related task is profiling
 our program to find the part which takes the most CPU time, so that we can concentrate on these parts
-to improve the total performance of our program. For profiling various tools like the linux perf tool
+to improve the total performance of our program. For profiling various tools like the Linux perf tool
 are available, which we will discuss in more detail later in this book.
 
 References:
@@ -9318,7 +9318,7 @@ A similar solution would be to use some form of an ordered binary tree, which ha
 log2(N) costs for retrieving operations. We will learn more about sorting sequences,
 doing a binary search in a sorted seq and about tree structures later in the book.
 
-A hash table, called only table in Nim, is a homogeneous resizeable   container that behaves similar
+A hash table, called only table in Nim, is a homogeneous resizable   container that behaves similar
 as the Nim sequences, but releases the restriction that for direct accessing an element its position in
 the sequence has to be known.
 
@@ -9469,18 +9469,18 @@ A useful variant of the Table data type is the CountTable, which we can use to c
 ----
 import tables
 var ct: CountTable[string]
-ct.add("Nim")
-cd.add("Rust")
-ct.add("Nim")
+ct.inc("Nim")
+ct.inc("Rust")
+ct.inc("Nim")
 
 echo ct["Nim"]
 for k, v in ct:
-  echo k, ":v", v 
+  echo k, ": ", v 
 ----
 
 A table instance stores entries not in the order of insertion. When we iterate over the table,
 we get the results not back in the order of insertion. If we really should need to preserve
-the insertion order we may use the OrderedTable variant. Note that nn OrderedTable
+the insertion order we may use the OrderedTable variant. Note that an OrderedTable
 does not sort its entries, it remembers insertion order. Ordered Tables have some internal
 overhead, so we should use them only when necessary.
 
@@ -9501,7 +9501,7 @@ a hash function. When we would like to use tuples or object data types as keys f
 define a hash function for that key objects first. The API documentation of the tables module
 contains an example for this, where as key an object data type with firstName and lastName fields is used
 to store salary entries in the table. While firstName and lastName are strings, and for single strings a predefined
-hash function is available, we have to declare another hash function for objects with twow strings:
+hash function is available, we have to declare another hash function for objects with two strings:
 
 [source, nim]
 ----
@@ -9562,7 +9562,7 @@ access of a non existent entry, as the difference 5.0 - 3.0 may not exactly be i
 
 Hash tables can be even useful containers, when we already have numeric data as possible keys for indices in a 
 sequence: In mathematics we could have a two dimensional array, that is an array of array in Nim, to store matrices.
-This is ok when the matrix is really populated, that is most entries have meaningful non trivial values. But for
+This is OK when the matrix is really populated, that is most entries have meaningful non trivial values. But for
 very large, loosely populated matrices, with mostly just zero or one entries, storing the whole matrix
 as a table using a row, column tuple as key, may save a lot of RAM.
 
@@ -10572,7 +10572,7 @@ both, in place sorting and sorting with a return value, we may discover
 that in place sorting allows us to partly reuse the passed container, and we have
 only to allocate one additional seq with half the size of the passed container.
 We copy the second half of the passed container into a newly allocated seq, and then can merge
-values from the new seq and from the firt half of the passed seq to positions starting at the end
+values from the new seq and from the first half of the passed seq to positions starting at the end
 of the passed seq, without overwriting values that we still have to process.
 
 This way our code becomes even shorter and basically simpler -- we have only to
