@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-SEP-22
+//v0.1, 2021-OCT-03
 :doctype: book
 :toc: left
 :icons: font
@@ -435,13 +435,13 @@ animation at yet another point. This splitting into parts is mapped to programmi
 tasks into subroutines, functions or procedures which accept a set of input
 parameters and can return a result.
 
-# Propose of
-#This splitting of the various distinct types of
-#data manipulating structures into parts, an overarching problem into small, single-purposed sequence
-#of actions, ordered according to the nature of the data manipulation operations that they process for
-#the larger program between each-other, is mapped onto programming languages, by grouping tasks
-#into their own subroutines, functions or procedures, which accept a set of input parameters and can
-#return a result. 
+// Propose of
+//This splitting of the various distinct types of
+//data manipulating structures into parts, an overarching problem into small, single-purposed sequence
+//of actions, ordered according to the nature of the data manipulation operations that they process for
+//the larger program between each-other, is mapped onto programming languages, by grouping tasks
+//into their own subroutines, functions or procedures, which accept a set of input parameters and can
+//return a result. 
 
 As algorithms often work not only with numbers,
 but also with text, it makes sense to have a form of textual data type in a
@@ -517,8 +517,8 @@ languages like Fortran or C, with some basic abstractions which still work close
 the hardware and which are mostly designed for high performance and low resource
 consumption (RAM) but not to detect and prevent programming errors or to make life
 easy for programmers.  These languages already support some higher order data types,
-#which are data categorizations, according to the kinds of operations that
-#can be performed on the data, such as floating
+//which are data categorizations, according to the kinds of operations that
+//can be performed on the data, such as floating
 like floating point numbers or text (strings), and homogeneous, fixed size containers
 (called arrays in C) or heterogeneous fixed size containers (called structs in C).
 
@@ -10830,6 +10830,834 @@ References:
 //= Part VI: Advanced examples
 
 //== something
+
+= Part V: Advanced Nim
+
+In this part of the book we will try to explain the more difficult parts of the Nim programming language:
+Macros and meta-programming, asynchronous code, threading and parallel processing, and finally
+the use of Nim's concepts. We will start with macros and meta-programming, as that seems to
+be a really stable part of Nim's advanced features. Nim's concepts just got a redesign, and for
+the use of asynchronous code, threading and parallel processing there exists currently 
+various implementations, and all that may change again when the Nim core devs should decide
+to actually use the CPS (Continuation-Passing Style) based programming style for the implementation of this.
+
+== Macros and Meta-Programming
+
+=== Introduction
+
+In computer science a macro (short for "macro instruction") is a rule or pattern that specifies how a certain input should be mapped to a replacement output.
+Meta-programming is a programming technique in which computer programs have the ability to treat other programs as their data. It means that a program can read, generate, analyze or transform other programs, and even modify itself while running.
+
+Legacy programming languages like C or assembly languages support already some form of macros, which generally work directly
+on the textual representation of the source code.
+
+A common use of textual macros in assembly languages was to group sequences of instructions, like
+reading data from a file or from the keyboard, to make that operations easily accessible. The C programming
+language uses the #define pre-processor directive to introduce textual macros. Macros in C are generally single line
+text substitutions which are processed by a pre-processor program before the actual compiling process. Some examples of
+common C macros are
+
+[source, c]
+----
+#define PI 3.1415
+#define sqr(x) (x)*(x)
+----
+
+The basic C macro syntax is that the first continues character sequence after the #define directive is replaced by
+the C pre-processor with the rest of that line. The #define directive has some basic parameter support which
+was used for the sqr() macro above. C macros have the purpose to support named constants and to support
+simple parameterized expressions like the sqr() from above, avoiding the need to create actual functions.
+The C pre-processor would substitute each occurrence of the string PI in the C source file with the float literal
+3.1415 and the term sqr(1+2) with (1+2)*(1+2).
+
+A Nim macro is a function that is executed at compile-time and transforms a Nim syntax tree into a different tree.
+This can be used to add custom language features and implement domain-specific languages (DSL).
+While macros enable advanced compile-time code transformations, they cannot change Nim's syntax.
+ 
+The macro keyword is used similar to proc, func and template to define a parameterized code block which is executed at compile time
+and consists of ordinary Nim code and meta-programming instructions. The meta-programming instructions are imported from the macros
+module and are used to construct an Abstract Syntax Tree (AST) of the Nim language. This AST is created by the macro body at compile time
+and is returned by the macro as untyped data type. The parameter list of macros accept ordinary (static) Nim data types and additional the data types
+typed and untyped, which we already used for templates. We will explain the differences of the various possible data types
+for macro parameters later in more detail, after we have given a first simple macro example. Note that Nim macros are hygienic by default, that 
+is symbols defined inside the macro body are local and do not pollute the name space of the environment. 
+As macros are executed at compile time, the use of macros may increase the compile time, but their use
+does not impact the performance of the final executable -- in some cases the use of clever macros may even
+improve the performance of our final program.
+
+****
+Macros are by far the most difficult part of the Nim programming language. While in languages like Lisp macros integrate very well into the language,
+for Nim the meta-programming with macros is very different to the use of the language itself. Nim macros are very powerful -- the current
+Nim async implementation is based on Nim macros, and some advanced libraries for threading, parallel processing or data serialization
+using JSON or YAML file formats make heavily use of Nim macros. And many modules of the Nim standard library provide some macros
+which extends the power of the Nim core language. The famous with macro of the equality named module is only one example for the
+usefulness of Nim's macros. And same small but important parts of the high level GTK bindings are created with macros, e.g. the
+code to connect GTK callback functions to GTK signals.
+But this means not, that each Nim user really has to use macros. For a few use cases we really need macros, for other use
+cases macros may make our code shorter, maybe even cleaner. But at the same time the use of macros can make it for
+other people harder to understand the code, at least when we use exotic or our own complicated macros. And learning advanced Nim macro
+programming is not that easy. Nim macros have some similarity to the programming language {cpp}: When we follow the explanations in a {cpp} text book then the 
+{cpp} language seems to be not extremely difficult and even seems to follow a more or less logical design. But then, when we later try to write some
+actual code in {cpp} we notice that actually using the languages is hard as long as we have not a lot of practice. For Nim macros it is similar --
+when we follow a talk of an experienced Nim programmer about macro programming or when we read the code of an existing macro written by
+the Nim core devs, then all seems to be not that hard. But when we try to create macros our own for the first time, it can be frustrating.
+Strange error messages, or even worse no idea at all how we can solve a concrete task. So maybe the best start with macros is to read
+the code of existing macros, to study the macros module to see what is available, and maybe to follow some of the various tutorials listed
+at the end of this section. And finally you would have to ask for help in the Nim forum, on IRC or the other Nim help channels. 
+****
+
+To verify that macros are really executed at compile time, we will start with a tiny macro that contains only an echo statement in its body:
+
+[source, nim]
+----
+import macros
+
+macro m1(s: string): untyped =
+  echo s
+
+proc main =
+  echo "calling macro m1"
+  m1("Macro argument")
+
+main()
+----
+
+When we compile above code the compiler prints the message "Macro argument", as it processes the macro body.
+When we run the program, we get only the output "calling macro m1" from the main() proc, as the macro m1()
+does return an empty AST only. The carefully reader may wonder, why the echo statement in the macro body above
+works at all, as the parameter of macro m1() is specified as ordinary string, not as static[string]. So the type
+of s in the macro body should be a NimNode. Well, maybe an echo overload exists that can work with NimNodes,
+or maybe, as we pass a string constant to macro m1(), in this concrete case s is indeed an ordinary string
+in the macro body. Maybe we should have used s: static[string] as parameter type, which would give
+us the exact same results.
+
+****
+We said that macros have to always return an untyped result. This is true, but as untyped is the only possible
+result type, that type can currently be omitted.  So you may see in the code of the Nim standard lib a few macros
+which seems to return nothing. For our own macros we really should use always untyped as result. And sometimes
+you may even see macros where for parameters no data type is specified at all. In that case the data type has the
+default untyped type. 
+****
+
+As macros are executed at compile time, we can not really pass runtime variables to it. When we try, we would
+expect a compiler error:
+
+[source, nim]
+----
+import macros
+
+macro m1(s: string): untyped =
+  echo s
+
+proc main =
+  var str = "non static string"
+  m1(str)
+
+main()
+----
+
+But with the current compiler version 1.5.1 that code compiles and prints the message "str", which is a bit surprising.
+To fix this, we can change the parameter type to static[string], which guarantees that we can indeed pass only compile time constants.
+Our last example would give a compile error in this case, while the one before with the
+string constant would work as expected.
+
+Now let us create macros which actually creates an AST which is returned by the macro and executed when we run our program.
+For creating an AST in the macro body we have various options: we can use the parseStmt() function or the "quote do:" notation
+to generate the AST from regular program code in text form, or we can create the syntax tree directly with expressions provided by the macros module, e.g.
+by calls like newTree() or newLit() and such. The later gives us the best control over the AST generation process, but is not easy for beginners. The good news
+is that Nim now provides a set of helper functions like dumpTree() or dumpAstGen() which shows us the AST representation of a Nim source code
+block as well as the commands which we can use to create that AST. This makes it for beginners much easier to learn the basic instructions necessary
+to create valid syntax trees and to create useful macros.
+
+We will start with the simple parseStmt() function which generates the syntax tree from the source code text string that we pass it
+as argument. This seems to be very restricted, and maybe even useless, as we can write the source code just as ordinary
+program text outside of the macro body. That is true, but we can construct the text string argument that we pass to the
+parseStmt() function with regular Nim code at compile time. That is similar as having one program, which
+generates a new source code string, saves that string to disk, and finally compiles and runs that created program. Let us check
+with a fully static string that parseStmt() actually works:
+
+[source, nim]
+----
+import macros
+
+macro m1(s: static[string]): untyped =
+  result = parseStmt(s)
+
+proc main =
+
+  const str = "echo \"We like Nim\""
+  m1(str)
+
+main()
+----
+
+When we compile and run above program, we get the output
+"We like Nim". The macro m1() is called at compile time with the static
+parameter str and returns an AST which represents the passed 
+program code fragment. That AST is inserted into our program at the location
+of the macro call, and when we run our program the compiled AST is executed and
+produces the output.
+
+Of course executing a fully static string this way is useless, as we could have used
+regular program code instead. Now let us investigate how we can construct some
+program code at compile time. Let us assume that we have an object with multiple
+fields, and we want to print the field contents. A sequence of echo statements would do
+that for us, or we may use only one echo statement, when we separate the field arguments each
+by "\n". The with module may further simplify our task. But as we have to print multiple fields, not
+an array or a seq, we can not directly iterate over the values to process them. Let us see how
+a simple text string based macro can solve the task: 
+
+[source, nim]
+----
+import macros
+
+type
+  O = object
+    x, y, z: float
+
+macro m1(objName: static[string]; fields: varargs[untyped]): untyped =
+  var s: string
+  for x in fields:
+    s.add("echo " & objName & "." & x.repr & "\n")
+  echo s # verify the constructed string
+  result = parseStmt(s)
+
+proc main =
+  var o = O(x: 1.0, y: 2.0, z: 3.0)
+  m1("o", x, y, z)
+  
+main()
+----
+
+In this example we pass the name of our object instance as static string to the macro, while we pass
+the fields not as string, but as list of untyped values. The passed static string is indeed an ordinary Nim string
+inside the macro, we can apply sting operations on it. But the field names passed as untyped parameters
+appear as so called NimNodes inside the macro. We can use the repr() function to convert the NimNodes to
+ordinary strings, so that we can use string operations on them. We iterate with a for loop over all the passed
+field names, and generate echo statements from the object instance name and the field names, each separated
+by a newline character. Then all the statements are collected in a multi-line string s and are finally converted
+to the final AST by the parseStmt() function. In the macro body we use the echo statement to verify the
+content of that string. As the macro is executed during compile time, we get this output
+when we compile our program:
+
+----
+echo o.x
+echo o.y
+echo o.z
+----
+
+And when we run it we get:
+
+----
+1.0
+2.0
+3.0
+----
+
+Well, not a really great result for this concrete use case: We have replaced three echo commands with a five lines macro.
+But at least you got a feeling what macros can do for use.
+
+=== Types of macro parameters
+
+As Nim is a statically typed programming language, all variables and proc parameters have a well defined
+data type. There is some form of exception from this rule for OR-types, object variants and object references: 
+OR-types are indeed no real exception, as whenever we use an OR-type as the type of a proc parameter, multiple instances
+of the proc with different parameter types are created when necessary. That is very similar to generic procs.
+Object variants and object references built indeed some form of exception, as instances of these types can have
+different runtime types that we can query with the case or with the of keyword at runtime. Note that object
+variants and references (the managed pointers itself, not the actual data allocated on the heap) occupy always the same amount of RAM, independent of the actual runtime type.
+(That is why we can store object variants with diffeent content or references to objects of different runtime types using inheritance in
+arrays and sequences.)
+
+For the C sqr() macro from the beginning of this section, there is no real restriction for the argument data types.
+The sqr() C macro would work for all numeric types that support the multiply operation, from char data type over
+various int types to float, double and long double. This behaviour is not really surprising, as C macros are only a
+text substitution -- by the * multiply operator for our sqr() macro. Actually the C pre-processor would even accept
+all data types and even undefined symbols for its substitution process. But then the C compiler would complain later.
+
+Nim macros and Nim templates do also some form of code substitution, so it is not really surprising that they accept not
+only well defined data types, but also the relaxed types typed and untyped.
+
+As parameters for Nim's macros we can use ordinary Nim data types like int or string, compile time constants denoted with the
+static keyword like static[int], or the typed and untyped data types. When we call macros then the data types of the parameters are used in the same way for overload resolution
+as it is done for procs and templates.  For example, if a macro defined as foo(arg: int) is called as foo(x), then x has to be of a type compatible to int.
+
+What may be surprising at first is, that inside the macro body all parameter types have not the data type of the actual
+argument that we have passed to the macro, but the special macro data type NimNode which is defined in the macros module.
+The predefined result variable of the macro has the type NimNode as well. The only exception are macro parameters
+which are explicitly marked with the static keyword to be compile time constants like static[string], these parameters
+are not NimNodes in the macro body, but have their ordinary data types in the macro body.
+Variables that we define inside the macro body have exactly that type that we give to then, e.g. when we define a
+variable as s: string then this is an ordinary Nim string variable, for which we can use the common string operations.
+But of course we have always to remember that macros are executed at compile time, and so the operations
+on variables defined in the macro body occur at compile time, which may restrict a few operations.
+Currently macros are evaluated at compile time by the Nim compiler in the NimVM (Vitual Machine) and so
+share all the limitations of the NimVM: Macros have to be implemented in pure Nim code and can currently not
+call C functions except those that are built in the compiler.
+
+In the Nim macros tutorial the static, typed and untyped macro parameters are described in some detail. We will
+follow that description, as it is more detailed as the current description in the Nim compiler manual. As these
+descriptions are very abstract, we will give some simple examples later.
+
+==== Static Macro Parameters
+
+Static arguments are a way to pass compile time constants not as a NimNode but as an ordinary value to a macro.
+These values can then be used in the macro body like ordinary Nim variables. For example, when we have
+a macro defined as m1(num: static[int]), then we can pass it constants values compatible with the
+int data type, and in the macro body we can use that parameter as ordinary integer variable. 
+
+==== Untyped Macro Parameters
+
+Untyped macro arguments are passed to the macro before they are semantically checked. This means that the syntax tree that is passed down to the macro does not need
+to make sense for the Nim compiler yet, the only limitation is that it needs to be parsable. Usually, the macro does not check the argument either but uses it in the
+transformation's result somehow. The result of a macro expansion is always checked by the compiler,
+so apart from weird error messages, nothing bad can happen.
+The downside for an untyped macro argument is that these do not play well with Nim's overloading resolution.
+The upside for untyped arguments is that the syntax tree is quite predictable and less complex compared to its typed counterpart.footnote:[
+This definition is from the Nim macros tutorial written by A. Doering, a former paid Nim core developer]
+
+==== Typed Macro Parameters
+
+For typed arguments, the semantic checker runs on the argument and does transformations on it, before it is passed to the macro.
+Here identifier nodes are resolved as symbols, implicit type conversions are visible in the tree as calls, templates are expanded,
+and probably most importantly, nodes have type information. Typed arguments can have the type typed in the arguments list.
+But all other types, such as int, float or MyObjectType are typed arguments as well, and they are passed to the macro as a syntax tree.footnote:[
+This definition is from the Nim macros tutorial written by A. Doering, a former paid Nim core developer]
+
+==== Code Blocks as Arguments
+
+In Nim it is possible to pass the last argument of a proc, template or macro call as
+an indented code block following a colon, instead of an ordinary argument enclosed
+in the parentheses following the function name. For example instead of echo("1 + 2 = ", 1 + 2)
+we can also write
+
+[source, nim]
+----
+echo("1 + 2 = "):
+  1 + 2
+----
+
+For procs this notation makes not much sense, but for
+macros this notation can be useful, as syntax trees of arbitrary complexity can be passed as arguments.
+
+Now let us investigate in some more detail which data types
+a macro accepts. This way we hopefully get more comfortable with all these strange macro stuff.
+For our test we create a few tiny macros with only one parameter which does noting more than
+printing a short message when we compile our program: 
+
+[source, nim]
+----
+import macros
+
+macro m1(x: static[int]): untyped =
+  echo "executing macro body"
+
+m1(3)
+----
+
+This code should compile fine and print the message "executing macro body" during the compile process,
+and indeed it does. The next example is not that easy:
+
+[source, nim]
+----
+import macros
+
+macro m1(x: int): untyped =
+  echo "executing macro body"
+  echo x
+  echo x.repr
+
+var y: int
+y = 7
+m1(y)
+----
+
+This compiles, but as the assignment y = 7 is executed at program runtime, while the macro body
+is already executed at compile time, we should not expect that the echo statement in the macro body
+prints the value 7. Instead we get just y for both echo calls. Now let us investigate what happens when we use
+typed instead of int for the macro parameter:
+
+[source, nim]
+----
+import macros
+
+macro m1(x: typed): untyped =
+  echo "executing macro body"
+  echo x
+  echo x.repr
+
+var y: int
+y = 7
+m1(y)
+----
+
+We get the same result again, both echo statements prints y. The advantage of the use of typed here is, that
+we can change the data type of y from int to float and our program still compiles. So the typed parameter type
+just enforces that the parameter has a well defined type, but it does not restrict the actual data type
+to a special value. The previous macro with int parameter type would obviously not accept a float value.
+
+Now let us see what happens when we pass an undefined symbol to this macro with typed parameter:
+
+[source, nim]
+----
+import macros
+
+macro m1(x: typed): untyped =
+  echo "executing macro body"
+  echo x
+  echo x.repr
+
+m1(y)
+----
+
+This will not compile, as the macro expects a parameter with a well defined type. But we can make it compile
+by replacing typed with untyped:
+
+[source, nim]
+----
+import macros
+
+macro m1(x: untyped): untyped =
+  echo "executing macro body"
+  echo x
+  echo x.repr
+
+m1(y)
+----
+
+So untyped macro parameters are the most flexible ones, and actually they are the most used.
+But in some situations it is necessary to use typed parameters, e.g. when we need to know
+the parameter type in the macro body.
+
+=== Quote and the quote do: construct
+
+In the section before we learned about the parseStmt() function which is used in a macro body to compile
+Nim code represented as a multi-line string
+to an abstract syntax tree representation. Macros uses as return type the "untyped" data type, which is compatible with the NimNode type
+returned by the parseStmt() funcion.
+
+The quote function and the quote do: construct has some similarity with the parseStmt() function:   It accepts an expression or a block of Nim code as argument
+and compiles that Nim code to an abstract syntax tree representation. The advantage of quote() is that the passed Nim code can contain NimNode expressions from the surrounding scope.
+The NimNode expressions have to be quoted using backticks.
+
+As a first very simple example for the use of the quote do: construct we will present a way to print some debugging output.
+
+Assume we have a larger Nim program which works not in the way that we expected, so we would add some
+echo statements like
+
+[source, nim]
+----
+var currentSpeed: float = calcSpeed(t)
+echo "currentSpeed: ",  currentSpeed
+----
+
+Instead of the echo statement we would like to just write show(currentSpeed)
+to get exactly the same output. For that we need access not only to the actual value
+of a variable, but also to its name. Nim macros can give us this information, and
+by using the quote do: construct it is very easy to create our desired showMe() macro:
+
+[source, nim]
+----
+import macros
+
+macro show(x: untyped): untyped =
+  let n = x.toStrLit
+  result = quote do:
+    echo `n`,": ", `x`
+
+import math
+var a = 7.0
+var b = 9.0
+show(a * sqrt(b))
+----
+
+When we compile and run that code we get:
+
+----
+a * sqrt(b): 21.0
+----
+
+In the macro body we use the proc toStrLit() from the macros module which is
+described with this comment: "Converts the AST n to the concrete Nim code and wraps that in a string literal node"
+So our local variable n in the macro body is a NimNode that now contains the string representation of the macro
+argument x.   We use the NimNode n enclosed with backtics in the quote do: construct.
+It seems that writing this macro was indeed not that difficult, but actually it was only that easy because we have
+basically copied the dump() macro
+from the sugar module  of Nim's standard library.
+
+Let us investigate our show() macro in some more detail to learn more about the inner working of
+Nim macros. First recall that macros always have a return value of data type untyped, which is actually a NimNode.
+The quote do: construct gives us a result which we can use as return value of our macro.
+Sometimes
+we may see macros with no result type at all, which is currently identical to the untyped result type.
+As the macro body is executed at compile time, the quote do: construct
+is executed at compile time as well, that is that the code block which we pass to the quote do: construct is processed
+at compile time and the quoted NimNodes in the block are interpolated at compile time. For our program from above the
+actual echo statement in the block is then finally executed at program runtime. To prove how this final echo statement looks we may
+add as last line of our macro the statement "echo result.repr" and we would then get the string "echo "a * sqrt(b)", ": ", a * sqrt(b)" when we compile our program again. 
+
+=== Building the AST manually
+
+In the two sections before we used the functions parseStmt() and quote() to build the AST from a
+textual representation of Nim code. That can be convenient, but is not very flexible.
+In this section we will learn how we can build a valid AST from scratch by calling
+functions of the macros module. That is not that easy, but this way we have the full power of
+the Nim meta-programming available.
+
+Luckily the macros module provides some macros like dumpTree() and dumpAstGen() which can help
+us get started. We will create again a macro similar to the show() macro that we created before with the
+quote do: construct, but now with elementary instructions from the macros module. This may look a bit boring,
+but this plain example is already complicated enough for the beginning, and it shows use the basics to construct much more powerful macros later.
+
+The core code of our debug macro would  look in textual representation like
+
+[source, nim]
+----
+var a, b:int
+echo "a + b", ": ", a + b
+----
+
+That is for debugging we would like to print an expression first in its string representation, and
+divided by a colon the evaluated expression. The dumpTree() macro can show us how the Nim syntax tree
+for such a print debug statement should look:
+
+[source, nim]
+----
+import macros
+
+var a, b: int
+
+dumptree:
+  echo "a + b", ": ", a + b
+----
+
+When we compile this code we get as output:
+
+----
+ StmtList
+  Command
+    Ident "echo"
+    StrLit "a + b"
+    StrLit ": "
+    Infix
+      Ident "+"
+      Ident "a"
+      Ident "b"
+----
+ 
+So the Nim syntax tree for the echo statement from above is a statement list 
+consisting of an echo command with two string literal arguments and a last argument which
+is built with the infix + operator and the two arguments a and b. So we can see how the
+AST that we would have to construct would have to look, but we still have no idea how
+we could construct such an AST in detail. Well, the macros module would contain the functions what we
+need for that, but it is not easy to find the right functions there. The dumpAstGen() macro
+can list us exactly the needed functions:
+ 
+[source, nim]
+----
+import macros
+
+var a, b: int
+
+dumpAstGen:
+  echo "a + b", ": ", a + b
+----
+ 
+ Compiling that code gives us:
+ 
+----
+ nnkStmtList.newTree(
+  nnkCommand.newTree(
+    newIdentNode("echo"),
+    newLit("a + b"),
+    newLit(": "),
+    nnkInfix.newTree(
+      newIdentNode("+"),
+      newIdentNode("a"),
+      newIdentNode("b")
+    )
+  )
+)
+----
+
+This is a nested construct. The most outer instruction constructs a new tree of Nim Nodes with the node type statement list.
+The next construct creates a tree with node kind command, which again contains the ident node with name echo,
+which again contains two literals and the infix + operator.
+
+Indeed we can use the output of the dumpAstGen() macro directly to create a working Nim program:
+
+[source, nim]
+----
+import macros
+
+var a, b: int
+
+#dumpAstGen:
+#  echo "a + b", ": ", a + b
+
+macro m(): untyped =
+  nnkStmtList.newTree(
+    nnkCommand.newTree(
+      newIdentNode("echo"),
+      newLit("a + b"),
+      newLit(": "),
+      nnkInfix.newTree(
+        newIdentNode("+"),
+        newIdentNode("a"),
+        newIdentNode("b")
+      )
+    )
+  )
+
+m()
+----
+
+When we compile and run that code, we get the output:
+
+----
+a + b: 0
+----
+
+So the AST from above is fully equivalent to the one line echo statement.
+But now we would have to investigate how we can pass an actual expression
+to our macro and how we can use that passed argument in the macro body --
+first print its textual form, and then the evaluated value separated by a colon.
+And there is one more problem: That nested macro body from above is not really useful for
+our final dump() macro, as we would like to be able to construct the NimNde, that is
+returned by the dump macro step wise: Add the echo command, then the passed expression
+in string form, and finally the evaluated expression. So let us first rewrite above macro in a form
+where the AST is constructed step by step. That may look difficult, but when we know that
+we can call the newTree() function with only one node kind parameter to create a empty tree
+of that kind, and that we can later use the overloaded add() proc to add new nodes to that tree, then
+it is easy to guess how we can construct the macro body:
+
+[source, nim]
+----
+ import macros
+
+var a, b: int
+
+#dumpAstGen:
+#  echo "a + b", ": ", a + b
+
+macro m(): untyped =
+  nnkStmtList.newTree(
+    nnkCommand.newTree(
+      newIdentNode("echo"),
+      newLit("a + b"),
+      newLit(": "),
+      nnkInfix.newTree(
+        newIdentNode("+"),
+        newIdentNode("a"),
+        newIdentNode("b")
+      )
+    )
+  )
+
+macro m2(): untyped =
+  result = nnkStmtList.newTree()
+  let c = nnkCommand.newTree()
+  let i = nnkInfix.newTree()
+  i.add(newIdentNode("+"))
+  i.add(newIdentNode("a"))
+  i.add(newIdentNode("b"))
+  c.add(newIdentNode("echo"))
+  c.add(newLit("a + b"))
+  c.add(newLit(": "))
+  c.add(i)
+  result.add(c)
+
+m2()
+----
+
+First we create the tree empty three structures of node kinds
+statement list, command and infix operator. Then we use the overloaded add()
+proc to populate the threes, using procs like newIdentNode() or newLit() to
+create the nodes of matching types as before. When we run our program with the modified
+macro version m2() we get again the same output:
+
+----
+a + b: 0
+----
+
+The next step to create our actual dump() macro is again easy -- we pass the expression to dump
+as an untyped macro parameter to the macro, convert it to a NimNode of string type and use that
+instead of the newLit("a + b") from above. In our second macro, where we used the quote do: construct,
+we applied already toStrLit() on an untyped macro parameter, so we should be able to reuse that
+to get the string NimNode.  Instead we would have to apply the stringify operator additional
+on that value. But a simpler way is to just apply repr() on the untyped macro argument to
+get a NimNode of string type. And finally, to get the value of the evaluated expression in our dump
+macro, we add() the untyped macro parameter directly in the command three -- that value is
+evaluated when we run the macro generated code. 
+
+[source, nim]
+----
+import macros
+
+var a, b: int
+
+macro m2(x: untyped): untyped =
+  var s = x.toStrLit
+  result = nnkStmtList.newTree()
+  let c = nnkCommand.newTree()
+  c.add(newIdentNode("echo"))
+  c.add(newLit(x.repr))
+  #c.add(newLit($s))
+  c.add(newLit(": "))
+  c.add(x)
+  result.add(c)
+
+m2(a + b)
+----
+ 
+Again, we get the desired output:
+ 
+----
+ a + b: 0
+----
+ 
+So our dump() macro called still m2() is complete and can be used
+to debug arbitrary expression. Note that this macro works for arbitrary expressions, not only
+for numerical ones. We may use it like
+ 
+[source, nim]
+----
+m2(a + b)
+let what = "macros"
+m2("Nim " & what & " are not that easy")
+----
+ 
+ and get the output
+ 
+----
+a + b: 0
+"Nim " & what & " are not that easy": Nim macros are not that easy
+----
+
+Now let us extend our debug macro so that it can accept multiple arguments.
+The needed modifications are tiny, we just pass instead of a single untyped
+argument an argument of type varargs[untyped] to the debug macro, and iterate
+in the macro body with a for loop over the varargs argument:
+
+[source, nim]
+----
+import macros
+
+macro m2(args: varargs[untyped]): untyped =
+  result = nnkStmtList.newTree()
+  for x in args:
+    let c = nnkCommand.newTree()
+    c.add(newIdentNode("echo"))
+    c.add(newLit(x.repr))
+    c.add(newLit(": "))
+    c.add(x)
+    result.add(c)
+
+var
+  a = 2
+  b = 3
+m2(a + b, a * b)
+----
+
+When we compile and run that code we get:
+
+----
+a + b: 5
+a * b: 6
+----
+
+=== The Assert Macro
+
+As some more simple macro example we will show how we can create our own
+assert macro. The assert() has only one argument, which is a expression with
+a boolean result. If the expression evaluates to true at program runtime, then
+the assert macro should do nothing. But when the expression evaluates to
+false, then this indicates a serious error and the macro shall print the
+expression which evaluated to false, and then terminate the program execution.
+This is basically what the assert() macro in the Nim standard library already does,
+and the official Nim macros tutorial contains such an assert() macro as well.
+
+Arguments for our assert macro may look like "x == 1 +2", containing one infix
+operator and one left-hand and one right-hand operand. We will show how we can use
+subscript [] operators on the NimNode argument to access each operand.
+
+As first step we use the treeRepr() function from the macros module to show us the
+Nim tree structure of a boolean expression with an infix operator:
+
+[source, nim]
+----
+import std/macros
+
+macro myAssert(arg: untyped): untyped =
+  echo arg.treeRepr
+
+let a = 1
+let b = 2
+
+myAssert(a != b)
+----
+
+When we compile that program, then the output of the treeRepr() function
+shows us, that we have passed as argument an infix operator with two operands at index position 1 and 2.
+
+----
+Infix
+  Ident "!="
+  Ident "a"
+  Ident "b"
+----
+
+Now let us create an assert macro which accept such a boolean expression with
+an infix operator and two operands:
+
+[source, nim]
+----
+import std/macros
+
+macro myAssert(arg: untyped): untyped =
+  arg.expectKind(nnkInfix) # NimNodeKind enum value
+  arg.expectLen(3)
+  let op  = newLit(" " & arg[0].repr & " ") # operator as string literal NimNode
+  let lhs = arg[1] # left hand side as NimNode
+  let rhs = arg[2] # right hand side as NimNode
+  result = quote do:
+    if not `arg`:
+      raise newException(AssertionDefect,$`lhs` & `op` & $`rhs`)
+
+let a = 1
+let b = 2
+
+myAssert(a != b)
+myAssert(a == b)
+----
+
+The first two function calls expectKind() and expectLen() verify that the macro argument
+is indeed an infix operator with two operands, that is the total length of the argument is 3.
+The symbol nnkInfix is an enum value of the NimNodeKind data type defined in the macros module -- that
+module follows the convention to prepend enum values with a prefix, which is nnk for NimNodeType in this case. 
+In the macro body we use the subscript operator [0] to access the operator, and then apply
+repr() on it to get its string representation. Further we use the subscript operators [1] and [2]
+to extract the two operands from the macro argument and store the result each in a NimNode
+lhs and rhs. Finally we create the quote do: construct with its indented multi-line
+string argument and the interpolated NimNode values enclosed in backtics. The
+block after the quote do: construct checks if the passed arg macro argument evaluates
+to false at runtime, and raises an exception in that case displaying the reconstructed
+argument.
+
+We have to admit that this macro is not really useful in real life, as it is restricted to
+simple boolean expressions with a single infix operator. And what it does in its body
+makes not much sense: The original macro argument is split in tree parts, the
+infix operator and the two operands, which are then just joined again to show
+the exception message. But at least we have learned how we can access the various
+parts of a macro argument by use of subscript operators, how we can use the treeRepr()
+function from the macros module to inspect a macros argument, and how we can
+ensure that the macro argument has the right shape for our actual macro by applying
+functions like expectKind() and expectLen() early in  the macro body.
+
+References:
+
+* https://nim-lang.org/docs/manual.html#macros
+* https://nim-lang.org/docs/tut3.html
 
 = Appendix
 
