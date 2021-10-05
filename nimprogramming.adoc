@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-OCT-03
+//v0.1, 2021-OCT-05
 :doctype: book
 :toc: left
 :icons: font
@@ -11653,6 +11653,112 @@ parts of a macro argument by use of subscript operators, how we can use the tree
 function from the macros module to inspect a macros argument, and how we can
 ensure that the macro argument has the right shape for our actual macro by applying
 functions like expectKind() and expectLen() early in  the macro body.
+
+=== Pragma Macros
+
+All macros and templates can also be used as pragmas. They can be attached to routines (procs, iterators, etc), type names, or type expressions.
+In this section we will show a small example how a proc pragma can be used to print
+the proc name whenever a proc annotated with that pragma is called:
+
+[source, nim]
+----
+import std/macros
+
+dumpAstGen: # let us see how the NimNode for an echo statement has to look
+  proc test(i: int) =
+    var thisProcName = "test"
+    echo thisProcname
+    echo 2 * i
+
+macro pm(arg: untyped): untyped = # a pragma macro
+  expectKind(arg, nnkProcDef) # assert that macro is applied on a proc
+  let node = nnkCommand.newTree(newIdentNode("echo"), newLit($name(arg)))
+  insert(body(arg), 0, node)
+  result = arg
+
+proc myProc(i: int) {.pm.} =
+  echo 2 * i
+
+proc main =
+  myProc(7)
+
+main()
+----
+
+We start with the dumpAstGen() macro applied on a test() proc which contains an echo statement.
+So when we compile that code, we get an initial idea how a NimNode that shall print the
+proc name should look. To use pragma macros, we annotate the proc with the macro name enclosed
+in the pragma symbols {..}. The annotated proc is then passed to the pragma with that name in form
+of a syntax tree. Our goal is to to add a NimNode to this tree that prints the proc name of the passed AST.
+To do that we have to know two important points: For the proc that is passed as untyped data type to our
+macro, we can use the function body() to get the AST representation of the body of the passed proc,
+and we can use name() to get the name of that proc. The functions body() and name() are provided
+by the macros module of Nim's standard library. In our macro pm() we first verify, that the passed
+argument is really of node kind ProcDef. Then we create a new NimNode, which calls the echo function
+with the proc name as parameter. And we insert that node at position 0 into the body of the passed proc.
+Finally we return the modified AST.
+
+When we run our program, we get this output in the terminal window:
+
+----
+$ ./t
+myProc
+14
+----
+
+=== Macros to generate new operator symbols
+
+Earlier in the book we have already learned how we can define
+new procs and templates which can be used as operators.
+In this section we will learn how we can create a macro that does not
+only create an operator that can work on existing variables, but that can be used
+to create new variables. In Nim we use the var or let keyword to
+create new variables. Some other languages allow to create new variables on the fly
+by using just "=", ":=" or "!=" to create new variables. 
+
+[source, nim]
+----
+import std/macros
+
+dumpAstGen:
+  var xxx: float
+
+macro `!=`(n, t: untyped): untyped =
+  let nn = n.repr
+  let tt = t.repr
+  nnkStmtList.newTree(
+    nnkVarSection.newTree(
+      nnkIdentDefs.newTree(
+        # newIdentNode("xxx"),
+        newIdentNode(nn),
+        # newIdentNode("float"),
+        newIdentNode(tt),
+        newEmptyNode()
+      )
+    )
+  )
+
+proc main =
+  myVar != int
+  myVar = 13
+  echo myVar, " ", typeof(myVar)
+
+main()
+----
+
+Again dumpAstGen() shows us the structure of the needed AST.
+We use repr() to get the string representation of the two
+macro arguments and replace in the dumpAstGen() output the arguments of the newIdentNode()
+calls with that values. When we compile and run above program we get
+
+----
+$ ./t
+13 int
+----
+
+For the case that we should really intent to use such a macro in our own
+code, we should of course add some code to the macro to check that
+the passed arguments have the correct content.
 
 References:
 
