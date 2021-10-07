@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-OCT-05
+//v0.1, 2021-OCT-07
 :doctype: book
 :toc: left
 :icons: font
@@ -11704,6 +11704,140 @@ When we run our program, we get this output in the terminal window:
 $ ./t
 myProc
 14
+----
+
+=== Pragma Macro for Iterator
+
+Let us assume we have an object type which has some fields which are all sequences with the same base type, and we need
+an iterator to iterate over all the container elements. Indeed this may happen when the different seqs contain
+subclasses of the same parent class as in
+
+[source, nim]
+----
+type
+  Group = ref object of Element
+    lines: seq[Line]
+    circs: seq[Circ]
+    texts: seq[Text]
+    rects: seq[Rect]
+    pads: seq[Pad]
+    holes: seq[Hole]
+    paths: seq[Path]
+    pins: seq[Pin]
+    traces: seq[Trace]
+    
+iterator items(g: Group): Element =
+  for el in g.lines:
+    yield el
+  for el in g.rects:
+    yield el
+  for el in g.circs:
+    yield el
+  ....
+----
+
+Maybe we do not want to write all the for loops in the iterator body manually.
+One solution is to create a pragma macro, which creates the for
+loops in the iterator body for us:
+
+[source, nim]
+----
+import std/macros
+
+type
+  O = object
+    a, b, c: seq[int]
+
+macro addItFields(o: untyped): untyped =
+  const fields = ["a", "b", "c"]
+  expectKind(o, nnkIteratorDef)
+  # echo o.treeRepr
+  # echo o.params.treeRepr
+  let objName = o.params[1][0]
+  for f in fields:
+    let node =
+      nnkStmtList.newTree(
+        nnkForStmt.newTree(
+          newIdentNode("el"),
+          nnkDotExpr.newTree(
+            #newIdentNode("o"),
+            newIdentNode($objName),
+            # newIdentNode("b")
+            newIdentNode(f)
+          ),
+          nnkStmtList.newTree(
+            nnkYieldStmt.newTree(
+              newIdentNode("el")
+            )
+          )
+        )
+      )
+    insert(body(o), body(o).len, node)
+  result = o
+  #echo result.repr
+
+iterator items(o: O): int {.addItFields.} =
+  discard
+
+#dumpAstGen:
+#  iterator xitems(o: O): int =
+#    for el in o.a:
+#      yield el
+
+var ox: O
+ox.a.add(1)
+ox.b.add(2)
+ox.c = @[5, 7, 11, 13]
+
+for l in ox.items:
+  echo l
+----
+
+We start again with a dumpAstGen() call which shows us the shape of the for loop node.
+In that node we only have to replace two newIdentNode() calls so that the fields names can be provided
+by iterating over an array of strings, and the object name is taken from the iterator parameter.
+To get the object name, we first use o.treeRepr to see the whole parameter structure, and then
+params.treeRepr to get the structure of the parameters passed to our iterator. Using subscript operators
+we get the actual object name. We insert each new node that we create in the for loop with a call of
+insert(body(o), body(o).len, node) as new last node in the body of the iterator.
+We can create a more flexible variant of our above macro, when we pass
+the actual field names as additional parameter to the pragma macro:
+
+[source, nim]
+----
+import std/macros
+
+type
+  O = object
+    a, b, c: seq[int]
+
+macro addItFields(fields: openArray[string]; o: untyped): untyped =
+  expectKind(o, nnkIteratorDef)
+  let objName = o.params[1][0]
+  for f in fields:
+    let node =
+      nnkStmtList.newTree(nnkForStmt.newTree(newIdentNode("el"),
+          nnkDotExpr.newTree(newIdentNode($objName),newIdentNode($f)),
+          nnkStmtList.newTree(nnkYieldStmt.newTree(newIdentNode("el")))))
+    insert(body(o), body(o).len, node)
+  result = o
+
+iterator items(o: O): int {.addItFields(["a", "b", "c"]).} =
+  discard
+
+var ox: O
+ox.a.add(1)
+ox.b.add(2)
+ox.c = @[5, 7, 11, 13]
+
+for l in ox.items:
+  stdout.write l, ' '
+----
+
+When we run this macro or the one before, we get
+
+----
+1 2 5 7 11 13
 ----
 
 === Macros to generate new operator symbols
