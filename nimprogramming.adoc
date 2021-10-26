@@ -860,11 +860,11 @@ but there exists some nice tutorials already, and hopefully this book will help 
 Generally yes, in the same way as Pascal was in the 1980's, and Modula/Oberon were
 at the end of the last century. But Nim still has the same problems
 as the wirthian languages: They do not really help with finding a job. When we teach
-the kids some Javascript or C, they may find at least a simple employment when they
+the kids some JavaScript or C, they may find at least a simple employment when they
 have to leave the intended education path early for some reason. With niche languages
 this is unfortunately not the case, so teachers should know about their responsibility.
 And of course teaching against the interests of the kids makes not much sense. When
-they want to learn some Javascript to make some visual effects or whatever easily, then it
+they want to learn some JavaScript to make some visual effects or whatever easily, then it
 is hard to teach another language which may be not  immediately available on the PC at home or
 their smartphone.
 
@@ -1917,8 +1917,8 @@ unsigned integers.
 
 For compatibility with external libraries Nim has also the integer types cint and
 cuint, which exactly match the C types int and uint when we compile for the C or
-{cpp} backend. For the javascript backend, the LLVM backend or other backends these
-types may be also avalable, for details you should consult the compiler
+{cpp} backend. For the JavaScript backend, the LLVM backend or other backends these
+types may be also available, for details you should consult the compiler
 documentation.  For most {os} and C compilers the int and uint types in C are 4 bytes
 in size, but there can be exceptions, so we better should not write code that depends
 on the actual byte size of the types. The Nim types cint and cuint are generally only
@@ -1955,7 +1955,7 @@ are not valid.
 In the current Nim implementation float variables occupy 64 bits. Nim has also the
 data type float64 which is currently identical to plain float and float32 which can
 store only smaller numbers and has less precision.footnote:[The fact that in the
-current Nim imprementation of A. Rumpf float is identical to float64 should be seen
+current Nim implementation of A. Rumpf float is identical to float64 should be seen
 as an implementation detail. For other implementations the float size may depend on
 OS and CPU.] Floats can store values up to a magnitude of approximately
 [.term]#1E308# with a positive or negative sign, and floats have a typical precision
@@ -6132,7 +6132,7 @@ drawing applications with code similar to our basic example.
 
 Not that the OOP style only works with ref objects, but not with value objects.  The
 obvious reason is that we can have collections of different sub-types stored in
-arrays or seqences only for ref objects, as in arrays and sequences all element types
+arrays or sequences only for ref objects, as in arrays and sequences all element types
 have to have equal size. For references that it the case, as references are basically
 pointers. But different value types would have different size. Linked lists would be
 no better solution, as again we can not built lists with value objects.
@@ -6598,7 +6598,7 @@ Module tt.nim defines a ref object type, but the destructor proc takes a var val
 parameter. The destructor is called when a value object or a ref object goes out of scope.
 Our variable o1 has type tt.O1, so it was indeed expected that its destructor from module tt.nim
 is called. Variable o2 is a ref object with parent O1, as we define no destructor for this type, the destructor
-of the parent type is called. The variabales o3 and o4 are of ref object and of value object types, each with
+of the parent type is called. The variables o3 and o4 are of ref object and of value object types, each with
 a field of type O1, and for that field the destructor for O1 is called. Finally for type O5 we define
 our own destructor, which then additional calls the destructor of module tt.
 
@@ -7689,7 +7689,7 @@ We discussed Nim's string data type already in part II of the book. Remember tha
 in Nim is a variable size container for ASCII characters. Strings can be plain ASCII strings, or
 the bytes of the string can be interpreted as unicode glyphs. Nim has also a cstring data type,
 which was initially introduced to be compatible with the character arrays used in C libraries
-as strings, but is now called compatible string as cstrings do also support the Javascript backend.
+as strings, but is now called compatible string as cstrings do also support the JavaScript backend.
 Nim strings can be passed directly to C libs, as a Nim string contains a Null terminated buffer
 for the actual data, which is identical to a C language string. So whenever we convert a Nim string to a C language string
 or pass a Nim string to a C library, this is free of costs, while converting a C string to a Nim string always
@@ -8056,7 +8056,7 @@ echo s.find("Rust") # -1
 ----
 
 The contains() function can be used to test if a character, a set of characters or a substring
-in contained in a string. Instead of conatains(s, sub) we can write sub in s. Note that the a function variant for
+in contained in a string. Instead of contains(s, sub) we can write sub in s. Note that the a function variant for
 single characters is defined in the system module.
 
 The replace() function can be used to replace all occurrences of a character or a substring
@@ -8077,7 +8077,7 @@ only whitespace. Also useful can be the function repeat() which returns a string
 character or the passed string n times, and the function spaces() which returns a string containing only n spaces.
 
 For single character tests we have functions like isDigit(), isUpperAscii, isLowerAscii, isSpaceAscii, isAlphaNumeric.
-Function isDigit() test for characters '0'..'9', isUpperAscii() for 'A'..'Z', islowerAscii() for 'a'..'z', isSpaceAsccii() for ASCII witetespace (' ', '\t')
+Function isDigit() test for characters '0'..'9', isUpperAscii() for 'A'..'Z', islowerAscii() for 'a'..'z', isSpaceAsccii() for ASCII whitespace (' ', '\t')
 and is AlphaNumeric() test for lower or upper case ASCII letter or a decimal digit.
 
 Function toLowerAscii() convert all the characters 'A'..'Z' to lower case, and toUpperAscii() converts all the characters
@@ -8484,7 +8484,7 @@ the scanp() macro there.
 
 With the fmt() macro from the strformat module we can format and interpolate strings similar as Python3 with its f-strings.
 
-//Module strsformat provides with the fmt() macro a way for string formating similar to Python3 f-strings:
+//Module strsformat provides with the fmt() macro a way for string formatting similar to Python3 f-strings:
 
 [source, nim]
 ----
@@ -8528,7 +8528,7 @@ multiline
 string."""
 ----
 
-The fmt() macro accept a few directives for the formating of integer and floating point numbers like
+The fmt() macro accept a few directives for the formatting of integer and floating point numbers like
 
 [source, nim]
 ----
@@ -8542,9 +8542,9 @@ The basic pattern is, that the numeric variable is followed by a colon
 and the total number of desired characters. We can precede the number with a
 < or > to indicate left or right alignment, and for floating point numbers
 we can use a notation similar as used for printf() in the C language:
-n.mf stands for a float formated with n characters total and m decimal places.
+n.mf stands for a float formatted with n characters total and m decimal places.
 As in C we can use e instead of f to indicate scientific notation. If the value which specifies
-the total number of characters starts with a zero digit, then the formated
+the total number of characters starts with a zero digit, then the formatted
 number uses zeros instead spaces for leading digits. And #X after the colon
 generates hexadecimal value for integer numbers.
 
@@ -8573,7 +8573,7 @@ echo "three time three is <3 * 3>".fmt('<', '>') # three time three is 9
 ----
 
 We will
-not try to explain all these various formating options in detail, as it is
+not try to explain all these various formatting options in detail, as it is
 really hard to remember. It is enough that you know that these options exists, so
 you can consult the API docs for details when you would  need it.
 
@@ -9864,7 +9864,7 @@ proc insertionSort(s: seq[int]): seq[int] =
   var j: int # current position in the new, sorted range
   var k = s.len # index one above the still unprocessed range 
   var x: int # the value we have to insert next
-  while k > 0: # as long as we have still unprocesed entries
+  while k > 0: # as long as we have still unprocessed entries
     dec(k)
     x = s[k]
     j = result.high # top of sorted range
@@ -11234,7 +11234,7 @@ the parameter type in the macro body.
 In the section before we learned about the parseStmt() function which is used in a macro body to compile
 Nim code represented as a multi-line string
 to an abstract syntax tree representation. Macros uses as return type the "untyped" data type, which is compatible with the NimNode type
-returned by the parseStmt() funcion.
+returned by the parseStmt() function.
 
 The quote function and the quote do: construct has some similarity with the parseStmt() function:   It accepts an expression or a block of Nim code as argument
 and compiles that Nim code to an abstract syntax tree representation. The advantage of quote() is that the passed Nim code can contain NimNode expressions from the surrounding scope.
