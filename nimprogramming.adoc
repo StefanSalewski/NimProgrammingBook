@@ -111,6 +111,8 @@ version of the book was created.  If this should change later and Nim implementa
 with significantly different behaviour may become available, then we may add remarks
 where necessary.
 
+The source of this book is available at https://github.com/StefanSalewski/NimProgrammingBook
+
 = Part I: Introduction
 
 [.normal]
