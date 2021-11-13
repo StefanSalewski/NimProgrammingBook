@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
-A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021
-//v0.1, 2021-OCT-27
+A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
+//v0.1, 2021-NOV-13
 :doctype: book
 :toc: left
 :icons: font
@@ -33,7 +33,8 @@ https://irclogs.nim-lang.org/30-05-2021.html#02:49:02
 
 asciidoctor -a stylesheet=asciidoctor.css nimprogramming.adoc
 
-we are using these custom roles for clean semantic markup:
+We are using these custom roles for clean semantic markup:
+(Seems that we have to define these styles at the end of asciidoctor.css, as nimbook.css seems to be ignored?)
 
 [.new]##
 [.term] terminal text
@@ -43,6 +44,9 @@ we are using these custom roles for clean semantic markup:
 [.imp] important
 [.key] Nim keyword
 [.op] Nim operator
+[.var] Variable
+[.func] Function
+[.type] Data Type
 
 We use
 
@@ -118,6 +122,9 @@ fix that. Please note that we are more interested in remarks to the content of t
 in typos or grammar issues. Before the book will be officially published or a printed
 version will be created, we will run it through some correction software or hire a professional
 proof reader.
+
+[.new]#New sections, and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
+not that new stuff is still marked with a light yellow.# For details you may see the change log in the appendix.
 ****
 
 = Part I: Introduction
@@ -10664,7 +10671,7 @@ than our QuickSort functions. The reason for that may be that we have to
 allocate the temporary seq sh, fill it with values, and merge it back.
 And the total memory consumption is high, our recursive function calls consumes
 for the buffers sh totally the same amount as the initial container. The advantages of MergeSort is that
-there is no worst case as for QiuckSort, as we have not to select a median but
+there is no worst case as for QuickSort, as we have not to select a median but
 can split the range just at the center, and that the sort is stable, that is
 merging does not exchange the position of elements with same value.footnote[
 Well to ensure this, we may have to check  the actual merge condition, do we have
@@ -10839,6 +10846,284 @@ References:
 //= Part VI: Advanced examples
 
 //== something
+
+== [.new]#Some small exercises#
+
+=== Removing adjacent duplicates
+
+Removing duplicates from containers is a common programming task.
+When we know in advance, that we do not want to store the same data value
+more than once, and that the order of the stored values does not matter, then
+we may consider using some form of sets or hash sets. If insertion order matters, then
+the standard library may provide some form of ordered or sorted sets for us. But for this exercise we  will assume
+that we have values stored in a sequence, and we want to remove the adjacent duplicates.
+A typical use case for that is when we have stored a path of 2D or 3D positions. When we insert, move or
+delete a position value, it may occur that we get duplicates, with zero spatial distance between the two
+neighbored positions. In that case it is generally desired to remove the duplicate. A similar use case
+may be a text file stored as a sequence of words, where adjacent duplicated words may indicate
+a typo. To keep our example short and simple, we will use as data type a seq[int]. Using other data
+types or creating a generic proc should be not difficult for the reader.
+
+```
+# [1, 4, 4, 2, 5, 5, 5, 1] ==> [1, 4, 2, 5, 1]
+```
+
+Before you continue looking at our provided example code, you may think about this task yourself,
+maybe take a piece of paper and a pencil and sketch the algorithm. It is really not difficult, maybe too
+easy for you when you have carefully studied the proceeding sections of the book or when you have already
+some programming experience. When we create a proc for this task we have to decide first if the proc should work on the
+passed in seq in-place or if it should return the processed result and leave the original data unchanged.
+Often returning a copy is easier, but for our task the common use case seems to be more an algorithm that works in place.
+So we will provide the in place algorithm here and leave the version returning a processed result as an optional
+exercise to the reader. Note that returning a processed copy needs to allocate the seq for the result, and maybe later the memory management system has to free
+the result data again, which is some additional effort. So we may guess that the in-place proc is faster, as long as we do not really need
+the copy. When needed we can use the [.func]#dup()# macro of the sugar module to use our in place proc  as one that works on a copy and returns this copy, without modifying the input.
+
+The basic idea of our algorithm is that we iterate through the whole seq and pick an element at the current location
+only if it is not identical to the proceeding element. For the case that our seq is empty or contains only one single element, we have obviously noting to do
+and can return immediately. So our code may look like
+
+[source, nim]
+----
+proc deTwin(s: var seq[int]) =
+  if s.len < 2:
+    return
+  var i, d: int # d is the position where we copy the elements that we want to keep
+  while i < s.high:
+    inc(i)
+    if s[d] != s[i]:
+      inc(d)
+      s[d] = s[i]
+  s.setLen(d + 1)
+
+var h = @[1, 4, 4, 2, 5, 5, 5, 1]
+detwin(h)
+echo h # [1, 4, 2, 5, 1]
+----
+
+We use two positions, the actual position in the input data denoted as [.var]#i#, and the destination
+position [.var]#d#. Both start with the default value zero. To keep full control over the iterating process,
+we do not use a for iterator in this case, but a plain while loop for the index of the actual position.
+In the while loop body we compare the value at the current index position [.var]#s[i]# with the value that
+we picked before, which is [.var]#s[d]#. If the values are not identical, we pick the current value [.var]#s[i]#, otherwise
+we just skip it. With picking a value we mean that we copy it from index position [.var]#i# to index position [.var]#d#.
+Of course this can only work, when [.var]#d# is never larger than [.var]#i#, as otherwise we would destroy our
+still unprocessed input data at positions [.var]#s[i + 1]#. The loop body is really simple, but getting the indices
+right needs some care: We have to ensure that [.var]#i# and [.var]#d# starts at the right positions, that we increase
+[.var]#i# and [.var]#d# when necessary, and that the loop terminates when all input data is processed. Obviously
+the first comparison should compare [.var]#s[d == 0]# with [.var]#s[i == 1]#. So [.var]#d# and [.var]#i# can get initial values zero each, when
+we increase [.var]#i# already each time at the start of the loop. The destination position [.var]#d# starts with zero, as
+we always accept the first element, and [.var]#d# increases only when we have accepted one more element.
+The loop is executed as long as [.var]#i# is less than [.var]#s.high#. Finally we have to set the new length of [.var]#s# to [.var]#d + 1#.
+The value [.var]#d + 1# results from the fact that we always accept the first element, and for each more accepted
+element [.var]#d# is increased, so the total number of accepted elements is [.var]#d + 1#. The carefully reader may wonder
+if the first two lines of the proc, where we test for the trivial case, are really necessary, or if
+these cases can be covered by our while loop already. Well, generally it is a good idea to avoid unnecessary tests
+for trivial cases when possible, as that tests may increase code size and cost some tiny bit of performance.
+But in this case we have two trivial cases -- empty seq and seq with only one element, which can be not covered well
+with a loop with only one simple termination condition. And of course we should try to make the condition
+of the while loop as simple as possible, that is avoid additional boolean conditions with [.op]#and# or [.op]#or# operators
+for best performance. Further you may wonder if our picking strategy is really optimal, as for a [.type]#seq#
+with no  adjacent duplicates we still copy all the elements. Yes indeed, but for the general case with
+duplicates we have to do the copy, and such a copy operation is really fast. And additional tests with an [.key]#if#
+condition should cost some performance. Maybe we could have used two loops in the proc body, one that
+just accepts elements without a copy operation as long as no duplicates are found, and a second loop like the
+one from above which then has to do copy operations to move the elements to the front. You may try that
+yourself and measure the performance for various input data.
+
+===  Array difference
+
+The difference of two arrays or sequences A and B is the set (A - B) of values that are contained in A but not in B.
+
+```
+[1, 2, 5, 2, 9, 7, 0] - [7, 4, 1, 10, 7] == [2, 5, 2, 9, 0]
+```
+
+Actually such difference of array or seq containers is not needed that often, that is why that function may not be provided by the
+Nim standard library.footnote:[Ruby provides such an operator: https://ruby-doc.org/core-3.0.0/Array.html#method-i-2D ]
+Building such kind of differences is much easier and faster with sets or hash sets, so whenever possible we should
+use these containers from the beginning when we know in advance that we have to build differences.
+But sometimes we just have arrays or sequences, and then we may notice that we need the difference. When the order of the elements does not matter,
+we may just convert both containers to sets or hash sets, build the difference and then maybe convert that difference back to a
+seq. But there are use cases where we really want to work with array or seq containers, maybe because we want to iterate over the container,
+want that values can be contained multiple times or always keep the insertion order.
+
+So let's create an algorithm to do this task. A naive strategy would be to iterate over container A and delete each element that is also contained in B.
+But that would be slow, and may not work at all, as deleting elements while we iterate over the seq does generally not work at all.
+We will create a proc called [.op]#\`-`# which can be used as an operator to build the difference of two arrays or sequences and which returns
+the difference as a new seq, and a [.op]#\`-=`# proc which removes the elements of [.var]#b# from [.var]#a# in place and is also used as an operator.
+
+[source, nim]
+----
+import sets
+
+proc `-`*[T](a, b: openArray[T]): seq[T] =
+  let s = b.toHashSet
+  result = newSeq[T](a.len)
+  var i = 0
+  for el in a:
+    if el notin s:
+      result[i] = el
+      inc(i)
+  result.setLen(i)
+
+proc `-=`*[T](a: var seq[T]; b: openArray[T]) =
+  let s = b.toHashSet
+  var i, j: int # both start with default value zero
+  while i < a.len:
+    if a[i] notin s:
+      a[j] = a[i]
+      inc(j)
+    inc(i)
+  a.setLen(j)
+
+proc main =
+  let a = [1, 2, 5, 2, 9, 7, 0]
+  let b = [7, 4, 1, 10, 7]
+  echo a - b # @[2, 5, 2, 9, 0]
+  echo b - a # @[4, 10]
+  
+  var x = @a
+  x -= b
+  echo x # @[2, 5, 2, 9, 0]
+
+main()
+----
+
+To make the lookup for elements contained in [.var]#b# fast, we convert [.var]#b# to a [.type]#hash set#, for which lookup time is in principle
+independent of the size of the container, which is called O(1) in the big O notation. We make the two procs generic and
+use the data type [.type]#open array# for the two passed arguments so that our procs can be used for arrays as well as for sequences.
+The exception is the first var parameter of the [.op]#\`-=`# proc, which has to be a seq obviously, as arrays have a fixed size and can not shrink.
+For the [.op]#\`-`# proc we pre-allocate the returned [.var]#result# variable with a size of [.var]#a.len#, so that we can avoid re-allocations.
+Then we iterate over [.var]#a# with a for loop, and copy the current element to the result seq when the value in not contained
+in the hash set. We use the subscript operator [.op]#[]# to copy the picked elements at position [.var]#i# in the [.var]#result# seq, which is faster than
+starting with an empty [.var]#result# seq and appending the picked elements. As we initialize the [.var]#result# seq with the size
+of container [.var]#a#, we have finally to call [.code]#result.setLen(i)# to shrink the size to the number of actually picked elements.
+The presented [.op]#\`-=`# proc is a bit more complicated, as we process seq [.var]#a# in place. We use an approach similar
+as we did in the [.func]#deTwin()# proc in the previous section, that is we use two index positions [.var]#i# and [.var]#j#, and copy elements from current position [.var]#i#
+to position [.var]#j# if the value is not contained in the lookup set. Again finally we have to set the size of seq [.var]#a# to the
+number of picked elements.
+
+While the two presented procs may be actually useful in same cases, they are more presented as an exercise here.
+As a smart user of the Nim forum showed us, we can get a very similar behaviour by use of the [.func]#filter()# proc in
+combination with the [.op]#+=>+# operator of the sugar module:
+
+[source, nim]
+----
+import sequtils, sets, sugar
+
+let a = [1, 2, 5, 2, 9, 7, 0]
+let b = [7, 4, 1, 10, 7]
+
+let bSet = b.toHashSet()
+echo a.filter((x) => x notin bSet)
+----
+
+References:
+ 
+* https://forum.nim-lang.org/t/7753
+
+=== Binary search
+
+Maybe you can remember that some decades ago your parents have used phone books
+and dictionaries build of paper sheets, filled with printed text sorted alphabetically?
+Well, that alphabetically ordering was done with a purpose: When searching for a name or
+a word, we could just open the book somewhere in the middle. If the name or word that we searched for
+was ordered alphabetically before the content of the current page, then we continued searching
+for that term in the lower half, otherwise in the upper half. That procedure was continued
+until the searched entry was found, or until it was observed that it was not available at all.
+This type of search in an ordered data set is called [.ndef]#binary search#, [.ndef]#half-interval search#, [.ndef]#logarithmic# search or [.ndef]#binary chop#.
+As each repetition halves the remaining data set, it is much faster than a linear search in unordered
+data.footnote:[Well, for small data set, maybe up to a few dozen entries, a linear search may be the fastest still. We have
+observed this behaviour already for our various sorting strategies -- logarithmic, interval halving strategies pays of
+only for not too tiny data sets.]
+
+To use this type of search strategy on the computer, we store our data sorted in an array or a seq.
+Creating a proc to do the search is basically very easy, but we have to care for some details: 
+
+[source, nim]
+----
+# 1 2 3 4 5 6 7 8 # search for v == 7
+# a     p       b
+#         a p   b  
+proc binarySearch(s: openArray[int]; v: int): int =
+  var a, b, p: int
+  a = s.low
+  b = s.high
+  while a <= b:
+    p = (a + b) div 2
+    if v > s[p]: # continue search in the upper partition
+      a = p + 1
+    elif v < s[p]: # continue search in the lower partition
+      b = p - 1
+    else: # we have a match
+      return p
+  return -1 # indicate no match
+
+var d = [1, 3, 5, 7, 11, 13]
+
+for i in 0 .. 15:
+  let res = binarySearch(d, i)
+  if res >= 0:
+    echo "Found value ", i, " at position ", res
+----
+
+To keep our example code as simple as possible, we do our search on an ordered array or seq of integers.
+The value which we search for is passed as second integer argument to the proc called [.func]#binarySearch()#.
+The first tree lines of the example program shows some example data consisting of the ordered numbers
+[.var]#1 .. 8#. Here we use a consecutive sequence of numbers, but the actual numbers are fully arbitrary, as long as
+the sequence is ordered by the value of the numbers in ascending order. Let [.var]#a# be the index of the lowest number in the seq, and
+[.var]#b# be the index of the largest number. If the number we search for is contained in the seq, than that number must
+be located at an index position greater or equal to [.var]#a# and an index position less or equal to index position [.var]#b#. For the index position [.var]#p# near the
+center the obvious choice is [.code]#(a + b) mod 2#. For our example, we assume that we search for a value of [.var]#7#. The first
+index position of [.var]#p# is [.code]#(0 + 7) div 2#, which is [.var]#3# containing value [.var]#4#, which is lower than the searched value [.var]#7#.
+So we would have to continue our search in the upper half, setting the new lower bound of the range to
+search to [.var]#p# or [.var]#p+1#. The upper boundary remains unchanged for this case, and we continue with a new value [.code]#p = (a + b) mod 2#.
+
+The program code follows this strategy in a straight way.
+We start with [.var]#a == s.low# and [.var]#b == s.high#, and the loop continues as long as
+[.code]#a +<=+ b#. Note that we use as new boundaries not the value of [.var]#p#, but [.var]#p + 1# if we continue
+with the upper half, and [.var]#p - 1# when we continue with the lower half of our data. We can do
+that offset of one, as we have investigated position [.var]#p# already. This offset of one does not only speed up
+things, as the new interval is smaller by one this way, but actually guarantees that the
+interval size permanently shrinks and the  algorithm terminates always. Without that offset, for the
+case [.var]#b == (a+1)# we would get a value [.var]#p == (a + a + 1) mod 2#, which is again [.var]#a#, and we might set the new [.var]#a# then to [.var]#p#,
+which is again the previous [.var]#a#. So the range would not always shrink, and our algorithm would not really terminate
+for some data values. You may test that yourself when you remove the offset -- the algorithm would not terminate
+for some data. And finally you should try to make that proc generic, and then maybe search for a word
+in an ordered list of words.
+
+.Click to see a possible solution
+[%collapsible]
+====
+[source, nim]
+----
+proc binarySearch[T](s: openArray[T]; v: T): int =
+  var a, b, p: int
+  a = s.low
+  b = s.high
+  while a <= b:
+    p = (a + b) div 2
+    if v > s[p]: # continue search in the upper partition
+      a = p + 1
+    elif v < s[p]: # continue search in the lower partition
+      b = p - 1
+    else: # we have a match
+      return p
+  return -1 # indicate no match
+
+var d =  ["Algol", "Basic", "C", "D", "Elexir", "Erlang", "F#", "Haskell"] # sorted!
+
+for i in ["Oberon", "Nim", "Basic", "Ada", "Erlang"]:
+  let res = binarySearch(d, i)
+  if res >= 0:
+    echo "Found value ", i, " at position ", res
+----
+====
+
+References
+
+* https://en.wikipedia.org/wiki/Binary_search_algorithm
 
 = Part V: Advanced Nim
 
@@ -11907,6 +12192,10 @@ References:
 
 * https://nim-lang.org/docs/manual.html#macros
 * https://nim-lang.org/docs/tut3.html
+* https://nim-by-example.github.io/macros/
+* https://hookrace.net/blog/introduction-to-metaprogramming-in-nim/
+* https://flenniken.net/blog/nim-macros/
+* https://dev.to/beef331/demystification-of-macros-in-nim-13n8
 
 = Appendix
 
@@ -12005,6 +12294,25 @@ for d in 0 .. 1:
         stdout.write(t[i][j], " ")
     echo ""
 ----
+
+== Text styles
+
+For Nim keywords, operators, variables and inline code snippets we use these styles:
+
+* [.key]#var, const, while#
+* [.op]#+, [], and, or#
+* [.var]#a, b, i, j#
+* [.code]#let a = s.high#
+
+== ChangeLog
+
+=== November 2021
+
+We have added a few more simple examples and exercises:
+
+* <<Removing adjacent duplicates>>
+* <<Array difference>>
+* <<Binary search>>
 
 ////
 

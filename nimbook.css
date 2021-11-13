@@ -15,7 +15,7 @@
 }
 
 
-
+.var{font-family: monospace; background-color: #DDD; color: #000}
 .code{font-family: monospace; background-color: #DDD; color: #000}
 .term{font-family: monospace; background-color: #DDD; color: #000}
 .ndef{font-style: italic; color: #000}
