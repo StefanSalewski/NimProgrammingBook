@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-NOV-25
+//v0.1, 2021-DEC-08
 :doctype: book
 :toc: left
 :icons: font
@@ -56,6 +56,9 @@ We use
 {nbsp}
 +->+ disable replacements
 
+NOTE: We should say a bit more about operators somewhere -- why i++ is not supported and about the new
+unicode operators.
+
 ////
 
 [quote]
@@ -65,6 +68,8 @@ And when you even do not manage it with pictures, you can still make a video.
 ____
 
 [.normal]
+
+== About this book
 
 In the year 1970 {wirth} invented the [.ndef]#Pascal# programming language to teach
 his students the fundamentals of computer programming. While the initial core Pascal
@@ -110,13 +115,23 @@ the skeleton of a microblogging and social networking service.  And you may cons
 the tutorials and manuals of Nim web packages like [.ndef]#Karax#, 
 [.ndef]#Jester# or [.ndef]#basolato#.
 
-And this book will not try to explain things that are already explained well elsewhere or
+This book will not try to explain things that are already explained well elsewhere or
 that should have been explained well elsewhere -- at least not in this first edition, where
 we still have so much other important stuff. So what we will leaf out for now is the installation
 of the compiler, installing and using text editors or IDEs with special Nim support, using
 Nim package managers like nimble, nimph or others, using the foreign function interface (FFI)
 to create bindings to C libraries, and internal compiler details like the various
-memory management options, all the pragmas and similar. Also we will not explain game programming, as game programming is
+memory management options, all the pragmas and similar.
+
+While creating graphical user interfaces (GUIs) is an important topic, we can not
+give much details for that due to various reasons: Nim has not yet the one and only
+accepted GUI library, but more than 20 attempts -- from pure Nim ones like xnim or fidget, over
+wrapped libs like GTK or QML, or GUIs that try to provide a native look for various {os}s like xwidgets or nigui,
+to web based GUIs. And for each of these, at least for the more
+serious ones, we could write a separate GUI book. So we will give only a few minimal examples
+for some of them in part IV of the book.
+
+Also we will not explain game programming, as game programming is
 a broad area, and there are already a lot of tutorials available. Maybe in later editions of the
 book we will add some of this topics, e.g. game programming, as so many people like it.
 But we will always have to ensure that a possible printed book version will not get
@@ -180,7 +195,7 @@ basically that data is nothing more than numbers, but it can be interpreted in m
 different ways, such as pictures, sounds and much more.
 
 The traditional hard disk drives (HDD), which store data electro-mechanical on rotating magnetic disks, as
-well as the more modern variants , the solid-state-devices (SDD), which store data using modern semiconductor
+well as the more modern variants, the solid-state-devices (SDD), which store data using modern semiconductor
 technologies, can store data persistently for longer time periods, even when no electric power
 supply is available. Both, SSDs and HDDs, can be optionally split into multiple partitions, e.g. one or multiple  OS partitions
 for executable programs or pure data partition for passive data like text files or pictures.
@@ -258,7 +273,7 @@ way, as the cent is the smallest base unit; you will never pay a fraction of a c
 for something. Time can be seen as a digital quantity as long as we accepts the
 second as the smallest unit. Even on so called analogue watches the second hand will
 generally jump forwards in steps of a second, so you can not measure fractions of a
-seconds with that watch.
+second with that watch.
 
 An obvious analogue property is the thermodynamic temperature and its classic
 measurement device is the well known capillary thermometer consisting of a glass
@@ -313,8 +328,8 @@ true -- under bad conditions the noise can become so large that it changes the b
 state of signals. Imagine we try to transfer some whole numbers encoded in binary
 form, maybe by binary states encoded as voltage level [.term]#0 Volt# and [.term]#5
 Volt#, over an electric wire and a long distance. It is clear that the long wire can
-pick up some electromagnetic noise that can change the true [.var]#0# Volt data to a voltage
-that is closer to [.var]#5# Volt than to the true [.var]#0# Volt level, so it is received
+pick up some electromagnetic noise that can change the true [.lit]#0# Volt data to a voltage
+that is closer to [.lit]#5# Volt than to the true [.lit]#0# Volt level, so it is received
 incorrectly. To catch such types of transmission errors [.ndef]#checksums# are added
 to the actual data. A checksum is derived by a special mathematical formula from the
 original data and transferred with it. The receiver applies the same formula to the
@@ -379,11 +394,11 @@ components that provide data types and functions with a well defined interface
  (API, Application Programming Interface) and behaviour.
 
 Libraries can be used as shared libraries, which are single binary files stored on the file system of a computer,
-often with the file extension [.term]#.so# or [.term]#.dll#, which can be accessed from different computer program simultaneously,
+often with the file extension [.term]#.so# or [.term]#.dll#, which can be accessed from different computer programs simultaneously,
 or as static libraries which are part of single programs. Shared libraries have some advantages: we need only one
 instance on the file system of the computer, and the library is loaded only once into the computer memory (RAM), even when
-it is used by different apps simultaneous. This saves space, and when the library has serious errors, it is in principle possible to
-replace the library with a fixed version, which is then used by all the software on the computer. Shared libraries come often in
+it is used by different apps simultaneously. This saves space, and when the library has serious errors, it is in principle possible to
+replace the library with a corrected version, which is then used by all the software on the computer. Shared libraries come often in
 numbered versions, where a higher number denotes a newer, improved or extended library version. Sometimes some of the
 programs we use may need still an older library version, while other software needs already a never one. In that case
 our file system has to provide multiple versions of a shared library, which can be used independently.
@@ -454,8 +469,8 @@ level programming languages like Algol, Fortran, C, Pascal or Basic were created
 An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
 solve a specific task, or to reach a goal. Cooking recipe books and car repair
 instructions are examples of algorithms.
-They are a generalized, only symbolically
-representative pattern of all the necessary steps required to perform a certain task.
+//They are a generalized, only symbolically
+//representative pattern of all the necessary steps required to perform a certain task.
 
 The basic math operations kids learn in
 school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
@@ -546,7 +561,7 @@ programming, you do not have to compile and execute your code that often. Compil
 have one important benefit: they can detect many bugs, mostly typing errors, already
 in the compile phase, and they give you a detailed error message. Interpreters have
 the advantage that you can modify your code and immediately execute it without delay.
-
+//
 That is nice for learning a new language and for some fast tests, but even simple
 typing errors can only be detected when they are encountered while running the
 program. If your test does not try to run a faulty statement, there will be no error,
@@ -568,6 +583,12 @@ machine is used, which builds an intermediate layer between the hardware and the
 program.
 
 == Types of Programming Languages
+
+There are many different styles that software can be written in. A programming paradigm
+is a fundamental style of writing software, and each programming language sup-
+ports a different set of paradigms. You’re probably already familiar with one or more
+of them, and at the very least you know what object-oriented programming (OOP) is
+because it’s taught as part of many computer science courses.
 
 We already mentioned the assembly languages, which provide only the basic operations
 that the CPU can perform. Assembly languages provide no abstractions, so maybe we
@@ -656,6 +677,25 @@ the native operating system of the computer. Note that unlike the name may indic
 JavaScript is not closely related to the Java language. Nim can compile to a
 JavaScript backend, so it supports web development well.
 
+
+[cols=6*,options="header"]
+|===
+|Language
+|Type System
+|Runtime
+|Memory Management
+|Generics
+|Macros
+
+|Nim
+|static, strong
+|native binaries
+|GC, Destructors, manual
+|Yes
+|AST based, hygenic
+
+|===
+
 ****
 Sometimes source code written in one programming language is converted into another
 one. A prominent target for such conversions is JavaScript, as JavaScript enables
@@ -697,7 +737,7 @@ backend.
 
 NOTE: In this section we are using a lot of new Computer Science (CS) expressions but
 do not explain them. That is intentional -- when you already know them you may get a
-better feeling of what Nim is, and when you do not know them you will at least learn
+better feeling of what Nim is, and when you do not know them, you will at least learn
 that we can describe Nim with fancy-sounding terms.
 
 //When a group of words are used together as 1 adjective to describe a noun, the
@@ -714,12 +754,12 @@ embedded systems and {uc}s. Python, created in 1991, is generally interpreted in
 of compiled, which makes program execution not very fast, and it does not really
 allow writing low level code which operates close to the hardware. As many libraries
 of the Python language are written in highly optimized C, Python can appear really fast
-if standard task like sorting of data, processing of CSV or JSON files or web site crawling
+if a standard task like sorting of data, processing of CSV or JSON files or web site crawling
 is performed. So Python is not a bad solution when we use it mostly for calling library
 functions, but it reveals it low performance when we have to write some actual Python
 code to solve a problem.
 Of course there
-are many more programming languages, each with its own advantages and disadvantages,
+are many more programming languages, each with its own advantages and disadvantages --
 with some optimized for special use cases.
 
 //state-of-the-art is usually hyphenated, because of the rule I mentioned above.
@@ -744,6 +784,12 @@ support of various development environments including debugging and language ser
 protocols makes working with Nim productive and enjoyable.
 
 === Some Facts About Nim
+
+* Nim is a multi-paradigm programming language. Unlike some popular program-
+ming languages, Nim doesn’t focus on the OOP paradigm. It’s mainly a imperative and procedural
+programming language, with varying support for OOP, data-orientated, functional, declarative, concur-
+rent, and other programming styles. Nim supports common OOP features, including inheritance,
+polymorphism, and dynamic dispatch.
 
 * The generated executables are dependence free and small: a simple
 chess program with a plain GTK-based graphical user interface is only 100 kB in size
@@ -787,7 +833,10 @@ JavaScript output for web applications.
 The full source code of the library is included and can be viewed easily from within
 the HTML-based API documentation.
 
-* That library is supported by more than 1000 external packages for a broad range
+* Library modules like the OS module provides OS independent abstractions, which allows
+to compile and run the same program on different {os} without modifications.
+
+* The Nim standard library is supported by more than 1000 external packages for a broad range
 of use cases.
 
 * Asynchronous operation, threading and parallel processing is supported.
@@ -810,6 +859,90 @@ is available. So problems of conventional garbage collectors like delayed memory
 deallocation or longer pausing of programs due to the GC process are gone. And some
 larger companies have started using Nim in production, the most important
 may be currently the Status Corp. with their Etherium client development.  
+
+=== Nim supports many programming styles
+
+We mentioned already that 
+Nim is a multi-paradigm programming language, that supports
+various programming styles. While we may regard Nim in
+first line as an imperative, procedural programming language, it supports the popular functional
+and object-orientated programming styles well.
+
+In classical OOP programming languages we have the concept of [.ndef]#classes# with  [.ndef]#attributes#, and methods that are very closely bond to
+the classes as in Python:
+
+[source, python]
+----
+class User:
+  def say(self):
+    print("It does not work!")
+
+user = User()
+user.say()
+----
+
+In this Python snippet we declare a class User with a method named [.func]#say()#
+bound to this class. Then we create an instance variable of this class and call
+its say() method.
+
+This tight bounding of methods to classes is not very flexible, e.g. extending the set
+of methods of a class may be difficult or impossible. Another problem with such a class concept
+is, that it is not always clear to which class a method belongs when more than one single
+class is involved: Imagine that we need a method that appends a single character to a text string.
+Is that method a member of the character class, or a member of the text string class?
+
+Nim avoids such a strict class concept, while its generalized [.ndef]#method call syntax# allows us
+to use a class like syntax for all of our data types: e.g. to get the length of a string variable, we can
+write len(myString) in classic procedural notation, or we can use the method syntax myString.len()
+or just myString.len. The compiler regards all these notations as equivalent, so we have
+the method syntax available without the restrictions of the class concept. The method call syntax
+can be used in Nim for all data types, even for plain numbers -- so the notations abs(myNum)
+is fully equivalent with myNum.abs.
+
+The Python code from
+above may look in Nim like
+
+[source, nim]
+----
+type User = object
+
+proc say(self: User) =
+  echo ("It does not work!")
+
+let user = User()
+user.say()
+----
+
+Instead of the classes we use object types in Nim, and we define procedures and methods
+that can work on objects or other data types.
+
+As an example for the functional programming style in Nim we may
+look at some code fragment from a real world app that has to generate
+a string from four numbers, separated by commas. Using the mapIt()
+procedure imported from the sequtils module and
+the fmt() macro from the strformat module, we may write
+that in functional programming style in this way:  
+
+[source, nim]
+----
+from strutils import join
+from sequtils import mapIt
+from strformat import fmt
+const DefaultWorldRange = [0.0, 0, 800, 600]
+let str = DefaultWorldRange.mapIt(fmt("{it:g}")).join(", ")
+echo str # "0, 0, 800, 600"
+----
+
+In the imperative, procedural style we would write it like
+
+[source, nim]
+----
+var str: string
+for i, x in pairs(DefaultWorldRange):
+  str.add(fmt("{x:g}"))
+  if i < DefaultWorldRange.high:
+    str.add(", ")
+----
 
 === Nim is Efficient
 
@@ -837,7 +970,7 @@ based GC, are supported for automatic memory management. These can be disabled f
 manual memory management. This makes Nim a good choice for application development
 and close-to-the-hardware system programming at the same time. The unrestricted
 hardware access, small executables and optional GC will make Nim a perfect solution
-for embedded systems, hardware driver and (OS) development.
+for embedded systems, hardware driver and {os} development.
 
 === Nim is Expressive and Elegant
 
@@ -900,7 +1033,7 @@ and some volunteers, while some other languages like Java, C#, Go, or Rust are
 supported by large companies, or like C and {cpp} have a very long history and
 well-trained users. And finally there are many competing languages, some with a
 longer history, and some maybe better suited for special purposes, like JavaScript,
-Dart or Kotlin for web development, Julia or R for numeric applications, or C and
+Dart or Kotlin for web development, Julia or R for numeric applications, or Zig, C and
 Assembly for the tiny 8-bit {uc}s with a small amount of RAM.
 
 Nim is already supported by more than 1000 external packages which cover many
@@ -1146,9 +1279,10 @@ An expression like [.code]#a - -b# would be a valid syntax instead -- unary minu
 can have a different meaning in the Nim language, depending on the context. For operators or
 functions this is called overloading, which most modern programming languages use.
 This sensitivity to the asymmetrically use of spaces applies also to the [.term]#less than# operator that we used in the above example:
-[.code]#a < b# or [.code]#a<b# is the infix notation that we generally intent for a comparison operation, while [.code]#a <b# would be generally invalid code.
-For operators we generally put a space on each side, as this improves readability, but it is not really needed
-and so some people do not insert these spaces.  
+[.code]#a < b# or [.code]#a<b# is the infix notation that we generally intend for a comparison operation, while [.code]#a <b# would be generally invalid code.
+For infix operators we generally put a space on each side, as this improves readability, but it is not really needed
+and so some people do not insert these spaces.  Unary operators, like the unary [.op]#-# sign, should always proceed
+a variable or a literal without a space.
   
 All this may sound a bit complicated, and for beginners the compiler error messages about  this formatting
 rules may be not always fully clear. But finally it is just how we would write the code with
@@ -1441,7 +1575,7 @@ If you are using a Linux operating system, then your system generally provides a
 package manager, which should make the installation very easy.
 
 For example for a Gentoo Linux system you would open a root terminal and simple type
-"emerge -av nim". That command would install Nim including all necessary dependencies
+[.term]#emerge -av nim#. That command would install Nim including all necessary dependencies
 for you. It may take a few minutes as Gentoo compiles all packages fresh from source
 code, but then you are done. Similar commands exist for most other Linux
 distributions.
@@ -1700,8 +1834,8 @@ variable followed by a colon and the data type of the variable. The int type is 
 predefined numeric type indicating a signed integer type. The storage capacity of an
 integer variable depends on the operating system of your computer. On 32-bit systems
 32 bits are used, and on 64-bit systems 64 bits are used to store one single integer
-variable.  That is enough for even large signed integer numbers: the range is -2^31
-up to 2^31 - 1 for 32 bit systems and -2^63 up to 2^63 - 1 for 64-bit systems.
+variable.  That is enough for even large signed integer numbers: the range is [.lit]#-2^31#
+up to [.lit]#2^31 - 1# for 32 bit systems and [.lit]#-2^63# up to [.lit]#2^63 - 1# for 64-bit systems.
 
 For variables we generally use lower case names, but names of constants may start
 with an upper case letter.
@@ -1821,7 +1955,18 @@ Also note that in Nim we generally write each statement onto its own line. The l
 break indicates to the compiler that the statement has ended. There are a few
 exceptions -- long mathematical expressions can continue on the next line (see the
 Nim manual for details). We can also put multiple statements on a single line when we
-separate them by a semicolon.
+separate them by a semicolon:
+
+[source, nim]
+----
+var a: int
+echo a; inc(a) # <1>
+a = 2 * a + # <2>
+  a * a
+----
+<1> two statements separated by a semicolon on a single line 
+<2> a longer math expression split over multiple lines. An operator as last character on a line indicates
+that the expression continues on the next, indented line.
 
 We can also declare multiple variables of the same type in one single declaration,
 like
@@ -1850,7 +1995,7 @@ var
 ----
 
 The compiler recognizes in this case that we assign an integer literal to that
-variable and so silently gives the variable the int type for us. Type inference can
+variable and so silently gives the variable the [.type]#int# type for us. Type inference can
 be comfortable, but may make it harder for readers to understand the code, or the
 type inference may not always do exactly what we want. For example in the above code
 year gets the type int, which is a signed 4 or 8 byte number. But maybe we would
@@ -1947,13 +2092,13 @@ identical code in the executable, so we can use whatever we like better.
 
 == Input and Output
 
-We have already used the [.func]#echo()# procedure for displaying output in the terminal
+We have already used the [.func]#echo()# procedure for displaying textual output in the terminal
 window. In the code examples of the previous sections we always passed arguments of integer
 type to the [.func]#echo# proc, and the [.func]#echo# proc automatically converted the integer numbers
 to a textual sequence of decimal digits, so that we could read it in the terminal. In the Nim programming language text is a predefined, built in
 data type that is called [.ndef]#string#. We will learn all the details of the string data type in the next section,
-for now it is sufficient that it exists and that we can use the [.func]#echo# proc to print text strings.
-The [.func]#echo# proc has the ability to convert other data types like numbers or the boolean data type (true/false)
+for now it is sufficient that it exists and that we can use the [.func]#echo()# proc to print text strings.
+The [.func]#echo()# proc has the ability to convert other data types like numbers or the boolean data type (true/false)
 automatically to human readable text strings,
 so that we can read the output in the terminal. Recall that most data types are stored internally in our computer
 as bits and bytes, which have no true human readable representation by default. Numbers, as most other data
@@ -1968,7 +2113,7 @@ but we do not care for the actual details at this point of the book.
 
 For our further experiments we may also want to be able to enter some user data
 in the terminal. As we do not know much about the various available data types and the
-procs that can be used to read then in, we will just present a procedure that can read in
+procs that can be used to read them in, we will just present a procedure that can read in
 a text string that the user has typed in the terminal window.
 We use a function with the name
 [.func]#readLine()# for this task.
@@ -1983,7 +2128,7 @@ echo "you entered: ", mytext
 Note that you have to press the [.term]#return# key after you have entered your text.
 
 The first line of our program show how we can print a text literal string
-with the [.func]#echo# proc. To mark text literals unambiguously and to separate them
+with the [.func]#echo()# proc. To mark text literals unambiguously and to separate them
 from other literals like numeric literals or from variables, the string literals have to
 be enclosed in quotation marks.
 In
@@ -2013,6 +2158,39 @@ instead of [.code]#len(myTextString)#. Both notations are fully equivalent.footn
 Here [.func]#len()# is a predefined function of the Nim standard library, len() is short for length,
 and that function returns the actual length of a text string as an integer value.]
 ****
+
+When you try the example code from above, you may want a variant of it that does read
+in the textual input not on its own line, but directly after the prompt like "What is your name: Nimrod".
+As the [.func]#echo# proc writes always a newline character after the last argument has been written, we have
+to use a different function to get the input prompt on the same line. We can use the [.func]#write()# proc
+from the system module for this. As [.func]#write()# can not only write to the terminal, but also to files,
+it needs an additional parameter which specifies the destination. We can pass the variable [.var]#stdout#
+from the system module to indicate that write() should write to our terminal window. Another desire of beginners is generally,
+to have the ability to read single character input without the need to press additional the return key.
+For that we can use the getch() function from the terminal module -- that functions waits (blocks) until
+a key is pressed and returns the ASCII character of the pressed key:
+
+[source,nim]
+----
+from terminal import getch
+
+stdout.write("May you tell me your name: ")
+var answer = readLine(stdin)
+if answer != "no":
+  echo "Nice to meet you, ", answer
+echo "Press any key to continue"
+let c = getch()
+echo "OK, let us continue, you pressed key:", c
+----
+
+Don't get confused by the fact that the first [.func]#write()# call and the following [.func]#readline()#
+call does not appear on the same line in our example. The actual format of our source code
+does in this case not influence the program output. We could write both function calls
+on a single line, separated with a semicolon. But that would make no difference for the program
+output. The significant difference of the code above is just, that write() prints the text, but does not move the
+cursor in the terminal window to the next line, while echo() moves the cursor to the next line when all
+arguments have been printed. We say that echo prints automatically a "\n" character, which we call newline
+character, after all the arguments have been printed. 
 
 == Data types
 
@@ -2260,7 +2438,7 @@ optimize all that for us.
 
 The operators [.op]#+#, [.op]#-#, [.op]#*# and [.op]#/# can be used also when
 one operand is a [.type]#float# variable and the other operand is an [.type]#int# literal.
-In that case the compiler knows that we really intent to do a float operation and
+In that case the compiler knows that we really intend to do a float operation and
 converts the int literal automatically to float type.
 But when one
 operand is a [.type]#float# variable and the other is an [.type]#int# variable, then an explicit  type conversion
@@ -11658,7 +11836,7 @@ loop with a break statement, because we need at least one loop execution to get 
 one digit, but Nim does not support repeat loops as known from languages like Pascal.
 In the loop body we apply the discussed operation to get the digit of the lowest place, then
 divide the actual value by ten and continue, as long that value is not already zero.
-When it is zero we can leave the loop, as we do not intent to print leading zeros.
+When it is zero we can leave the loop, as we do not intend to print leading zeros.
 
 Creating a proc that prints the digits in the correct order and that can print the minus
 sign for negative values is straight forward:
