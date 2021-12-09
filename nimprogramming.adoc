@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-08
+//v0.1, 2021-DEC-09
 :doctype: book
 :toc: left
 :icons: font
@@ -2194,9 +2194,9 @@ character, after all the arguments have been printed.
 
 == Data types
 
-The most fundamental data type -- in real life and in computer science -- are integer numbers.
-All other numeric and none numeric data types, like fractional, floating point or complex numbers,
-and other fundamental types like the boolean type with it two values [.lit]#true# and [.lit]#false#, or character and
+The most fundamental data type -- in real life and in computer science -- are integer (whole) numbers.
+All other numeric data types, like fractional, floating point or complex numbers,
+and other fundamental types like the boolean type with its two values [.lit]#true# and [.lit]#false#, or character and
 text string types, can be represented as integers. For that reason the early computers built in the 1950's
 as well as today's tiniest {uc}s work internally only with integer numbers. As all CPUs are
 able to do basic bit operations like setting or clearing individual bits, and as bit patterns
@@ -2228,6 +2228,14 @@ Other basic and advanced data types like complex and fractional numbers, types w
 hash sets and hash tables, dynamically linked list or tree structures are available through the Nim standard library
 or external packages. And of course we are able to define our own custom data types with our own operators, functions and
 procedures working on them.
+
+Note that all the data types that are build into the language, like the primitive types int, float or char, as well
+as the built in container types like tuple, object, seq and string, are written in lower case, while
+data types that are defined by the Nim standard library or that we define our self, by convention starts
+with a capital letter like the CountTables type defined in the  tables module. Some people may regard this as an inconsistency,
+some may say that in this way we can differentiate built in types from types defined by libraries. At least we may agree
+that using capital notation for common types as in  Int, Float or  String would be more difficult to type and
+would look not that nice. 
 
 === Integer types
 
@@ -2298,7 +2306,7 @@ Result of i mod j
 When performance matters we generally should try to use the "CPU native" number type
 what for Nim is the [.type]#int# type. And we should try to avoid using math expressions with
 different types, as the CPU may have to do type conversion in that case before the
-math operation can be applied. Adding two [.type]#int8# types can on some CPU's be slower then
+math operation can be applied. Adding two [.type]#int8# types can on some CPU's be slower than
 adding two [.type]#ints#, because the CPU may have to size extend the operands before the math
 operation is performed. But this depends on the actual CPU, and there are important
 exceptions: Multiplying two ints would result in an int128 result if int size is 64
@@ -2312,6 +2320,46 @@ increase performance in this special application.
 
 When we use Nim on tiny {uc}s, maybe even on 8-bit controllers like the popular AVR
 devices, it may be best to use only integers of well defined size like [.type]#int8#.
+
+When we write integer literal numbers, then we use generally our common decimal
+notation, as in [.code]#var i = 100#. 
+To increase the readability for long number literals we can use the underscore character
+as in [.lit]#1_000#, that underscore character is just ignored by the compiler.
+We can also write integer literals in binary, octal or
+hexadecimal notation. For that we prefix the literal value with [.lit]#0b#,  [.lit]#0o# or  [.lit]#0x#. The leading
+zero is necessary, and the next letter indicates binary, octal or hexadecimal encoding.
+But such integer literal notation is very rarely used.
+
+More important is the actual size of integer literals, in particular when we use type inference.
+Ordinary integer literals have the [type]#int# type, but integer literals not fitting
+in 32 bit have [.type]#int64# type. We can also specify the type of integer literals by appending
+the literal with [.lit]#i8#,  [.lit]#i16#,  [.lit]#i32# or  [.lit]#i64# for signed types and with [.lit]#u#,  [.lit]#u8#,  [.lit]#u16#,  [.lit]#u32# or   [.lit]#u64# for
+unsigned types. We can separate the actual number and the suffix with a [.lit]#'# character,
+but that is not necessary for the integer literals.
+
+[source,nim]
+----
+var
+  a = 100 # int literal in decimal notation
+  b = 1234567890000 # int64
+  c = 5'i8 # 8 bit integer
+  d = 7u16 # unsigned integer with 2 byte size
+  e = 0b1111 # ordinary integer in binary notation, value is 15 in decimal notation
+  f = oo77 # integer in octal notation, value is 7 * 8^0 + 7 * 8^1 in decimal notation
+  g = 0xFF # integer in hexadecimal notation
+  
+echo g, typeof(g)
+----
+
+In arithmetic expressions integer types of different sizes are generally compatible
+when all the types are signed or unsigned, e.g.
+in the example code from above we could write [.code]#echo a + b + c#, and
+typeof(a + b + c) is int64, that is the expression is propagated to
+the largest type of all the involved operands. But [.code]#echo a + b + c + d#
+would not compile, as for such a mix of signed and unsigned operands it is
+not clear if signed or unsigned arithmetic should be used.
+Also note that
+even on a 64 bit OS [.code]#echo typeof(a) is typeof(b)# would print [.lit]#false#.
 
 An important property of the current Nim implementation of A. Rumpf used with the C
 backend is the fact that unsigned integers does not generate overflow errors but
@@ -2452,6 +2500,14 @@ And generally we should try to avoid to use a lot operations with mixed types, a
 that may make type conversions necessary, which may cost performance.
 If we really do not care, we may import the module
 [.ndef]#std/lenientOps#, which defines the arithmetic operations for mixed operands.
+
+Float literals have the float data type by default, but as for integer literals we can also
+explicitly specify the data type: The suffixes [.lit]#f# and [.lit]#f32# specify a 32 bit float type, and
+[.lit]#d# and [.lit]#f64# specify a 64 bit type. We can separate the suffix from the actual number
+with a [.lit]#'# character, but that is not required as long as there is no ambiguity. We can also
+specify float literals in binary, octal or hexadecimal notation, when we append one of these
+suffixes. In case of hexadecimal notation, the [.lit]#'# is obviously needed to separate the suffix, as
+[.lit]#f# and [.lit]#d# are valid hex digits.
 
 As for integer variables Nim supports also the compatible types [.type]#cfloat# and [.type]#cdouble#
 which match the C types float and double when the C backend is enabled. For most C
