@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-09
+//v0.1, 2021-DEC-11
 :doctype: book
 :toc: left
 :icons: font
@@ -2345,7 +2345,7 @@ var
   c = 5'i8 # 8 bit integer
   d = 7u16 # unsigned integer with 2 byte size
   e = 0b1111 # ordinary integer in binary notation, value is 15 in decimal notation
-  f = oo77 # integer in octal notation, value is 7 * 8^0 + 7 * 8^1 in decimal notation
+  f = 0o77 # integer in octal notation, value is 7 * 8^0 + 7 * 8^1 in decimal notation
   g = 0xFF # integer in hexadecimal notation
   
 echo g, typeof(g)
@@ -2727,26 +2727,45 @@ is enough that we know about their existence.
 === Subrange types
 
 Sometimes it makes sense to limit the range of numeric variables to only a sub-range.
-For this Nim uses the [.key]#range# keyword with this notation: [.key]#range[LowVal
+For this Nim uses the [.key]#range# keyword with this notation: [.code]#range[LowVal
 .. HighVal]#.  Values of this type can never be smaller than LowVal or larger than
-HighVal.
+HighVal. For {curnim} we can define range types also by leaving out the [.code]#range[]#, that is
+by just two constants separated by [.code]#..#.
 
 [source, nim]
 ----
 type
   Year = range[2020 .. 2023] # software update required at least for 2024!
   Month = range[1 .. 12]
-  Day = range[1 .. 31]
+  Day = 1 .. 31 # same as range[1 .. 31]
 
-var d: Day = 0 #Error: conversion from int literal(0) to Day is invalid
+var a: int = 0
+var d: Day = 1 # OK
+d = 0 # compile time error
+d = a # run time test and error
+echo d
 ----
 
 For the above example the base type of the defined ranges is int, so the ranges are
 compatible with the predefined int type, we can assign values of int type to our
-range types and vice versa. The size of the range types is the size of the int type.
+range types and vice versa. In our example the size of the range types is the size of the int base type, 
+but of course we could use other base types, like [.code]#type Weekday = 1.int8 .. 7.int8#.
 If we try to assign to a range type a value that falls not into the allowed range
 then we get a compile-time or run-time range error. This can help us to prevent or to
-discover errors in our programs. We can also declare subrange types with float base
+discover errors in our programs.
+Note that whenever we use range types, the compiler may have to add additional
+checks to ensure that variables are always restricted to the specified range.
+This check is active in debug mode and also when we compile with option [.term]#-d:release#,
+and is only ignored when we compile with [.term]#-d:danger# or explicitly disable range checks.
+So using a lot of range types may increase code size and decrease performance. For the example
+above, the line with the assignment [.code]#d = a# generates a runtime check. An important and often used
+range type is the data type Natural defined as [.code]#range[0 .. int.high]#. That type is compatible with the int type and
+does not wraps around as [.type]#uint# would do. It is often used as type for procedure parameters when
+the arguments has to be not negative. In the proc body we sometimes copy arguments of natural type
+to an ordinary integer -- that way we can ensure a none negative start value, and can avoid many
+range checks in the procedure body.
+
+We can also declare sub-range types with float base
 types like [.term]#type Probability = range[0.0 .. 1.0]#.
 
 Note that we can still mix different sub-range type:
@@ -2759,15 +2778,15 @@ d = d + m
 ----
 
 Such an operation is generally a bug, to prevent it we can put the distinct keyword
-in from of our ranges. But then again we have to define the allowed operations our
-self.
+in front of our ranges. But then again we have to define the allowed operations our
+self or to borrow them from the base type.
 
 === Enums
 
 While enums in C are nothing more than integers with some special syntax for
 creation, Nim's enums are more complex.
 
-In Nim enums can be used whenever some form of symbols are needed like the colors
+In Nim [.type]#enum#s can be used whenever some form of symbols are needed like the colors
 red, yellow and green of a traffic light or the directions north, south, east and
 west for a map or a game.
 
@@ -2791,20 +2810,21 @@ if tl == red:
   tl = ...
 ----
 
-Enums support assignment, plain tests for (in)-equality and for smaller or greater.
-Additional the functions succ() and pred() are defined for enums to get the successor
-or predecessor of an enum, ord() or int() deliver the corresponding integer number
-and the $ operator can be used to get the name of an enum. We can also iterate over
+Enums support assignment, plain tests for (un)-equality and for smaller or greater.
+Additional the functions [.func]#succ()# and [.func]#pred()# are defined for [.type]#enum#s to get the successor
+or predecessor of an enum, [.func]#ord()# or [.func]#int()# deliver the corresponding integer number
+and the [.op]#$# operator can be used to get the name of an enum. We can also iterate over
 enums, so we can print all the colors of our TrafficLight by
 
 [source, nim]
 ----
-for el in TrafficLight
+for el in TrafficLight:
   echo el.ord, ' ', $el
 ----
 
-Ordinary enums start at 0 and uses continues numbers for the internal numeric value,
-so that enums can be used as array indices.
+Ordinary enums start at [.lit]#0# and uses continues numbers for the internal numeric value,
+so that enums can be used as array indices.footnote:[Arrays are homogenous, fixed size containers, we
+will learn the details later.]
 
 [source, nim]
 ----
@@ -2822,14 +2842,14 @@ But we can also assign custom numbers like
 ----
 type
   TrafficLigth = enum
-    red = -1, yello = 3, green = 8
+    red = -1, yellow = 3, green = 8
 ----
 
 We should avoid that, as these "enums with holes" generate some problems for the
 compiler and may be later deprecated. For example array indexing or iterating is
 obviously not possible for enums with holes.
 
-It is also possible to set the string that the stringify operator $ returns, like in
+It is also possible to set the string that the stringify operator [.op]#$# returns, like in
 
 [source, nim]
 ----
@@ -2840,7 +2860,7 @@ type
     green = ("Go")
 ----
 
-Here the assigned numerical values should be 0, 2 and 3. Currently the enums values
+Here the assigned numerical values should be 0, 2 and 3. Currently the enums numerical values
 must be specified in ascending order always.
 
 When we have many enums in a program then name conflicts may occur, for example we
@@ -2861,12 +2881,12 @@ name conflict.
 === Boolean types
 
 Boolean types are used to store the result of logic operations. The type is called
-bool in Nim and can store only two values, false and true. Although we have only two
+[.type]#bool# in Nim and can store only two values, [.lit]#false# and [.lit]#true#. Although we have only two
 distinct states for a boolean variable and so one single bit would suffice to store a
-bool, generally a whole byte (8 bits) is used for storing a boolean variable. Most
+[.type]#bool#, generally a whole byte (8 bits) is used for storing a boolean variable. Most
 other programming languages including C do the same. The reason is that most CPU's
 can not access single bits in the RAM -- the smallest entity that can be directly
-accessed in RAM is a byte. The default initial state of a boolean variable is false,
+accessed in RAM is a byte. The default initial state of a boolean variable is [.lit]#false#,
 corresponding to a byte with all bits cleared.
 
 [source, nim]
@@ -2879,17 +2899,42 @@ var
 ----
 
 In line three we assign to the variable adult the result of a logical comparison. The
-next two lines assign the boolean constants [.term]#true# and [.term]#false# to the
-variables, with their type [.term]#bool# inferred.
+next two lines assign the boolean constants [.lit]#true# and [.lit]#false# to the
+variables, with their type [.type]#bool# inferred.
 
-Variables of type [.term]#bool# support the operators [.term]#not#, [.term]#and#,
-[.term]#or# and [.term]#xor#. Not inverts the logic value, [.term]#a and b# is only
-true when both values are true, and false otherwise. And [.term]#a or b# is true when
+Variables of type [.type]#bool# support the operators [.op]#not#, [.op]#and#,
+[.op]#or# and [.op]#xor#. [.op]#Not# inverts the logic value, [.code]#a and b# is only
+true when both values are true, and false otherwise. And [.code]#a or b# is true when
 at least one of the values is true, and only false when both values are false.
-[.term]#xor# is not used that often. It is called exclusive or, [.term]#a xor b# is
+[.op]#Xor# is not used that often. It is called [.ndef]#exclusive or#, [.code]#a xor b# is
 false when both values have the same logic state, that is when both are true, or both
 are false. When the values are not the same, than the result of the xor operator is
-true.
+true. The [.op]#xor# operator makes more sense for bit operations, which we will
+learn later -- for the boolean type, [.code]#a xor b# is identical to [.code]#a != b#.
+
+When using conditional execution, some people like to write expressions like
+[.code]#if myBoolExp == false:#, which is identical to  [.code]#if not myBoolExp:#.
+Well they may do, but please never write [.code]#if myBoolExp == true:#, that looks
+really too stupid.
+
+Sometimes it is useful to know that [.lit]#false# is mapped to the int value [.lit]#0#, and [.lit]#true#
+to the int value [.lit]#1#. That is similar to the C language, but C has not a bool type, instead
+the numerical value [.lit]#0# is interpreted as [.lit]#false# in conditional expressions, and all
+none zero values are interpreted as true.
+
+[source, nim]
+----
+var a: int = 0
+if cond:
+  a = 7
+
+a = 7 * cond.int
+----
+
+The effect of the last line is identical to the [.key]#if# statement above. In very, very rare cases
+working with the actual int value of boolean variables may make sense, but generally we should
+avoid that. Later in the book there is a section about [.ndef]#branchless code# where we will
+present a proc that actually may get faster by using such a trick.  
 
 === Characters
 
