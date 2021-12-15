@@ -4267,9 +4267,9 @@ The [.term]#while# loop is used when we want to do conditional repetitions, that
 if we want to check for the presence of a certain condition and then want to execute
 a block of statements only as long, as that condition is true. If the condition we located
 is false in advance, or becomes false after some repetitions, then the program execution
-proceeds further after the indented block.
+proceeds further, after the indented block.
 
-A basic while loop has this shape:
+A basic _while_ loop has this shape:
 
 ----
 while condition:
@@ -4286,7 +4286,7 @@ while repetitions > 0:
   repetitions = repetitions - 1
 ----
 
-That loop would print the message three times. Like the condition in the if clause
+That loop would print the message three times. Like the condition in the _if_ clause,
 the condition is terminated with a colon. Note that the condition must change during
 execution of the loop, otherwise, when the condition is true for the first iteration,
 it would remain true and the loop would never terminate. We decrease the loop counter
