@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-11
+//v0.1, 2021-DEC-15
 :doctype: book
 :toc: left
 :icons: font
@@ -96,7 +96,11 @@ maybe for a technical job. And there may exist some children that are not satisf
 with the introduction to computer science taught at school. So we have decided to
 start this book with a short introduction to fundamental concepts -- most people can
 skip that part. In part II we explain the basics of computer programming step by step
-in a way which should enable even children to learn independently. Part III will give
+in a way which should enable even children to learn independently. In this part we may repeat
+some of the stuff which we already mentioned in part I. We do that by intent, as some
+people may skip part I, and because it is generally not a bad idea to support the learning
+process of the reader with some repetitions. 
+Part III will give
 you an overview of the Nim standard library and part IV will introduce some useful
 external packages. Part V will introduce advanced concepts like [.ndef]#asynchronous
 operations#, [.ndef]#threading# and [.ndef]#parallel processing#, and [.ndef]#macros#
@@ -136,6 +140,17 @@ a broad area, and there are already a lot of tutorials available. Maybe in later
 book we will add some of this topics, e.g. game programming, as so many people like it.
 But we will always have to ensure that a possible printed book version will not get
 more than 500 pages, so we may than leave out some stuff in the printed version.
+
+General when learning a new programming language, people start with some short
+tutorials before really learning the language following a book. This way is indeed a good start.
+So we recommend you to read the short official tutorials part 1 and 2 and maybe also
+some of the other tutorials freely available online. Tutorials generally only scratch the topics, so you may not be able to understand all
+really well, but this way you get already a feeling for the language.
+When you know already some computer science and have already experience
+with other languages like {cpp}, Haskell or Rust, you may not need this book at all.
+There exists also
+some video tutorials, for the case that you have problems reading, but in that case
+this book will not be of much use for you at all. 
 
 This book is based on the Nim reference implementation ({curnim}) of the team around
 Mr. A. Rumpf -- other implementations were not available in 2020, when the initial
@@ -2938,10 +2953,10 @@ present a proc that actually may get faster by using such a trick.
 
 === Characters
 
-The data type for single characters is called char in Nim. A variable of type char
+The data type for single characters is called [.type]#char# in Nim. A variable of type [.type]##char#
 has 8 bits and can store single characters. Indeed it stores 8-bit integers which are
 mapped to characters. The mapping is described by the ASCII table. For example the
-integer value 65 in decimal is mapped to the character A. When we use single
+integer value [.lit]#65# in decimal is mapped to the character [.lit]#A#. When we use single
 character literals, then we have to enclose the letter in single quotes. As only 8
 bits are used to store characters, we only have 256 different values, including upper
 and lower case letters, punctuation characters and some characters with a special
@@ -2968,18 +2983,18 @@ Visible ASCII Characters
 ----
 
 The position in the table is the sum of the number on the left and the number on the
-top, ie, character A has position 64+1=65, which is the value the Nim standard
-function [.term]#ord('A')# or [.term]#int('A')# would return. The characters with a
-decimal value less than 32 can not be printed and are called control characters, like
+top, i.e, character [.lit]#A# has position [.code]#64+1=65#, which is the value the Nim standard
+function [.code]#ord('A')# or [.code]#int('A')# would return. The characters with a
+decimal value less than 32 can not be printed and are called [.ndef]#control characters#, like
 linefeed, carriage return, backspace, audible beep and such.  Character 127 is also
 not printable, and is called DEL. An important property of this table is the fact
 that decimal digits and upper- and lower-case letters form contiguous blocks. So to
 test for example if a characters is an uppercase letter we can use this simple
-condition: [.term]#+c >= 'A' and c <= 'Z'+#.
+condition: [.code]#+c >= 'A' and c <= 'Z'+#.
 
-Characters with ord() > 127 are so called umlauts, exotic characters of other
+Characters with [.code]#ord() > 127# are so called umlauts, exotic characters of other
 languages, and some special characters. But these characters may be different on
-different computers, as the characters depend on the active code-page, which maps
+different computers, as the characters depend on the active [.ndef]#code-page#, which maps
 position to actual character, and there are multiple code pages.  When we need more
 than the plain ASCII characters, then we use strings in Nim, which display many more
 glyphs by using UTF-8 encoding.
@@ -2998,7 +3013,27 @@ decimal 65 is 41 in hexadecimal notation [.term]#(4 * 16^1 + 1 * 16^0)# we can u
 often used control characters it is not easy to remember their numeric value, so
 another notation with a letter following the backslash can be used. For the important
 newline character we can use the decimal numeric value '\10', the hexadecimal value
-'\xA' or the symbolic form '\n'. Here the letter n stands for newline. The following
+'\xA' or the symbolic form '\n'. Here the letter n stands for newline.
+
+We can regard the backslash character, which introduces escape sequences, as a special
+hinting symbol for the compiler: [.ndef]#Caution, the following characters must be interpreted in a special
+way#.
+
+It is important that you understand that all these escape sequences are only
+a way to help the programmer to enter these invisible control characters -- the
+compiler replaces the control sequences immediately with the correct 8 bit
+value from the ASCII table, so in the final compiled executable '\65' or '\n'
+are both only a plain 8 bit integer value:
+
+[source, nim]
+----
+var a, b: char
+a = 'A'
+b = '\65'
+echo a, ord(a), b, ord(b) # if you don't know the output, read again this section and run this code.
+----
+
+The following
 table lists a few important control characters:
 
 [cols=4*,options="header"]
@@ -3061,19 +3096,19 @@ table lists a few important control characters:
 
 |===
 
-The hexadecimal numbers after the [.term]#\x# character can by upper or lower case
+The hexadecimal numbers after the [.term]#\x# character can be upper or lower case
 and can have one or two hexadecimal digits. For symbolic control characters like '\a'
 for alert the upper case variant '\A' seems to be identical currently.  The single
-quote entered as ''' does give an error message, so you have to escape it as '\''.
+quote entered as [.lit]#'''# does give an error message, so you have to escape it as [.lit]#'\''#.
 Unfortunately by supporting this form of escaping it becomes impossible to enter a
-backslash character directly, so we have to escape the backslash character as '\\' to
+backslash character directly, so we have to escape the backslash character as [.lit]#'\\'# to
 print a single backslash.
 
-For Nim the most important control character is '\n' which is used to start the
-output in a terminal window at the beginning of a new line. But '\n' is generally not
-used as a single character but embedded in strings, that is sequences of characters.
-We will learn more about strings soon. Note that the echo() function inserts a
-newline character automatically after each printed line, but the write() function
+For Nim the most important control character is [.lit]#'\n'# which is used to start the
+output in a terminal window at the beginning of a new line. But [.lit]#'\n'# is generally not
+used as a single character but embedded in [.type]#strings#, that is sequences of characters.
+We will learn more about strings soon. Note that the [.func]#echo()# function inserts a
+newline character automatically after each printed line, but the [.func]#write()# function
 does not:
 
 [source, nim]
@@ -3083,9 +3118,9 @@ stdout.write 'N', 'i', 'm', '\n'
 ----
 
 What may be a bit confusing is the fact that we use the backslash character as escape
-symbol, and at the same time above table has an entry '\e' which is also called
-[ESC]. These '\e' control character with decimal value 27 is fully unrelated to the
-backslash character that we use to type in control characters. [ESC] is a special
+symbol, and at the same time above table has an entry [.lit]#'\e'# which is also called
+[ESC]. These [.lit]#'\e'# control character with decimal value [.lit]#27# is fully unrelated to the
+backslash character that we use to type in control characters. [ESC] is a different special
 character to start control sequences, it was used in the past to send special
 commands to printers or modems, and can be used to control font style or colors in
 terminal windows.
@@ -3110,35 +3145,44 @@ wrap around instead of generation overflow and underflow errors.
 From mathematics we know that sets are some form of unordered collection for which we
 can test membership (x is included in mySet) and we can perform general set
 operations like union of multiple sets. In Nim we can have sets of all the ordinal
-types. All elements in a set must have the same base type. A set can be empty, or it
+types and the unsigned integer types, but due to memory restrictions integer
+types larger than two bytes can not be used as set base types. 
+All elements in a set must have the same base type. A set can be empty, or it
 can contain one or multiple elements. For a specific element it can be contained in a
 given set or it can be not contained, but it can be never contained multiple times.
 One very basic set operation is the test if an element is contained in a set or is
 not contained in it. Sets are unordered data types, that is sets containing the same
 elements are always equal, it does not matter in which sequence we added the
 elements. Important set operations are building the union and building the
-difference: The union of set a and set b is a set which contains all the elements
-that are contained in set a or in set b (or in both). The intersection of set a and b
-is a set which contains only elements which are contained in set a and in set b.
+difference of two sets with the same base type: The union of set [.var]#a# and set  [.var]#b# is a set which contains all the elements
+that are contained in set  [.var]#a# or in set  [.var]#b# (or in both). The intersection of set  [.var]#a# and set  [.var]#b#
+is a set which contains only elements which are contained in set  [.var]#a# and in set  [.var]#b#.
 
 The mathematical concept of sets maps well to words and bits of computers, as most
-CPU's has instructions to set and clear single bits and to test if a bit is set or
+CPU's have instructions to set and clear single bits and to test if a bit is set or
 unset. And CPU's can do [.op]#and#, [.op]#or# and [.op]#xor# operations which
 corresponds to the union and intersection operation in mathematical set.
 
 Nim supports sets with base type bool, enum, char, int8, uint8, int16 and uint16.
 Note that we need a bit in the computer memory for each member of the base type. The
 types char, int8 and uint8 are 8 bit types and can have 2^8 = 256 distinct values, so
-we need 256 bits in the computer memory to represent such a set. That would be 8
+we need 256 bits in the computer memory to represent such a set. That would be 32
 bytes or four 64 bit words. To represent a set of the base type uint16 or int16 we
 need already 2^16 bits, that is 2^13 bytes or 2^10 words on a 64 bit CPU. So it
 becomes clear that supporting base types with more than 16 bit makes not much sense.
+
+While testing if an element is included or is not included in a set with the [.op]#in# or
+[.op]#notin# operators is always a very fast operation, other
+operations like building the intersection or union and set comparison operations
+may be not that fast when we use the int16 or uint16 base types, as for
+these operations the whole set, that is 2^10 words on a 64 bit CPU, has
+to be processed.
 
 We will start our explanation with sets with character base type as these sets are
 very easy to understand and at the same time very useful. Let us assume that we have
 a variable of character type and we want to test if that variable is alphanumeric,
 that is if it is a lower or upper case letter or a digit. A traditional test would be
-(x +>=+ a and x +<=+z) or (x +>=+ A and x +<=+ Z) or (x +>=+ 0 and x +<=+ 9). Using Nim's set
+[.code]#(x +>=+ a and x +<=+z) or (x +>=+ A and x +<=+ Z) or (x +>=+ 0 and x +<=+ 9)#. Using Nim's set
 notation we can write that in a simpler form:
 
 [source, nim]
@@ -3150,18 +3194,18 @@ var x: char = 's'
 echo x in AlphaNum
 ----
 
-Here we defined a constant of set[char] types which contains lower and upper case
+Here we defined a constant of [.type]#set[char]# type which contains lower and upper case
 letters and the decimal digits. We used the range notation to save us a lot of typing
 ({'a', 'b', 'c', ...}). It works in this case only, as we know that all the lowercase
 letters, the upper case letters and the decimal digits built an uninterrupted range
 in the ASCII table.
 
 With that definition we can use a simple test with the [.key]#in# keyword. These test
-is equivalent to the procedure call AlphaNum.contains(x). In compiled languages set
+is equivalent to the procedure call AlphaNum.contains(x). In compiled languages (most) set
 operations are generally very fast as they map well to CPU instructions.
 
 Older languages like C have not a dedicated set data type, but as sets are so useful
-and efficient, C emulates these operations by using logical [.op]#and# and [.op]#or#
+and efficient, C emulates these operations by using bit-wise [.op]#and# and [.op]#or#
 operations in conjunction with bit shifts.
 
 Two important operations for sets are building the union and the intersection:
@@ -3183,10 +3227,10 @@ there is not a single common characters, the set Empty is indeed empty.  Remembe
 the two operators [.op]#+# and [.op]#\*# for union and intersection is not easy. For
 the intersection operator [.op]#*# it may help when we imagine the set members as
 bits, and we assume that we multiply the bits of both operands bitwise, that is we
-multiply the set or uset bits at corresponding position each. The resulting bit
+multiply the set or unset bits at corresponding position each. The resulting bit
 pattern would get set bits only for positions where both arguments have set bits.
 
-We can use the functions incl() and excl() to add or remove single set members:
+We can use the functions [.func]#incl()# and [.func]#excl()# to add or remove single set members:
 
 [source, nim]
 ----
@@ -3197,27 +3241,27 @@ s.excl('d')
 s.incl('?')
 ----
 
-The result is a set with letters a, b, c and the characters _ and ?. Note that
-calling incl() has no effect when the value is already included in the set, and
-calling excl() has no effect when the value is not contained in the set at all.
+The result is a [.type]#set# with letters [.lit]#a#, [.lit]#b#, [.lit]#c# and the characters [.lit]#_# and [.lit]#?#. Note that
+calling [.func]#incl()# has no effect when the value is already included in the set, and
+calling  [.func]#excl()# has no effect when the value is not contained in the set at all.
 
 Another operation is the difference of two sets -- [.code]#a - b# is a set which
-contains only the elements of a which are not contained in b. In Nim there is
+contains only the elements of  [.var]#a# which are not contained in [.var]#b#. In Nim there is
 currently no operator for the complement or the symmetric difference of sets
 available. We can produce a set complement by using a fully filled set and then
 removing the elements of which we want the complement. For a character set that would
-look like {'\0'..'\255'} - s, where s is the set to complement. And the symmetric
-difference of set a and set b can be generated by the operation [.code]#(a+b) -
+look like [.code]#{'\0'..'\255'} - s#, where [.var]#s# is the set to complement. And the symmetric
+difference of set [.var]#a# and set [.var]#b# can be generated by the operation [.code]#(a+b) -
 (a*b)# or by [.code]#(a-b) + (b-a)#.
 
-As the not operator binds more tightly than the in operator, we have to use brackets
-for the inverted membership test like not(x in a) or we can use the [.op]#notin#
-operator and write [.code]#x notin a#. We can test for equality of sets a and b like
-a == b and for subset relation [.code]#a < b# or [.code]#a +<=+ b#. [.code]#a +<=+ b#
-indicates that b contains at least all members of a, and [.code]#a < b# that b
-contains all members of a and at least one more element.
+As the [.op]#not# operator binds more tightly than the [.op]#in# operator, we have to use brackets
+for the inverted membership test like [.code]#not(x in a)# or we can use the [.op]#notin#
+operator and write [.code]#x notin a#. We can test for equality of sets [.var]#a# and [.var]#b# like
+[.code]#a == b# and for subset relation [.code]#a < b# or [.code]#a +<=+ b#. [.code]#a +<=+ b#
+indicates that [.var]#b# contains at least all members of [.code]#a#, and [.code]#a < b# that [.var]#b#
+contains all members of [.var]#a# and at least one more element.
 
-Finally we can use the function card() to get the cardinality of a set variable, that
+Finally we can use the function [.func]#card()# to get the cardinality of a [.type]#set# variable, that
 is the number of contained members.
 
 We should also mention that we can have character sets which are restricted to a
@@ -3234,7 +3278,7 @@ var y: CharRange = {'b', 'd'}
 echo 'c' in y
 ----
 
-In the code above the compiler detects the assignment to variable y as invalid.
+In the code above the compiler detects the assignment to variable [.var]#y# as invalid.
 
 Set of numbers work in principle in the same way as sets of characters. One problem
 is that in Nim integer numbers are generally 4 or 8 bytes large, but sets can contain
@@ -3251,8 +3295,8 @@ var p: int8
 echo p in baseLine
 ----
 
-In the code above we defined a set type which can contain int8 numbers in the range 0
-to 63.
+In the code above we defined a set type which can contain [.type]#int8# numbers in the range [.lit]#0#
+to [.lit]#63#.
 
 We can use also another notation for numeric sets when we define an explicit range
 type like in
@@ -3296,7 +3340,7 @@ const NimProp:  CompLangProp = {compiled, hasGC, isOpenSource, isSelfHosted}
 ----
 
 Enum sets can be used to interact with functions of C libraries where for flag
-variables often or'ed ints where used. For example for the gintro C bindings there is
+variables often or'ed ints are used. For example for the gintro C bindings there is
 this definition:
 
 [source, nim]
@@ -3367,7 +3411,7 @@ as sets are unordered types.
 
 === Strings
 
-The string data type is a sequence of characters. It is used whenever a textual input
+The [.type]#string# data type is a sequence of characters. It is used whenever a textual input
 or output operation is performed. Usually it is a sequence of ASCII-only characters,
 but multiple characters in the string can be interpreted as so called utf-8 unicode
 characters, that allow displaying nearly unlimited symbols as long as all the needed
@@ -3377,11 +3421,11 @@ ASCII characters, as they are simpler and work everywhere. String literals must 
 enclosed in double quotes. Nim strings are similar to the Nim seq data types: both
 are homogeneous variable-size containers. That means that a string or a seq expands
 automatically when you append or insert characters or other strings. Don't confuse
-short strings with only one character with single characters: A string is an non
+short strings with only one character with single characters: A string is a non
 trivial entity with internal state like data buffer (the actual contained
-characters), length and storage capacity why a character is nothing more than a
-single byte interpreted in a special way. So a string like "x" is fully different
-from 'x'.
+characters), length and storage capacity why a variable of [.type]#char# type is nothing more than a
+single byte interpreted in a special way. So a string like [.lit]#"x"# is fully different
+from [.lit]#'x'#.
 
 [source, nim]
 ----
@@ -3394,17 +3438,17 @@ add(str, ' ')
 echo str, name
 ----
 
-In above example code we declare a variable called str and assign it the initial
-literal value [.term]#"Hello"#. We use the [.term]#echo()# procedure to ask the user
-for his name, and use the [.term]#readLine()# procedure to read the user input from
-the terminal. To show how we can add characters to existing string variables we call
-the [.term]#add()# procedure to append a space character to our str variable, and
-finally call the [.term]#echo()# procedure to print the hello message and the name to
-the screen. Note that the [.term]#echo()# procedure automatically terminates each
+In the above example code we declare a variable called [.var]#str# and assign it the initial
+literal value [.lit]#"Hello"#. We use the [.func]#echo()# procedure to ask the user
+for his name, and use the [.func]#readLine()# procedure to read the user input from
+the terminal. To show how we can add characters to existing [.type]#string# variables we call
+the [.func]#add()# procedure to append a space character to our [.var]#str# variable, and
+finally call the [.func]#echo()# procedure to print the hello message and the name to
+the screen. Note that the [.func]#echo()# procedure automatically terminates each
 output operation with a jump to the next line. If you want an output operation
-without a newline, you can use the similar [.term]#write()# procedure. But write()
+without a newline, you can use the similar [.func]#write()# procedure. But write()
 needs an additional first parameter, for which we use the special variable
-[.term]#stdout# when we want to write to the terminal window.
+[.var]#stdout# when we want to write to the terminal window.
 
 So we could substitute the last two lines of the above code by
 
@@ -3417,18 +3461,20 @@ echo name
 
 The Nim standard library provides a lot of functions for creating and modifying
 strings, most of these functions are collected in the system and in the strutils
-module.  The most important procedures for strings are len() and high(). The len()
+module.  The most important procedures for strings are [.func]#len()# and [.func]#high()#. The [.func]#len()#
 procedure returns the length of a string, that is the number of ASCII characters or
-bytes that the string currently contains.  The empty string "" has length zero. Note
-that the plain len() function returns the number of 8-bit characters, not the number
+bytes that the string currently contains.  The empty string [.lit]#""# has length zero. Note
+that the plain [.func]#len()# function returns the number of 8-bit characters, not the number
 of unicode glyphs when the string should be interpreted as unicode text. To determine
 the number of glyphs of unicode strings you should use some of the unicode modules.
-The high() function is very similar to the len() function, it returns the index of
-the last character in the string. For each string s high(s) == len(s) -1.  Remember
-that Nim supports method call syntax, so we can also write s.len instead len(s).
+The [.func]#high()# function is very similar to the [.func]#len()# function, it returns the index of
+the last character in the string. For each string [.var]#s# [.code]#high(s) == len(s) -1#,
+so [.func]#high("")# is [.lit]#-1#.
+Remember
+that Nim supports method call syntax, so we can also write [.code]#s.len# instead of [.code]#len(s)#.
 
 The most important operators for strings are the subscript operator [.op]#[]# which
-allows access to individual characters of strings, and the [.op]#slice# operator
+allows access to individual characters of strings, and the [.op]#..# slice operator
 which allows access to sub-strings. The first character in a string has always the
 index zero. For concatenation of string literals or string variables Nim uses the
 [.op]#&# operator.
@@ -3440,17 +3486,17 @@ s[3 .. 6] = "like"
 s[s.high] = '!'
 ----
 
-In the example above we define the string s by use of two literal strings to show the
+In the example above we define the string variable [.var]#s# by use of two literal strings to show the
 use of the concatenation operator.  In line two we use the slice operator to replace
-the substring "hate", that is the characters 3 up to 6, with the string "like". In
+the sub-string  [.lit]#"hate"#, that is the characters with index position 3 up to 6, with the string literal [.lit]#"like"#. In
 this case the replacement has exactly that many characters as the text to replace,
-but that is not necessary: We can replace substrings with longer or shorter strings,
-which includes the empty string "" to delete a text area.  In the last line of above
-example we use the subscript operator [.op]#[]# to replace the single character '?'
+but that is not necessary: We can replace sub-strings with longer or shorter strings,
+which includes the empty string [.lit]#""# to delete a text area.  In the last line of above
+example we use the subscript operator [.op]#[]# to replace the single character [.lit]#'?'#
 at the end of our string with an exclamation mark. For subscript and slice operators
 Nim supports also a special notation which indicates indexing from the end of the
 string. Python and Ruby use negative integers for this purpose, while Nim uses the
-[.op]#^# character. So [.code]#^1# is the last character, [.code]#^2# the one before
+[.op]#^# character. So [.code]#[^1]# is the last character, [.code]#[^2]# the one before
 the last. So we could have written [.code]#s[^1] = '!'# for the last line of our code
 fragment above. The reason that Nim does not use negative integers for this purpose
 is that Nim arrays don't have to start at index zero, but can start with an arbitrary
@@ -3461,34 +3507,36 @@ details about the slice operator in a later section when we have introduced arra
 and sequences.
 
 Another important operator for strings is the "toString" or stringify operator
-[.op]#$#.  It can be applied to nearly all data types and converts them to strings
-which can then be printed.  Some procedures like echo() apply this operator on its
+[.op]#$#.  It can be applied to variables of nearly all data types
+and returns its string representation
+//and converts them to strings
+which can then be printed.  Some procedures like [.func]#echo()# apply this operator on its
 arguments automatically. When we define our own data types then it can make some
 sense to define the [.op]#$# for them, in case we need a textual representation of
 our data -- maybe only for debugging purpose. Note that applying the [.op]#$#
 operator on a string directly has no effect and is ignored, as the result would not
 change.
 
-Strings can contain all characters of the char data type including the control
+[.type]#Strings# can contain all characters of the [.type]#char# data type including the control
 characters. The most important control character for strings is the newline character
-'\n' which is used at the end or sometimes also in strings to start a new line. For
-strings Nim also supports the virtual character "\p" to encode an OS dependent line
-break. When compiled for Windows, "\p" is automatically converted to "\r\n", and to
-plain '\n' on Linux. Note that "\p" can be used in strings, but not as single
-character, as it is two byte on Windows. "\p" is only needed to support very old
-Windows version or maybe other exotic {os}, as modern Windows recognizes plain '\n'
+[.lit]#'\n'# which is used at the end or sometimes also in the middle  of strings to start a new line. For
+strings Nim also supports the virtual character [.lit]#"\p"# to encode an OS dependent line
+break. When compiled for Windows, [.lit]#"\p"# is automatically converted to [.lit]#"\r\n"#, and to
+a plain [.lit]#'\n'# on Linux. Note that [.lit]#"\p"# can be used in strings, but not as single
+character, as it is two byte on Windows. [.lit]#"\p"# is only needed to support very old
+Windows version or maybe other exotic {os}, as modern Windows recognizes plain [.lit]#'\n'#
 well.
 
-As strings support utf-8 unicode, an escape sequence starting with "\u" is supported
-to insert unicode codepoints.  The "\u" follows exactly 4 hexadecimal digits or an
+As strings support utf-8 unicode, an escape sequence starting with [.lit]#"\u"# is supported
+to insert unicode codepoints.  The [.lit]#"\u"# follows exactly 4 hexadecimal digits or an
 arbitrary number of hex digits enclosed in curly braces {}.
 
 As string literals are enclosed in quotation marks, it follows that strings can not
-directly contain this character, we have to escape it as in [.term]#"\"Hello\", she
+directly contain this character, we have to escape it as in [.code]#"\"Hello\", she
 said"#.
 
 Maybe we should mention that Nim strings use copy semantics for assignment. As we
-have not yet introduced ref objects or pointers, copy semantics is what you should
+have not yet introduced references or pointers, copy semantics is what you should
 expect -- strings behave just like all the other simple data types we used before
 like integer or float numbers or enums and characters:
 
@@ -3510,9 +3558,9 @@ Nim is easy!
 Nim
 ----
 
-The assignment [.term]#s2 = s1# creates a copy of s1, so the subsequent add()
-operation does only modify s1 but not s2. Probably not surprising for you, but other
-programming languages may behave differently, ie. the assignment may not copy the
+The assignment [.code]#s2 = s1# creates a copy of [.var]#s1#, so the subsequent [.func]#add()#
+operation does only modify [.var]#s1# but not [.var]#s2#. Probably not surprising for you, but other
+programming languages may behave differently, i.e. the assignment may not copy the
 textual content but create only a reference to the first string, so that modifying
 one of then also effect the other. We will learn more about the concept of references
 when we introduce the object data type.
@@ -3523,7 +3571,6 @@ UTF-8 is a variable-width character encoding. To cite the introducing section fr
 https://en.wikipedia.org/wiki/UTF-8:
 
 ****
-
 UTF-8 is capable of encoding all 1,112,064[nb 1] valid character code points in
 Unicode using one to four one-byte (8-bit) code units. Code points with lower
 numerical values, which tend to occur more frequently, are encoded using fewer bytes.
@@ -3534,7 +3581,6 @@ Unicode as well. Since ASCII bytes do not occur when encoding non-ASCII code poi
 into UTF-8, UTF-8 is safe to use within most programming and document languages that
 interpret certain ASCII characters in a special way, such as "/" (slash) in
 filenames, "\" (backslash) in escape sequences, and "%" in printf.
-
 ****
 
 In Nim we have four ways to enter unicode characters: As hexadecimal digits following
@@ -3550,7 +3596,7 @@ echo "\u{265A} \u{2654}" # {} is only necessary for more than 4 hex digits
 echo "♚ ♔"
 ----
 
-The code above shows three was to print the symbol for a black and a white king of a
+The code above shows three ways to print the symbol for a black and a white king of a
 chess game.  In the first line we typed the unicode sequence directly as hexadecimal
 digits, this method is rarely used today. In the second line we used "\u" to enter
 the codepoint directly, we get the code from
@@ -3562,16 +3608,17 @@ other {os}.
 
 ==== The CString data type
 
-In the C language strings are just pointers to sequences of characters of fixed
+In the C programming language strings are just pointers to sequences of characters of fixed
 length.footnote:[We will explain later in this book what pointers are, so if you have
 no idea for what pointers are used in computer programming, then just ignore it for
-now.] The end of such a C string is generally marked with the character '\x0'. C
-functions like printf() needs this "\x0" characters to determine the end of the C
-string. While Nim strings are entities that store its current size and other
+now.] The end of such a C string is generally marked with the character [.lit]#'\x0'#
+-- a null byte with all bits cleared.
+C functions like [.func]#printf()# needs these [.lit]"\x0"# characters to determine the end of the C
+string. While Nim strings are complex entities that store its current size and other
 properties, and can grow dynamically, the character sequence of Nim strings has also
-a hidden terminating '\0' character at the end to make them compatible with C
+a hidden terminating [.lit]#'\x0'# character at the end to make them compatible with C
 strings. Nim has also the data type cstring, called "compatible string" in modern
-Nim, which matches the strings in C language if we compile as usual with C backend.
+Nim, which matches the strings in C language if we compile as usual with the C backend.
 Cstrings are used in bindings definitions for C libraries, but as cstrings can not
 grow and do support only few string operations, they are only used in rare cases in
 ordinary Nim source code.  The Nim compiler passes automatically the zero terminated
@@ -3580,7 +3627,7 @@ no expensive type conversion involved. But the other way is much more expensive:
 you have an existing cstring and need a Nim string with same content, then a simple
 conversion is not possible as a Nim string is a different, more complex entity. So we
 have to create a Nim string and copy the content, you can use the stringify operator
-[.op]#$# for this like in [.term]#myNimStr = $myCString#.  Generally string creation
+[.op]#$# for this like in [.code]#myNimStr = $myCString#.  Generally string creation
 is an expensive operation compared to plain operations like adding two numbers, so
 when performance matters one should try to avoid unnecessary string creation and also
 unnecessary string operations. This is mostly important in loops, which are executed
@@ -3588,7 +3635,6 @@ often. We will explain more about the internal of strings and why string creatio
 dynamically allocating memory is expensive in later sections of the book.
 
 ****
-
 When we access text ranges with the slice operator or single characters with the
 subscript operator we should never access indices below the currently last index,
 which is the index mystr.high or ^1.  If we do that we get an exception, as that
@@ -3597,11 +3643,22 @@ Nim strings grow automatically if we insert or append data. But that does not me
 that we can use the subscript or slice operator to access characters after the
 current end of the string.  Such an operation would really make not much sense:
 Imagine we have a string var str = "Nim" and now use the subscript operator and
-assign a character at position 10 with str[10] = '!'. What should become the content
+assign a character at position 10 with [.code]#str[10] = '!'#. What should become the content
 of characters 4 .. 9? Well maybe spaces would make some sense, but in fact such an
 access after the currently last valid character of the string is forbidden. You could
-do str.add("      !") for this purpose.
+do [.code]#str.add("      !")# for this purpose.
 
+Another operation you should avoid is inserting the [.lit]#'\x0'# null byte character
+somewhere in an existing Nim  string. Nim stores the actual length of strings
+explicitly and additional terminates the end of the actual data with a [.lit]#'\x0'# to
+make the string compatible with C strings and allow passing the data buffer
+directly to C library functions. A [.lit]#'\x0'# character somewhere in the middle of a
+Nim string would generate an inconsistency, as C library functions like [.func]#printf()#
+would regard [.lit]#'\x0'# as the string end marker, while pure Nim functions
+may assume still a longer string. Intermediate [.lit]#'\x0'# bytes in strings can in very rare cases
+be a problem when we get the actual byte sequence from C libraries. For the
+same reason a Nim string is not identical or fully compatible with s [.type]#seq[char]#,
+as a [.type]#seq[char]# may contain multiple zero byte data, while Nim strings should not.
 ****
 
 ==== Escape Sequences in Strings
@@ -3613,7 +3670,7 @@ will explain their use in strings in some more detail and give a concrete exampl
 
 The most important control characters for strings is the newline character, which
 moves the cursor in the terminal window to the beginning of the next line. The
-[.term]#echo()# procedure prints that character automatically after each output
+[.func]#echo()# procedure prints that character automatically after each output
 operation. Indeed it can be important to terminate each output operation with that
 character, as the output can be buffered, and writing just a string without a
 termination newline may not appear at once on the screen, but can be delayed. That is
@@ -3630,7 +3687,7 @@ a newline when we run our program, but not when we enter our source code.] To so
 that problem, escape sequences were introduced for most programming languages. An
 escape sequence is a special sequence of characters, that the compiler can discover
 in strings and then replace with a single special character. Whenever we want a
-newline in a string we type it as [.term]#"\n"#, that is, the backslash character
+newline in a string we type it as [.lit]#"\n"#, that is, the backslash character
 followed by an ordinary letter n, n for newline.
 
 [source, nim]
@@ -3639,31 +3696,31 @@ echo "\n"
 echo "Hello\nHello\nHello"
 ----
 
-The first line prints two empty lines -- two because the [.term]#\n# generates a jump
-to next line, and because [.term]#echo()# always adds one more jump to next line. The
-second line prints three lines which each contains the word Hello, and the cursor is
-moved below the last Hello, because [.term]#echo()# automatically adds one more
+The first line prints two empty lines -- two because the [.lit]#\n# generates a jump
+to next the line, and because [.func]#echo()# always adds one more jump to the next line. The
+second line prints three lines which each contains the word [.lit]#Hello#, and the cursor is
+moved below the last [.lit]#Hello#, because [.func]#echo()# automatically adds one more
 newline character.
 
 Older Windows versions used generally a sequence of two control characters to start a
-new line, one '\r' (carriage-return) to move to the start of the line, and one '\l'
+new line, one [.lit]#'\r'# (carriage-return) to move to the start of the line, and one [.lit]#'\l'#
 (linefeed) to move down. You may still find these two characters in old Windows text
 files at the end of each line. Old printers used these combination too, so it was
 possible to send that text files to old printers directly. Nim also has the special
-escape sequence "\p" which is called platform dependent newline and maps to "\c\l" on
+escape sequence [.lit]#"\p"# which is called platform dependent newline and maps to [.lit]#"\c\l"# on
 Windows. That is when we compile our program on Windows, then the compiler replaces
-"\p" in our strings with a carriage-return and a linefeed character, and when we
-compile on Linux then the compiler replaces "\n" only with a newline character. But
-modern Windows supports '\n', so we generally can use that.
+[.lit]#"\p"# in our strings with a carriage-return and a linefeed character, and when we
+compile on Linux then the compiler replaces [.lit]#"\p"# only with a newline character. But
+modern Windows supports [.lit]#'\n'#, so we generally can use that.
 
 ==== Raw Strings and multi-line Strings
 
 In rare situations you may want to print exactly what you have typed, so you do not
-want the compiler to replaces a \n by a newline character. You can do that in two
+want the compiler to replaces a [.lit]#'\n'# by a newline character. You can do that in two
 ways: You can escape the escape character, that is you put in front of the backslash
-one more backslash. When you print the string "\\n" you will get a backslash and the
-n character in your terminal. Or you can use so called raw strings, that is you put
-the character r immediately in front of your string like
+one more backslash. When you print the string [.lit]#"\\n"# you will get a backslash and the
+[.lit]#n# character in your terminal. Or you can use so called raw strings, that is you put
+the character [.lit]#r# immediately in front of your string like
 
 [source, nim]
 ----
@@ -3690,7 +3747,7 @@ Both echo() commands above generates exactly the same machine code!
 === Comments
 
 Comments are not really a data type, but they are also important. Ordinary comments
-starts with the hashtag character # and extend to the end of the line. The #
+starts with the hashtag character [.lit]#\## and extend to the end of the line. The #
 character itself and all following characters up to the line end are ignored by the
 compiler. You can also start the comment with ##, then it is a documentation comment.
 It is also ignored by the compiler, but can be processed when you use later tools to
@@ -3698,7 +3755,7 @@ generate documentation for your code. Documentation comments are only allowed at
 certain places, often they are inserted at the beginning of a procedure body to
 explain its use.  There are also multi-line comments, which starts with the two
 characters +#[+ and ends with +]#+. These form of comment can extend over multiple
-lines and can be nested, that is multi-line comments can contain plain or multi-line
+lines and can be nested, that is multi-line comments can contain again plain or multi-line
 comments.
 
 [source, nim]
@@ -3723,14 +3780,14 @@ proc even(i: int): bool =
 ----
 
 You can also use the +#[+ comment +]#+ notation to insert comments everywhere in the
-source code at places where a whitspace character is allowed, but these form of in
+source code at places where a white-space character is allowed, but these form of in
 source comments is rarely used.
 
 === Other data types
 
-There exists some more predefined types like the container types array and seq, which
-can contain multiple objects of the same type, or the tuple type which can contain
-different types. And we have sets, and enums and finally objects. Nim objects are
+There exists some more predefined types like the container types [.type]#array# and [.type]#seq#, which
+can contain multiple elements of the same type, or the [.type]#tuple# and the [.type]#object# type which can contain data of
+different types. Nim tuples and objects are
 similar to C structs, they are not so verbose as Java classes. We will learn more
 about all these types in later sections of the book.
 
@@ -3747,7 +3804,10 @@ terminal when the editor or terminal supports unicode properly and when all nece
 fonts are installed. That may be the case for your local computer, but what when
 someone other may edit your source code?
 
-Nim currently doess not allow to insert tabular characters (tabs) in your source code,
+Starting with Nim version 1.6 we got some support for unicode operators, which may
+be useful for some applications. For details please see the Nim compiler manual. 
+
+Nim currently does not allow to insert tabular characters (tabs) in your source code,
 so you have to do the indentation of blocks by spaces only. Generally we use two
 spaces for each indentation level. Other numbers work also but you should stick to a
 fixed value.
@@ -3769,29 +3829,29 @@ var
   strange__error: int # illegal
 ----
 
-Generally we use camel case like leftMargin for variable names, not snake case like
-left_margin.
+Generally we use camel case like [.var]#leftMargin# for variable names, not snake case like
+[.var]#left_margin#.
 
 Current Nim has the special property that names are case insensitive and that
 underscores are simple ignored by the compiler. The only exception is the first
-letter of a name, that letter is case sensitive. So the names leftMargin, leftmargin
-and left_margin are identical for the compiler. But LeftMargin is different to all
+letter of a name, that letter is case sensitive. So the names [.var]#leftMargin#, [.var]#leftmargin#
+and [.var]#left_margin# are identical for the compiler. But [.var]#LeftMargin# is different to all
 the others, because it starts with a capital letter. This may sound a bit strange at
 first, but works well in practice. One advantage is, that a library author may use
-snake case in his library for names, but the users of the library can freely decide
-if they prefer camelCase. But still you may think that all this generates confusion.
+[.var]#snake_case# in his library for names, but the users of the library can freely decide
+if they prefer [.var]#camelCase#. But still you may think that all this generates confusion.
 In practice it does not, it prevents confusion. Imagine a conventional programming
 language, fully case sensitive and not ignoring underscores: In a larger program we
-may then have names like nextIteration and next_Iteration or keymap and keyMap. What
+may then have names like [.var]#nextIteration# and [.var]#next_Iteration# or [.var]#keymap# and [.var]#keyMap#. What
 when both names are visible in current scope, and we type the wrong one. The compiler
 may not detect it when types match, but the program may do strange things. Nim would
 not allow that similar looking names, as the compiler would regard them as identical
 and would complain about a name redefinition.
 
 You may ask why the first letter is case sensitive. That is to allow for user defined
-types to use capital type names and then write something like [.term]#var window:
-Window#.  So we can declare a variable named window of a user defined data type named
-Window. That is a common practice.
+types to use capital type names and then write something like [.code]#var window:
+Window#.  So we can declare a variable named [.var]#window# of a user defined data type named
+[.type]#Window#. That is a common practice.
 
 The case insensitivity and the ignoring of underscores may be not the greatest
 invention of Nim, but it does not really hurt. The only exception is when we make
@@ -3808,7 +3868,6 @@ compiler with the command line argument [.term]#--styleCheck:error# or
 [.term]#--styleCheck:hint#.
 
 ****
-
 Languages like C uses curly braces to mark blocks, while other languages like Pascal
 uses begin/end keywords for this purpose. At the same time blocks are generally
 indented by tabs or spaces to make it easier for the programmer to recognize the
@@ -3826,7 +3885,7 @@ contains many locations where changing one character breaks it.  All numeric lit
 would suffer from adding a digit or deleting a digit.  Or the operators like ++ or +=
 from C -- the code may compile well after deleting the leading +, but it would be
 wrong. Computer programming is working carefully!  Indeed use of curly braces for
-blocks has some advantages, eg. many editors can highlight such blocks well, editor
+blocks has some advantages, e.g. many editors can highlight such blocks well, editor
 may support jumping back and forth between the braces, and for really large blocks it
 may be indeed simpler to discover the whole block range.  But practice has shown that
 marking blocks with indentation only works fine, most people who have used it for
@@ -3835,26 +3894,186 @@ some time just prefer it.
 //For rare cases, like copy and past of long blocks,
 //maybe from other peoples code, indentation may not work that well. But computer
 //programming is different from writing a PhD thesis.
-
 ****
+
+=== Blocks, Scopes, Visibility, Locality and Shadowing
+
+Like most other programming languages Nim has the concept of [.ndef]#code blocks# or scopes.
+The body of procedures, functions, iterators and templates, as well as the body of various loop constructs
+or code following conditional statements builds an indented block and creates a new scope.
+In this new scope we can define variables, named constants or types
+with the [.key]#var#, [.key]#let#, [.key]#const# and [.key]#type# keywords which
+are local to this block.
+These symbols are only visible in this scope, and
+local variables that needs storage are actually created when the program
+executes the block and destroyed when the block is left. Well in principle, and at least for
+ordinary stack allocated value variables, for references and pointer
+variables things are a bit more complicated, we will discuss that in more
+detail when we introduce references.
+Here we have used the term code block, to clearly separate them from the [.key]#const#, [.key]#var#,
+[.key]#type# and [.key]#import# sections which are a different form of indented blocks.
+Remember that the compiler processes our program code from the top to the bottom, so
+we have always to define symbols before we can actually use them.
+When we define an entity
+in a code block, and a symbol with that name was already declared before
+outside of this block, then that symbol is shadowed, that is the prior
+declaration gets temporary invisible.
+
+[source, nim]
+----
+proc doSomething =
+  type NumType = int
+  const Seven = 7
+  var a: NumType = Seven
+  var b: bool = true
+  if b:
+    echo a, ' ',  b # variables of outer scope are visible
+    var a, sum: float # now outer a is shadowed
+    a = 2.0
+    sum = a * a + 1
+    echo a, ' ', sum # local data only visible in if block
+
+  echo a # initial int variable with value 7 become visible again
+
+doSomething()
+----
+
+While we have not officially introduced procedures as units
+to structure our program code yet, we have put the above code
+this time by intend into the body of a proc called [.func]#doSomething()#.
+
+This way we can guarantee that the two variables [.var]#a# and [.var]#b# defined
+in that proc are really stack allocated. Actually in real life programs
+nearly all of the program code is embedded in procs. We will discuss
+the peculiarity of global code later. In the proc body from above the 
+two variables [.var]#a# and [.var]#b# are local to the proc [.func]#doSomething()# -- they are
+created on the stack when the procedure is called, that is when we ask
+to start it execution by a statement like [.func]#doSomething()#. These two 
+variables are never visible in code outside of this proc, and the
+storage for these two variables is automatically released when execution
+of that procedure ends, in this case when the last line of the proc is reached.
+In the body of the proc we define although a new custom type and a named constant --
+just to show that it is possible. Both symbols are also local to this proc and invisible outside.
+
+The indented block following the [.code]#if b:# statement is sometimes called a [.ndef]#"if then"# block
+or just [.key]#if# block -- in that block
+we define
+two other variables called [.var]#a# and [.var]#sum# of [.type]#float# type, which are also
+stack allocated.
+If these two variables are already allocated when the
+proc starts its execution, or only when the [.ndef]#then# block following the [.key]#if# statements
+is executed, is actually an implementation detail. As the variable [.var]#a# of [.type]#float# type in the
+[.key]#if# then block has the same name as the outer variable of [.type]#int# type, that integer variable
+is shadowed in the [.key]#if# block -- the outer value gets temporary invisible
+as soon as the new symbol is declared.
+Other symbols of outer scopes remain visible.
+In the [.ndef]#if then block# as well as in most other indented code blocks  we could also define
+named constants or custom types, these would be visible only in this block.
+Indented code blocks can be nested -- in one block we can have more indented block, for which all
+declared symbols are again local and invisible outside.
+The last [.func]#echo()# statement in our code example from above is already below the [.ndef]#if then
+block#, so the initial variable a of integer type becomes again visible.
+
+=== Global code
+
+In the introducing sections of the book we have generally used program
+code at a global level, not embedded in a proc body.
+We did that for simplicity and as we had not already introduced procs.
+Global code is sometimes used in small scripts or for
+special purposes, like program initialization. But for larger
+programs most of the code is generally grouped in procedures.
+For variables defined in global code it is not that well defined
+where they are stored, it may depend on the actual Nim compiler implementation
+and the compiler backend. The performance of global code can be
+worse than code enclosed in proc bodies, so when performance maters we should
+put our code in procs. One reason for the not optimal performance of global code is, that
+global variables are not located on the stack,but in the global BSS segment of the program,
+and that the backend can not optimize global code that well, e.g. global variables
+may not be cached in CPU registers. Note that variables that have to exists and keep it value
+for the whole runtime of the program, and not only for the duration of the execution of
+a single proc, has to be defined as globals. The same holds obviously for global variables that
+are used from code of different procs, like the stdout and stdin variables of the system module.
+An alternative to the use of global variables when a variable used in a proc should keep its value
+between different proc calls is to attach the {.global.} pragma to a proc local variable.
+This way that variable is still only visible in that proc where the variable is declared, but
+the variable is stored in the BSS segment instead on the stack and so its value is preserved
+between proc calls.
+ 
+Note that structured named constants, e.g. constant strings, are stored also in the BSS
+segment, even when they are only defined local to a proc. So large structured constants
+can increase the executable size, as the BSS segment is a part of the program executable.  
+
+=== White space, punctuation and operators
+
+The space character with decimal ASCII value [.lit]#32# is used in Nim program code
+to indent code blocks and to separate different symbols from each other. Nim keywords
+are always separated with leading and trailing white-space from other symbols, while
+other symbols are most often separated by punctuation and an additional optional space character.
+Whenever the syntax allows a space, we can also insert multiple spaces or a comment
+enclosed in [.code]#\#[]\x# in the source code. Tabulator characters are not allowed in the Nim source code, but we
+can use them in comments and of course in string literals. We mentioned already,
+that spaces can make a difference how operators or function parameters are handled.
+In expressions like [.code]#a+b# or [.code]#a + b# the [.op]#+# operator is regarded as an infix operator, but
+in [.code]#a + -b# the minus sign is regarded as unary operator bound to [.var]#b#.
+This way asymmetric expressions like  [.code]#a +b# or [.code]#a <b# would be invalid,
+as the operators are interpreted as unary ones attached to [.var]#b#, and then there
+is no infix operator between the two variables.
+A proc call like
+[.code]#echo(1, 2)# is interpreted as a call of [func]#echo()# with two integer literal arguments, while
+a call like [.code]#echo (1, 2)# with a space after the proc name  is interpreted in command invocation syntax as a call with a
+tuple argument. While in C code it is not uncommon to always insert a space
+between the function name and it parameter list, we should avoid that in Nim for the described reason.
+We will learn more about proc calls and the tuple data type later.
+
+=== Operators
+
+Nim uses the following punctuation characters as operators:
+
+----
+=, +, -, *, /, <, >, @, $, ~, &, %, |, !, ?, ^, ., :, \
+----
+
+These symbols can be used as single entities or in combination, and we can
+define our own operators or redefine existing operators.
+All these symbols can be used as infix operators between two arguments,
+or as unary prefix operators, but Nim does not support unary postfix
+operators, so a notation like [.code]#i++# as known from the C language is not possible in Nim.
+There exists a few combinations
+of these punctuation characters that have a special meaning, we will
+learn more about that and how we can define our own operators later in the book.
+
+In Nim these keywords are also used as operators:
+
+----
+and, or, not, xor, shl, shr, div, mod, in, notin, is, isnot, of, as, from.
+----
+
+Operators have different priorities, e.g. [.op]#*# and [.op]#/# have a higher
+priority than [.op]#+# and [.op]#-#. In most cases the priority is just as we would
+expect, maybe with a few exceptions. If we are unsure, we can group terms with
+brackets, or consult the compiler manual for details.
+
+Since version 1.6 Nim also allows to define and use a few unicode operators, but these
+are still considered experimental. For details you should consult the compiler manual. 
 
 == Control Structures
 
-The most important control structures of Nim are the if statement for conditional
-execution, the related case statement and the while loop for repetitions.
+The most important control structures of Nim are the [.key]#if# statement for conditional
+execution, the related [.key]#case# statement and the [.key]#while# and [.key]#for# loops for repetitions.
 
-All these structures can be nested in arbitrary ways, so we can have in one if branch
-other if conditions or while loops, and in while loops again other control structures
+All these structures can be nested in arbitrary ways, so we can have in one [.key]#if# branch
+other [.key]#if# conditions or [.key]#while# loops, and in [.key]#while# loops again other control structures
 including other loops.
 
 === If Statement and If Expression
 
-The if statement with the optional elif and else parts evaluates a sequence of
+The [.key]#if# statement with multiple optional [.key]#elif# brances and an optional [.key]#else# branch evaluates a sequence of
 conditions. As soon as one condition evaluates as true the corresponding statement
-block is executed, and after that the program execution continues after the whole if
+block is executed, and after that the program execution continues after the whole [.key]#if#
 construct. That is at most one branch is executed. If none of the conditions after
-the if or elif keywords evaluates to true, then the else branch is executed if it
-exists.
+the [.key]#if# or [.key]#elif# keywords evaluates to [.lit]#true#, then the [.key]#else# branch is executed if it
+exists. A complete [.key]#if# statement consists of one [.key]#if# condition, an arbitrary number of [.key]#elif#
+conditions and one optional [.key]#else# part:
 
 [source, nim]
 ----
@@ -3892,20 +4111,43 @@ if age > 17:
   echo "you may drink and smoke, but better avoid it!"
 ----
 
-Note that the statements are indented by spaces, we use two spaces generally, but
-other numbers work as well. And note that it is [.term]#elif#, not elsif like in
+Note that the branches are indented by spaces, we use two spaces generally, but
+other numbers work as well. And note that it is [.key]#elif#, not elsif like in
 Ruby, and that there is a colon after the condition. Instead of a single statement we
-can use multiple each, all on its own line and all indented in the same way.
+can use multiple in each branch, all on its own line and all indented in the same way.
 
 ****
-
 No, the terminating colon is not really necessary for the compiler, the compiler
 could determine the end of the condition without it, as the following statement is
 indented. But it looks better with colon, the colon makes it for humans easier to
 understand the structure of the whole if statement. So the compiler expects the
 colons and complains otherwise currently.
-
 ****
+
+With an elif and an else branch the example from above may look like
+
+[source, nim]
+----
+var age: int = 7
+if age == 1:
+  echo "you are really too young to drive"  
+elif age < 6:
+  echo "you may drive a kids car"
+elif age > 17 and age < 75:
+  echo "you can drive a car"
+else:
+  echo "drive carefully"
+----
+
+Note that we perform the age tests in ascending order -- it would not make much sense
+to first test for a condition [.code]#age < 6#, and later to test for [.code]#age < 4#, as the if statement
+is evaluated from top to bottom, and as sone as one condition is evaluated as true, that branch
+is executed and then the program execution continues after the whole [.key]#if# construct.
+So the test [.code]#age < 4# would be not evaluated, when the prior test [.code]#age < 6# is already true. 
+
+As the various conditions of the if statement are processed from top to bottom until one condition
+evaluates to true, it can be a good idea to put the most likely conditions first for optional performance, as
+then the unlikely conditions have not to be evaluated in most cases.
 
 We can also have if/else expressions which returns a value like in
 
@@ -3917,7 +4159,7 @@ var speed: float = if time > 0: delta / time else: 0.0 # prevent div by zero err
 In C for a similar construct the ternary ? operator is used.
 
 In languages like C or Ruby the assignment operator = is an expression which returns
-the value on the left, so we can write code like
+the assigned value, so we can write code like
 
 [source, c]
 ----
@@ -3931,7 +4173,7 @@ So we can use conditional terms like
 
 [source, nim]
 ----
-while (let c = getChar(); c):
+while (let c = getChar(); c != '\0'):
   process(c)
 ----
 
@@ -3939,7 +4181,7 @@ If we declare a variable in this way using the var or let keyword then that vari
 is only visible in the bracket expression itself and in the following indented block.
 
 Note that if-expressions must always return a well defined value, so they must
-contain an else. A plain if, without else, or an if/elif without an else does not
+always contain an [.key]#else# branch. A plain [.key]#if#, without an [.key]#else#, or an if/elif without an [.key]#else# does not
 work. And as Nim is a statically typed language and all variables have a strictly well defined
 type, the if-expression must return the same type for all branches!
 
