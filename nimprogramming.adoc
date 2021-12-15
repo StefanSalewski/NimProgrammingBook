@@ -3898,17 +3898,17 @@ some time just prefer it.
 
 === Blocks, Scopes, Visibility, Locality and Shadowing
 
-Like most other programming languages Nim has the concept of [.ndef]#code blocks# or scopes.
+Like most other programming languages, Nim has the concept of [.ndef]#code blocks#, or scopes.
 The body of procedures, functions, iterators and templates, as well as the body of various loop constructs
 or code following conditional statements builds an indented block and creates a new scope.
-In this new scope we can define variables, named constants or types
+In this new scope we can define variables, named constants, or types
 with the [.key]#var#, [.key]#let#, [.key]#const# and [.key]#type# keywords which
 are local to this block.
 These symbols are only visible in this scope, and
-local variables that needs storage are actually created when the program
-executes the block and destroyed when the block is left. Well in principle, and at least for
+local variables that need storage are actually created when the program
+executes the block, and destroyed when the block is left. Well, in principle, and at least for
 ordinary stack allocated value variables, for references and pointer
-variables things are a bit more complicated, we will discuss that in more
+variables, things are a bit more complicated, we will discuss that in more
 detail when we introduce references.
 Here we have used the term code block, to clearly separate them from the [.key]#const#, [.key]#var#,
 [.key]#type# and [.key]#import# sections which are a different form of indented blocks.
@@ -4389,7 +4389,7 @@ that is '?', is reached, while the for loop processes this last character still.
 is intended for the for loop, its general purpose is to process all the elements in
 containers or collections.
 
-The above for loop does a read access to the string, that is we get basically a copy
+The above _for_ loop, does a read access to the string, that is, we get basically a copy
 of each character, and we can not modify the actual string in this way. When we want
 to modify the string, there is a variant available.
 
