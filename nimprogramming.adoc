@@ -4263,10 +4263,11 @@ block after the case keyword if we want.
 
 === The While Loop
 
-The [.term]#while# loop is used when we want to do conditional repetitions, that is
-if we want to check a condition and want to execute a block of statements only as
-long as the condition is true. If the condition is false in advance or becomes false
-after some repetitions then the program execution proceeds after the indented block.
+The [.term]#while# loop is used when we want to do conditional repetitions, that is,
+if we want to check for the presence of a certain condition and then want to execute
+a block of statements only as long, as that condition is true. If the condition we located
+is false in advance, or becomes false after some repetitions, then the program execution
+proceeds further after the indented block.
 
 A basic while loop has this shape:
 
