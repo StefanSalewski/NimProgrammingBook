@@ -883,8 +883,8 @@ various programming styles. While we may regard Nim in
 first line as an imperative, procedural programming language, it supports the popular functional
 and object-orientated programming styles well.
 
-In classical OOP programming languages we have the concept of [.ndef]#classes# with  [.ndef]#attributes#, and methods that are very closely bond to
-the classes as in Python:
+In classical OOP programming languages, we have the concept of [.ndef]#classes# with  [.ndef]#attributes#, and methods that are very closely bond to
+the classes, as in Python:
 
 [source, python]
 ----
@@ -896,8 +896,9 @@ user = User()
 user.say()
 ----
 
-In this Python snippet we declare a class User with a method named [.func]#say()#
-bound to this class. Then we create an instance variable of this class and call
+In this Python snippet we declare a class User, with a method named [.func]#say()#
+bound to this class. You can think of methods, as stating the action to be taken by a programming language.
+Here, we then create an instance variable of this class and call
 its say() method.
 
 This tight bounding of methods to classes is not very flexible, e.g. extending the set
