@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-15
+//v0.1, 2021-DEC-19
 :doctype: book
 :toc: left
 :icons: font
@@ -125,7 +125,9 @@ we still have so much other important stuff. So what we will leaf out for now is
 of the compiler, installing and using text editors or IDEs with special Nim support, using
 Nim package managers like nimble, nimph or others, using the foreign function interface (FFI)
 to create bindings to C libraries, and internal compiler details like the various
-memory management options, all the pragmas and similar.
+memory management options, all the pragmas and similar. Also we do not intend to
+fill the book up with redundant stuff, like tables listing all the Nim keyword or Nim's
+primitive data types and such, as you can find all that in the compiler manual easily.
 
 While creating graphical user interfaces (GUIs) is an important topic, we can not
 give much details for that due to various reasons: Nim has not yet the one and only
@@ -152,11 +154,11 @@ There exists also
 some video tutorials, for the case that you have problems reading, but in that case
 this book will not be of much use for you at all. 
 
-This book is based on the Nim reference implementation ({curnim}) of the team around
-Mr. A. Rumpf -- other implementations were not available in 2020, when the initial
-version of the book was created.  If this should change later and Nim implementations
-with significantly different behaviour may become available, then we may add remarks
-where necessary.
+This book is based on the Nim reference implementation of the team around
+Mr. A. Rumpf.
+While the first pages of this book have been written already in spring 2020, it should be mostly up to date
+with the current stable version {curnim}. We will try to keep the book up to date with further Nim
+releases, as a 1.8 or maybe already a 2.0 release with planned support for incremental compilation.
 
 ****
 The source code of the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
@@ -883,8 +885,8 @@ various programming styles. While we may regard Nim in
 first line as an imperative, procedural programming language, it supports the popular functional
 and object-orientated programming styles well.
 
-In classical OOP programming languages we have the concept of [.ndef]#classes# with  [.ndef]#attributes#, and methods that are very closely bond to
-the classes as in Python:
+In classical OOP programming languages, we have the concept of [.ndef]#classes# with  [.ndef]#attributes#, and methods that are very closely bound to
+the classes, as in Python:
 
 [source, python]
 ----
@@ -896,7 +898,7 @@ user = User()
 user.say()
 ----
 
-In this Python snippet we declare a class User with a method named [.func]#say()#
+In this Python snippet, we declare a class User, with a method named [.func]#say()#
 bound to this class. Then we create an instance variable of this class and call
 its say() method.
 
@@ -3898,17 +3900,17 @@ some time just prefer it.
 
 === Blocks, Scopes, Visibility, Locality and Shadowing
 
-Like most other programming languages Nim has the concept of [.ndef]#code blocks# or scopes.
+Like most other programming languages, Nim has the concept of [.ndef]#code blocks# or scopes.
 The body of procedures, functions, iterators and templates, as well as the body of various loop constructs
 or code following conditional statements builds an indented block and creates a new scope.
-In this new scope we can define variables, named constants or types
+In this new scope we can define variables, named constants, or types
 with the [.key]#var#, [.key]#let#, [.key]#const# and [.key]#type# keywords which
 are local to this block.
 These symbols are only visible in this scope, and
-local variables that needs storage are actually created when the program
-executes the block and destroyed when the block is left. Well in principle, and at least for
+local variables that need storage are actually created when the program
+executes the block, and destroyed when the block is left. Well, in principle, and at least for
 ordinary stack allocated value variables, for references and pointer
-variables things are a bit more complicated, we will discuss that in more
+variables, things are a bit more complicated, we will discuss that in more
 detail when we introduce references.
 Here we have used the term code block, to clearly separate them from the [.key]#const#, [.key]#var#,
 [.key]#type# and [.key]#import# sections which are a different form of indented blocks.
@@ -4010,7 +4012,7 @@ to indent code blocks and to separate different symbols from each other. Nim key
 are always separated with leading and trailing white-space from other symbols, while
 other symbols are most often separated by punctuation and an additional optional space character.
 Whenever the syntax allows a space, we can also insert multiple spaces or a comment
-enclosed in [.code]#\#[]\x# in the source code. Tabulator characters are not allowed in the Nim source code, but we
+enclosed in +#[+ +]#+ in the source code. Tabulator characters are not allowed in the Nim source code, but we
 can use them in comments and of course in string literals. We mentioned already,
 that spaces can make a difference how operators or function parameters are handled.
 In expressions like [.code]#a+b# or [.code]#a + b# the [.op]#+# operator is regarded as an infix operator, but
@@ -4056,19 +4058,93 @@ brackets, or consult the compiler manual for details.
 Since version 1.6 Nim also allows to define and use a few unicode operators, but these
 are still considered experimental. For details you should consult the compiler manual. 
 
+=== Order of Execution
+
+Global program code or code in called procs is generally executed from top to the
+bottom and from left to the right, as long as control structures do not enforce a different order.
+To demonstrate this, we use here a set of four different procs, which contain an echo() statement each, and
+return a numeric expression. Well, we have not yet formally introduced procedures, so if you should
+feel too uncomfortable with the code below, just skip this section for now and come back when you have read the
+section about procs:
+
+[source, nim]
+----
+proc a(i: int): int =
+  echo "a"
+  i * 2
+
+proc b(i: int): int =
+  echo "b"
+  i * i
+  
+proc c(i: int): int =
+  echo "c"
+  i * i * i
+  
+proc d(i: int): int =
+  echo "d"
+  i + 1
+
+echo a(1); echo b(1)
+echo b(2) + d(c(3)) # (2 * 2) + ((3*3*3) + 1)
+echo "--"
+echo a(1) < 0 and b(1) > 0
+echo a(1) > 0 or b(1) > 0
+----
+
+It should be no real surprise, that the first three echo() statements produce this output:
+
+----
+a
+2
+b
+1
+b
+c
+d
+32
+----
+
+For the term [.code]#d(c(3))# it is obvious that the inner expression c(3) has
+to be evaluated first, before that result can be used to call proc [.func]#d()#.
+
+The last two lines demonstrate the so called short-cut-evaluation for expressions
+with the boolean [.op]#and# or [.op]#or# operators. As the expression [.code]#a() and b()# is always [.lit]#false#
+when [.func]#a()# is [.lit]#false#, for this case [.func]#b()# has not to be evaluated at all. In a similar way, as
+the expression [.code]#a() or b()# is always [.lit]#true# when [.func]#a()# is [.lit]#true#, for that case [.func]#b()# has not to be evaluated at all.
+So in the last two lines of above code [.func]#b()# is never called at all, and the output is just
+
+----
+a
+false
+a
+true
+----  
+
+Note that in Nim as in most other programming languages the assignment operator [.op]#=# behaves
+different compared to ordinary operators like [.op]#+# or [.op]#*#, as in assignments like [code]#let a = b + c()#
+obviously the right side has to be evaluated before the result can be actually assigned to variable [.var]#a#.
+
 == Control Structures
+
+Larger computer programs generally consists not only of code that is executed in a linear fashion, but contain
+code for conditional or repeated execution.
 
 The most important control structures of Nim are the [.key]#if# statement for conditional
 execution, the related [.key]#case# statement and the [.key]#while# and [.key]#for# loops for repetitions.
+All these statements controls the actual program execution at program runtime. Syntactically very similar to the [.key]#if#
+statement is Nim's [.key]#when# statement, which is already evaluated at compile time, and can be
+used to adapt our program code for various {os} or to compile our code with special
+options, e.g. for debugging or testing purposes. 
 
-All these structures can be nested in arbitrary ways, so we can have in one [.key]#if# branch
+All these control structures can be nested in arbitrary ways, so we can have in one [.key]#if# branch
 other [.key]#if# conditions or [.key]#while# loops, and in [.key]#while# loops again other control structures
 including other loops.
 
 === If Statement and If Expression
 
-The [.key]#if# statement with multiple optional [.key]#elif# brances and an optional [.key]#else# branch evaluates a sequence of
-conditions. As soon as one condition evaluates as true the corresponding statement
+The [.key]#if# statement with multiple optional [.key]#elif# branches and an optional [.key]#else# branch evaluates a sequence of
+boolean conditions at program runtime. As soon as one condition evaluates as true the corresponding statement
 block is executed, and after that the program execution continues after the whole [.key]#if#
 construct. That is at most one branch is executed. If none of the conditions after
 the [.key]#if# or [.key]#elif# keywords evaluates to [.lit]#true#, then the [.key]#else# branch is executed if it
@@ -4124,7 +4200,15 @@ understand the structure of the whole if statement. So the compiler expects the
 colons and complains otherwise currently.
 ****
 
-With an elif and an else branch the example from above may look like
+When there is no [.key]#elif# and no [.key]#else# part, then we can also write the conditional
+code direct after the colon, like
+
+[source, nim]
+----
+if age > 17: echo "you may drink and smoke, but better avoid it!"
+----
+
+With an [.key]#elif# and an [.key]#else# branch the example from above may look like
 
 [source, nim]
 ----
@@ -4140,14 +4224,15 @@ else:
 ----
 
 Note that we perform the age tests in ascending order -- it would not make much sense
-to first test for a condition [.code]#age < 6#, and later to test for [.code]#age < 4#, as the if statement
-is evaluated from top to bottom, and as sone as one condition is evaluated as true, that branch
+to first test for a condition [.code]#age < 6#, and later to test for [.code]#age < 4#, as the [.key]#if# statement
+is evaluated from top to bottom, and as soon as one condition is evaluated as [.lit]#true#, that branch
 is executed and then the program execution continues after the whole [.key]#if# construct.
-So the test [.code]#age < 4# would be not evaluated, when the prior test [.code]#age < 6# is already true. 
+So a later test [.code]#age < 4# would be useless, when that condition is already covered by a prior test [.code]#age < 6#. 
 
 As the various conditions of the if statement are processed from top to bottom until one condition
 evaluates to true, it can be a good idea to put the most likely conditions first for optional performance, as
-then the unlikely conditions have not to be evaluated in most cases.
+then the unlikely conditions have not to be evaluated in most cases. Another strategy for larger if/elif
+constructs is to put the most simple and fast tests to the top when possible.
 
 We can also have if/else expressions which returns a value like in
 
@@ -4158,8 +4243,8 @@ var speed: float = if time > 0: delta / time else: 0.0 # prevent div by zero err
 
 In C for a similar construct the ternary ? operator is used.
 
-In languages like C or Ruby the assignment operator = is an expression which returns
-the assigned value, so we can write code like
+In languages like C or Ruby the assignment operator "=" is an expression which returns
+the assigned value, so in C we can write code like
 
 [source, c]
 ----
@@ -4177,7 +4262,7 @@ while (let c = getChar(); c != '\0'):
   process(c)
 ----
 
-If we declare a variable in this way using the var or let keyword then that variable
+If we declare a variable in this way using the [.key]#var# or [.key]#let# keyword then that variable
 is only visible in the bracket expression itself and in the following indented block.
 
 Note that if-expressions must always return a well defined value, so they must
@@ -4197,12 +4282,14 @@ a = if b: 1 else: 0.0 # invalid, different types!
 
 === The When Statement
 
-The when condition is similar to the if statement, but while the if condition is
-evaluated at program runtime, the when condition is already evaluated at compile
-time. In ordinary program code the when condition is not used that often, but it is
-very important and useful when we write bindings to C libraries and low level code.
-An important condition for the when statement is the isMainModule condition and the
-test for defined symbols like defined(windows):
+The [.key]#when# statement is syntactically very similar to the [.key]#if# statement,
+but while all the boolean conditions are evaluated during the program run time for the 
+[.key]#if# statement, for the [.key]#when# construct all the when/elif/else conditions have to be
+constant expressions and are already evaluated at compile time.
+In ordinary program code the [.key]#when# statement is not used that often, but it is
+useful when we write bindings to C libraries and low level code.
+Common use cases for the [.key]#when# statement are the [.lit]#isMainModule# condition test and the
+test for defined symbols like [.code]#defined(windows)#:
 
 [source, nim]
 ----
@@ -4212,8 +4299,38 @@ when isMainModule:
   doAllTheTests()
 ----
 
-We will discuss the use of when statements, the isMainModule condition and defined
-symbols in more detail later.
+The value [.lit]#isMainModule# is only true for a source code file, when that file is compiled
+directly as main module, that is when it is not indirectly compiled because it is imported by other modules.
+This way we can include easily test code to our library modules -- that test code is ignored when
+the module is used as library, but active when we compile the module direct for testing.
+
+A [.code]#when defined()# construct can be used to test for predefined or our own custom options, e.g. we may
+give the optional option [-term]#-d:gintroDebug# to the compiler and test in the code of that module
+for this option, like [.code]#when defined(gintroDebug):#.
+
+One difference of the [.key]#when# to the [.key]#if# statement is, that the "then" branches do not open a new scope, so
+variables which we define there are still visible after the construct has been processed:
+
+[source, nim]
+----
+when sizeof(int) == 2:
+  var intSize = 2
+  echo "running on a 16 bit system!"
+elif sizeof(int) == 4:
+  var intSize = 4
+  echo "running on a 32 bit system!"
+elif sizeof(int) == 8:
+  var intSize = 8
+  echo "running on a 64 bit system!"
+else:
+  echo "cannot happen!"
+
+echo intSize # variable is visible here!
+----
+
+Another peculiarity of the [.key]#when# statement is, that it can be used inside object definitions -- we will
+show an example for that in a later section of the book when we introduce the [.type]#object# data type.
+In the same way as the [.key]#if# construct, [.key]#when# can also be used as an expression.
 
 === The Case Statement
 
@@ -4240,6 +4357,11 @@ case letters. Of course these constants must have a type compatible to the type 
 the variable after the case keyword. A case statement must cover all possible cases,
 so most of the time an else branch is necessary.
 
+For Nim version 1.6 the case statement can contain also optional elif branches
+with arbitrary boolen conditions. This was not the case in the wirthian languages
+Pascal, Modula and Oberon, and makes Nim's case construct now very similar
+to the ordinary if/elif/else.
+
 Unless the similar switch statement in C the case statement needs no break after each
 branch. If a condition after a [.term]#of# keyword is true, then the corresponding
 statement or statement sequence is executed, and after that program execution
@@ -4263,12 +4385,12 @@ block after the case keyword if we want.
 
 === The While Loop
 
-The [.term]#while# loop is used when we want to do conditional repetitions, that is
+The [.op]#while# loop is used when we want to do conditional repetitions, that is,
 if we want to check a condition and want to execute a block of statements only as
-long as the condition is true. If the condition is false in advance or becomes false
-after some repetitions then the program execution proceeds after the indented block.
+long, as the condition is [lit]#true#. If the condition is [.lit]#false# in advance, or becomes [.false]#false#
+after some repetitions, then the program execution proceeds after the indented loop body block.
 
-A basic while loop has this shape:
+A basic [.key]#while# loop has this shape:
 
 ----
 while condition:
@@ -4285,21 +4407,21 @@ while repetitions > 0:
   repetitions = repetitions - 1
 ----
 
-That loop would print the message three times. Like the condition in the if clause
+That loop would print the message three times. Like the condition in the [.key]#if# clause
 the condition is terminated with a colon. Note that the condition must change during
-execution of the loop, otherwise, when the condition is true for the first iteration,
-it would remain true and the loop would never terminate. We decrease the loop counter
-repetitions in the loop, so at some point the condition will become false and the
+execution of the loop, otherwise, when the condition is [.lit]#true# for the first iteration,
+it would remain [.lit]#true# and the loop would never terminate. We decrease the loop counter
+[.var]#repetitions# in the loop, so at some point the condition will become [.lit]#false# and the
 loop will terminate and program execution will continue with the first statement
 after the loop body. Note how we decrement the loop counter: The right site of the
 assignment operator is evaluated, after that is done, the new value is assigned to
 the counter.
 
 There exists two rarely used variants of a while loop: the loop body can contain a
-[.term]#break# or a [.term]#continue# statement, which each consists only of this
-single keyword. A break in the body stops execution of the loop immediately and
-continues execution after the loop body. And a continue statement in the body skips
-the following statements in the body and starts at the top again, the while condition
+[.key]#break# or a [.key]#continue# statement, which each consists only of this
+single keyword. A [.key]#break# in the body stops execution of the loop immediately and
+continues execution after the loop body. And a [.key]#continue# statement in the body skips
+the following statements in the body and starts at the top again, the [.key]#while# condition
 is evaluated again.
 
 [source, nim]
@@ -4313,15 +4435,15 @@ while input != "quit":
     break
 ----
 
-Above code used the [.term]#==# and the [.term]#!=# operator. The == operator does a
-test for equality, and != test for inequality. Both operator work for most data types
+Above code used the [.op]#==# and the [.op]#!=# operators. The [.op]#==# operator does a
+test for equality, and [.op]#!=# test for inequality. Both operator work for most data types
 like integer, floats, characters and strings. The literal value of an empty string is
-written "". In line 2 we test if the variable named input has not the value "quit",
+written [.lit]#""#. In line 2 we test if the variable named [.var]#input# has not the value [.lit]#"quit"#,
 and in line 4 we test of that variable is empty, that it contains no text at all.
 
-Using of break and continue destroys the expected flow in loops, it can make
-understanding loops harder. So we generally avoid their use, but sometimes break or
-continue are really helpful. For example when an unexpected error occurs, maybe by
+Using of [.key]#break# and [.key]#continue# destroys the expected flow in loops, it can make
+understanding loops harder. So we generally avoid their use, but sometimes [.key]#break# or
+[.key]#continue# are really helpful. For example when an unexpected error occurs, maybe by
 invalid user input.
 
 There in no repeat loop as in Pascal in Nim, which does the first check at the end of
@@ -4334,14 +4456,14 @@ functionality.
 
 === For Loops and Iterators
 
-These are very useful and important in Nim and other languages. For loops are most
+These are very useful and important in Nim and other programming languages. [.op]#For# loops are most
 often used to iterate over containers or collections. We have not discussed the
-important array and seq containers yet, but we know already the string container.
+important [.type]#array# and [.type]#seq# containers yet, but we know already the [.type]#string# container.
 
-A string contains characters, the characters are numbered starting with 0, and we can
-access single characters of a string with the subscript operator [.term]#[]# which
+A [.type]#string# contains characters, the characters are numbered starting with [.lit]#0#, and we can
+access single characters of a [.type]#string# with the subscript operator [.op]#[]#, which
 gets the position of the desired character as argument. So we could print the single
-characters of a string, in this way:
+characters of a [.type]#string#, in this way:
 
 [source, nim]
 ----
@@ -4353,10 +4475,10 @@ while s[pos] != '?':
   inc(pos)
 ----
 
-It is obvious that the pos variable is some sort of annoying here -- we want to
-process all the characters in the string in sequence, so why would we have to use a
+It is obvious that the [.var]#pos# variable is some sort of annoying here -- we want to
+process all the characters in the [.type]#string# in sequence, so why would we have to use a
 position variable to do that. And this way is susceptible to errors, maybe we forget
-increasing the pos variable in the loop body. So most modern languages provide us
+increasing the [.var]#pos# variable in the loop body. So most modern languages provide us
 with iterators for this purpose:
 
 [source, nim]
@@ -4367,30 +4489,30 @@ for ch in items(s):
   echo "-->", ch
 ----
 
-That is obvious shorter. The for construct may appear a bit strange, and it is
+That is obvious shorter. The [.key]#for# construct may appear a bit strange, and it is
 indeed, but it is a common way to write iterators, it is used in Python too. Ruby
 uses something like s.each{|ch| ...} instead.
 
-For loops in Nim iterates over containers or collections, and pics each element in
-sequence in this process. The variable after the for keyword is used to access or to
+[.key]#For# loops in Nim iterates over containers or collections, and pics each element in
+sequence in this process. The variable after the [.key]#for# keyword is used to access or to
 reference the single elements. That variable has automatically the right type, which
 is the type of the elements in the container, and get in each iteration the value of
 the next element in the container, starting by the first element in the container and
-stopping when there is no element left. [.term]#Items()# is here the actual iterator,
+stopping when there is no element left. [.func]#Items()# is here the actual iterator,
 which allows us to access the individual characters in sequence. It exists the
-convention in Nim that an [.term]#items()# iterator is automatically called in a for
+convention in Nim that an [.func]#items()# iterator is automatically called in a [.key]#for# loop
 construct when no iterator name is explicitly given, so we could also write shorter
-[.term]#for ch in s:# in this use case.
+[.code]#for ch in s:# in this use case.
 
-You may recognize that the output of the above for loop is not identical to the
-output of the previous while loop. The while loops stops when the last character,
-that is '?', is reached, while the for loop processes this last character still. That
-is intended for the for loop, its general purpose is to process all the elements in
+You may recognize that the output of the above [.key]#for# loop is not identical to the
+output of the previous [.key]#while# loop. The [.key]#while# loop stops when the last character,
+that is [.lit]#'?'#, is reached, while the [.key]#for# loop processes this last character still. That
+is intended for the [.key]#for# loop, its general purpose is to process all the elements in
 containers or collections.
 
-The above for loop does a read access to the string, that is we get basically a copy
-of each character, and we can not modify the actual string in this way. When we want
-to modify the string, there is a variant available.
+The above [.key]#for# loop does a read access to the string, that is, we get basically a copy
+of each character, and we can not modify the actual [.type]#string# in this way. When we want
+to modify the [.type]#string#, there is a variant available.
 
 [source, nim]
 ----
@@ -4401,7 +4523,7 @@ for ch in mitems(s):
     ch = '!'
 ----
 
-Here we use mitems() instead of the plain items(), the leading m stands for mutable.
+Here we use [.func]#mitems()# instead of the plain [.func]#items()#, the leading "m" stands for mutable.
 In the loop body we can assign different values to the actual content.
 
 == Objects
@@ -4429,11 +4551,11 @@ type
     price: float
 ----
 
-We have to use the [.term]#type# keyword to tell the compiler that we want to define
-a new custom type.  Writing the type keyword on its own line begins a type section
+We have to use the [.key]#type# keyword to tell the compiler that we want to define
+a new custom type.  Writing the [.key]#type# keyword on its own line begins a type section
 where we can declare one or more custom data types. All type declarations in a type
 section must be indented.  In the next line we write our type name, an equal sign and
-the keyword [.term]#object#. That indicates that we want to declare a new object type
+the keyword [.key]#object#. That indicates that we want to declare a new object type
 named Computer.  Here Computer is a type name, in Nim we use the convention that user
 defined type names start with a capital letter. In the following indented block we
 specify the desired fields, each line contains the name of a field, and a colon
@@ -4466,7 +4588,7 @@ Of course in real applications we would fill the fields not in this way, but we 
 maybe read the data from a file, from terminal or maybe from a graphical user
 interface.
 
-It may look a bit ugly that we have to write [.term]#computer.# before each field
+It may look a bit ugly that we have to write [.var]#computer.# before each field
 when we access the fields. Indeed in recent Nim versions that is not necessary, you
 may use the [.term]#with# construct now instead.
 
@@ -4495,7 +4617,7 @@ echo computer.quantity
 
 As you already know, the right side of the assignment operator is evaluated first,
 then the result is stored in the variable on the left side. But we can also just
-write [.term]#computer.quantity -= 1# or [.term]#dec(computer.quantity)#.
+write [.code]#computer.quantity -= 1# or [.code]#dec(computer.quantity)#.
 
 Generally a computer store would offer many different types of computers, so it would
 make sense to store all the different devices in a container like a sequence, called
@@ -7097,18 +7219,36 @@ friendly.
 
 == Other Builtin Data Types
 
-=== Tuples
+=== Tuple Types
 
-Tuples can be regarded as some form of lightweight objects without inheritance
-support, but mostly tuples are used when functions has to return multiple arguments.
+Tuples are heterogeneous container types similar to
+the struct type in C. As Nims [.type]#object# type creates no overhead
+as long as we use no inheritance and so also directly corresponds to the C
+struct type, tuples are very similar to Nims objects.
+The biggest advantage of tuples is, that we can create anonymous
+tuples, and that Nim supports the automatic unpacking of [.type]#tuple# variables
+into ordinary unstructured variables.
+
+Compared to objects, tuples do support no inheritance at all, all the [.type]#tuple# fields
+are always visible, and different [.type]#tuple# types are regarded as identical, when
+all the field names and field data types match. Remember that two different object
+types are always distinct in Nim, even when the actual type definition looks identical.   
+
+We can define tuple types in the same way as we define objects, or we can
+use the [.code]#tuple[]# constructor. Additional we can define anonymous tuples just
+by enclosing its field types in round brackets. The fields of [.type]#tuple# types
+can be accessed by field names as we do it for objects, or we can access
+the fields with constant indices starting at zero.
 
 [source, nim]
 ----
 type
-  Move = tuple
+  Move = tuple # the object definition syntax
     from: int
     to: int
     check: bool
+    
+type Move = tuple[from: int, to: int, check: bool] # equivalent tuple constructor syntax
 
 proc findBestNextMove(): (dest: int; check: bool) =
   ...
@@ -7116,18 +7256,40 @@ proc findBestNextMove(): (dest: int; check: bool) =
 let (dst, check) = findBestNextMove()
 ----
 
-Here we define a custom Move type similar as we would do for a custom object, but we
-do not use that type at all but return an anonymous tuple from our proc, that is a
-pair of an int and a bool.
+In the code example above we show two equivalent ways to define a tuple type,
+but actually we
+do not use that type at all but return an anonymous [.type]#tuple# from our proc, that is a
+pair of an [.type]#int# and a [.bool]#bool#.
 
-Due to type inference our dst and check variables gets the data types int and bool.
+Using automatic [.type]#tuple# unpacking
+and type inference our [.var]#dst# and [.var]#check# variables gets the data types [.type]#int# and [.type]#bool#.
 
 Tuples are also useful when a function has to return a value and also an error state,
-or if it may not be able to return something at all in a special case. For references
-we could return nil then, but for results like int or float we may not have a well
-defined error indicating constant, so we can return a tuple with an additional bool.
-But we could use exceptions instead, or we could use Nim's option type instead. We
+or if it may not be able to return something at all in a special case. For reference types
+we could return [.lit]#nil# then, but for results of value type like [.type]#int# or [.type]#float# we may not have a well
+defined error indicating constant, so we can return a [.type]#tuple# with an additional [.type]#bool# indicating success or error.
+But of course we could use exceptions instead, or we could use Nim's option type instead. We
 will learn more about that later.
+
+Here are two examples which uses a [.type]#tuple# as a proc parameter:
+
+[source, nim]
+----
+proc p1(x: tuple[i: int, j: int]): int =
+  x.i + x.j
+
+echo p1((7, 7))
+
+proc p2(x: (int, int)): int =
+  x[0] + x[1]
+
+echo p2((7, 7))
+----
+
+Proc [.func]#p1()# creates a tuple type using the [.type]#tuple# constructor syntax with named fields, so
+in the proc body we can access the fields by its names, while proc [.func]#p2()# uses an
+anonymous tuple, and so has to access the fields by constant indices. Both procs are called with
+an anonymous [.type]#tuple# parameter.  
 
 === Object Variants
 
