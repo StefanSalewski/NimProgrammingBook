@@ -599,12 +599,12 @@ the source code while the program is running. For that process a so called virtu
 machine is used, which builds an intermediate layer between the hardware and the user
 program.
 
-== Types of Programming Languages
+== The Types of Programming Languages
 
-There are many different styles that software can be written in. A programming paradigm
-is a fundamental style of writing software, and each programming language sup-
-ports a different set of paradigms. You’re probably already familiar with one or more
-of them, and at the very least you know what object-oriented programming (OOP) is
+There are many different styles that software can be written in. A programming paradigm,
+is a fundamental style of writing software, and each programming language supports
+a different set of paradigms. You’re probably already familiar with one, or more
+of them, and at the very least you know what object-oriented programming (OOP) is,
 because it’s taught as part of many computer science courses.
 
 We already mentioned the assembly languages, which provide only the basic operations
@@ -681,9 +681,9 @@ languages, which uses inheritance and dynamic dispatch, and become popular in th
 1990's. For some time it was assumed that {oop} was the ultimate solution to manage
 and structure really large programs. Java was the most prominent example of the OOP
 languages. Java forces the programmer to use OOP design, and languages like {cpp},
-Python or Ruby strongly push programmer to use OPP design. Practice has shown that
+Python or Ruby strongly push programmers to use the OPP design. Practice has shown that
 OOP design is not the ultimate solution for all computing problems, and OPP design
-may prevent optimal performance. So newer languages like Go, Rust and Nim support
+may prevent optimal performance. So newer languages, like Go, Rust and Nim support
 some form of OOP programming, but use it only as one paradigm among many other.
 
 Another popular and important class of programming languages is JavaScript and its
@@ -714,8 +714,8 @@ JavaScript backend, so it supports web development well.
 |===
 
 ****
-Sometimes source code written in one programming language is converted into another
-one. A prominent target for such conversions is JavaScript, as JavaScript enables
+Sometimes source code written in one programming language is converted into another. 
+A prominent target for such conversions is JavaScript, as JavaScript enables
 execution of programs in web browsers. Another important target language is C or
 {cpp}. Creating intermediate C code, which is then compiled by a C compiler to native
 executables has some advantages compared to direct compilation to native executables:
@@ -771,10 +771,10 @@ embedded systems and {uc}s. Python, created in 1991, is generally interpreted in
 of compiled, which makes program execution not very fast, and it does not really
 allow writing low level code which operates close to the hardware. As many libraries
 of the Python language are written in highly optimized C, Python can appear really fast
-if a standard task like sorting of data, processing of CSV or JSON files or web site crawling
+if a standard task, like the sorting of data, processing of CSV or JSON files or web site crawling
 is performed. So Python is not a bad solution when we use it mostly for calling library
-functions, but it reveals it low performance when we have to write some actual Python
-code to solve a problem.
+functions, but it reveals its low performance when we have to write some actual Python
+code in order to solve a problem.
 Of course there
 are many more programming languages, each with its own advantages and disadvantages --
 with some optimized for special use cases.
