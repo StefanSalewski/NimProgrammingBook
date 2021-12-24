@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-22
+//v0.1, 2021-DEC-24
 :doctype: book
 :toc: left
 :icons: font
@@ -5806,13 +5806,19 @@ echo ro1 == ro3 # true
 
 == Procedures and Functions
 
-=== Introduction
-
 Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are the most common way to
-structure larger programs in smaller parts with a dedicated task. The terms procedure
+structure larger programs in smaller parts each with a dedicated task. The terms procedure
 and function where used in Pascal and the other languages of Wirth already, while C
 uses the term function only, and Fortran generally uses the term subroutine instead.
 And Python and Ruby finally are using the really strange names def and fun for it.
+
+Nim's procedures are basically similar, but much more advanced than its equally named cousins 
+in the wirthian languages or the plain functions in the C language: Nim's procedures support generics and overloading, named parameters and default values,
+the special parameter types varargs and openArray,
+various ways to return a result and finally multiple calling conventions including the
+method and command calling conventions.
+
+=== Introduction
 
 We call or invoke a proc by just writing its name followed by a parameter list
 enclosed in parenthesis. The parameter list can be empty. When we call a proc, then
@@ -5822,7 +5828,7 @@ Sometimes we say that we jump into a procedure and jump back when that procedure
 terminates.
 
 In Nim functions are a special form of procedures that return a result and do not
-modify the current state of the program.  Modifying a global variable or an output
+modify the current state of the program.  Modifying a global variable or performing an input/output
 operation would be examples for modifying the state. We have already used some
 predefined procedures like [.func]#echo()# for output operations, [.func]#add()# for appending single
 characters to strings, and [.func]#readLine()# for reading in textual user input. And we
@@ -5846,14 +5852,16 @@ func sqr(i: int): int =
 ----
 
 A procedure declaration consists of the keyword proc, a user selected name, a
-optional parameter list enclosed in parenthesis and an optional colon followed by a
+optional parameter list enclosed in parenthesis and an optional colon followed by the result
+data type. For a function declaration we use the keyword func instead of proc, and
+as functions does always returns a result, we have always to specify the result
 data type.
 
 Note that this is only a declaration so far -- the compiler could recognize the
 construct, its parameters and its result type. Sometimes we call this construct a
 procedure-header.
 
-Generally we do not only declare a function, but we define it, that is we add a equal
+Generally we do not only declare a function, but we define it, that is we add an equal
 sign to the procedure header and add an indented procedure body that contains the
 code that is performed for each invocation.
 
@@ -5883,7 +5891,8 @@ defined.
 For the program execution we have to know that procs are only executed when we call
 them. That is, when we write a proc at the top of our source code, then that proc is
 processed by the compiler, but it is not executed during program runtime before we
-call it.
+call it. Actually, as the Nim compiler supports "death code removal", code of
+procedures that we never call would not make it in to our final executable at all.
 
 ****
 The procedure body builds a new scope. We can declare entities like variables,
@@ -5891,6 +5900,122 @@ constants, types or other {profus} in that scope.  These entities are only visib
 the procedure body but not outside of the proc. Will will learn more about scopes and
 visibility soon.
 ****
+
+Parameter lists of procedures consist of one or more lists of parameter names, separated with commas, followed by a colon and
+the data type of the parameters. The sub-lists with same data type are separated by semicolons:
+
+[source, nim]
+----
+proc p(i, j, k: int; x, y: float; s: string)
+----
+
+While the wirthian languages would require semicolons to separate
+the parameter blocks, in Nim we could also use plain commas for that.
+For the data types of proc parameters all of Nim's data types are allowed, including
+structured types, ref, pointer  and container types, and we can pass literal values, named constants or variables.
+
+When we call such a proc with multiple arguments, we have to specify the arguments
+in the order as they are listed in the proc header, separated with commas, and the arguments must have compatible data types:
+
+[source, nim]
+----
+var i: int = 7; x: float = 3.1415
+p(i, 13, 19, x, 2.0, "We call proc p() with a lot of parameters")
+----
+
+Here compatible data types means, that for the [.var]#i#, [.var]#j#, and [.var]#k# parameters which are specified as [.type]#int# type
+in the proc definition, variables of smaller [.type]#int# types like [.type]#int16# would work. For the two parameters
+of [.float]#float# type, we would have to pass floating point variables or a [.type]#float# literal. As a special case an [.type]#int# literal
+would work also, as the compiler knows the desired data type and automatically converts the [.type]#int# literal into a [.type]#float#
+for us, as long as that is possible without loss of precision. We could pass [.lit]#2# instead of [.lit]#2.0#, but
+passing a very long [.type]#int# literal with more than 16 digits may fail at compile time:
+
+[source, nim]
+----
+proc p(i, j, k: int; x, y: float; s: string) =
+  echo s
+
+var
+  n: int16
+  m: int # int64 would not compile
+  z: float32
+p(n, n, m, 1234567890, z, "")
+----
+
+Actually [.type]#float32# types and [.type]#int# literals up to ten digits seems to work for [.type]#float# parameters, but even on 64
+bit systems the [.type]#int64# data type is not allowed for [.type]#int# parameters. As you see from the example above, it is
+possible to pass the same variable multiple times as a parameter, and empty string literals are of course allowed too. 
+
+Nim does also support default values for proc parameters and named parameters, that is that we can leave parameters unspecified
+and use the default value, or
+use the actual parameter names like in an variable
+assignment when we call a proc:
+
+[source, nim]
+----
+proc p(i: int; x: float; s: string = "") = echo i.float * x, s
+p(x = 2.0, i = 3)
+----
+
+Here we used named parameters when calling the proc [.func]#p()#, this way we can freely order the parameters, and as parameter [.var]#s# has a default value, we
+can let it unspecified and just use the default value.
+
+Functions always return a result, and procedures can return a result, but they don't have to.
+In the C language function results can just be ignored, but in Nim whenever there is a result, then we have to
+use it at the call site, that is we have to assign the returned value to a variable or we have to use it in an expression.
+Nim enforces this, as generally the returned value is important, the returned value may be the actual
+result as in a [.func]#sin()# call, or it may give us additional information, like the number of read characters
+when we do text processing or maybe an error indication, like end of file. For the rare conditions when we
+really intend to ignore the result of a function call, we can call that function as [.code]#discard myProcWithResult(a, b,...)#.
+Another solution is to apply the {.discardable.} pragma to the function definition, we will learn more about pragmas later.
+When a procedure should not return a result, then we can use the [.type]#void# return type or just leave the return type out --
+the later is recommended, [.type]#void# types are used only rarely in Nim. When the proc has no parameters at all, then we can even leave out
+the empty parameter list in the proc definition:
+
+[source, nim]
+----
+proc p1() =
+  echo "Hello and goodbye"
+  
+proc p2 =
+  echo "Hello and goodbye"
+  
+proc p3: void =
+  echo "Hello and goodbye"
+----
+ 
+==== Calling Procedures
+
+When we call a procedure or a function, that is when we intend to execute it, then we have
+always to specify a parameter list enclosed in brackets, but the parameter list can be empty:
+
+[source, nim]
+----
+var i = myFunc(7)
+var j = myF()
+var p = myF # not a function call, but assignment of the proc to variable p
+----
+
+Note that the last line in above code is not a call of [.func]#myF()#, but an assignment of that function to
+the variable [.var]#p#. Will will discuss this use case soon.
+
+We have already learned, that we can also use the method call syntax, like 7.myFunc instead of myFunc(7),
+and we can use the command invocation syntax like in [.code]#echo "Hello"# and that we should avoid putting a space
+between the proc name and the opening bracket as that would be interpreted as a call with a tuple argument.
+When the function or proc expects multiple arguments, then we separate the arguments with commas, and
+we put generally a space after each comma:
+
+[source, nim]
+----
+proc p(i, j: int) = i + j
+echo p(1, 2) # ordinary proc call
+echo 1.p(2) # method call syntax
+echo p 1, 2 # command invocation syntax
+echo p (1, 2) # argument looks like a tuple, so this would not compile
+----
+
+For the proc definition above we wrote the body statement directly after the equal sign -- that
+is possible, and used sometimes for very short procs. And indeed, here [.func]#p()# is a function. 
 
 ==== Procedure Parameters of Var Type
 
@@ -5901,7 +6026,7 @@ is not modified and is available unchanged after the proc call. But of course th
 are situations where we may want that a passed parameter is modified. Let us assume
 we want to "frame" a passed string, for example we want to pass in the string "Hello"
 and want to change it to "* Hello *". Further let us assume that we may sometimes
-want to use other characters instead of the asterisk, maybe a + sign.
+want to use other characters instead of the asterisk, maybe a [.lit]#+# sign.
 
 [source, nim]
 ----
@@ -5930,6 +6055,9 @@ call.footnote:[We learned already about pointers, and passing var parameters to
 {profus} is closely related to pointers: The compiler passes indeed the address of
 the var parameter. But we have not to care about these details.] The second proc
 parameter is a plain value type, it is a character which has the default value '*'.
+To specify a default value for a parameter, we write an equal sign after the parameter type followed by the
+actual default value, like we would do it in an assignment. Indeed as in an assignment, we can even leave out the
+colon with the data type in this case, at least for the case that the compiler can infer the correct data type from the assigned default value.
 Default values are useful for parameters that have in most cases the same value, but
 can be different sometimes. The advantage is, that when calling that proc we can just
 leave that parameter out. For default values we have to be a bit careful, only value
@@ -5938,7 +6066,7 @@ default values it may be not always clear which parameter we pass and for which
 parameter we want a default value.
 
 To generate the frame around the passed in [.type]#string# we have to insert two characters at
-the front of the [.type]#string#, and to append two characters. Inserting in strings is not a
+the front of the [.type]#string#, and to append two more characters. Inserting in strings is not a
 very cheap operation, as it involves moving all following characters.  So we try not
 to insert two single characters, but we first create a short [.type]#string# consisting of the
 passed [.var]#c# character and a white-space character, and then insert that two character
@@ -6626,19 +6754,19 @@ similar way. We may explain that in more detail later.
 === Example for the use of Generics
 
 Generics are used a lot in Nim's standard library. Most container types like sequences or tables
-accept generic types, and generic procedures like sort() are provided which can easily sort
-arbitrary data types and objects. We have only to provide a cmp() proc for our user defined
-data types which sort() can call to compare the values during the sorting process.
+accept generic types, and generic procedures like [.func]#sort()# are provided which can easily sort
+arbitrary data types and objects. We have only to provide a [.func]#cmp()# proc for our user defined
+data types which [.func]#sort()# can call to compare the values during the sorting process.
 
 We will demonstrate the use of generics for library modules with a few tiny examples: Assume
 we create a library which should be able to store and process arbitrary data types. The stored values
 may have well defined relations, which enables ordering or much more complicated spatial
 relations. Triangulation of spatial data points or grouping the data in structures like
-RTrees for fast point location as well as geometric processing with algorithm like
+[.type]#RTrees# for fast point location as well as geometric processing with algorithm like
 finding the convex hull are some examples. To make our example simple and compact, we define
 a generic container type which can store only two values of arbitrary data type. The container allows to sort
-the elements by size. The following code example defines a generic container called MyGenericContainer,
-a proc to add() data object into the container instance and a sortBySize() proc to sort the two elements: 
+the elements by size. The following code example defines a generic container called [.type]#MyGenericContainer#,
+a proc to [.func]#add()# data objects into the container instance and a [.func]#sortBySize()# proc to sort the two elements: 
 
 [source, nim]
 ----
@@ -6677,10 +6805,10 @@ proc main =
 main()
 ----
 
-The sortBySize() proc of the above examples accesses the size field of our data objects directly, so we can
+The [.func]#sortBySize()# proc of the above examples accesses the size field of our data objects directly, so we can
 use the container for arbitrary data types as long as the data types have a size field and as long as
-a `>` proc is defined for the data type of the size field. In the above example we have defined a `$` procedure
-to convert instances of our container to a string, which allows us to call the echo function on it.
+a [.op]#># proc is defined for the data type of the size field. In the above example we have defined a [.op]#$# procedure
+to convert instances of our container to a [.type]#string#, which allows us to call the [.func]#echo()# function on it.
 The output of our program looks like
 
 ----
@@ -6730,9 +6858,9 @@ proc main =
 main()
 ----
 
-In the example above our TestObj1 data type has no field with a name matching for the
-sortBySize() proc, but we define a size() proc for our data type which that library function
-can use. This solution is more flexible, and when we add the inline pragma to the used size() proc
+In the example above our [.type]#TestObj1# data type has no field with a name matching for the
+[.func]#sortBySize()# proc, but we define a [.func]#size()# proc for our data type which that library function
+can use. This solution is more flexible, and when we add the inline pragma to the used [.func]#size()# proc
 or when we compile with link time optimization (LTO) enabled, then the overhead should be negligible.
 The two examples above are located in a single file each, but of course for practical use
 we would use separate modules for the library and the application part as in
@@ -6824,11 +6952,11 @@ proc main =
 main()
 ----
 
-You may wonder why we do not have to export the size field of our TestObj1 (or maybe the object itself also) as
+You may wonder why we do not have to export the [.var]#size# field of our [.type]#TestObj1# (or maybe the object itself also) as
 it is used from code defined in a different module. The reason why we do not need export markers is that
-the sortBySize() is defined in the library module, but as it is a generic procedure, it is
+the [.func]#sortBySize()# is defined in the library module, but as it is a generic procedure, it is
 instantiated and executed in the application module. For the same reason we had not to export the 
-size() getter procedure before.
+[.func]#size()# getter procedure before.
 
 Finally one more way to use generic library modules is by passing procedure variables
 to the library functions. The passed in procedures may provide access to
@@ -6879,10 +7007,10 @@ proc main =
 main()
 ----
 
-Here we have modified the sort() proc of our library module in a way that it takes
+Here we have modified the [.func]#sort()# proc of our library module in a way that it takes
 an additional procedure parameter. In this case we use a procedure signature that takes two object instances
 and returns a boolean value indicating if the first parameter is smaller than the second.
-In our application module we define a matching procedure and pass that one to the sortBy()
+In our application module we define a matching procedure and pass that one to the [.func]#sortBy()#
 procedure. Again we get the desired sorted output:
 
 ----
@@ -6902,9 +7030,9 @@ A useful coding style introduced by OPP languages is the method call syntax, whi
 was initially used in OOP programming style for objects, and later applied by
 languages like Ruby to all data types. Ruby in some way regards all data as objects.
 
-Method call syntax means, that for example for a variable s of data type string we do
-write s.add(c) instead of add(s, c). Or for an integer variable i we may write i.abs
-instead of abs(i). That is we put the first parameter of the proc parameter list in
+Method call syntax means, that for example for a variable [.var]#s# of data type [.type]#string# we do
+write [.func]#s.add(c)# instead of [.func]#add(s, c)#. Or for an integer variable [.var]#i# we may write [.func]#i.abs#
+instead of [.func]#abs(i)#. That is we put the first parameter of the proc parameter list in
 front of the proc name, and separate that parameter from the proc name by a period.
 The compiler regards both notation as equivalent. The advantage of the method call
 syntax is that we may save a character and that it is more clear with what "object"
@@ -6944,11 +7072,11 @@ p = p2
 echo p(7)
 ----
 
-The output of the two echo statements should be 14 and 49 -- we called in both cases
-the same proc variable with the same parameter, but the proc variable p was in the
-first call an alias for p1, and in the second call an alias for p2.  Note, when we
+The output of the two [.func]#echo# statements should be [.lit]#14# and [.lit]#49# -- we called in both cases
+the same proc variable with the same parameter, but the proc variable [.var]#p# was in the
+first call an alias for [.var]#p1#, and in the second call an alias for [var]#p2#.  Note, when we
 assign a proc to a proc variable we do only write the name of that proc, there is no
-() involved. That is because we assign that proc to the proc variable, but we do not
+[.func]#()# involved. That is because we assign that proc to the proc variable, but we do not
 call the proc in this case. Of course, when we assign a proc to a proc variable then
 the proc signatures have to match, that is the parameter list and the result have to
 be compatible.
@@ -6975,7 +7103,7 @@ t(ep2, 3.1415)
 ----
 
 A common use case for a function as a proc parameter is sorting.  We can use the same
-sort procedure for different data types when we provide cmp proc that can compare
+sort procedure for different data types when we provide a [.func]#cmp()# proc that can compare
 that data type.
 
 [source, nim]
@@ -6999,14 +7127,14 @@ proc main =
 main()
 ----
 
-The sort procedure is provided by the algorithm module.  The sort proc accepts an
-array or a sequence, and a cmp proc that gets two parameters of the same type as the
+The sort procedure is provided by the algorithm module.  The [.func]#sort()# proc accepts an
+array or a sequence, and a [.func]#cmp()# proc that gets two parameters of the same type as the
 elements in the passed array, and that returns -1, 0, or 1 as the result of the
 comparison. We could easily sort other data types like strings or our custom objects
-by an arbitrary key, as long as we can provide a matching cmp() proc. For the cmp
+by an arbitrary key, as long as we can provide a matching [.func]#cmp()# proc. For the [.func]#cmp()#
 proc it is important that it returns a well defined result based on the input, and
-when both parameters are equal it should really return 0. If you would exchange the
-return values 1 and -1 in the cmp proc above, you would invert the sort order.
+when both parameters are equal it should really return [.lit]#0#. If you would exchange the
+return values [.lit]#1# and [.lit]#-1# in the [.func]#cmp()# proc above, you would invert the sort order.
 
 === Nested Procedures and Closures
 
@@ -7049,46 +7177,46 @@ This program is not that easy, but when you think about it a bit you should be a
 to understand it. The task is to extract from a string all the digits and to ignore
 the other characters.
 
-To get the digits, we use a local procedure that uses the pos variable of the
+To get the digits, we use a local procedure that uses the [.var]#pos# variable of the
 enclosing procedure, and also access the parameter s of the enclosing procedure. The
-closure nextDigit() checks if the position in the string is still valid, that is if
-it is still smaller than the length of the string, and also checks if the current
-character is a digit. The first check uses the standard procedure len() which return
-the length of a passed string parameter, that is how many characters the string
+closure [.func]#nextDigit()# checks if the position in the [.type]#string# is still valid, that is if
+it is still smaller than the length of the [.type]#string#, and also checks if the current
+character is a digit. The first check uses the standard procedure [.func]#len()# which return
+the length of a passed [.type]#string# parameter, that is how many characters the [.type]#string#
 contains. We have used the method call syntax here instead of using the ordinary proc
-call len(s). The next check test if the current character is not a decimal digit. For
-that test we could use a series of compares like if c == '0' or c == '1' or ... or c
-== '9'. But to make such tests easier and faster, Nim offers one more data type, the
-set type. And the notin operator test if an value is not contained in a set constant.
-An important point for the expression after the while statement is, that it is
+call [.func]#len(s)#. The next check test if the current character is not a decimal digit. For
+that test we could use a series of compares like [.code]#if c == '0' or c == '1' or ... or c
+== '9'.# But to make such tests easier and faster, Nim offers one more data type, the
+[.type]#set# type. And the [.op]#notin# operator tests if an value is not contained in a [.type]#set# constant.
+An important point for the expression after the [.key]#while# statement is, that it is
 processed from left to right.  That fact is here important, because we have first to
-check if pos is still a valid position, before we can use the subscript operator []
-to access the current character and test if it is not contained in the set.  If the
+check if [.var]#pos# is still a valid position, before we can use the subscript operator [.op]#[]#
+to access the current character and test if it is not contained in the [.type]#set#.  If the
 check for the valid position would not come first, then we may access an invalid
 position in the string and we would get a runtime range error.
 
 While the position is still valid but the current character is not a digit we
-increase the position. The while loop can end by two conditions: Either the current
-character is a digit, or we have reached the end of the string and we have to stop.
+increase the position. The [.key]#while# loop can end by two conditions: Either the current
+character is a digit, or we have reached the end of the [.type]#string# and we have to stop.
 For the last case we use a special stop mark, we return a special character which we
-have entered in escape notation as '\x0'. That is a very special character, that is
+have entered in escape notation as [.lit]#'\x0'#. That is a very special character, that is
 used in C to mark the end of strings.  It is the first character in the ASCII table
-and has the decimal value 0.  We said earlier that characters are encoded in 8 bit
-and correspond to the unsigned integer numbers 0 up to 255. '\x0' is just a special
-notation for the first character which corresponds to integer value 0. Well, when the
-end of the string is reached then we return that character. Otherwise we return the
-current character. Remember, from the while condition we know that string end is
-reached, or current character is a digit. As we tested for string end before, we can
-only have the case that current character is a digit now. But can we return that
-character immediately now? If we would, s[pos] would be a digit, and we would get
+and has the decimal value [.lit]#0#.  We said earlier that characters are encoded in 8 bit
+and correspond to the unsigned integer numbers [.lit]#0# up to [.lit]#255#. [.lit]#'\x0'# is just a special
+notation for the first character which corresponds to integer value [.lit]#0#. Well, when the
+end of the [.type]#string# is reached then we return that character. Otherwise we return the
+current character. Remember, from the while condition we know that the [.type]#string# end is
+reached, or current character is a digit. As we tested for the [.type]#string# end before, we can
+only have the case that the current character is a digit now. But can we return that
+character immediately now? If we would, [.var]#s[pos]# would be a digit, and we would get
 exactly the same character for the next proc call! So we have to move to the next
-character by increasing pos before we return that character.  For this the
-pre-declared result variable is useful. We assign the current character to the result
-variable, and then increase pos. As the last statement in our proc is not a
-expression but a plain inc() statement, the content of the result variable is
-returned. The other while loop in the outer procedure is very simple, we just call
-the closure in the body of the while loop and terminate the loop when we get the
-special Null character.
+character by increasing [.var]#pos# before we return that character.  For this the
+pre-declared [.var]#result# variable is useful. We assign the current character to the [.var]#result#
+variable, and then increase [.var]#pos#. As the last statement in our proc is not a
+expression but a plain [.func]#inc()# statement, the content of the [.var]#result# variable is
+returned. The other [.key]#while# loop in the outer procedure is very simple, we just call
+the closure in the body of the [.key]#while# loop and terminate the loop when we get the
+special [.lit]#Null# character.
 
 And finally an example where one proc returns another procedure:
 
@@ -7100,7 +7228,7 @@ let add2 = addN(2)
 echo add2(7)
 ----
 
-The output of echo would be 9 in this case. This construct is sometimes named
+The output of [.func]#echo()# would be [.lit]#9# in this case. This construct is sometimes named
 currying.
 
 === Converters
@@ -7131,7 +7259,7 @@ else:
 ----
 
 With above converter we can pass an integer to a proc that expects a bool parameter,
-and we can even use an integer as a logical expression in an if condition in the same
+and we can even use an integer as a logical expression in an [.key]#if# condition in the same
 way as it is done in C language.  Converters do work only in a direct way, that is
 automatic chaining is not supported: If we have one converter from character to int
 and one from int to boolean, that does not mean that we can pass a character to a
@@ -7241,10 +7369,10 @@ could be graphical user interfaces where the graphical elements like labels, but
 frames built in natural way a hierarchical structure. Another typical use case are
 drawing applications with code similar to our basic example.
 
-Not that the OOP style only works with ref objects, but not with value objects.  The
+Note that the OOP style only works with ref objects, but not with value objects.  The
 obvious reason is that we can have collections of different sub-types stored in
 arrays or sequences only for ref objects, as in arrays and sequences all element types
-have to have equal size. For references that it the case, as references are basically
+have to have equal size. For references that is the case, as references are basically
 pointers. But different value types would have different size. Linked lists would be
 no better solution, as again we can not built lists with value objects.
 
@@ -7338,7 +7466,7 @@ base type and various geometric shapes.  We could store that ref types in arrays
 sequences or linked list and use dynamic dispatch for processing the various
 sub-types.  That is convenient but gives not maximum performance due to dynamic
 dispatch at runtime and due to bad cache use.  So we may like to have a value type
-with different content, so that we can store all the value types in a seq and all
+with different content, so that we can store all the value types in a [.type]#seq# and all
 entities reside in a compact block of memory for good cache use.
 
 [source, nim]
@@ -7375,7 +7503,7 @@ for el in s:
 ----
 
 Objects variants can have common fields like the boolean state visible above, but the
-other fields are not allowed to use the same names, so we had to use x0 and y0 for
+other fields are not allowed to use the same names, so we had to use [.var]#x0# and [.var]#y0# for
 the names of the center coordinates in the cycle variant.
 
 As you can see we can store all the different object variants as value objects in a
@@ -7440,23 +7568,23 @@ echo sqr(j)
 
 While we have various types of casts in C++, we have only one cast and type
 conversions in Nim. In Nim casts just reinterpret the same bit pattern for another
-data type. For example the boolean value false is internally encoded as a byte with
-all bits cleared, and true is encoded as a byte with all bit but the least
-significant one cleared. We could cast a bool to an int8 of same size and would get a
-decimal number 0 or 1.  Casting is not a real operation at all, as nothing is really
+data type. For example the boolean value [.lit]#false# is internally encoded as a [.type]#byte# with
+all bits cleared, and [.lit]#true# is encoded as a [.type]#byte# with all bits but the least
+significant one cleared. We could [.key]#cast# a [.type]#bool# to an [.type]#int8# of same size and would get a
+decimal number [.lit]#0# or [.lit]#1#.  Casting is not a real operation at all, as nothing is really
 done. We watch the same bit pattern just from a different perspective. But casting is
 dangerous, it violates the safe type system of the language, and it can go very
-wrong: Can we cast between float64 and int64? Well they have same size, and both are
-numbers.  We can cast, but the result would be far away from what we may expect.
-While int64 has the well known and simple value encoding, that is rightmost bit
-stands for 2^0, next bit for 2^1 and so far, the encoding of floats is much more
-difficult and has not such a simple scheme. In floats some bits represent the so
-called mantissa and some bits represent the exponent. When we cast we may again get a
+wrong: Can we cast between [.type]#float64# and [.type]#int64#? Well they have same size, and both are
+numbers.  We can [.key]#cast#, but the result would be far away from what we may expect.
+While [.type]#int64# has the well known and simple value encoding, that is rightmost bit
+stands for [.lit]#2^0#, next bit for [.lit]#2^1# and so far, the encoding of floating point numbers is much more
+difficult and has not such a simple scheme. In [.type]#float#s some bits represent the so
+called mantissa and some bits represent the exponent. When we [.key]#cast# we may again get a
 number, but the value is not really predictable.  We have to be very carefully when
-we cast between types of different size. Nim may permit that but we have to think
-what may really happen. When we cast between a bool and a int64, in one direction 7
+we [.key]#cast# between types of different size. Nim may permit that but we have to think
+what may really happen. When we [.key]#cast# between a [.type]#bool# and an [.type]#int64#, in one direction 7
 bytes have to be ignored, and in the other direction for 7 missing bytes there is
-some padding necessary. We do a cast by writing after the keyword cast in square
+some padding necessary. We do a [.key]#cast# by writing after the keyword [.key]#cast# in square
 brackets the desired type followed by parenthesis enclosing the source variable:
 
 [source, nim]
@@ -7464,18 +7592,18 @@ brackets the desired type followed by parenthesis enclosing the source variable:
 var i: uint8 = cast[unint8](myBoolVar)
 ----
 
-Totally different to casting is type conversion. We can convert integers to floats
-without problem, for the conversion we use the type like a proc call, that is
-int(myfloat) or float(myInt) -- of course we could use method call syntax like
-myInt.float instead.  Type conversion is some effort for the CPU, but most advanced
-CPU's should have fast instructions for basic conversion.
+Totally different to casting is type conversion. We can convert integers to floating point numbers
+without problems, for the conversion we use the type like a proc call, that is
+[.func]#int(myfloat)# or [.func]#float(myInt)# -- of course we could use method call syntax like
+[.func]#myInt.float# instead.  Type conversion is some effort for the CPU, but most advanced
+CPUs should have fast instructions for basic conversion.
 
 Nim generally only allows type conversions that involve not too much effort.  So we
-should not expect var i ="1234"; echo i.int * 7 to be available. Such a conversion is
+should not expect [.code]#var i ="1234"; echo i.int * 7# to be available. Such a conversion is
 expensive, at runtime it costs many CPU cycles as we would have to extract the
 digits, multiply with it weight and sum them up. So for that operation functions like
-parseInt() are available from the Nim standard library that accept a string as
-argument and return an int. There exists different variants of parseInt(), one may
+[.func]#parseInt()# are available from the Nim standard library that accept a [.type]#string# as
+argument and return an [.type]#int#. There exists different variants of [.func]#parseInt()#, one may
 raise exceptions for invalid input, the other may return a boolean.
 
 == Exceptions
