@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-24
+//v0.1, 2021-DEC-26
 :doctype: book
 :toc: left
 :icons: font
@@ -6022,8 +6022,12 @@ is possible, and used sometimes for very short procs. And indeed, here [.func]#p
 Our [.func]#sqr()# function above accepts only one parameter and that parameter is a value
 type, which indicates that we can not modify it in the procedure body. That fact is
 useful to know for the caller of a proc, as one can be sure that the passed parameter
-is not modified and is available unchanged after the proc call. But of course there
-are situations where we may want that a passed parameter is modified. Let us assume
+is not modified and is available unchanged after the proc call.footnote:[There may be situations,
+where we want to pass a value parameter to a proc, but still need to modify it in the proc body.
+For that case we can make just a mutable copy, and the copy can even have the same name as the proc
+parameter, like [.code]#var myPar = myPar#.]
+But of course there
+are situations where we may want that a passed parameter is modified. Let us assume that
 we want to "frame" a passed string, for example we want to pass in the string "Hello"
 and want to change it to "* Hello *". Further let us assume that we may sometimes
 want to use other characters instead of the asterisk, maybe a [.lit]#+# sign.
@@ -6189,6 +6193,8 @@ way we could apply a sequence of different procs. The result of above program is
 # Hello World #
 ----
 
+==== Returning from a Procedure and the implicit Result variable
+
 The execution of a procedure terminates when the last statement of the procedure body
 has been processed.  We can also terminate a procedure earlier when we specify a
 [.key]#return# statement somewhere.
@@ -6232,6 +6238,14 @@ func sqr(i: int): int =
 as it may be unclear in this case if the expression [.code]#i * i# is returned or the [.key]#result#
 variable with value [.var]#i#. For {curnim} we will get a warning or an error message in such
 a case.
+
+For the performance of our code, it may have a tiny benefit to only use the
+result variable and fully avoiding return staements, as in this case for
+a function call like [.code]#var i = sqr(j)# the result variable may be just an alias for the
+actual result i here, so that the compiler can optimize the code and avoid temporary copies.
+But that are rumors, and may depend on the actual compiler version.
+
+==== Proc name overloading
 
 Note that we used the proc names [.var]#sqr1#, [.var]#sqr2# and [.var]#sqr3# above.  Using the same name with
 the same argument types multiple times would result in a redefinition error, as the
@@ -6391,7 +6405,7 @@ proc t2(x: var seq[int]) =
 The [.type]#varargs# parameter type is similar to the [.type]#openArray# type, but it additional allows
 passing an arbitrary number of single arguments.  The compiler automatically collects
 the single arguments into an array for us, so in the proc body we can use it like an
-array, ie. iterating over it.
+array, e.g. iterating over it.
 
 [source, nim]
 ----
@@ -6471,7 +6485,7 @@ For Nim we can say that whenever Nim's syntax requires a new level of indentatio
 that is a new statement block, then all symbols declared in that block are only
 visible in that block and in sub-blocks of this block, but not outside of that block.
 Nim has another important concept of visibility, which is called modules and allows
-separation our code in logically separated text files with well defined visibility
+separation of our code in logically separated text files with well defined visibility
 rules, we will discuss modules later.
 
 Visibility is really a simple concept, let us regard this useless example:
@@ -6500,7 +6514,11 @@ variables declared in the proc [.var]#p1# are called local variables, they are n
 outside of that proc [.var]#p1#. The variable [.var]#x# is declared at the start of the proc body and
 is visible in the whole proc everywhere, while variable [.var]#y# is declared in the [.key]#if# block
 and is visible only there. So it should be clear if the last two echo statements for
-[.var]#x# and [.var]#y# compile fine?
+[.var]#x# and [.var]#y# compile fine? Remember that symbols that we define inside of a new scope
+may shadow symbols that were visible outside of the actual block, e.g. by defining a variable
+named [.var]#e# of arbitrary type in the proc [.var]#p1# from above would shadow the global variable [.var]#e#, that is the global variable [.var]#e#
+would become invisible until execution of proc [.var]#p1# terminates. We discussed shadowing
+already in the introducing section <<Blocks, Scopes, Visibility, Locality and Shadowing>>.
 
 Related to visibility of variables is their lifetime, that is the duration how long
 they exist and how long they can store a value.  Global variables exist for the whole
@@ -6656,7 +6674,7 @@ We can now call that proc with parameters of different types including [.type]#i
 types. You may wonder why that works -- Nim is a statically typed language, so how
 can the parameter of function [.func]#sqr()# as well accept an integer as a floating point number? Is
 there a hidden type conversion involved? No, the trick is that whenever we call that
-generic proc with a different type, than a new proc or function is instantiated. As
+generic proc with a different type, then a new proc or function is instantiated. As
 we called the generic [.func]#sqr()# proc with an [.type]#int# and a [.type]#float# parameter, during compile
 time the compiler creates machine code for two separate functions, one which is called
 when an [.int]#int# is passed as parameter, and one which is called when a [.type]#float# is passed.
@@ -7045,7 +7063,7 @@ difficult to add more operations which can be used in that style, as often all t
 operations are defined in the class scope. Ruby fixed that restriction by allowing so
 called reopen of classes, that is user can later add more operations.
 
-Nim simple allows that notation generally, as did the D language, but D used the tern
+Nim simple allows that notation generally, as did the D language, but D used the term
 [.ndef]#Uniform Function Call Syntax# (UFCS) for it.
 
 === Procedure Variables
@@ -7178,7 +7196,7 @@ to understand it. The task is to extract from a string all the digits and to ign
 the other characters.
 
 To get the digits, we use a local procedure that uses the [.var]#pos# variable of the
-enclosing procedure, and also access the parameter s of the enclosing procedure. The
+enclosing procedure, and also access the parameter [.var]#s# of the enclosing procedure. The
 closure [.func]#nextDigit()# checks if the position in the [.type]#string# is still valid, that is if
 it is still smaller than the length of the [.type]#string#, and also checks if the current
 character is a digit. The first check uses the standard procedure [.func]#len()# which return
@@ -7231,6 +7249,64 @@ echo add2(7)
 The output of [.func]#echo()# would be [.lit]#9# in this case. This construct is sometimes named
 currying.
 
+=== Inlining Procedures
+
+Calling procedures and functions is always some overhead
+-- proc parameters may have to put on the stack or loaded into CPU registers, some CPU or FPU registers may have to
+be saved, the stack pointer and the program counter have to be updated and finally the instruction cache
+has to be filled with new instructions.
+
+So for tiny procs actually calling the proc may take more time than processing the actual code inside of the
+proc. To avoid this additional effort, {profus}s can be inlined. The compiler may do this automatically for us, but we
+can support it by applying the {.inline.} prama to tiny procs.footnote:[Automatically inlining of procs from imported
+modules is not easy, as the C compiler backend does only inline functions from other source code files when
+link time optimization is enabled. With the inline pragma applied, the Nim compiler copies that proc from the imported
+module to the module where it is actually used, so the C compiler can inline it.]
+For inlined procs the code
+is just inserted directly at the callsite. This may increase the total executable size, when the proc is used often.
+So we should use the inline pragma with some care. Another option is to just compile the whole program
+with link time optimization passing the option -d:lto to the compiler, that way the C backend
+can automatically inline all proc code, even procs from imported modules. One more option is to use
+templates instead of tiny procs -- templates do always a plain code substitution, so templates may behave
+very similar to inline procs. We will discuss templates later. The following example show how we can apply
+the inline pragma to {profus}s:
+
+[source, nim]
+----
+proc max(a, b: int) {.inline.} =
+  if a < b: b else: a
+----
+
+Note that functions from shared libraries can not be in lined, so calling external C functions, directly or indirectly,
+may be slower than expected.
+
+=== Recursion
+
+Procedures and functions can call them self in a repetive manner, which is called recursion.
+Obviously there must exist some condition that finally stops the recursion, without the
+proc would call itself again and again, for each call some data would have to be stored on the stack, at least the
+proc return address, so finally the stack would overflow and the program would crash.
+Generally recursion should be used only for cases where it really helps to simplify the algorithm.
+In part V of the book, in the section about various sorting algorithm, we will discover some useful
+applications for recursion. In most cases a plain iterative algorithm is faster than a recursive one,
+because all the overhead with many proc calls is avoided for plain iterative solutions. But sometimes
+recursive algorithm are easier to understand, or programming an iterative solution may be really complicated.
+
+As one of the most simple algorithm we will present here the recursive fac() function:
+
+[source, nim]
+----
+proc fac(i: int) =
+  if i < 2:
+    1
+  else:
+    i * fac(i - 1)
+----
+
+That function should terminate, as we only call itself again with a decreased argument.
+Of course, using recursion here is not really smart, it should be easy for you to convert
+the proc into an iterative solution without recursion. Note that recursive procs can never be inlined!
+
 === Converters
 
 Nim's converters are a special variant of functions that are called automatically by
@@ -7258,13 +7334,13 @@ else:
   echo "false"
 ----
 
-With above converter we can pass an integer to a proc that expects a bool parameter,
+With above converter we can pass an integer to a proc that expects a boolean parameter,
 and we can even use an integer as a logical expression in an [.key]#if# condition in the same
 way as it is done in C language.  Converters do work only in a direct way, that is
-automatic chaining is not supported: If we have one converter from character to int
-and one from int to boolean, that does not mean that we can pass a character to a
+automatic chaining is not supported: If we have one converter from character to integer
+and one from [.type]#int# to boolean, that does not mean that we can pass a character to a
 proc that expects a boolean. We would have to declare one more converter that
-directly converts character to bool.
+directly converts character to boolean.
 
 Whenever we do consider using converters we should think twice -- converters may be
 confusing, may have some strange effects and may increase compile time.
@@ -7461,7 +7537,7 @@ Nim's object variants, sometimes also called sum types or abstract data types (A
 are an advanced and type save variant of the union type known from C.  The basic idea
 is that we may use value types that may store similar, but not identical data.
 Untyped languages like Ruby or Python allow that of course, and we can do it in Nim
-with ref types and inheritance too, as we showed in a previous section with our Shape
+with ref types and inheritance too, as we showed in a previous section with our [.type]#Shape#
 base type and various geometric shapes.  We could store that ref types in arrays or
 sequences or linked list and use dynamic dispatch for processing the various
 sub-types.  That is convenient but gives not maximum performance due to dynamic
@@ -7504,7 +7580,7 @@ for el in s:
 
 Objects variants can have common fields like the boolean state visible above, but the
 other fields are not allowed to use the same names, so we had to use [.var]#x0# and [.var]#y0# for
-the names of the center coordinates in the cycle variant.
+the names of the center coordinates in the circle variant.
 
 As you can see we can store all the different object variants as value objects in a
 sequence and iterate over it. Note that object variants may waste some storage, as
@@ -7517,10 +7593,10 @@ the same way to the same proc.
 We have already used some of Nim's standard iterators to iterate over the characters
 of a string or the content of a sequence. Declaring iterators is similar to declaring
 procedures, but we use the yield keyword to return a single value back to the caller
-of the iterator.  Iterators are used in for loops, and the iteration continues until
-the end of the body of the iterator declaration is reached the iterator terminates.
+of the iterator.  Iterators are used in [.key]#for# loops, and the iteration continues until
+the end of the body of the iterator declaration is reached and the iterator terminates.
 In an earlier section we declared a procedure that extracted the decimal digits from
-a string. We can do the same with a iterator:
+a [.type]#string#. We can do the same with an iterator:
 
 [source, nim]
 ----
@@ -7537,21 +7613,23 @@ for d in decDigits("df4j6dr78sd31tz"):
 stdout.write('\n')
 ----
 
+To avoid the
+need of declaring a [.var]#res# variable of character type, in above code we increase [.var]#pos# by
+one first and [.key]#yield# [.var]#s[pos - 1]#.
+
 Nim supports closure-iterators and inline-iterators. The later have to be marked with
 the {.inline.} pragma in the header of the declaration.  Inline-iterators are
 inserted like templates at the location where they are called and offer maximum
 performance, but each call increases the total code size. Closure iterators are
 invoked like ordinary procedures, the invocation eats some performance. Note:
-Iterators do not provide a predefined result variable as procedures do. To avoid the
-need of declaring a res variable of type character, in above code we increase pos by
-one first and yield s[pos - 1].
+Iterators do not provide a predefined result variable as procedures do.
 
 == Templates
 
 Nim templates are a more powerful variant of the macros in C.  While in C macros are
 processed by the pre-processor and are mostly just a plain text substitution, in Nim
 templates are a fundamental part of the languages and can be used in a similar way
-like procedures.  But while procedures built a single block of code that is then
+as procedures.  But while procedures built a single block of code that is then
 called multiple times, templates work like C macros as textual substitution. Wherever
 we call a template the template source code is inserted.
 
@@ -7566,12 +7644,12 @@ echo sqr(j)
 
 == Casts and Type Conversion
 
-While we have various types of casts in C++, we have only one cast and type
-conversions in Nim. In Nim casts just reinterpret the same bit pattern for another
+While we have various types of casts in {cpp}, we have only one cast and type
+conversions in Nim. In Nim [.key]#cast# just reinterpret the same bit pattern for another
 data type. For example the boolean value [.lit]#false# is internally encoded as a [.type]#byte# with
 all bits cleared, and [.lit]#true# is encoded as a [.type]#byte# with all bits but the least
 significant one cleared. We could [.key]#cast# a [.type]#bool# to an [.type]#int8# of same size and would get a
-decimal number [.lit]#0# or [.lit]#1#.  Casting is not a real operation at all, as nothing is really
+number with decimal value [.lit]#0# or [.lit]#1#.  Casting is not a real operation at all, as nothing is really
 done. We watch the same bit pattern just from a different perspective. But casting is
 dangerous, it violates the safe type system of the language, and it can go very
 wrong: Can we cast between [.type]#float64# and [.type]#int64#? Well they have same size, and both are
@@ -7580,7 +7658,7 @@ While [.type]#int64# has the well known and simple value encoding, that is right
 stands for [.lit]#2^0#, next bit for [.lit]#2^1# and so far, the encoding of floating point numbers is much more
 difficult and has not such a simple scheme. In [.type]#float#s some bits represent the so
 called mantissa and some bits represent the exponent. When we [.key]#cast# we may again get a
-number, but the value is not really predictable.  We have to be very carefully when
+number, but the value is not easy predictable.  We have to be very carefully when
 we [.key]#cast# between types of different size. Nim may permit that but we have to think
 what may really happen. When we [.key]#cast# between a [.type]#bool# and an [.type]#int64#, in one direction 7
 bytes have to be ignored, and in the other direction for 7 missing bytes there is
@@ -7611,14 +7689,14 @@ raise exceptions for invalid input, the other may return a boolean.
 When we execute our code, sometimes something can go wrong: We may have an unexpected
 division by zero or an overflow, or we get some invalid user input.  There exists
 various strategies to handle such situations. One is to terminate our program, we may
-do that by a plain assert() or quit() statements. If we have absolutely no idea how
+do that by a plain [.func]#assert()# or [.func]#quit()# statements. If we have absolutely no idea how
 to recover from an error then that may be our best option. The user may restart the
 program, or the program may be restarted by some sort of supervisor program. For more
 expectable errors some sort of error indicator may be a better solution, for example
 a parseInt() procedure may return a boolean value for success. As we have to return
 the result for success also, the parseInt() proc may return a tuple, or may get a var
 parameter in which the result is returned. Another solutions are exceptions as known
-from C++.
+from {cpp}.
 
 [source, nim]
 ----
@@ -7652,24 +7730,24 @@ finalizers or destructors to deallocate entities of the C libs when a correspond
 Nim (proxy) object is freed. Libraries like the gintro GTK bindings make use of this.
 
 Finalizers are procedures that can be passed as a second optional parameter to the
-system new() proc. That way the finalizer proc is attached to the data type of the variable which
-we pass as first parameter to new() and that finalizer proc is
+system [.func]#new()# proc. That way the finalizer proc is attached to the data type of the variable which
+we pass as first parameter to [.func]#new()# and that finalizer proc is
 automatically called whenever that variable is freed by the Nim memory management system.
-As finalizers are passed as a parameter to a new() call, and new() is only used for
-references, finalizers work only for ref data types.
+As finalizers are passed as a parameter to a [.func]#new()# call, and [.func]#new()# is only used for
+references, finalizers work only for [.key]#ref# data types.
 
 Destructors do not have this restriction. We define the destructor for a value type, but
 it is also called for reference types by the compiler.
 
 Starting with version 1.4 Nim got scope based resource management when
-the program is compiled with --gc:arc or --gc:orc. In that case
+the program is compiled with [.code]#--gc:arc# or [-code]#--gc:orc#. In that case
 variables are immediately deallocated when they go out of scope, and if
 a destructor was defined for the data type of that variable it is called automatically.
 
 For the programming language {cpp} it is a common practice that resources like files are closed and released
 automatically by destructors when they go out of scope, and now this is also
 possible for Nim. To make use of destructors for our own data types we
-have to define a proc called  `=destroy` which gets an instance of our data type passed as
+have to define a proc called  [.func]#=destroy# which gets an instance of our data type passed as
 a var value object:
 
 [source, nim]
@@ -7694,10 +7772,10 @@ randomize()
 test()
 ----
 
-In the for loop we enter a new scope when the if condition is evaluated to true,
-and at the end of the if block we leaf the scope and the destructor is called automatically.
+In the for loop we enter a new scope when the [key]#if# condition is evaluated to [.lit]#true#,
+and at the end of the [.key]#if# block we leaf the scope and the destructor is called automatically.
 Inside the destructor proc we could do some cleanup tasks, close files and release resources.
-Destructors are also called when ref objects go out of scope:
+Destructors are also called when [.key]#ref# objects go out of scope:
 
 [source, nim]
 ----
@@ -7721,9 +7799,9 @@ randomize()
 test()
 ----
 
-To use destructors we have to compile with the option --gc:arc or --gc:orc, otherwise
+To use destructors we have to compile with the option [.code]#--gc:arc# or [.code]#--gc:orc#, otherwise
 the specified destructor procs are just ignored. In our code we can test for working destructors with
-a construct like "when defined(gcDestructors):". 
+a construct like [.code]#when defined(gcDestructors):#. 
 
 Note that destructors do not work for plain pointer types:
 
@@ -7896,9 +7974,9 @@ References:
 == Finalizers
 
 In Nim finalizers are procedures, that we can specify as an optional second parameter
-when we call the system new() proc to allocate heap memory for a reference type variable.
+when we call the system [.func]#new()# proc to allocate heap memory for a reference type variable.
 That specified finalizer proc is then later called by the Nim memory management system
-when the ref variable is freed:
+when the [.key]#ref# variable is freed:
 
 [source, nim]
 ----
@@ -7926,21 +8004,21 @@ finalize O
 finalize O
 ----
 
-The output of above program is really surprising at first: Only for variable o we call the
-proc newO() to initialize it, which then calls new() by passing a finalizer proc named finO().
-For o2 and o3 we allocate memory as usual, without use of a finalizer proc.
-But when o2 and o3 goes out of scope, even for these two variables the finalizer proc finO()
-is called. The reason for this is, that the system proc new() binds the optional finalizer proc
-to the data type of the passed ref variable. This binding process occurs for the first
-call with a passed finalizer proc and can not be reverted. We can later call new() without
-finalizer or use the similar O() call to initialize the ref variable, but that can not undo the binding. And using a
+The output of above program is really surprising at first: Only for variable [.var]#o# we call the
+proc [.func]#newO()# to initialize it, which then calls [.func]#new()# by passing a finalizer proc named [.func]#finO()#.
+For [.var]#o2# and [.var]#o3# we allocate memory as usual, without use of a finalizer proc.
+But when [.var]#o2# and [.var]#o3# goes out of scope, even for these two variables the finalizer proc [.func]#finO()#
+is called. The reason for this is, that the system proc [.func]#new()# binds the optional finalizer proc
+to the data type of the passed [.key]#ref# variable. This binding process occurs for the first
+call with a passed finalizer proc and can not be reverted. We can later call [.func]#new()# without
+finalizer or use the similar [.func]#O()# call to initialize the [.key]#ref# variable, but that can not undo the binding. And using a
 different finalizer proc for the same data type would not work any more. Passing the same finalizer
 proc multiple times is OK and may be a common use case, but it has no real effect, as the first call
 did the binding already.
 
 This behaviour of finalizers in Nim is indeed a bit confusing and error prone. Maybe somewhere
-in a large program we pass a finalizer proc to new() and forget about it. Later we use
-new () without a finalizer or use the O() notation to reserve the memory for our ref variable.
+in a large program we pass a finalizer proc to [.func]#new()# and forget about it. Later we use
+[.func]#new ()# without a finalizer or use the [.func]#O()# notation to reserve the memory for our [.key]#ref# variable.
 So we think that no finalizer is involved, but as a finalizer was used somewhere at least once,
 it is now bound to all of our allocations of that data type. That can easily lead to bugs
 as the unintended called finalizers may do things that it should not do with our data.
@@ -7980,10 +8058,10 @@ proc main =
 main()
 ----
 
-We import module tt.nim and subclass the ref object type tt.O.
-While module tt.nim defines a generic finalizer proc fin(), we can
-not use that one for our subclased type OO, but have to copy it
-from module tt.nim into our main module and we may have even to use a different
+We import module [.var]#tt.nim# and subclass the [.tyape]#ref object# type [.type]#tt.O#.
+While module [.var]#tt.nim# defines a generic finalizer proc [.func]#fin()#, we can
+not use that one for our subclased type [.type]#OO#, but have to copy it
+from module [.var]#tt.nim# into our main module and we may have even to use a different
 proc name. Otherwise we get the compiler message
 
 ----
@@ -8011,7 +8089,11 @@ have to be exported to make them visible and usable by other modules. That is do
 like in Oberon by appending an asterisk character to all names that should be
 exported. These restricted exports allows to hide implementation details -- all
 symbols not exported are private to that module and can be changed and improved at
-any time without noticing the importing module.
+any time without noticing the importing module. Note that when we append the asterisk
+to the name of an object to export that type, the objects fields are still hidden and can not
+be accessed from within the importing module. You may append an asterisk to selected field
+names as well, or you may provide exported getter and setter procs for the field access.
+A read-only export es known from the Oberon language is currently not possible with Nim.  
 
 We can import whole modules, that is all symbols that are marked for export by the
 asterisk, or we can import only the symbols that we need by specifying their names.
@@ -8031,8 +8113,9 @@ proc remNoneLetters*(s: string): string =
   result.setLen(pos)
 ----
 
-We save above text file with our Nim source code with name mystrops.nim and can
-import it like
+We save above text file with our Nim source code with name mystrops.nim.
+Note the export marker after the proc name.
+We can import and use that module like
 
 [source, nim]
 ----
@@ -8041,11 +8124,24 @@ import mystrops
 echo remNoneLetters("3h7.5g:8h")
 ----
 
+When we import modules, then we put the import statement generally at the top of the
+importing module, that way it is easy to see what modules are imported. The imported symbols
+can be used in the code after the import statement.
 Module names should be lower case and may as other Nim symbols only contain letters,
-decimal digits and the underscore character.
+decimal digits and the underscore character. 
+Importing the same module multiple times is not a problem, and does not increase the
+code file of the final executable.
+Note that in the import statement
+the module names have to be used literally, so this would not work:
 
-Note the export marker after the proc name. Instead of importing whole modules we can
-import only single symbols with the from x import y, z syntax like
+[source, nim]
+----
+const strfuncs = "stringutils"
+import strfuncs
+----
+
+Instead of importing whole modules we can
+import only single symbols with the [.code]#from x import y, z# syntax like
 
 [source, nim]
 ----
@@ -8056,14 +8152,14 @@ echo remNoneLetters("3h7.5g:8h")
 
 Both forms are an unqualified import, that is we can refer to the proc by only its
 name, we do not need the qualified form with module name prefix like
-mystrops.remNoneLetters() as long as there are no name conflicts.  But whenever we
+[.var]#mystrops.remNoneLetters()# as long as there are no name conflicts.  But whenever we
 want we can use the qualified form also.
 
 Nim programmer generally prefer importing whole modules and use unqualified names,
 while that is considered bad style in some other languages like Python.  In untyped
 languages like Python unqualified imports may indeed pollute the name space and
 generate many name conflicts, but in statically typed languages like Nim unqualified
-import seems to generate name conflicts only in very rare cases. Procedures with the
+imports seems to generate name conflicts only in very rare cases. Procedures with the
 same name generally have different parameter lists, so the overload resolution of the
 compiler can decide what proc is to be used. And when really a name conflict occurs
 then the compiler will tell us, and we can easily fix it by prefixing the proc name
@@ -8100,14 +8196,14 @@ directly. Also note that Nim always imports only what is really needed in the fi
 executable, so importing only a few symbols from a module has no code size benefit
 over importing the whole module. Still it may improve readability of your code when
 you import only single symbols when you are sure that you need not more. Maybe like
-from math import Pi. Note that you can even in that case access other symbols of that
-module by fully qualified names like math.sin().
+[.code]#from math import Pi#. Note that you can even in that case access other symbols of that
+module by fully qualified names like [.func]#math.sin()#.
 
 With the growing standard library it may occur that module names of the standard
 library interfere with your own module names.  So Nim now allows and recommends
-qualified import of modules from the standard library like import std/strutils. And
+qualified import of modules from the standard library like [.code]#import std/strutils#. And
 for external packages installed by the nimble package manager imports in the form
-import package/[mod1, mod2, mod3] are permitted.
+[.code]#import package/[mod1, mod2, mod3]# are permitted.
 
 Finally you can also import modules under another name using the [.key]#as# keyword
 like
@@ -8125,13 +8221,41 @@ alternate module name by using an import statement like
 from tables as maps import nil
 ----
 
-With this import statement you could access symbols from the tables module only by
-use of the maps module prefix like maps.newTable().
+With this import statement you could access symbols from the [.var]#tables# module only by
+use of the [.var]#maps# module prefix like [.func]#maps.newTable()#.
+
+Finally with the [.key]#export# keyword one library module can export other modules, which it
+imports itself. This may simplify the use of connected modules. As an example, when
+using the [.var]#gintro# bindings for GTK4, we import all the needed modules generally like
+[.code]#import gintro/[glib, gobject, gtk4]#. We may decide to simplify that import statement
+by creating one more module called [.var]#gtkplus# that consists only of these two lines:
+
+[source, nim]
+----
+# module gtkplus
+import gintro/[glib, gobject, gtk4]
+export glib, gobject, gtk4
+---- 
+
+Then a user of [.var]#gintro# could just write [.code]#import gtkplus# to have access to all
+the modules. Actually for GTK this is not really a good idea, we will tell you more
+about the [.var]#gintro# module and maybe about one more of Nim's GUI libraries in the second half of the book.
+
+=== Cyclic Imports
+
+Generally we try to arrange our own modules in a tree-like bottom-up structure. A module [.var]#x# may define basic
+types and simple functions working with these types, and a higher level module [.var]#y# may import all symbols
+from module [.var]#x# and extend the functionality. But in rare cases it may be necessary that the modules [var]#x# and [.var]#y#
+import each other, as [.var]#x# has to use types or functions of module [.var]#y#, and vice versa. This case is called cyclic import and is
+currently not supported by Nim. Indeed we should generally try to avoid cyclic imports when possible, as cyclic imports
+make the software design difficult. But sometimes we can not really avoid these cycles. In that case currently the best solution is,
+to put all the concerned data types in a separate low level module, which is then imported from both other modules.
+The planned Nim version 2.0 may allow cyclic imports, so this restriction may vanish in the future.  
 
 == Include
 
-The include statement should be not confused with the import statement.  Include just
-insert a text file at the position where the include statement occurs. Include can be
+The [.key]#include# statement should be not confused with the [.key]#import# statement.  [.key]#Include# just
+insert a text file at the position where the [.key]#include# statement occurs. [.key]#Include# can be
 used to split very large modules in smaller entities.
 
 = Part III: The Nim Standard Library
