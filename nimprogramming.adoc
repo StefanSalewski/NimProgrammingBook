@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-26
+//v0.1, 2021-DEC-29
 :doctype: book
 :toc: left
 :icons: font
@@ -6017,6 +6017,22 @@ echo p (1, 2) # argument looks like a tuple, so this would not compile
 For the proc definition above we wrote the body statement directly after the equal sign -- that
 is possible, and used sometimes for very short procs. And indeed, here [.func]#p()# is a function. 
 
+In the examples above we have passed plain integers as parameters to procedures, but
+of course proc parameters can have any type, we can pass strings, array, objects and all that.
+The way we pass the parameters to the procs is sometimes called "pass by value", an old term
+introduced for the Pascal language, used to indicate that the passed parameter seems to be copied
+to the proc, the proc is not able to modify the original instance. In the next section we will
+learn about the [.key]#var# parameter type, which is used when we want to allow the proc to modify the
+original instance. In the wirthian languages the procedure parameters actually get copied, so
+inside the proc we could modify it, but we modified only the copy, the original instance remained unchanged.
+In Nim it is a bit different. When we pass parameters by value to a proc, we can not modify it at all
+in the proc body. When we need a mutable copy, we have to generate that copy our self in the proc body.
+This allows some optimizations: Nim needs not really to copy the proc parameters, as they are immutable, Nim can just
+work with pointers to the original instances internally. Actually there are rumors, that for parameters
+smaller than [.code]#3 * sizeof(float)# Nim copies the instances, but for larger instances Nim works internally
+with pointers to the original value. But this is an implementation detail -- data copied to the procs
+stack allow fastest access, but on the other hand the initial copy process can be expensive, so it is a compromise.
+ 
 ==== Procedure Parameters of Var Type
 
 Our [.func]#sqr()# function above accepts only one parameter and that parameter is a value
@@ -6047,6 +6063,12 @@ var message = "Hello World"
 frame(message)
 echo message
 ----
+
+****
+Note: In the wirthian languages we actually put the var keywords for proc parameters in front of the
+parameter name, that is we would have to write [.code]#proc frame(var s: string; c: char = '*') =# for the
+procedure header.
+****
 
 The frame proc above accepts two parameters and returns no result. The first
 parameter has the type [.type]#string#, it is not a value parameter but a [.key]#var# parameter, which
@@ -6083,6 +6105,20 @@ of our passed string. Finally we add a white-space and the [.var]#c# character t
 string.  The passed string is now modified, it is 4 characters longer. That
 modification is noticeable for the caller of that proc, that is [.func]#echo()# will print the
 modified version.
+
+****
+Passing mutable arguments to procedures by use of the [.key]#var# keyword was sometimes
+called "pass by reference" in the old wirthian languages like Pascal. This leads to confusion
+for some people unfortunately. Of course proc [.key]#var# parameters are not really related to Nim's
+[.key]#ref# type. Well, using Nim's [.key]#ref# data types would also allow to modify proc arguments,
+in the same way as using pointers would do it. But we never use [.key]#ref# types in Nim just to be able
+to modify passed data in procs, and also not to avoid a possible expensive copy operation
+for value types. We could create a [.key]#ref# instance with [.code]#var intRef: ref int = new int#, pass that [.var]#intRef#
+to a proc and so allow to modify the actual value where the   [.var]#intRef# points to from inside the proc.
+But that would be silly, as the [.key]#var# parameter is available for that. In Nim, we use reference
+types, when we really need then, e.g. when we really need reference semantics, or when we have to create highly dynamic, many to one data types,
+like tree structures.
+****
 
 When we call a proc or function with multiple arguments, then we have to pass the
 arguments in the same order as they are specified in the proc declaration.
@@ -6201,8 +6237,8 @@ has been processed.  We can also terminate a procedure earlier when we specify a
 
 Functions and procedures which return a result can also terminate with the last
 expression of the procedure body, or earlier with a return expression like
-[.code]#return i * i#. Functions and procedures with a result declare automatically a
-[.var]#result# variable for us, which we may use or just ignore. So for our previous [.func]#sqr()#
+[.code]#return i * i#. Functions and procedures with a result declare automatically a mutable 
+[.var]#result# variable for us, which is of the function's return type and which we may use or just ignore. So for our previous [.func]#sqr()#
 function we have various ways to write it:
 
 [source, nim]
@@ -7249,6 +7285,69 @@ echo add2(7)
 The output of [.func]#echo()# would be [.lit]#9# in this case. This construct is sometimes named
 currying.
 
+=== Anonymous Procedures
+
+In the section <<Module sequtils>> in part III of the book we will introduce a few functions
+which are often used in the functional programming style like [.func]#map()# or [.func]#filter()#.
+These functions gets procedures as arguments that determine how container data types
+are converted. We can pass a regular named procedure as second argument to procs like
+[.func]#map()# and [.func]#filter#, or in simple cases we can just pass an anonymous proc or use the [.op]#=>#
+operator provided by the [.var]#sugar# module:
+
+[source, nim]
+----
+import sequtils, sugar
+
+proc primeFilter(x: int): bool =
+  x in {3, 5, 7, 13}
+
+var s = (0 .. 9).toSeq # @[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+echo s.filter(primeFilter) # @[3, 5, 7]
+echo s.filter(proc(x: int): bool = (x and 1) == 0) # @[0, 2, 4, 6, 8]
+
+echo s.map(proc(x: int): int = x * x) # always @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+echo s.map(x => x * x) # from sugar module
+----
+
+Here we use the [.func]#toSeq()# template to create our initial sequence with numbers [.lit]#0# up to [.lit]#9# --
+just to have not to type all the number in, we will explain templates soon.
+Then we apply the [.func]#filter()# proc to that sequence. The [.func]#filter()# proc expects as second argument a function
+with an argument of the seq's base type returning a boolean value. We can pass the named
+function [.func]#primeFilter()#, or we can just pass an anonymous proc explicitly.
+
+In the last two lines of our example, we use the [.func]#map()# function to convert the data of our sequence.
+[.func]#Map()# expects as second argument a proc with a parameter of the seq's base type returning a result of the same type.
+In the line before the last one, we specify an anonymous proc as parameter, while in the last
+line we use the [.op]#=># operator from the [.var]#sugar# module to just specify the actual conversion.
+
+=== Compile time proc execution
+
+When a function is called only with constant arguments, then the compiler can execute it
+already at compile time:
+
+[source, nim]
+----
+func genSep(l: int): string =
+  debugecho "Generating separator string"
+  for i in 1 .. l:
+    result.add('=')
+
+const Sep = genSep(80) # function is executed at compile time
+
+echo Sep
+----
+
+Here we used a function called [.func]#genSep()# to create a [.type]#string# constant at compile time.
+When we compile above program, we get the message "Generating separator string". As that
+proc is not executed at program runtime, it is not included in the final executable program.
+Here we had to use the [.func]#debugEcho()# proc instead of the ordinary [.func]#echo()#, because
+[.func]#echo()# is not really a pure function, and the compiler would complain when we use
+[.func]#echo()# in a pure function. [.func]#DebugEcho()# is not really pure as well, but the compiler ignores that
+fact, which is OK for debugging purposes. We could even make [.func]#gesSep()# a plain proc and then use
+[.func]#echo()#, the compiler would not complain. But it would complain, if for instance we would access
+global variables from inside the [.func]#genSep()# proc.
+
 === Inlining Procedures
 
 Calling procedures and functions is always some overhead
@@ -7273,7 +7372,7 @@ the inline pragma to {profus}s:
 
 [source, nim]
 ----
-proc max(a, b: int) {.inline.} =
+proc max(a, b: int): int {.inline.} =
   if a < b: b else: a
 ----
 
@@ -7296,7 +7395,7 @@ As one of the most simple algorithm we will present here the recursive fac() fun
 
 [source, nim]
 ----
-proc fac(i: int) =
+proc fac(i: int): int =
   if i < 2:
     1
   else:
@@ -8128,7 +8227,10 @@ When we import modules, then we put the import statement generally at the top of
 importing module, that way it is easy to see what modules are imported. The imported symbols
 can be used in the code after the import statement.
 Module names should be lower case and may as other Nim symbols only contain letters,
-decimal digits and the underscore character. 
+decimal digits and the underscore character.
+We can import multiple modules with a single import statement when we separate the module names with commas.
+Starting with Nim v1.6 it is recommended to import modules from Nim's standard library with the [.var]#std#
+prefix as in [.code]#import std/math# or [.code]#import std/[strutils, sequtils]#.
 Importing the same module multiple times is not a problem, and does not increase the
 code file of the final executable.
 Note that in the import statement
