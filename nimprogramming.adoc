@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2021-DEC-29
+//v0.1, 2022-JAN-01
 :doctype: book
 :toc: left
 :icons: font
@@ -4454,6 +4454,40 @@ invalid data for the first iteration. Later we will see how we can use Nim macro
 extend Nim by a repeat loop that can be used as it would be part of Nim core
 functionality.
 
+=== The Block Statement
+
+The block statement can be used to create a new indented block, which
+creates a new scope, in the same way as a [.code]#when true:# statement would do:
+
+----
+block: # create a new scope
+  var i = 7
+echo i # would not compile, as variable i is undefined
+----
+
+Blocks can be useful to structure large code segments, when there are no better ways, as
+splitting the code in multiple procs, available. For testing purposes blocks can be useful
+too, to keep symbol in a local scope. But actually most useful are blocks, when the blocks
+get attached names, and we use the break statement in a [.key]#while# or [.key]#for#  loop to [.key]#break# out
+of a nested loop:
+
+----
+let names = ["Nim", "Julia", "?", "Rust"]
+block check:
+  for n in names:
+    for c in n:
+      if c notin {'a' .. 'z', 'A' .. 'Z' }:
+        echo "invalid character in name"
+        break check
+echo "we continue"
+----
+
+The [.code]#break check# statement would immediately leave the nested loops and
+continue with the first statement after the block, which is the last line
+in the code segment above. Using [.key]#break# in such a way is not very nice, as
+it may make it harder to understand the code structure, but sometimes
+it can be very useful.
+
 === For Loops and Iterators
 
 These are very useful and important in Nim and other programming languages. [.op]#For# loops are most
@@ -6281,6 +6315,31 @@ a function call like [.code]#var i = sqr(j)# the result variable may be just an 
 actual result i here, so that the compiler can optimize the code and avoid temporary copies.
 But that are rumors, and may depend on the actual compiler version.
 
+==== Var Return Type
+
+A proc, converter, or iterator may return a [.key]#var# type, which can be modified by the caller.
+The Nim compiler manual provides this basic example:
+
+[source, nim]
+----
+var g = 0
+proc writeAccessToG(): var int =
+  result = g
+writeAccessToG() = 6
+assert g == 6
+----
+
+This way we can call a proc and immediately assign a new value to the result.
+In the above example this works, as the result is an alias for the global variable [.var]#g#.
+
+Actually used are [.ndef]#var return types# for iterators like [.func]#mitems()# or [.func]#mpairs()#,
+which allows to modify the yielded results. For details and restrictions
+of the [.ndef]#var return type# you should consult the Nim compiler manual:
+
+References:
+
+* https://nim-lang.org/docs/manual.html#procedures-var-return-type
+
 ==== Proc name overloading
 
 Note that we used the proc names [.var]#sqr1#, [.var]#sqr2# and [.var]#sqr3# above.  Using the same name with
@@ -7783,6 +7842,81 @@ digits, multiply with it weight and sum them up. So for that operation functions
 argument and return an [.type]#int#. There exists different variants of [.func]#parseInt()#, one may
 raise exceptions for invalid input, the other may return a boolean.
 
+== Bitwise Operations
+
+All systems programming languages, and most other languages, have support for
+bit manipulation operations, which includes querying and setting individual bits
+of variables, and combining the bits of two or more variables. As the CPU hardware
+supports these operations directly, these operations are very efficient. In the
+C programming language operators like [.op]#&#, [.op]#|#, [.op]#<<#, [.op]#>>#, [.op]#^#, [.op]#~# are used
+for bit-wise [.op]#and# and [.op]#or# operations, for shifting all the bits of a variable to the left or to
+the right, and for the process of inverting all the bits and for applying the exclusive-or operation
+on the bits of two operands. Actually, for the right shift operation, we have to distinct between a
+logical and an arithmetic shift: For a logical shift the bit pattern is only moved right, and
+the leftmost bit is always cleared. But for an arithmetic shift, the leftmost bit may stay set when
+it was set before, indicating a negative number in case of a numeric variable. In C the actual
+behaviour for a [.op]#>># shift right operation may be implementation dependent.
+
+Nim prefers to use textual operators instead of cryptic symbols,
+so the logical operators [.op]#and#, [.op]#or# and [op]#not# have overloads to work on the actual bit pattern of integer
+variables instead of on boolean values, and for logical left and right shifts the operators are called
+[.op]#shr# and [.op]#shl#. For  [.op]#shl# shifted in bits from the right are always cleared, while
+ [.op]#shr# shifts in clearedc bits from the left for un signed arguments, but preserved the
+leftmost set bit for signed arguments, which corresponds to an arithmetic shift operation.
+The Nim standard library provides also an [.func]#ashr()# function for arithmetic shifts, but that
+one seems to be a legacy. 
+
+[source, nim]
+----
+from strutils import toBin
+var i = 1.int8 # 0b00000001
+i = i shl 7 # 0b10000000
+i = i shr 2 # 0b11100000 as sign is preserved
+echo i.toBin(8)
+var j: uint8 = 0b11111111
+j = j shr 2 # 0b00111111, div 4 for unsigned int
+echo j.int8.toBin(8)
+----
+
+
+The bit-wise operators [.op]#and#, [.op]#or# and [op]#not# behave very similar
+to the boolean ones, but the operation is performed for all the bit values instead for two boolean operands.
+The shift operators require a right hand operand specifying how many positions the
+bit pattern of the integer variable on the left should be moved. As the [.op]#shr# operator preserves the leftmost sign bit for
+each individual shift when applied to an signed integer argument, we gets a value with the three leftmost bits set in above example.
+For showing the bit pattern, we used the [.func]#toBin()# function in above code, the second
+parameter determines how many bits are actually printed.
+Remember, that for
+unsigned numbers [.op]#shl# by one position is a multiplication by two, and shr by one position is a division by two.
+Negative numbers are not allowed for the number of bits to shift -- [.code]#i = i shl -1# does compile, but the result is
+always zero. For all the shift operations, n shifts each by one position would give the same result as one single shift
+by n positions. For most modern CPU hardware, all the bit shifting operations are very fast and generally take only one clock
+cycle, independent of how many positions we move the bit pattern and independent if it is a logical or an arithmetic shift operation.
+
+We can use the [.op]#and# and the [.op]#or# operator to extract single bits, or to set single bits:
+
+[source, nim]
+----
+var a = 3 # two rightmost bits, at position 0 and 1 are set
+var b = a and 2 # extract bit 1, so b gets the value 2
+b = a and 4 # extract bit 3, which is unset, so result is 0
+b = a or (4 + 8) # result is \b00001111, decimal 15 
+----
+
+This should be enough to teach you the most basic bit operations.
+Actually we need these operations not that often, but we should be aware of their
+existence. The overloading of the [.op]#and#, the [.op]#or# and the [.op]#not# operator for signed and unsigned
+integer numbers may be convenient, but it may sometimes lead to confusion, when
+we intend to do boolean operations but instead actually do operations on bit patterns.
+It was suggested to call the operators bitand, bitor and bitand instead, and
+indeed the [.var]#bitops# module of Nim's standard library defines operators with these names and
+provide additional more useful bit operations, including counting the number of set bits in 
+a variable or determining the number of leading zero bits. These operations are not
+needed that often, but sometimes they can be very useful, and they are supported by fast CPU
+instructions on modern PC hardware. Note that while we have shown these bit operations
+on integer numbers only, you can always cast other data types to integers and then
+apply these operations as well.
+
 == Exceptions
 
 When we execute our code, sometimes something can go wrong: We may have an unexpected
@@ -8374,6 +8508,182 @@ and we will show how simple modules like the times or the random module can
 be used. Most modules mentioned in this part will be from the Nim standard library, so that
 you will not have to install external packages for that. But there may be some exceptions, e.g. for
 some  external nimble packages with a very useful functionality and an easy user interface.
+
+== Command Line Arguments
+
+When we launch a program from inside the terminal window, we can pass it
+some additional parameters, e.g. the name of a file to process or option
+parameters to influence the behaviour of the program. We have done so
+already when we launched the Nim compiler or maybe a text editor from inside our terminal
+window. Using command line parameters is convenient when we work from inside a terminal
+and there are parameters that we know in advance. A more interactive way to collect
+parameters is reading in input while the program is already running, as we did in part II of the
+book when processing the list of our friends. We will learn some more details of this interactive
+processing of input in the next section.
+
+Nim allows to process command line arguments in the same basic way as all C programs do it,
+but Nim's standard library and some external packages allow also much more advanced handling
+of command line arguments. For simple cases the C-like way is sufficient. For C programs
+the command line arguments are even coupled very closely to the language itself, the
+number of arguments and the list of parameters are the two typical parameters
+of the C main() function and are used in this way:
+
+[source, c]
+----
+// C program expecting one command line argument
+// Compile with gcc t.c
+#include <stdio.h>
+int main( int argc, char *argv[] )  {
+  printf("Executing program %s\n", argv[0]);
+  if( argc == 2 ) {
+     printf("The argument supplied is %s\n", argv[1]);
+  }   else if( argc > 2 ) {
+     printf("Too many arguments supplied.\n");
+  }
+  else {
+     printf("One argument expected.\n");
+  }
+}
+----
+
+Here [.var]#argc# is the number of available arguments, and [.var]#argv# is an [.type]#array# containing the
+actual arguments in form of strings. These values are passed to each C program by the
+OS when the program is launched from inside a terminal.  Actually the value of [.var]#argc# is the number
+of passed arguments plus one, that is when we specify no arguments at all, [.var]#argc# has the value one.
+And [.var]#argv[0]# is always the name of the executed program. We have to know that command line arguments
+passed to a program are separated by white space, that is at least by one space or tab character. For this
+reason we have to enclose single arguments containing white space in double quotes:
+
+----
+$ gcc t.c -o t
+$ ./t Nim two
+Executing program ./t
+Too many arguments supplied.
+$ ./t "Nim two"
+Executing program ./a.out
+The argument supplied is Nim two
+----
+
+In Nim we have the same functionality available by use of the [.func]#paramCount()#
+and [.func]#paramStr()# procs, which we have to import from the [.var]#os# module.
+But [.func]#paramCount()# gives us the actual number of parameters, so
+when we call our program on the command line without any arguments, [.func]#paramCount()#
+will return the value zero. The symbol [.func]#paramStr()# is not a global [.type]#array# variable, but a procedure.
+ParamStr(0) gives us the name of our executable, and with arguments greater zero
+we get the passed arguments as [.type]#string#s in ascending order. Using an index number
+for an argument that was not provided will cause [.func]#paramStr()# to raise an exception.
+
+A argument evaluation similar to our C program from above may look like
+
+[source, nim]
+----
+from os import paramCount, paramStr
+
+proc main =
+  echo "Executing program ", paramStr(0)
+  let argc = paramCount() + 1
+  if argc == 2:
+    echo "The argument supplied is ", paramStr(1)
+    if paramStr(1) in ["-d", "--debug"]:
+      echo "Running in debug mode"
+  elif argc > 2:
+    echo "Too many arguments supplied."
+  else:
+    echo "One argument expected."  
+    
+main()
+----
+ 
+Using this plain API is OK when we expect one or two arguments, maybe a file name
+and an option, like the [.term]#-d# or [.term]#--debug# parameter used in the code above. For more command
+line arguments, things get complicated fast, as arguments can be passed in arbitrary orders and
+combinations. So you should try one of the available libraries for that case.
+
+References:
+
+* https://github.com/c-blake/cligen
+
+== Reading data from the terminal
+
+While using command line arguments is convenient for data like file names or
+options that we already know when we launch a program from the terminal window,
+often we have to provide textual user input while the program is already running.
+Functions for this task are provided by the [.var]#io# module, which is part of the [.var]#system# module,
+and which we have not to import explicitly. In one of the introducing sections of the
+book we used already the [.func]#readLine()# and the [.func]#getch()# procs for reading in a line of text from the terminal
+and for waiting on a single key press event.
+
+For input and output operations in a terminal window the [.var]#io# module defines the three
+variables [.var]#stdin#, [.var]#stdout# and [.var]#stderr# of [.type]#File# data type. We will discuss file-based input and output
+operations in more detail in part III of the book. Many procs of the [.var]#io# module expects
+as first parameter a variable of [.type]#file# type. We can explicitly open a named file to write data
+to external media like the SSD, or we can just use the [.var]#stdin# and [.var]#stdout# variables
+to read data from the keyboard and to write text to the terminal window. Unlike other named
+files, we do not have to call [.func]#open()# or [.func]#close()# on [.var]#stdin# and [.var]#stdout#
+to open or close the files, and some other file operations like [.func]#setFilePos()# may not work for
+these file variables: 
+
+----
+var s: string = stdin.readLine()
+stdout.write(s)
+stdout.flushFile
+----
+
+We mentioned already, that the [.func]#readline()# function let you type
+textual user input, including spaces, and that you have to terminate
+your input by pressing the return key to pass the input string to the OS
+which forwards the input to our program. This form of input is sometimes
+called blocking, as for the time that we wait for user input, our program is really
+waiting, it can not do other work til the user has pressed the return key.
+For single character input, without the need for pressing actually the return
+key, e.g. for a simple [.lit]#yes/no# input, you may use the [.func]#getch()# function, which
+is also blocking. In a latter section of the book we may show how
+we can use threading to actually do some useful work, while we wait for user input.
+In the literature [.var]#stdin#, [.var]#stdout# and [.var]#stderr# are often called streams, where [.var]#stderr#
+can be used instead of [.var]#stdout# for writing error message. This can be useful
+in special cases, when we have an application where we want to redirect
+error messages to a file or to separate regular output and error messages.
+For more details about these stream or file variables and the use of the [.var]#stderr# variable
+you may consult external literature, if you should really need that info.
+
+The [.var]#io# module does not provide read functions for other basic data types like numeric or
+boolean types. So we should use [.func]#readLine()# to read the user input in [.type]#string# form, which we can convert
+by functions like [.func]#parseInt()#, [.func]#parseFloat()# or similar functions to numeric data. Note that parsing procs
+like [.func]#parseInt()# are provided by the module [.func]#strutils# as well as by the module [.var]#parseutils# -- one function raises an exception for invalid input,
+while the other one returns a boolean value indicating conversion success. Of course we should
+handle textual user input always carefully and never just assume that the input is actually valid data.
+Some of the modules that can be used for converting textual input data into other data types
+like the [.var]#strutils#, [.var]#parseutils# and [.var]#strscans# modules are described in more detail at the end of this part
+of the book. 
+
+For advanced user input processing, like cursor movement, colored
+display or displaying progress bars, you may also consult the [.var]#terminal# module.
+And finally, to create fancy textual user interfaces (TUIs) we recommend to
+try external packages like the [.var]#illwill# library.
+
+References:
+
+* https://en.wikipedia.org/wiki/Standard_streams
+* https://nim-lang.org/docs/terminal.html
+* https://github.com/johnnovak/illwill
+
+== Writing text to the terminal window
+
+In previous sections we have used the [.func]#echo()# function to write variables
+of various data types to the terminal window. The [.func]#echo()# function accepts
+multiple arguments, writes the string representation of the passed arguments
+to the terminal window and terminates the action by writing the [.lit]#\n# character
+to move the cursor to the beginning of the next line in the terminal window.
+We have already used the [.func]#write()# function from the [.var]#io# module for
+the case that we want to write a single [.type]#string# to the terminal without
+a terminating newline character. The [.var]#io# module contains some overloaded [.func]#write()#
+functions for other basic data types like [.type]#int#, [.type]#float# or [.type]#bool#, and a variant with
+a [.type]#varargs# parameter and applied stringify operator, so that [.func]#write()# can be used
+like [.func]#echo#, as long as we pass [.var]#stdout# as first parameter. For the actual output operation the C library function [.func]#fprintf()# is used.
+Note that write operations to [.var]#stdout# are generally buffered, so the result
+of [.func]#write()# operations may remain invisible until we write a [.type]#string# containing
+a newline character or until we call the [.func]#flushfile()# function to enforce
+the writing of the buffer.
 
 == Serialization -- storing data permanently on external storage
 
