@@ -898,13 +898,13 @@ user = User()
 user.say()
 ----
 
-In this Python snippet, we declare a class User, with a method named [.func]#say()#
+In this Python snippet, we declare a class User, with a custom method named [.func]#say()#
 bound to this class. Then we create an instance variable of this class and call
 its say() method.
 
 This tight bounding of methods to classes is not very flexible, e.g. extending the set
 of methods of a class may be difficult or impossible. Another problem with such a class concept
-is, that it is not always clear to which class a method belongs when more than one single
+is, that it is not always clear to which class a method belongs when more than just one single
 class is involved: Imagine that we need a method that appends a single character to a text string.
 Is that method a member of the character class, or a member of the text string class?
 
@@ -13681,7 +13681,7 @@ all data types and even undefined symbols for its substitution process. But then
 Nim macros and Nim templates do also some form of code substitution, so it is not really surprising that they accept not
 only well defined data types, but also the relaxed types typed and untyped.
 
-As parameters for Nim's macros we can use ordinary Nim data types like int or string, compile time constants denoted with the
+As parameters for Nim's macros we can use ordinary Nim data types like _int_, or _string_, compile time constants denoted with the
 static keyword like static[int], or the typed and untyped data types. When we call macros then the data types of the parameters are used in the same way for overload resolution
 as it is done for procs and templates.  For example, if a macro defined as foo(arg: int) is called as foo(x), then x has to be of a type compatible to int.
 
@@ -14171,7 +14171,7 @@ a * b: 6
 
 === The Assert Macro
 
-As some more simple macro example we will show how we can create our own
+As for some more of a simple macro example, we will show how we can create our own
 assert macro. The assert() has only one argument, which is a expression with
 a boolean result. If the expression evaluates to true at program runtime, then
 the assert macro should do nothing. But when the expression evaluates to
@@ -14184,7 +14184,7 @@ Arguments for our assert macro may look like "x == 1 +2", containing one infix
 operator and one left-hand and one right-hand operand. We will show how we can use
 subscript [] operators on the NimNode argument to access each operand.
 
-As first step we use the treeRepr() function from the macros module to show us the
+As a first step, we use the treeRepr() function from the macros module to show us the
 Nim tree structure of a boolean expression with an infix operator:
 
 [source, nim]
