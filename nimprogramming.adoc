@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-JAN-01
+//v0.1, 2022-JAN-08
 :doctype: book
 :toc: left
 :icons: font
@@ -107,6 +107,41 @@ operations#, [.ndef]#threading# and [.ndef]#parallel processing#, and [.ndef]#ma
 and [.ndef]#meta-programming#. Nim macros are very powerful but difficult at first.
 Part VI may finally present some advanced examples.
 
+This book is basically a traditional text book, a very simple one with detailed
+explanations, so that kids from 14 years upwards can read and understand it
+on their own, with no or minimal help from adults. The English language
+may still be a problem for many kids not born in a country with a good
+English language tradition unfortunately. But luckily automatic
+translations are already supported for some languages, and maybe we
+will be able to offer some translated editions later, maybe a Chinese
+and a German translation? In the last decades for the area of computer programming
+traditional text books have partly been replaced by videos and "Crash course" and "Learning
+by doing" books. Well, maybe a good video may indeed help you starting with a new
+language, and a video may enable people with problems reading printed texts or with
+problems concentrating on a topic for a few minutes to learn a programming language.
+Unfortunately the quality of most videos is very bad, some are made by kids just having
+learned the first steps of computer programming their self. And of course
+watching videos do not improve the reading and concentration problems of people.
+"Crash course" and "Learning by doing"
+books may give you a good start, but for that we have already a lot of textual tutorials.
+The problem with these kind of books is, that they may help you solving some common tasks, but they do not
+really support a deeper understanding. The idea of a  "Crash course" and "Learning by doing" may be not that bad in general, but in computer
+science starting with a larger example application may be a overwhelming process, as you have to learn
+a lot of stuff in parallel. It may work for you, but there is the danger that you forget all the details very fast again.
+And these kind of books are not very helpful when you have to look up something.
+The other problem with "Learning by doing" in computer science is, that learning materials
+may have only examples that you may be not really interesting in: Of course we can create 
+a simple chat application, a simple twitter clone and do some basic web scraping using
+async/await. Or create a basic game or a simple GUI with one of the dozen available tool-kits.
+But what when you are not interested in chatting and twittering, and that single selected toolkit?
+We think that for that case reading the detailed examples can be very frustrating. So we
+would recommend that after reading the first tutorial, and maybe a few pages of this book, you just start
+coding with stuff you are interested in. Maybe together with some friends? Whenever you should
+need some concrete help, you should find it in the internet, using search engines, Wikipedia or
+a discussion platform of your choice.
+And when you should have really now idea for a project with which you can start,
+then maybe computer programming is just not the right profession for you. 
+
 While Nim has a JavaScript backend and so supports web related development well, this
 book concentrates on native code generation using the C and {cpp} backends.  We will
 discuss some peculiarities of the JavaScript backend in the second half of the book,
@@ -141,18 +176,19 @@ Also we will not explain game programming, as game programming is
 a broad area, and there are already a lot of tutorials available. Maybe in later editions of the
 book we will add some of this topics, e.g. game programming, as so many people like it.
 But we will always have to ensure that a possible printed book version will not get
-more than 500 pages, so we may than leave out some stuff in the printed version.
+more than 500 pages, so we may then leave out some stuff in the printed version.
 
 General when learning a new programming language, people start with some short
 tutorials before really learning the language following a book. This way is indeed a good start.
 So we recommend you to read the short official tutorials part 1 and 2 and maybe also
 some of the other tutorials freely available online. Tutorials generally only scratch the topics, so you may not be able to understand all
 really well, but this way you get already a feeling for the language.
-When you know already some computer science and have already experience
-with other languages like {cpp}, Haskell or Rust, you may not need this book at all.
 There exists also
 some video tutorials, for the case that you have problems reading, but in that case
 this book will not be of much use for you at all. 
+When you know already some computer science and have already experience
+with other languages like {cpp}, Haskell or Rust, then the tutorials and the Nim compiler manual
+may be fully sufficient for you, and you may not need this book at all.
 
 This book is based on the Nim reference implementation of the team around
 Mr. A. Rumpf.
@@ -898,13 +934,13 @@ user = User()
 user.say()
 ----
 
-In this Python snippet, we declare a class User, with a method named [.func]#say()#
+In this Python snippet, we declare a class User, with a custom method named [.func]#say()#
 bound to this class. Then we create an instance variable of this class and call
 its say() method.
 
 This tight bounding of methods to classes is not very flexible, e.g. extending the set
 of methods of a class may be difficult or impossible. Another problem with such a class concept
-is, that it is not always clear to which class a method belongs when more than one single
+is, that it is not always clear to which class a method belongs when more than just one single
 class is involved: Imagine that we need a method that appends a single character to a text string.
 Is that method a member of the character class, or a member of the text string class?
 
@@ -13681,7 +13717,7 @@ all data types and even undefined symbols for its substitution process. But then
 Nim macros and Nim templates do also some form of code substitution, so it is not really surprising that they accept not
 only well defined data types, but also the relaxed types typed and untyped.
 
-As parameters for Nim's macros we can use ordinary Nim data types like int or string, compile time constants denoted with the
+As parameters for Nim's macros we can use ordinary Nim data types like [.type]#int# or [.type]#string#, compile time constants denoted with the
 static keyword like static[int], or the typed and untyped data types. When we call macros then the data types of the parameters are used in the same way for overload resolution
 as it is done for procs and templates.  For example, if a macro defined as foo(arg: int) is called as foo(x), then x has to be of a type compatible to int.
 
@@ -14171,7 +14207,7 @@ a * b: 6
 
 === The Assert Macro
 
-As some more simple macro example we will show how we can create our own
+As one more simple example we will show how we can create our own
 assert macro. The assert() has only one argument, which is a expression with
 a boolean result. If the expression evaluates to true at program runtime, then
 the assert macro should do nothing. But when the expression evaluates to
@@ -14184,7 +14220,7 @@ Arguments for our assert macro may look like "x == 1 +2", containing one infix
 operator and one left-hand and one right-hand operand. We will show how we can use
 subscript [] operators on the NimNode argument to access each operand.
 
-As first step we use the treeRepr() function from the macros module to show us the
+As a first step, we use the treeRepr() function from the macros module to show us the
 Nim tree structure of a boolean expression with an infix operator:
 
 [source, nim]
@@ -14505,6 +14541,233 @@ References:
 * https://hookrace.net/blog/introduction-to-metaprogramming-in-nim/
 * https://flenniken.net/blog/nim-macros/
 * https://dev.to/beef331/demystification-of-macros-in-nim-13n8
+
+== Process execution
+
+In this section we will discuss how we can use multiple threads or Nims async/await
+framework to avoid blocking IO (input/output) operations and to enable parallel code execution on multiple physical CPU cores.
+The various forms of not strictly linear and sequential program execution are also called multitasking or multi-threading.
+Threading is generally the splitting of one path of actions into various sub-parts,
+which can be processed in parallel or concurrent. On a CPU with multiple physical cores, threads can
+be distributed between them, while on a CPU with only one core, all threads have to run
+obviously alternating on that single core, which is called concurrency.
+Parallel processing requires always dedicated physical hardware.
+
+As the CPU of recent desktop computers often has already a few dozen of cores, and GPUs
+may have thousands of them, it has become more and more important to distribute
+computing tasks between all these cores. Dedicated programming languages like [.ndef]#Chapel# or
+[.ndef]#Pony# have been developed for this task, and most modern programming languages
+supports it. For older languages like C extension like [.ndef]#OpenMP# for threading support have been developed.
+
+The various forms of asynchronous operation were introduced due to the fact that some input and output operations
+and network requests can be very slow compared to the data processing rate of the CPU.
+It would be very wasteful when the CPU has to be idle while a slow network data transfer
+or a floppy disk operation is performed. Actually asynchronous operation was already
+done long before the first multi-core CPUs were available.
+
+While Nim has already good support for threading and asynchronous- and parallel processing,
+all this is still some work in progress, so things may further improve in future. 
+
+When we launch a computer program on our desktop PC, then the {os} creates an instance of a new
+process, sometimes also called a task, to execute the application.
+Each process is strongly separated from other processes that may also running on the computer,
+each process has its own memory regions (RAM) that it may use, and when one process should crash
+for some reason other processes are not concerned.
+Processes can have various states
+defined by the OS, this includes some form of running, idle, ready, waiting or halted.
+A process  executes one or multiple threads, which can run concurrent or parallel on
+multiple physical CPU cores. All the threads of one single process can use common resources and access
+common variables, which enables data exchange between threads, with some restrictions.
+Data exchange between different, separated processes is not that easy, but it is also
+possible by use of [.ndef]#inter-process-communication# protocols.
+Early PC {os}s executed only one process at a time, sometimes
+the user was able to switch between multiple launched processes.
+Modern {os}s do a fast switching between all the ready processes,
+so that the user gets the feeling that all of them are running in parallel, even when
+the CPU has only one physical core. The fast switching
+between processes is called multitasking or concurrent execution.
+Unfortunately these two terms are a bit misleading, as they seems to imply
+true parallel execution on multiple physical CPU cores. But the term concurrency
+actually only indicates the fast switching process -- for a few {us}
+one process may be executed, then an automatic task switch occurs, which
+includes saving and restoring of all the CPU registers and states, and the next
+process is executed again for a few {us}. This form of concurrency was already
+a big progress for the desktop PC, as it was possible to run processes
+with a heavy work load, like a compiler, while the user was still able to
+use his text editor or web browser without noticing serious delays for key
+and mice input or display updates.
+Concurrency is generally supported by smart hardware which
+can interrupt the current work of the CPU to temporary execute a different code
+segment.  
+Hardware like disc controllers
+or network cards have its own data buffers or can access parts of the RAM directly by
+[.ndef]#DMA (Direct Memory Access)# and notice the CPU by so called [.ndef]#interrupt signals#
+when a buffer is full (or empty) or when another condition is met, e.g. when new network
+data are available. This interrupt system can drastically improve performance and throughput,
+as active waiting in polling busy loops for new network or disk data can be avoided -- the
+CPU is free to process one of the other waiting processes until interrupt
+signals indicate filled/empty data buffers or other conditions that needs active CPU intervention.
+
+This form of (hardware interrupt driven) concurrency needs generally some software
+support, e.g. the Linux kernel may use the [.ndef]#epoll# system for I/O event notifications.
+Initially it was a common practice to connect so called [.ndef]#callback functions# to
+interrupt driven signals, e.g. a callback function was invoked whenever
+some network data packages has arrived. Some C programs and system libraries
+work still this way, for example the [.ndef]#glib# library of the [.ndef]#GTK GUI# toolkit. But use of callbacks
+can become difficult and confusing for large applications, sometimes it was called a [.ndef]#"callback hell"#.
+So languages like Java, JavaScript or Python introduced a framework called [.ndef]#async/await#
+to simplify the process of writing non blocking asynchronous software.
+The async/await framework actually hides the use of callbacks or use of system functions like epoll
+from the user.
+This asynchronous
+programming style has gained some popularity due to the fact that many programs perform
+a lot of network communication, where data is transferred often slow
+compared to the processing power of the CPU.
+The Nim standard library provides an async/await framework which can be used in a similar way
+as that of Python, and the external Chronos package of [.ndef]#Status corp.# offers one more similar
+package. Additional, there was a discussion of some of the Nim developers
+to support or replace the async/await framework with a more flexible CPS based one.
+We should mention, that async/await has it drawbacks -- its internal working is difficult,
+its usage is not always easy, and the user has to be careful when using asynchronous and
+synchronous functions together. Async/await was definitely the best option when
+desktop PCs had only one single CPU core, but
+with the arrival of multi-core CPUs the importance of asynchronous operations has become less important,
+as using many threads
+running in parallel has become an alternative solution. 
+It is said that asynchronous program execution has less overhead than just using parallel
+processing on multiple cores, that may be one reason why asynchronous programming is still
+very popular.
+
+****
+Note that Nim's  async/await
+framework
+is not a direct component of the Nim language, but is
+provided by libraries which are created by use of Nim's
+macro and meta-programming capacities.
+While the async/await system of the standard library do not
+support parallel execution directly, but is executed
+only on a single thread, it is generally possible
+to use async/await with threads running in parallel.
+As an example for that you may see https://github.com/dom96/httpbeast.
+****
+
+For Nim we have many different ways to do parallel program execution, and for the async/await
+framework of Nim's standard library the [.ndef]#chronos# alternative implementation is available.  
+Creating new threads, which are executed in parallel when the CPU has multiple physical cores,
+is supported by the [.var]#threads# module. Additional the Nim standard library provides the [.var]#threadspool#
+module, which can create a pool of threads, which may be used by the [.key]#spawn# construct or the [.key]#parallel#
+keyword. Additional, external packages like [.var]#weave# can be used for high performance parallel processing.
+And finally, when we use the C compiler backend, we may also use the parallel construct of the OpenMP C library.
+
+Some other programming languages like Lua or Go offer also virtually (green) threads, or coroutines  and fibers, and some languages
+use the CPS system for a very flexible parallel and asynchronous framework. Maybe Nim will
+support that also in the future.
+
+The biggest problem of high performance parallel data processing is the exchange of data
+between threads, which has to be performed with much care to avoid data corruption
+by uncoordinated random access or race conditions. For this mutexes, locks and atomic operations can be used to control
+the access of common variables, or [.type]#Channels# can be used to send data from
+one thread to another one. Another problem for parallel thread execution can 
+result from the Garbage Collector. For a system design, where a single GC accesses
+all data of a process, it can be necessary to stop all the threads of a process
+while the GC does its work.
+Nim is using for each thread a separate heap area and a thread local GC,
+so other threads can continue their work while the GC cleans up the
+data of one single thread. The problem of passing data between treads still
+exists, but the new ARC/ORC memory management system may further improve the situation.
+
+In the following sections of the book, we will first demonstrate a few ways to use
+multiple threads, which will run in parallel when there are more than one physical
+CPU core available. After that, we will investigate basic async/await operations and
+show how we can send data from one thread to another by use of the Channels module.
+
+=== Module threadspool
+
+Creating new threads is always some overhead, so it can make sense to create
+a pool of threads, which we then can use to executes parts of our program.
+
+==== Using spawn to execute a proc by one thread of the pool
+
+As a first very simple example we will show how we can use the
+[.func]#spawn# procedure of the [.var]#threadspool# module to request
+the execution of a regular proc. This way we create not really
+a new thread, but we add our proc to a list of procs to execute.
+When one of the threads in the pool is idle, then our proc
+is immediately executed by a thread, otherwise the execution of our proc
+may be delayed until a thread is ready to execute it. All the threads
+of the pool are distributed among the physical cores of the CPU, so
+we can really execute procs in parallel. We have to compile the code using
+[.func]#spawn()# with the [.code]#--d:threads=on# option:
+
+[source, nim]
+----
+import std/threadpool
+proc sum(i: int): int =
+  var j = 0
+  while j < i:
+    inc(j)
+    result += j
+
+proc main =
+  var a: FlowVar[int] = spawn sum(1e7.int)
+  var b = spawn sum(1e7.int)
+  echo ^a , " ",  ^b
+
+main()
+----
+
+The [.func]#spawn()# function executes an ordinary Nim function by a thread of the pool.
+[.func]#Spawn()# returns immediately a variable of type [.type]#FlowVar[T]#, where [.type]#T# is the return type
+of the actual function that we pass to [.func]#spawn()#. In the above example
+that is the integer data type. After passing the function to execute to [.func]#spawn#, we can do
+a blocking wait for the result of our proc with the [.op]#^# operator. The [.op]#^# operator
+applied to the [.type]#Flowvar[T]# variable waits for the thread to finish the execution of our proc and then returns
+the actual result. If the thread is already finished when we apply the [.op]#^# operator, we
+get the result immediately. As [.op]#^# does a blocking wait, it may look
+as there would not be much benefit, but of course we can launch a number
+of threads with [.func]#spawn#, which can be processed in parallel, and then we wait with
+[.op]#^# on all of the results.
+
+In the example above we use a plain proc which sums up the first [.var]#i# natural 
+numbers, very similar to our very first example program in part I of the book.
+We use [.func]#spawn()# to launch two instances of that proc, and then wait for the results with the
+[.op]#^# operator applied on the flowvar. If your PC has more than one physical CPU core, then both proc instances should be 
+running in parallel, taking only the total time of one single run. You may compile and launch above code
+with [.code]#nim c --threads:on t.nim; time ./t# to see the execution time, then comment out the second [.func]#spawn# call
+as well as the [.func]#echo()# call for [.type]#Flowvar# [.var]#b# and compile and run timed again. Times should be nearly identical when your PC
+has at least two CPU cores, indicating true parallel execution. Of course, launching multiple times the same proc with the same data makes not
+much sense, but in real life we could launch it with different data, or we could use different procs. 
+
+==== The parallel statement
+
+==== Using the threads module to create new threads
+
+[source, nim]
+----
+proc sum(i: int) {.thread.} =
+  var j, result: int
+  while j < i:
+    inc(j)
+    result += j
+  echo result
+
+proc main =
+  var th1, th2: Thread[int]
+  createThread(th1, sum, 1e7.int)
+  createThread(th2, sum, 1e7.int)
+  joinThreads(th1, th2)
+
+main()
+----
+
+References
+
+* http://callbackhell.com/
+* https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/
+* https://en.wikipedia.org/wiki/Green_threads
+* https://en.wikipedia.org/wiki/Continuation-passing_style
+* https://github.com/status-im/nim-chronos
+* https://github.com/mratsim/weave
 
 = Appendix
 
