@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-JAN-08
+//v0.1, 2022-JAN-09
 :doctype: book
 :toc: left
 :icons: font
@@ -17,6 +17,7 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
 // all terms in lower case letters!
 :wirth: Prof. Niklaus Wirth
 :uc: micro-controller
+:us: micro-second
 :oop: Object-Oriented-Programming
 :os: operating system
 :proc: procedure
@@ -14551,11 +14552,12 @@ Threading is generally the splitting of one path of actions into various sub-par
 which can be processed in parallel or concurrent. On a CPU with multiple physical cores, threads can
 be distributed between them, while on a CPU with only one core, all threads have to run
 obviously alternating on that single core, which is called concurrency.
-Parallel processing requires always dedicated physical hardware.
+Parallel processing requires always dedicated physical hardware, that is multiple CPUs,
+or a multi-core CPU consisting of two or more independent units called cores.
 
-As the CPU of recent desktop computers often has already a few dozen of cores, and GPUs
+As the CPUs of recent desktop computers often have already a few dozen of cores, and GPUs
 may have thousands of them, it has become more and more important to distribute
-computing tasks between all these cores. Dedicated programming languages like [.ndef]#Chapel# or
+computing tasks between all these cores to gain optimal performance. Dedicated programming languages like [.ndef]#Chapel# or
 [.ndef]#Pony# have been developed for this task, and most modern programming languages
 supports it. For older languages like C extension like [.ndef]#OpenMP# for threading support have been developed.
 
@@ -14654,7 +14656,7 @@ As an example for that you may see https://github.com/dom96/httpbeast.
 For Nim we have many different ways to do parallel program execution, and for the async/await
 framework of Nim's standard library the [.ndef]#chronos# alternative implementation is available.  
 Creating new threads, which are executed in parallel when the CPU has multiple physical cores,
-is supported by the [.var]#threads# module. Additional the Nim standard library provides the [.var]#threadspool#
+is supported by the [.var]#threads# module. Additional the Nim standard library provides the [.var]#threadpool#
 module, which can create a pool of threads, which may be used by the [.key]#spawn# construct or the [.key]#parallel#
 keyword. Additional, external packages like [.var]#weave# can be used for high performance parallel processing.
 And finally, when we use the C compiler backend, we may also use the parallel construct of the OpenMP C library.
@@ -14681,7 +14683,7 @@ multiple threads, which will run in parallel when there are more than one physic
 CPU core available. After that, we will investigate basic async/await operations and
 show how we can send data from one thread to another by use of the Channels module.
 
-=== Module threadspool
+=== Module threadpool
 
 Creating new threads is always some overhead, so it can make sense to create
 a pool of threads, which we then can use to executes parts of our program.
@@ -14689,7 +14691,7 @@ a pool of threads, which we then can use to executes parts of our program.
 ==== Using spawn to execute a proc by one thread of the pool
 
 As a first very simple example we will show how we can use the
-[.func]#spawn# procedure of the [.var]#threadspool# module to request
+[.func]#spawn# procedure of the [.var]#threadpool# module to request
 the execution of a regular proc. This way we create not really
 a new thread, but we add our proc to a list of procs to execute.
 When one of the threads in the pool is idle, then our proc
@@ -14717,11 +14719,19 @@ main()
 ----
 
 The [.func]#spawn()# function executes an ordinary Nim function by a thread of the pool.
-[.func]#Spawn()# returns immediately a variable of type [.type]#FlowVar[T]#, where [.type]#T# is the return type
-of the actual function that we pass to [.func]#spawn()#. In the above example
-that is the integer data type. After passing the function to execute to [.func]#spawn#, we can do
+Note that syntactically we do not pass a function and the functions arguments to [.func]#spawn#, but an expression, which
+is the the actual call of the proc!
+[.func]#Spawn()# returns immediately a variable of [.type]#FlowVar[T]# type,
+which is a container type that can store the result of our passed function.
+In the example above we used FlowVar[int] as our proc [.var]#sum# returns an integer
+value, but of course the generic [.type]#FlowVar[T]# type works for other data types as well, including sequence and object types.
+As the instances of [.type]#FlowVar[T]# type are returned immediately by [.func]#spawn()#, these
+container variables may be empty initially.
+We may then use functions like [.func]#isReady()# from the [.var]#threadpool# module to test if the   [.type]#FlowVar[T]# variable contains already
+the result data, or
+we can do
 a blocking wait for the result of our proc with the [.op]#^# operator. The [.op]#^# operator
-applied to the [.type]#Flowvar[T]# variable waits for the thread to finish the execution of our proc and then returns
+applied to the [.type]#FlowVar[T]# variable waits for the thread to finish the execution of our proc and then returns
 the actual result. If the thread is already finished when we apply the [.op]#^# operator, we
 get the result immediately. As [.op]#^# does a blocking wait, it may look
 as there would not be much benefit, but of course we can launch a number
@@ -14738,9 +14748,48 @@ as well as the [.func]#echo()# call for [.type]#Flowvar# [.var]#b# and compile a
 has at least two CPU cores, indicating true parallel execution. Of course, launching multiple times the same proc with the same data makes not
 much sense, but in real life we could launch it with different data, or we could use different procs. 
 
-==== The parallel statement
+As one more example for the use of [.func]#spawn()#, let us investigate how we can avoid the blocking
+behaviour of the [.func]#readLine()# proc that we used earlier in the book. Without
+special care, a call of [.func]#readLine()# blocks the main thread of our process, so our
+program would not be able to do some useful work or to update the display until
+the user terminates his textual input request by pressing the return key.
+One possible option to avoid a blocking request for user input may be the use of the
+async/await framework, but that may not work well for the current Nim implementation.
+So let us just use [.func]#spawn# to execute [.func]#readLine()# on one of the threads of the pool:
+
+[source, nim]
+----
+import std/threadpool
+from std/os import sleep
+proc doSomeWork =
+  echo "not really working that hard..."
+  sleep(1000) # sleep 1000 ms
+
+proc main = 
+  var userInput: FlowVar[string] = spawn readLine(stdin)
+  while not userInput.isReady:
+    doSomeWork()
+  echo "You finally entered: ", ^userInput
+
+main()
+----
+
+In this example we use [.func]#spawn()# to execute the [.func]#readLine()# function of
+Nim's standard library by a thread of the [.var]#treadpool# module.
+We use the function [.func]#isReady()# to test if the user input is already
+available, and call a worker procedure if there is no input yet.
+As we have no real work to do, that proc just echos a messages
+and calls [.func]#os.sleep()# to create a delay. Note that we use the [.func]#echo()# call
+in [.func]#doSomeWork()# only to show what is going on -- it is obvious that
+the repeated printed message would interfere with the user input echoed by the terminal window.
+Actually this example is not really that nice, but it shows you the use
+of [.func]#isReady()# and at least one possible way to request user input
+without blocking the whole app.
 
 ==== Using the threads module to create new threads
+
+When for some reason we can not use the [.var]#threadpool# module, or we need more
+control over the various threads, then we can create our own treads:
 
 [source, nim]
 ----
@@ -14759,6 +14808,27 @@ proc main =
 
 main()
 ----
+
+The [.func]#createThread()# procedure is provided by the [.var]#threads# module, which is part of the [.var]#system#
+module -- for that reason we do not have to explicitly import it. The proc that we want to execute in its own,
+newly created thread has to be annotated with the {.thread.} pragma and has to use one single parameter.
+We pass the generic [.type]#Thread[T]# variable, the proc to execute and the proc parameter to [.func]#createThread()#.
+The [.type]#Thread# variable must have the same generic type as the parameter of the proc that we want to execute.
+In our example that parameter type is a plain integer, but of course we can use other data types including objects, tuples
+or container types like sequences.
+
+As [.func]#createThread()# does not return a result, we call [.func]#echo()# in our [.func]#sum()# proc to show what is going on. Actually
+calling [.func]#echo()# from within a proc running as a thread may be not a good idea, as multiple [.func]#echo()# calls
+from different threads may interfere. We may use the [.var]#locks# module to make the output operation atomic,
+but to keep our example short and simple we ignore that problem for now. The code above creates two newly
+created threads, which in our case run the same proc with the same data. If there is more than one CPU core
+available, then the two threads should be executed in parallel by the OS. After launching our new treads, we can use
+the [.func]#joinThreads()# procedure to wait for the termination of all treads -- we should generally do that before our
+app terminates itself.
+
+In one of the following sections we will show how we can use [.type]#Channels# to exchange data between running threads.
+
+==== The parallel statement
 
 References
 
