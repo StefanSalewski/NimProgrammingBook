@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-JAN-09
+//v0.1, 2022-JAN-10
 :doctype: book
 :toc: left
 :icons: font
@@ -14786,7 +14786,56 @@ Actually this example is not really that nice, but it shows you the use
 of [.func]#isReady()# and at least one possible way to request user input
 without blocking the whole app.
 
-==== Using the threads module to create new threads
+==== The parallel statement
+
+With the [.key]#parallel# statement the 
+[.var]#threadpool# module offers one more way to use threads to process
+data in parallel. While the [.key]#parallel# statement is already available in Nim since many years,
+it was recently labeled as [.ndef]#experimental feature#, so we have to use the [.code]#{.experimental.}#
+pragma to use it.  And the detailed description is currently only available in the
+experimental section of the manual: https://nim-lang.org/docs/manual_experimental.html#parallel-amp-spawn-parallel-statement
+
+With the [.key]#parallel# statement is is easily possible to process large data, e.g. arrays or sequences, in parallel.
+The compiler proves the data access for us to avoid data races or otherwise invalid operations.
+As a very simple example we will sum up the elements of an integer [.type]#array# by use of two threads running in parallel -- when
+more then one physical CPU core is available:
+
+[source, nim]
+----
+import std/threadpool
+{.experimental: "parallel".}
+
+proc sum(i, j: int; a: array[8, int]): int =
+  for k in i .. j:
+    result += a[k]
+
+proc main =
+  var a: array[8, int]
+  for i in a.low .. a.high:
+    a[i] = i
+
+  var s1, s2: int
+  parallel:
+    s1 = spawn sum(0, 3, a)
+    s2 = spawn sum(4, 7, a)
+  echo s1, " + ", s2
+
+main()
+----
+
+Inside the parallel block, we use again [.func]#spawn# to launch a function which is
+then executed by a thread of the threadpool. The [.func]#sum()# function in our example code sums up a range of [.type]#array# elements.
+When [.func]#spawn()# is used inside a [.key]#parallel# block, then its semantic is different: Instead of a [.type]#FlowVar[T]# [.func]#spawn()# now
+returns directly the result of the called proc. We can save these results in ordinary variables
+and access them freely after the parallel block. In the above case we would finally sum up the
+individual result to get the total sum of all the array elements.
+
+Our example code above is kept very simple by intent to clearly show the principle use.
+You may try to modify it to work on sequences with arbitrary runtime sizes instead of a fixed
+sized array, and to use more than two threads. For all the details of the [.var]#threadpool# module
+you should of course consult is documentation.
+
+=== Using the threads module to create new threads
 
 When for some reason we can not use the [.var]#threadpool# module, or we need more
 control over the various threads, then we can create our own treads:
@@ -14827,8 +14876,6 @@ the [.func]#joinThreads()# procedure to wait for the termination of all treads -
 app terminates itself.
 
 In one of the following sections we will show how we can use [.type]#Channels# to exchange data between running threads.
-
-==== The parallel statement
 
 References
 
