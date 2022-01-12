@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-JAN-10
+//v0.1, 2022-JAN-12
 :doctype: book
 :toc: left
 :icons: font
@@ -14683,6 +14683,11 @@ multiple threads, which will run in parallel when there are more than one physic
 CPU core available. After that, we will investigate basic async/await operations and
 show how we can send data from one thread to another by use of the Channels module.
 
+****
+Note: Whenever we intent to use threads in Nim, that is when we import the [.var]#threadpool#
+or the [.var]#threads# module, we have to compile our program with the option [.term]#--threads:on#.
+****
+
 === Module threadpool
 
 Creating new threads is always some overhead, so it can make sense to create
@@ -14875,7 +14880,225 @@ available, then the two threads should be executed in parallel by the OS. After 
 the [.func]#joinThreads()# procedure to wait for the termination of all treads -- we should generally do that before our
 app terminates itself.
 
-In one of the following sections we will show how we can use [.type]#Channels# to exchange data between running threads.
+=== Using Channels for communication between Threads
+
+When we use the [.var]#threadpool# and [.func]#spawn()# to execute a function by one of the threads of the pool,
+we get immediately the result of the executed function back when the work of the function is done.
+
+[.type]#Threads# created with the [.func]#createThread()# function of the [.var]#threads# module do not directly return a result
+but may be executed for a long time period, often for the whole lifetime of the main process.
+Generally it is necessary to exchange messages and data between these types of threads --   among multiple child threads themselves
+or among them and the process's main thread. For this message- and data-exchange [.type]#Channels# can be used.
+Nim's Channels use internally a [.type]#queue# for sending data from one thread to another thread.
+A [.type]#queue# is a first-in-first-out (FIFO) data structure -- items put in first will also be extracted first.
+That way the receiving thread will receive the items in the same order as the sending thread has sent them.
+
+The generic [.type]#Channel[T]# data type and the functions to use it are provided by the system module, so we do
+not need to import them. Channels should be used only for [.type]#Threads# of the [.var]#threads# module, but
+not for the hidden threads of the [.var]#threadpool# module. [.type]#Channels# allow to send messages and data only in
+one direction, for bidirectional communication we would need two separate channels.
+Variables of the [.type]#Channel# data type are generally defined at the global scope, to avoid problems with the
+thread local garbage collector, and the generic type of the [.type]#Channels# determines the data type of the messages that
+we can send through the [.type]#Channel#.
+The sent data is deeply copied by the Channel, which may be not that efficient for large data packages.
+
+In the code below we will present a very simple example for the use of one single [.type]#Channel#. The proc [.var]#sum()#
+sums up again the first [.var]#n# natural integer numbers, but this time the function sums up the 
+numbers in chunks, and send the sum of each chunk over the [.type]#Channel# to the parent thread:
+
+[source, nim]
+----
+var ch: Channel[int]
+proc sum(i: int) {.thread.} =
+  var j, res: int
+  while j < i:
+    inc(j)
+    res += j
+    if j mod 4 == 0:
+      ch.send(res)
+      res = 0
+  ch.send(res) # send the remainder
+  ch.send(0) # send zero to indicate termination
+  
+proc main =
+  var th: Thread[int]
+  ch.open()
+  createThread(th, sum, 10)
+  while true:
+    let r = ch.recv()
+    if r == 0:
+      break
+    echo "Received: ", r
+  joinThreads(th)
+  ch.close()
+
+main()
+----
+
+----
+# Expected output:
+Received: 10
+Received: 26
+Received: 19
+----
+
+The proc [.func]#sum()# sums up continuously 4 more numbers, and then sends the partial sum
+into the channel. The generic [.type]#Channel[int]# variable [.var]#ch# is defined in global scope.
+In the [.var]#main()# proc we create the child thread, open the [.type]#Channel# and read the [.type]#Channel# data
+with calls to [.finc]#recv()# until we get a zero value as terminating condition. Finally we call
+[.func]#joinThreads()# to ensure that the child thread was really terminated and call [.func]#close()# on the channel
+to close it. Note that in [.func]#sum()# we use an additional [.func]#send()# call to send the last partial sum
+which may have less than 4 sumands and so may not have been sent. Instead of this additional [.func]#send()#
+call in the [.key]#while# loop a condition like [.code]# if j mod 4 == 0 or i == j:# could be used of course.
+When we are done we send the zero value to indicate to the parent thread that we are done.
+This way the parent thread will not wait for more data that never got send.
+In the [.func]#main()# proc we use [.func]#recv()# to read the data from the [.type]#Channel#. [.func]#Recv()# would block
+if data is not yet available. Instead we could use [.func]#tryRecv()# with returns a tuple, with the
+field dataAvailable indicating if there is already something to read available.
+The [.func]#open()# function accepts as second optional argument the number of items that
+can be buffered in the internal items queue of the channel. If that limit is reached,
+further calls to [.func]#send()# would block until the reading thread has read the next item.
+If we restrict the maximum number of items in the [.type]#Channel#, we may use instead of
+[.func]#send()# which may block when the channel is full, [.func]#trySend()# which just returns
+[.lit]#false# for this case without blocking.
+
+Of course the code example from above makes not much sense, as there is no real useful
+work done in parallel, and as there is no reason for [.func]#sum()# to not just sum up all
+the elements immediately. But the example should show you the basic use of [.type]#Channels#,
+including the need for having a terminating condition.
+
+=== Race conditions
+
+A race condition may occurs when two or more threads attempt to read and write to a
+shared resource at the same time. Such behavior can result in data corruption or unpredictable results
+that are difficult to debug.
+Let
+us consider this tiny example, where two threads increase the value of a
+global integer variable:
+
+[source, nim]
+----
+var counter: int
+
+proc incCounter(i: int) {.thread.} =
+  for j in 0 ..< i:
+    var local = counter
+    local += 1
+    counter = local
+
+const N = 1000
+
+proc main =
+  var th1, th2: Thread[int]
+  createThread(th1, incCounter, N)
+  createThread(th2, incCounter, N)
+  joinThreads(th1, th2)
+
+main()
+echo N, ": ", counter
+----
+
+In the code above the two threads are running concurrent, and in parallel when your
+CPU has at least two physical cores. Each thread increases the global counter variable [.lit]#N#
+times, so one may expect a final result of [.lit]#2 * N#. But at least when the threads are
+running in parallel the actual result will be a random value between [.lit]#N# and [.lit]#2 *N#.
+The problem is, that the threads do not increase the global counter in one atomic step,
+but create a local copy, increase the value of the copy and write the value back.
+When the other thread had modified the global counter variable in between, that modification
+is overwritten. When the two threads would run not in parallel but concurrent on only one CPU core,
+then the actual result may depend on the way how the OS does the actual task switching.
+
+These kind of problems are sometimes called race conditions, because
+the actual behaviour is determined by the order in which the various
+threads access the data.
+In the example code
+the actual problem results from the copying into the local variable and later
+copieng the value back -- a plain inc() executed on the global variable may work.
+We used the local copy here to make the problem visible. Whenever we would
+work in such an unordered way onto more complicated data like strings or objects,
+we would get corrupted data. This example should raise your awareness to
+all the problems which may occur when multiple threads access global
+data in an uncontrolled way.
+
+We have already learned about Channels, which provide a way to exchange data
+between threads without the use of global variables. Other methods to
+protect global variables from uncontrolled access which can lead to corrupted
+states are locks, mutexes or semaphores. We will give an example to due access control by use of Locks
+in the next section. In the example above we used as global data a primitive value
+data type. Even more problems may occur, when we try to use global references
+data types: In the past the Nim standard library provided special
+functions like allocShared() to allocate pointer and reference data types
+that can be accessed from multiple treads. But as Nim's thread handling
+may change and improve in the future further, we will not try to discuss
+all these details here. It should be enough that you have a feeling
+for the problems
+that my arise from executing multiple threads with shared data -- for the details
+you should consult the documentation of Nim's standard library and the compiler manual.
+
+=== Guards and Locks
+
+While Nim's [.type]#Lock# data type and the corresponding functions are defined in the [.var]#locks# module
+of the standard library, that module contains only minimal explanations, so we have to consult
+the experimental section of the compiler manual. 
+
+In computer science, a lock or mutex (from mutual exclusion) is a synchronization primitive
+that enforces limits on access to a resource when there are many threads of execution.
+Before that resource is accessed, the lock is
+acquired, and after the resource is accessed, it’s released.
+The simplest type of lock is a binary semaphore. It provides exclusive access to the locked data.
+Following this definition from Wikipedia, Nim's locks seems to be actually binary semaphores.
+
+Nim's [.type]#Locks# are generally used together with the [.var]#guard# pragma, which we can attach
+to a global variable that is accessed from more than one thread.
+With the guard pragma attached,
+each thread has to first acquire the lock before it is allowed to access that variable.
+If the lock is already acquired by another thread, acquire blocks until that other
+thread releases the lock to indicate that it is done with its access.
+Of course these possible blocking can decrease the total performance, so
+each thread should acquire the lock only when it needs really access to the protected
+data and release the lock as soon as possible.
+
+We can use the template [.var]#withLock# to access the guarded global variable in a block --
+[.var]#withLock()# acquires the given lock, and releases the lock again at the end of the block.
+Accessing a guarded variable outside a [.var]#withLock()# block would give a compile time error.
+
+[source, nim]
+----
+import std/locks
+var lock: Lock
+var counter {.guard: lock}: int
+
+proc incCounter(i: int) {.thread.} =
+  for j in 0 ..< i:
+    withLock lock:
+      var local = counter
+      local += 1
+      counter = local
+
+const N = 1000
+
+proc main =
+  var th1, th2: Thread[int]
+  createThread(th1, incCounter, N)
+  createThread(th2, incCounter, N)
+  joinThreads(th1, th2)
+
+main()
+echo N, ": ", counter
+----
+
+When you now run the above code, [.var]#counter# should always have the desired value [.lit]#2 * N#.
+Note that replacing the [.var]#withLock# with a plain  [.func]#acquire()# and [.var]#release()# pair
+seems not to work for locks that are used as guards -- but actually there is no reason to do that,
+the [.var]#withLock# block is easier to use and ensures that  [.func]#acquire()# and [.var]#release()#
+is always used in matching pairs.
+
+=== Exceptions in Threads
+
+Whenever a proc that is running as its own thread is raising an uncaught exception, then
+the whole process is terminated and a stack trace with the corresponding error message is
+displayed in the terminal window. This applies not only to the threads of the [.var]#threads# module,
+but also when the [.func]#spawn()# function is applied to run functions by one of the threads in the pool.
 
 References
 
@@ -14885,6 +15108,7 @@ References
 * https://en.wikipedia.org/wiki/Continuation-passing_style
 * https://github.com/status-im/nim-chronos
 * https://github.com/mratsim/weave
+* https://en.wikipedia.org/wiki/Lock_(computer_science)
 
 = Appendix
 
