@@ -7385,7 +7385,7 @@ currying.
 
 In the section <<Module sequtils>> in part III of the book we will introduce a few functions
 which are often used in the functional programming style like [.func]#map()# or [.func]#filter()#.
-These functions gets procedures as arguments that determine how container data types
+These functions get procedures as arguments that determine how container data types
 are converted. We can pass a regular named procedure as second argument to procs like
 [.func]#map()# and [.func]#filter#, or in simple cases we can just pass an anonymous proc or use the [.op]#=>#
 operator provided by the [.var]#sugar# module:
