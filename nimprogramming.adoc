@@ -5880,7 +5880,7 @@ echo ro1 == ro3 # true
 == Procedures and Functions
 
 Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are the most common way to
-structure, or break larger programs into smaller parts, that is, tasks which are to be performed.
+structure, or break larger programs into smaller, dedicated tasks which are to be performed.
 
 The terms procedure and function where used in Pascal and the other languages of Wirth already, while C
 uses the term function only, and Fortran generally uses the term subroutine instead.
