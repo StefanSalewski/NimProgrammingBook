@@ -1911,10 +1911,10 @@ declaration and definition makes not that much sense, that is why we may use bot
 
 == Statements
 
-Statements or instructions are a core component of Nim programs: they tell the
+Statements, or instructions, are a core component of Nim programs: they tell the
 computer what it shall do. Often statements are procedure calls, like the call of the
 [.func]#echo()# or [.func]#inc()# procedure which we have already seen in part I of
-the book.  What procedures exactly are we will learn in later sections. For now we
+the book.  We will learn what procedures exactly are in later sections. For now, we
 just regard procedures as entities that perform a well defined task for us when we
 call (or invoke) them. We call them by just writing their name in our source file, followed
 by a list of parameters, also called arguments. When we write [.code]#echo 7# then
@@ -1935,9 +1935,9 @@ echo 5 * 5, SquareOfFive # command invocation syntax
 
 The command invocation syntax is often used with the [.func]#echo()# procedure,
 or when a procedure has only one single argument. For multiple
-arguments or when the argument is a complicated expression, the use
+arguments, or when the argument is a complicated expression, the use
 of brackets may be preferable. Some coding styles of other programming
-languages like C sometimes put a space between the procedure name and
+languages, like C, sometimes put a space between the procedure name and
 the opening bracket. For Nim we should not do that, the reason will become clear
 when we later explain the tuple data type. A few procedures have no parameters at all.
 When we call these functions, we have to use always the syntax [.func]#myProc()# with an empty
@@ -1946,9 +1946,9 @@ pair of brackets, to make it for the compiler clear that we want to call that fu
 [.code]# res = myProc# would assign the proc itself to [.var]#a#, which is very different.
 
 A special form of
-procedures are functions, that are procedures that can return a value or result. In
+procedures are functions, that are procedures which perform operations to return a value, or a result. In
 mathematics, sin() or cos() would be functions -- we pass an angle as argument and
-get the sine or cosine as a result.
+get the sine, or cosine as a result.
 
 Let's look at this minimal Nim program:
 
