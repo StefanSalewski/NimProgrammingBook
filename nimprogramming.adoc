@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-JAN-27
+//v0.1, 2022-FEB-10
 :doctype: book
 :toc: left
 :icons: font
@@ -25,6 +25,7 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
 :curnim: Nim v1.6
 :twocom: two's complement
 :cpp: C++
+//:plus: +
 :pp: ++
 
 ////
@@ -209,6 +210,17 @@ proof reader.
 
 [.new]#New sections, and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
 not that new stuff is still marked with a light yellow.# For details you may see the change log in the appendix.
+****
+
+.About the Author
+****
+Dr. S. Salewski studied Physics, Mathematics and Computer Science at Hamburg
+University (Germany), where he got his PhD in 2005 in the area of laser physics. He has worked
+in the field of fiber laser physics, electronics, and software development, using languages like
+Pascal, Modula-2, Oberon, C, Ruby and Nim. Some of his software projects, including the
+Nim GTK GUI bindings and Nim implementations of an N-dimensional RTree and a fully
+dynamic, constrained delaunay triangulation are freely available as open source
+projects at https://github.com/StefanSalewski.
 ****
 
 = Part I: Introduction
@@ -11591,6 +11603,397 @@ References:
 * https://nim-lang.org/docs/tables.html
 * https://nim-lang.org/docs/hashes.html
 
+== [.new]#Regular Expressions#
+
+A [.ndef]#regular expression#, shortened as [.ndef]#regex# or [.ndef]#regexp#, is a
+sequence of characters that specifies a search pattern, which is used to find or
+replace parts of a string or of a whole text document, or just to validate it.  It is
+a technique developed in theoretical computer science and formal language theory,
+introduced in the 1950s, when the American mathematician Stephen Cole Kleene
+formalized the description of a regular language.  The use of regular expressions
+became popular with Unix text-processing utilities like [.ndef]#sed#, [.ndef]#grep#
+and [.ndef]#awk#, were used in early text editors like [.ndef]#vi# and [.ndef]#emacs#
+for pattern matching, and are commonly used in modern text editors and word
+processing programs in [.ndef]#find# and [.ndef]#find and replace# dialogs.
+Different syntaxes for writing regular expressions have existed since the 1980s, one
+being the POSIX standard and another, widely used, being the Perl syntax.
+
+To demonstrate a first simple example for the usefulness of regular expressions, we
+will start with a [.var]#sed# call that can be used to replace all snake case symbols
+in a text file with camel case, e.g convert the symbolic name [.var]#line_width# into
+[.var]#lineWidth#:
+
+----
+sed -i -E 's/_([a-z])/\U\1/g' myfile.txt
+----
+
+Here the option [.var]#-E# tells the [.var]#sed# program to use the [.ndef]#extended
+regular expressions# rather than basic regular expressions, and option [.var]#-i#
+specifies to work in place, instead to just print the modified text in the terminal
+window.  The pattern [.code]#s/a/b# tells it to substitute pattern [.var]#a# by
+expression [.var]#b#, and the final [.code]#/g# stands for [.ndef]#global# and tells
+[.var]#sed# to do substitutions in the whole file.  The actual interesting part is
+the search pattern [.code]#_[a-z]#, which specifies the actual underscore character
+followed by a single lower case letter. Whenever such a pattern is found, it is
+replaced with a capitalized version of the found letter.  The [.code]#/U# tells
+[.var]#sed# to convert to upper case, and [.code]#\1# refers to the captured text
+segment. You may still wonder why [.var]#[a-z]# is enclosed in braces -- well matches
+enclosed in braces are actually captured, so we can refer to the captured letter
+later, in this case we refer to the first captured match with [.code]#/1# and apply
+[.code]#/U# on it to convert it to upper case.
+
+As you see, regular expressions are useful, but difficult to understand and to
+remember.
+
+Some programming languages like Perl or Ruby have built in support for regular
+expressions, and others use external libraries. For interpreted languages like Perl,
+Python or Ruby it makes a lot sense to use regular expressions for parsing strings,
+as the regex engines of these languages are generally written in C language, which
+leads to the fact that even for very basic string operations like spitting strings
+into single tokens or doing simple character replacements, the use of regexes can be
+faster than doing it with multiple statements in the interpreted program code. For
+compiled languages like Nim the situation is very different -- using regexes is fast,
+but doing simple things directly in the compiled languages is still much faster.  And
+Nim provides many other libraries like [.var]#strscans# or [.var]#parseutils#, which
+can do even advanced string operations much faster than by use of regular
+expressions.
+
+So actually the use of regular expressions in Nim is very limited, in most cases
+there exists other, simpler and faster solutions.  As learning the use of regexes is
+not that easy, and it is hard to remember all the details, we may hesitate to try it
+at all. But actually for text processing tools like [.ndef]#sed# and [.ndef]#grep#,
+and for the use in text editors and word processors regexes are very useful, so it
+makes some sense to learn at least the basic use of regular expressions.  And when we
+learn to use regexes at all, then we can use them in Nim as well.
+
+Each character in a regular expression (that is, each character in the string
+describing its pattern) is either a
+metacharacter,footnote:[https://en.wikipedia.org/wiki/Metacharacter] having a special
+meaning, or a regular character that has a literal meaning.  For example, in the
+regex [.code]#b.#, [.var]#b# is a literal character that matches just 'b', while
+[.code]#.# is a metacharacter that matches every character except a newline.
+Therefore, this regex matches, for example, [.var]#b%#, or [.var]#bx#, or [.var]#b5#.
+Together, metacharacters and literal characters can be used to identify text of a
+given pattern or process a number of instances of it. Pattern matches may vary from a
+precise equality to a very general similarity, as controlled by the metacharacters.
+For example, [.code]#.# is a very general pattern, [.code]#[a-z]# (match all lower
+case letters from 'a' to 'z') is less general and [.code]#b# is a precise pattern
+(matches just 'b').  The metacharacter syntax is designed specifically to represent
+prescribed targets in a concise and flexible way to direct the automation of text
+processing of a variety of input data, in a form easy to type using a standard ASCII
+keyboard.footnote:[https://en.wikipedia.org/wiki/Regular_expression]
+
+In this section we will not try to explain all the details of the syntax and semantic
+of regular expressions, but only show you how the regex module is used in principle,
+and give a few examples for its use. For details you should consult the API
+documentation of the [.var]#regex# module, and for concrete use cases you may
+additional consult the wikipedia artikle and the various internet resources.
+
+The Nim standard library provides two modules for the use of regular expressions,
+called [.var]#re# and [.var]#nre#, which both are wrappers for the [.ndef]#PCRE#
+[.ndef]#(Perl Compatible Regular Expressions)# C library. Additional, a module called
+[.var]#regex# is available as an external package, which is fully written in Nim
+language. These three modules are similar, but their API is different.  When you
+intent to use [.var]#re# and [.var]#nre# you have to ensure that the PCRE C library
+is also installed on your computer.  As the external [.var]#regex# module is wriiten
+in pure Nim and is of high quality, we will actually use that one for our examples --
+actually if using one of the two others, it would be not easy to decide which to use.
+You may wonder why we present the regex module already here, as it is not part of the
+Nim standard library? Well, a regex library is am important part of each programming
+languages, and [.var]#re# and [.var]#nre# are actually included in Nim's standard
+library. Due to Nim's package managers like nimble, using external packages is very
+easy, we just have to execute
+
+----
+nimble install regex
+----
+
+We will start to demonstrate the use of the regex module with a very simple example:
+
+[source, nim]
+----
+import regex
+
+let r: Regex = re"\w\d"
+let t1: string = "a1"
+let t2 = "nim"
+var m: RegexMatch
+if match(t1, r, m):
+  echo "match t1"
+
+if match(t2, r, m):
+  echo "match t2"
+----
+
+We use the [.func]#re()# function with the search pattern as argument to generate an
+instance of a [.type]#Regex# variable. Then we can use the [.func]#match()# function
+to match a textual string against this regex. The last argument of the match function
+is a variable of [ .type]#RegexMatch# type, which captures the matched terms, so that
+we can use them later.
+
+In our pattern [.var]#"\w\d"# the [.var]#\w# stand for a word character which
+includes upper and lower case ASCII letters, and the [.var]#\d# stands for a decimal
+digit. So the string [.var]#t1# matches that pattern, but the string [.var]#t2# does
+not, as there is no decimal digit following the first letter. In the example from
+above we actually check only if a string matches the pattern, but we do not capture
+the matches. So we do not need the RegexMatch variable [.var]#m# at all and could
+call the [.func]#match()# function without that parameter. To actually capture a
+match, we would have to enclose the subpattern in braces like "\w(\d)" to capture the
+digit in case of a successful match.
+
+As next simple example let us match a string starting with the capital letter A,
+followed by an arbitrary number of letters, followed by an integer number. We want to
+capture the integer in case of a match:
+
+[source, nim]
+----
+import regex
+
+let r: Regex = re"A[a-z, A-Z]*(\d+)"
+let t1: string = "Alex77"
+let t2 = "nim"
+var m: RegexMatch
+if match(t1, r, m):
+  echo "captured: ", m.group(0, t1)
+
+if match(t2, r, m):
+  echo "captured: ", m.group(0, t2)
+----
+
+To understand the regex pattern, we have to know that we can use [.var]#{asterisk}#
+to specify an arbitrary number of repetitions, and [.var]#{plus}# to specify one or
+more repetitions.  The initial [.lit]#A# is not a metacharacter and stand for the
+literal [.lit]#A#. The content of the square brackets specifies a character class,
+[.var]#a-z# specifies the range of lower case letters, [.var]#A-Z# the range of upper
+case letters, and the following [.var]#*# indicates an arbitrary number of
+repetitions. Finally, the [.var]#\d# stands for a decimal digit, and [.var]#+#
+specifies one or more repetitions. As we enclosed the last subpattern in braces, that
+group is captured. For a successful match we can access the capture with the
+[.func]#group()# function(, where we have to specify the index number of the capture,
+and the actual text string that was used for the match. The fact that we have to
+specify the initial text may look a bit strange indeed. For string [.var]#t1# we get
+a successful capture with the result @["7"]. So our actual captured string is
+contained in a seq, which is useful when multiple (nested) strings are captured. In
+the code from above we could have used [.func]#groupFirstCapture()# instead to get
+directly the first captured string.
+
+==== Greedy matching
+
+Whenever we create regex patterns, we have to care for the fact if sub-matches should
+be greedy or not. In most cases greedy is the default, and we have to take some care
+when we need none-greedy behaviour. Greedy means just, that the regex engine captures
+as many characters as possible, while none-greedy capturing stops the capturing
+process early. Indeed these greedy/none-greedy capturing can be one of the most
+demanding tasks when we create larger and complicated patterns. Imagine that for our
+above example, we would have used the pattern re"A\w*(\d+)". For the same string
+"Alex77" we would then get the output @["7"]. The reason for that is, that
+[.var]#\w*# does a greedy processing, eating all but the last decimal digit, which it
+left to satisfy [.var]#/d+#. From the API documentation of the [.var]#regex# module
+we learn that we can specify [.var]#\w*?# instead to get a none-greedy processing, so
+both digits are left for [.var]#\d+# and we get again @["77"] as output.
+
+==== Escape sequences
+
+The use of escape sequences in regex patterns is another difficulty for beginners.
+The first problem can be that the Nim compiler may process the escape sequences
+already itself, while we intent to left them for the regex engine. We can avoid that
+when we use Nim's raw strings, e.g. we can use triple quotes when we construct the
+pattern from individual strings as done in our next example. In an regex, we can use
+escape sequences to specify special literal characters, we may use [.var]#\t# for a
+literal tabulator for example.  And finally, we may have to escape some punctuation
+characters like [.var]#*#, [.var]#+# or [.var]#?# that have a special meaning for the
+regex engine when we intent to use that character as an ordinary literal. For
+example, to match a letter followed by a question mark, we have to use a pattern like
+[.code]#"[a-z]\?"# or [.code]#"[a-z][?]"#. Inside of a square bracket we can use the
+punctuation characters without the need to escape them.
+
+As next example, let us assume that we have to process a text file in which each
+lines starts with a name consisting of lower case letters, and three decimal numbers.
+The name and the three numbers can be separated by spaces, or by commas or
+semicolons:
+
+[source, nim]
+----
+import regex
+
+let h = """\s*[,;]?\s*(\d+)"""
+let r: Regex = re("[a-z]+" & h & h & h)
+let t1: string = "nim 12;8  ,   17"
+
+var m: RegexMatch
+if match(t1, r, m):
+  echo "captured: ", m.group(0, t1), " ", m.group(1, t1), m.group(2, t1)
+----
+
+To understand the pattern that we use in the above code, we have to know that we can
+use [.var]#\s# for a white-space character, so [.var]#\s# matches a single space or a
+tabular character.  We could have used just a space literal instead, or the [ ]
+character class containing just a single space.  And we have to know that we can use
+[.var]#?# to specify an optional entity.  We have split the total pattern into two
+parts, where the variable called [.var]#h# stands for the sequence of any number of
+white-space, followed optionally by a single comma or a single semicolon, followed
+again by any amount of white-space, that is finally followed by at least one decimal
+digit.  As we want to capture the decimal numbers, the sequence of decimal digits is
+enclosed in round brackets.  The total regex pattern is constructed by the
+subexpression [.code]#[a-z]# for at least one letter, followed three times by the
+integer pattern with the allowed separators. Note that we allow any amount of spaces
+or tabulators, but only a single comma or semicolon between the different entities.
+Note that the [.func]#match()# function of the regex module does always a full match,
+so a single space at the beginning or end of the text string would make the match
+fail.  We could compensate for that by starting and ending the regex pattern with
+"\s*".  Or we could use instead of [.func]#match()# the [.func]#find()# function,
+which search through the string looking for the first location where there is a
+match.  When we use [.func]#find()#, we may use the special characters [.var]#^# and
+[.var]#$# to match the start or end of the string, that is with [.func]#find()# and
+[.code]#re"\s+$"# we could find all strings which have trailing white-space.  Note
+that [.func]#find(text, re"^regex$", m)# is the equivalent to the [.func]#match()#
+function.
+
+The [.var]#regex# module provides us also with two [.func]#replace()# functions,
+which we can use to replace matched patterns with literal strings or captured and
+modified strings.  The first [.func]#replace()# function uses as third argument a
+string, which is used for replacements and in which we can refer to captured groups
+with the symbols [.var]#$N#, where [.var]#N# is the index of the captured group
+starting at one. The second [.func]#replace()# function uses a function as third
+argument, that function gets an instance of the [.type]#RegexMatch# type as first
+parameter and returns the string replacement.  We will use both variants of the
+[.func]#replace()# function to create a tiny app that we can use to fix typos in
+program and text files: Text files can contain typing errors, which includes two or
+more spaces between adjacent words, unneeded trailing white-space at the end of
+lines, and the use of [.lit]#a# instead of [.lit]#an# in front of words starting with
+a vocal. And program source code may use snake case for names instead of camelCase,
+e.g. [.var]#line_counter# instead of [.var]#lineCounter#.  We will create a tool that
+can fix these four issues -- ignoring the fact that an actual [.lit]#a/an#
+replacement may corrupt program source code. To demonstrate the four issues, we have
+created this small test file -- line three contains two unneeded spaces, and the last
+line has some unwanted trailing white space:
+
+----
+# this is a example
+var   line_width:  int
+  
+echo        line_width 
+----
+
+We will fix these four issues independent of each other, so we will try to find a
+regex that matches for each issue, and then use the [.func]#replace()# function to
+fix it.
+
+[source, nim]
+----
+import regex, strutils
+let fileName = "test.nim"
+let trail = re"\s+$"
+let aan = re"a(\s+[AEIOUaeiou])"
+let space = re"(\S\s)\s+(\S)"
+let snake = re"_([a-z])"
+
+proc toUpper(m: RegexMatch, s: string): string =
+  when defined(debugThis):
+    echo "a: ", s
+    echo "b: ", m.group(0)
+    echo "c: ", m.group(0)[0]
+    echo "d: ", s[m.group(0)[0]]
+    echo "e: ", strutils.toUpperAscii(s[m.group(0)[0]])
+  return strutils.toUpperAscii(s[m.group(0)[0]])
+
+for l in filename.lines:
+  var h = l.replace(trail, "")
+  h = h.replace(aan, "an$1") # caution, this is for text files!
+  h = h.replace(space, "$1$2")
+  h = h.replace(snake, toUpper)
+  echo h
+----
+
+We process our file with the issues line by line, using the [.func]#lines()# iterator
+to which we pass a file name and which gives us the individual lines of the file.  We
+will start with the simplest task, that is removing trailing white-space.  The search
+pattern for this issue is obviously [.code]#"\s+$"#, that is at least one white-space
+at the line end, which we have to replace with an empty string. So we pass this regex
+pattern called [.var]#trail# and an empty string literal to the [.func]#replace()#
+function.  Replacing [.lit]#a# by [.lit]#an# is also easy -- we search for an
+[.lit]#a# followed by white-space and a vocal, for which the regex pattern is the
+[.var]#aan# variable in above code.  In this case we have to preserve the actual
+white-space and the vocal, so we enclose these in brackets to capture it. The
+replacing string is [.code]#"an$1"#, where [.var]#$1# stands for the captured
+white-space and the captured vocal.  Replacing too much inter-word space is a bit
+more difficult. The actual issue is one white-space followed by one or more
+white-space, for which a possible match pattern is "\s\s+". But actually we do not
+want to remove all white-space consisting of more than one character, but only
+white-space between words. So multiple white-space at the beginning of a line should
+be preserved. One solution is, that we use the metacharacter [.var]#\S#, which
+matches all none-white-space characters, and then use this search pattern:
+[.code]#"(\S\s)\s+(\S)"#. The pattern starts with a none white-space character,
+followed by a white-space, then at least one more whites-space character, and finally
+a none white-space character.  We capture the two first characters, and the last one.
+This way we can replace the whole match with the two captures and we are done.
+Finally, we have to replace underscore characters followed by a lowercase letter with
+the capitalized letter.  Some tools like [.ndef]#sed# provides the [.var]#\U# to
+capitalize a capture, but this is not available for the [.var]#regex# module. So we
+use the [.func]#replace()# variant which uses a proc as last parameter -- to that
+proc the capture and the original string is passed, and that function should return
+the replacement string. The capture which we have to use to catch a snake element is
+obvious just "_([a-z])". We call the converter proc [.func]#toUpper()#, its
+parameters and its return type is specified by the [.var]#regex# API docs.  But
+unfortunately the actual structure of the passed [.type]#RegexMatch# instance is not
+that detailed described.  So we created some conditional [.func]#echo()# statements
+inside the body of our [.func]#toUpper()# proc to show us the structure of the
+parameters. When we compile our program with the [.term]#-d:debugThis# option, and
+run it, we get this output:
+
+----
+nim c -d:debugThis t.nim
+
+$ ./t test.nim
+# this is an example
+a: var line_width: int
+b: @[9 .. 9]
+c: 9 .. 9
+d: w
+e: W
+var lineWidth: int
+
+a: echo line_width
+b: @[10 .. 10]
+c: 10 .. 10
+d: w
+e: W
+echo lineWidth
+----
+
+So the last string parameter is always the whole string that was passed as first
+argument to [.func]#replace()#, and [.var]#m.group(0)# is a sequence of slices for
+the first capture. We need only the first element of this seq, as we have only one
+capture, and we use that slice to extract the captured sub-string by use of
+[.code]#s[m.group(0)[0]]#. Finally we apply [.func]#strutils.toUpperAscii()# on this
+sub-string to capitalize it, and return that result.
+
+When you run above program, you should get a text file with all issues fixed.  You
+may redirect the output to a file with [.term]#"\.t test.nim > newtest.nim"# and load
+[.var]#newtest.nim# into an editor to proof that the trailing white-space is removed
+as well.
+
+=== Final remarks
+
+The use of regular expressions is not that easy, and makes in most cases not much
+sense in Nim.  Maybe the largest problem of regular expressions is, that it is hard
+to understand patterns that we created some years ago, or that have been created by
+other people. And it is difficult to modify that patterns later. Maybe you should
+play a bit with regexes yourself now, and come back to this topic when you think that
+you need them. In this book we were only able to give a tiny introduction into the
+stuff -- you will have to carefully study the API docs of the [.var]#regex# module
+and a lot of other resources in the Internet when you should intent to seriously use
+them.  We should also mention, that while regexes are very powerful, for some tasks
+they work not that well, e.g. parsing math expressions with nested braces, or just
+skipping nested comments in some source code can be very difficult or even
+impossible.
+
+References:
+
+* https://en.wikipedia.org/wiki/Regular_expression
+* https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions
+* https://www.regular-expressions.info/pcre.html
+* https://nitely.github.io/nim-regex/regex.html
 
 = Part IV: Some Programming Tasks
 
@@ -12688,7 +13091,7 @@ References:
 
 //== something
 
-== [.new]#Some small exercises#
+== [.recent]#Some small exercises#
 
 === Removing adjacent duplicates
 
@@ -16061,6 +16464,17 @@ We have added a few more simple examples and exercises:
 * <<Integer to string conversion>>
 * <<No Game Programming?>>
 
-////
+=== Februar 2022
 
+* <<Regular Expressions>>
+
+////
+Part I: Introduction
+The Basics
+The Nim Standard Library
+Some Programming Tasks
+External Packages
+Advanced Nim
+(Some larger examples)
+Appendix
 ////
