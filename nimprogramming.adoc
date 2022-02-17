@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-FEB-10
+//v0.1, 2022-FEB-17
 :doctype: book
 :toc: left
 :icons: font
@@ -143,7 +143,7 @@ would recommend that after reading the first tutorial, and maybe a few pages of 
 coding with stuff you are interested in. Maybe together with some friends? Whenever you should
 need some concrete help, you should find it on the internet, using search engines, Wikipedia or
 a discussion platform of your choice.
-And if you have really no idea whatever for a project with which you can start,
+And if you have really no idea whatsoever for a project with which you can start,
 then maybe computer programming is just not the right profession for you. 
 
 While Nim has a JavaScript backend and so supports web related development well, this
@@ -11777,7 +11777,7 @@ contained in a seq, which is useful when multiple (nested) strings are captured.
 the code from above we could have used [.func]#groupFirstCapture()# instead to get
 directly the first captured string.
 
-==== Greedy matching
+=== Greedy matching
 
 Whenever we create regex patterns, we have to care for the fact if sub-matches should
 be greedy or not. In most cases greedy is the default, and we have to take some care
@@ -11792,7 +11792,7 @@ left to satisfy [.var]#/d+#. From the API documentation of the [.var]#regex# mod
 we learn that we can specify [.var]#\w*?# instead to get a none-greedy processing, so
 both digits are left for [.var]#\d+# and we get again @["77"] as output.
 
-==== Escape sequences
+=== Escape sequences
 
 The use of escape sequences in regex patterns is another difficulty for beginners.
 The first problem can be that the Nim compiler may process the escape sequences
@@ -13879,7 +13879,333 @@ own game engine based on OpenGL or Vulkan, is a very demanding task.
 So maybe we will add a section about game programming at the end, when the rest of the book
 is done, or maybe when the next edition of the book is published.  
 
-= Part V: Advanced Nim
+= [.new]#Part V: External Packages#
+
+In this part of the book we will present you some external packages, which
+can easily be installed with Nim's package manager(s).
+
+For packages registered in the [.name]#Nimble# data base, executing the [.term]#nimble install# command
+
+----
+nimble install packageName
+----
+
+is sufficient, and you can also install unregistered packages, which may be hosted at [.var]#github.com#
+or another platform with a command like
+
+----
+nimble install https://github.com/user/packageName
+----
+
+Note that we call [.var]#nimble# commands like [.var]#install# generally as ordinary user, not as [.var]#admin# or [.var]#root# with
+administrator privileges.
+We told you already in the introduction to this book, that we do not intend to discuss the detailed
+use of [.var]#nimble# in this book, at least not for the first edition. The [.name]#Nimble# package manager
+is described in detail in https://github.com/nim-lang/nimble and also in the Manning book.
+There you can also learn how you can create [.name]#Nimble# packages yourself, and how you can register
+your own packages in [.name]#Nimble's# database so that other people can find them more easy. While [.name]#Nimble# is
+[.nim]#Nim's# default package manager which is currently used by the majority of the user base, there exist
+also the alternative implementation https://github.com/disruptek/nimph, and some lesser known
+ones like [.name]#Nimp#, [.name]#Slim# or [.name]#Nifty#.
+
+We have already a few thousand external packages for [.nim]#Nim# -- you may use commands
+like [.term]#nimble list# or [.term]#nimble search# to list all registered packages,
+or to search in the database for entries, or you can use https://nimble.directory/ or the [.var]#Github# online search to
+find more packages. You can also consult the list of curated [.nim]#Nim# packages at  https://github.com/xflywind/awesome-nim.
+
+While the use of external packages is really easy, there are some important points to consider:
+External packages are not audited by the [.nim]#Nim# core team, so the quality of external packages can vary, and
+in principle external packages can even contain malicious code which may damage your
+computer when you install and use that package. Well, as we use the [.var]#nim# and [.var]#nimble# commands as plain user without
+administrator privileges, there is no real danger that the computer OS can be damaged -- only 
+our own user data may get corrupted or damaged. But as we backup all of our important data regularly,
+there is not that much danger, a SSD hardware crash seems to be more likely.
+A more serious issue with external
+packages arise from the fact that the packages may get outdated and abandoned and may stop working
+with recent versions of the [.nim]#Nim# compiler, or even may get totally removed from the internet
+without prior announcements. So when you should create a larger software project that depends on
+external packages, then you should save a local copy of that package, or you may even consider to
+make a private fork of that [.var]#Github# package.
+
+Some programming languages like Python are shipped already with a very large collection of
+libraries, so that external packages are not that often required at all. Other languages
+like {cpp} come basically without any packages or a language specific package manager,
+so we would use the package manager provided by the {os} to install important
+{cpp} packages like [.name]#Boost# or [.name]#CGAL#, or install needed libraries manually.
+[.nim]#Nim# is between these two extremes -- it provides already a large collection
+of modules with its standard library, but has also a lot of external packages.
+Both, internal core modules, and external packages have its merits. 
+We mentioned already some disadvantages of external packages, but actually
+they have also benefits: They may be developed, updated and improved very fast, as
+they are not strongly coupled to compiler release updates, and one external package
+can easily be replaced by another similar one. A large set of internal packages can
+on the other hand be a large maintainment burden for the language core team -- the
+packages have to be tested and maybe fixed for each new compiler version, and
+replacing or removing legacy internal core packages can lead to a lot of problems.
+
+In this part of the book we will present a very small set of external packages only.
+This is mostly done to tell you about the existence and usefulness, and for some package
+because the currently available documentation is not really beginner friendly.
+
+We will start with a powerful package for the use of the [.ndef]#Parsing Expression Grammar# (PEG),
+which is some form of an alternative to the use of [.ndef]#regular expressions# for parsing tasks.
+
+//Then we will present a package for parsing command line arguments.
+
+== Parsing Expression Grammars
+
+Parsing whole text files or single strings is a common programming task, e.g. to process textual user input
+or to extract data from HTML or CSV files. Traditional this is often done by the use of [.ndef]#regular expresions# --
+in part III of the book we show how it can be done by use of the [.var]#regex# module.
+
+[.ndef]#PEGs#, or [.ndef]#Parsing Expression Grammars#, are another formalism for recognizing patterns in text by use of a set of rules.
+A PEG can be used as an alternative to [.ndef]#regular expressions# for parsing, pattern matching and text processing.
+The  [.ndef]#Parsing Expression Grammar# was introduced by Bryan Ford in 2004 and is closely related to the family of top-down parsing languages introduced in the early 1970s.
+PEGs are a derivative of the [.ndef]#Extended Backus-Naur Form# (EBNF) with a different interpretation, designed to represent a recursive descent parser. 
+
+PEGs are not unlike regular expressions, but offer more power and flexibility, and have less ambiguities.
+For example, a regular expression inherently cannot find an arbitrary number of matched pairs of parentheses, because it is not recursive, but a PEG can.
+
+As PEGs can be constructed in a hierarchical way from individual
+rules, it can be easier to create or understand them compared to regular expressions.
+
+While the use of regular expressions is very similar in different programming languages or
+external tools like [.ndef]#sed# and [.ndef]#grep#, the API for PEG libraries can be very different, and even the actual
+syntax for building parsing rules can differ.
+
+Nim's standard library includes already a simple [.var]#pegs# module, but we will use the more advanced external [.name]#NPeg# package
+of Ico Doornekamp instead.
+[.name]#NPeg# is a pure [.nim]#Nim# library, that provides macros to compile PEGs to Nim procedures which can parse strings and collect selected parts of the input.
+
+In this section we will try to explain the basic concepts of the PEG use and give some examples.
+For a more formal and complete description, you should refer to the linked Wikipedia article
+and consult the API documentation of the [.var]#npeg# module.
+
+Formally, a [.ndef]#parsing expression grammar# consists of a starting expression, a set of parsing rules, and finite sets of terminal and nonterminal symbols.footnote:[https://en.wikipedia.org/wiki/Parsing_expression_grammar]
+
+Each parsing rule has the form [.code]#A <- e#, where [.var]#A# is a nonterminal symbol and [.var]#e# is a parsing expression.
+An (atomic) parsing expression consists of terminal or nonterminal symbols or an empty string.
+New parsing expression can be constructed from existing ones by concatenation (sequence), an ordered choice,
+by repetitions (zero-or more, one-or-more, optional) of an existing expression, and by
+use of the [.ndef]#and# and [.ndef]#not# predicate.
+The [.ndef]#and-predicate# expression [.var]#&e# invokes the sub-expression [.var]#e#, and then succeeds if [.var]#e# succeeds and fails
+if [.var]#e# fails, but in either case never consumes any input.
+The [.var]#not-predicate# expression [.var]#!e# succeeds if [.var]#e# fails and fails if [.var]#e# succeeds, again consuming no input in either case.
+Because these two predicates can use an arbitrarily complex sub-expression to [.ndef]#"look ahead"# into the input string without actually consuming it, they provide a powerful syntactic look-ahead and disambiguation facility, in particular when reordering the alternatives cannot specify the exact parse tree desired.
+
+[.name]#NPeg# is a pure [.nim]#Nim# pattern matching library. It provides macros to compile patterns and grammars (PEGs)
+to Nim procedures which will parse a string and collect selected parts of the input.
+In this way [.var]#npeg# is an alternative to the use of the [.var]#regex# module, but [.var]#npeg# does not support
+the optional replacement of matched patterns.
+
+As understanding and using the PEG is really not that easy, and as most readers may never have heard about PEG
+at all, we will start with a few very simple examples. First let us parse just a few decimal digits: 
+
+[source, nim]
+----
+import npeg
+
+let p = peg("str"):
+  str <- +{'0'..'9'}
+ 
+echo p.match("123").ok
+----
+
+The [.var]#npeg# module defines a few macros for processing PEG patterns. One of them is
+the [.var]#peg()# macro, to which we pass as argument a starting expression
+in form of a string, and which creates and return a [.type]#Parser# object.
+In the body of the [.var]#peg()# macro we have to define all the grammar rules that our PEG
+is built of. For our example we only need one simple rule that is a repetition of the
+decimal digits zero to nine.
+
+The [.var]#npeg# module uses as terminal symbols single characters enclosed in single quotes
+or strings enclosed in double quotes.
+
+In the original PEG syntax a pair of square brackets is used to specify character ranges
+like ['a'..'z'] for the lower case letters of the alphabet, but the [.var]#npeg# module uses
+curly braces instead.
+
+So  in the  [.var]#npeg# syntax  [.code]#{'0'..'9'}# stands for a single decimal digit, and the leading [.var]#{asterisk}# indicates
+one or more repetitions. In the original PEG syntax we would use square brackets instead and
+put the  [.var]#{asterisk}# after the closing square bracket, that is  [.code]#['0'..'9']{asterisk}#.
+We can also list the characters of a character class separated by commas, e.g. {'a', 'z'} for 'a' or 'z'.
+The symbol [.var]#<-# assigns the parsing rule to the nonterminal symbol [.var]#str#, which is already
+identical with the starting expression.
+
+The [.func]#peg()# macro returns a [.type]#Parser# object, which we can pass together with a 
+string
+that should be parsed to the [.func]#match()# function. The function [.func]#match()# returns an instance of a [.type]#MatchObject# --
+we use the [.var]#ok# field of this object to check if the match was successful.
+
+****
+When we intend to use the [.var]#npeg# module, we have to know that this module uses a syntax
+which is not fully identical to the original PEG definition, which is used by the [.var]#pegs# module
+of Nim's standard library: Originally character classes were created by enclosing individual characters
+or character ranges in square brackets, similar as done for [.ndef]#regular expressions#. But the [.var]#npeg#
+module uses a pair of curly braces instead. In PEG repetitions are specified by [.var]#{asterisk}#, [.var]#{plus}# and [.var]#?#
+for zero or more, one or more, or one or zero, as in regular expressions. In the original
+PEG design these characters were put after an expression, while for the [.var]#npeg# syntax
+we have to put them in front of an expression. In the original PEG syntax sequences of expressions
+are just separated by spaces, while in npeg syntax a [.var]#{asterisk}# is used, and for the ordered choice
+[.var]änpegä syntax uses the [.op]#|# instead of the original slash ([.op]#/#) symbol. Like the original PEG syntax
+[.var]#npeg# uses the symbols [.var]#&# and [.op]#!# for the non capturing [.var]#and# and [.ndef]#not# predicates.
+Additional [.var]#npeg# provides
+the symbol [.lit]#1# to match all, [.lit]#0# to match nothing and
+an infix [.op]#-# operator -- [.code]#P1 - P2# matches [.var]#P1# if [.var]#P2# does not match.
+So an expression, which for example matches all characters but a space can be easily written as [.code]#1 - ' '#.
+****
+
+As next example we will create a PEG pattern that can match a simple mathematical term
+built from decimal digits and the two operators   [.var]#{plus}# and  [.var]#-# for addition and subtraction:
+
+[source, nim]
+----
+import npeg
+
+let p2 = peg("term"):
+  term <- dig * *(op * dig) 
+  dig <- +{'0'..'9'}
+  op <- {'+', '-'}
+
+echo p2.match("1+23").ok
+----
+
+We said that the symbol [.var]#{asterisk}# is used to indicate zero or more repetitions of an expression.
+But for the [.var]#npeg# module this [.var]#{asterisk}# is used at the same time to construct sequences of expressions,
+that is to concatenate  expressions. In the code above we pass the string "term" as starting expression to the [.func]#peg()# macro.
+In the macro body we define three rules, which each assign an expression to the nonterminal symbols
+[.var]#term#, [.var]#dig# and [.var]#op#. In the expression [.code]#dig {asterisk} {asterisk}(op {asterisk} dig)# the second [.var]#{asterisk}#
+in front of the opening brace indicates an arbitrary number of repetitions of the expression
+enclosed by the round brackets, while the first and third [.var]#{asterisk}# indicate the sequence or concatenation
+operation. The following two rules just define a sequence of one or more decimal digits, and
+the operator for addition or subtraction.
+
+=== Capturing data
+
+The [.var]#npeg# module offers plain string captures and more flexible code block captures.
+
+==== String Captures
+
+Let us assume that we want to split a line of text into words:
+
+[source, nim]
+----
+import npeg
+
+let p = peg("line"):
+  line <- +(space * >word)
+  word <- +{'a'..'z'}
+  space <- *' '
+
+let m = p.match(" one   two three    ")
+if m.ok:
+  echo m.matchLen
+  echo m.captures
+----
+
+----
+16
+@["one", "two", "three"]
+----
+
+The [.type]#MatchResult# returned by  the [.func]#peg()# macro has the exported fields [.var]#matchLen# and [.var]#captures#,
+which we can read out in case of a successful match. [.var]#MatchLen# tells us how many characters
+of the string has been captured, and [.var]#captures# is a [.type]#seq[string]# containing the captured strings.footnote:[
+Of course the example from above works only for lines containing only lower case words -- we will present a better
+line splitting example soon.]
+
+==== Code Block Captures
+
+Code block captures offer the most flexibility for accessing matched data in NPeg. This allows you to define a grammar with embedded Nim code for handling the data during parsing.
+
+When a grammar rule ends with a colon [.code]#:#, the next indented block in the grammar is interpreted as Nim code, which gets executed when the rule has been matched. Any string captures that were made inside the rule are available to the Nim code in the injected variable [.var]#capture[]# of type [.type]#seq[Capture]#.
+[.type]#Capture# is an object with field [.var]#s# containing the captured string and field [.var]#si# containing the index position of the capture inside the
+original string.
+
+The total sub-string matched by the code block rule is available as [.var]#capture[0]#, and the individual
+captured strings are available with indices > [.lit]#0#. In the indented code block, we can also use [.var]#$n# instead of
+[.var]#capture[n].s# and [.var]#@n# instead of [.var]#capture[n].si#.
+
+We could use the seq of captures to print the captured strings or to copy it into some global variable.
+To avoid the need of global variables, we can pass to the [.func]#peg()# macro a second argument, which
+is a name and a data type separated by a colon, like [.func]#peg(name, identifier: Type)#.
+The second parameter is then available as an ordinary variable in the code block.
+
+For our next example we will assume that we have written a plain CAD tool, that allows the  user
+to enter textual commands like [.term]#moveTo(x, y)#.
+
+[source, nim]
+----
+import npeg, tables
+
+type T = Table[string, string]
+
+let p = peg("command", t: T):
+  command <- >com * '(' * >pos * ',' * >pos * ')':
+    # echo $1, $2, $3
+    t["action"] = $1
+    t["x"] = $2
+    t["y"] = $3
+  com <- "moveTo" | "lineTo"
+  pos <- +{'0'..'9'}
+
+
+var input: T
+if p.match("moveTo(12,20)", input).ok:
+  echo input["action"], ": ", input["x"], ", ", input["y"]
+----
+
+To keep the example simple and short, we assume that we have to process only
+two different command, [.func]#moveTo()# and [.func]#lineTo()#, each accepting [.var]#x#, [.var]#y# coordinates of integer
+form. We pass to the [.func]#peg()# macro a second argument, which is the name and the data type
+of a [.type]#Table# instance. We have chosen for the key and value type of that table the [.type]#string# data type,
+as we want to store the command name as well as the [.var]#x/y# coordinates, so an integer value
+type would not work. The macro body defines three rules -- [.var]#command#, [.var]#com# and [.var]#pos#.
+For the [.var]#command# rule we use an expression which starts with the command name, followed
+in round brackets, the [.var]#x/y# coordinate pair. In front of the nonterminal symbols [.var]#com# and [.var]#pos#
+we put the [.op]#># operator to capture these values. We put a colon after the command rule and
+can access the captured values in the indented block, by use of the [.var]#$N# symbol.
+For the [.var]#com# rule we specify the literal terminal symbols [.lit]#"moveTo"# or [.lit]#"lineTo"# as
+ordered choice with the [.op]#|# operator. Finally, the expression for the [.var]#pos# rule is just a
+sequence of one or more decimal digits. 
+
+==== Simple patterns
+
+For simple patterns it may be not necessary to define multiple parsing rules. In that case
+we can use the [.func]#patt()# macro instead of [.func]#peg()# and pass just a single one line pattern as argument.
+
+For example, the pattern below splits a string by white space:
+
+[source, nim]
+----
+let parser = patt *(*' ' * > +(1-' '))
+echo parser.match("   one two three ").captures
+----
+
+We took this example from the [.var]#npeg# API documentation verbatim. Here the [.func]#patt()# macro uses
+Nim's command invocation syntax, so there is no outer bracket after the macro name.
+The innermost bracket uses the notation (1-' ') to match everything but a space, and
+the content of the outer bracket starts with an arbitrary number of uncaptured spaces. 
+
+==== "Look ahead" operators
+
+The PEG syntax defines also the two noncapturing [.var]#and# and [.var]#not# syntactic predicates,
+which uses the symbols [.var]#&# and [.var]#!# and provide  a powerful syntactic lookahead and disambiguation facility.
+A common use of the [.var]#!# predicate is to terminate a parsing expression with [.lit]#!1#. Here the [.lit]#1# matches everything, and [.lit]#!1#
+would only match when there is nothing left to match, that is the string end is reached.
+
+We will end our introduction to the parsing expression grammar and the use of the [.var]#npeg# module here.
+To learn all the details about PEG like restrictions, performance and memory consumption you should
+consult the Wikipedia article or other dedicated literature. And for advanced uses of the [.var]#npeg# module
+including the use of back references, and all the available syntax elements, you
+have to study its API documentation carefully.
+
+References:
+
+* https://github.com/zevv/npeg
+* https://en.wikipedia.org/wiki/Parsing_expression_grammar
+
+= Part VI: Advanced Nim
 
 In this part of the book we will try to explain the more difficult parts of the Nim programming language:
 Macros and meta-programming, asynchronous code, threading and parallel processing, and finally
@@ -16467,6 +16793,7 @@ We have added a few more simple examples and exercises:
 === Februar 2022
 
 * <<Regular Expressions>>
+* <<Part V: External Packages>>
 
 ////
 Part I: Introduction
@@ -16477,4 +16804,12 @@ External Packages
 Advanced Nim
 (Some larger examples)
 Appendix
+////
+
+////
+HJarausch_gitlab, untyped vs. typed is basically what stage you get the AST at
+10:04:00	PMunch	untyped is done right after the syntax parsing step. Now Nim has parsed the whole thing into a syntax tree and the code is syntactically correct. Everything looks like it could be valid Nim code (which doesn't say much given how flexible Nims syntax is).
+10:06:35	PMunch	typed is done after the next step. Nim looks through the syntax tree and checks types, procedure signatures, etc. and makes sure that all the code is semantically correct. I.e `1 + "hello"` is syntactically correct because + has two arguments. But it isn't semantically correct because there is no `+` function that takes an int and a string, and no automatic conversion between the two (unless of course you have made one).
+10:08:15	PMunch	So in a DSL for example you typically use `untyped` because you want to take something that isn't Nim code and turn it into something that is. But for something where you pass an identifier and want to build some Nim code that is based on the type of that identifier you would need `typed`
+10:08:54	PMunch	In general `typed` is used less than `untyped` and rarely for blocks of code.
 ////
