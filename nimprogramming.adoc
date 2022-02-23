@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-FEB-21
+//v0.1, 2022-FEB-23
 :doctype: book
 :toc: left
 :icons: font
@@ -7841,21 +7841,404 @@ Iterators do not provide a predefined result variable as procedures do.
 
 == Templates
 
-Nim templates are a more powerful variant of the macros in C. While in C macros are
-processed by the pre-processor and are mostly just a plain text substitution, in Nim
-templates are a fundamental part of the languages and can be used in a similar way
-as procedures. But while procedures built a single block of code that is then
-called multiple times, templates work like C macros as textual substitution. Wherever
-we call a template the template source code is inserted.
+****
+Nim [.key]#templates# are very different from {cpp} templates!
+In {cpp} templates are used for 
+generic programming -- a style of computer programming in which algorithms are
+written in terms of types to-be-specified-later that are then instantiated when needed
+for specific types provided as parameters.footnote:[https://en.wikipedia.org/wiki/Generic_programming]
+This is just called generics in Nim and other programming languages, we learned about Nim's generics
+earlier in this book.
+****
+
+Nim [.key]#templates# are a simple, parameterized code substitution mechanism,
+and are used in a similar way
+as procedures.
+The syntax to [.italic]#invoke# a [.key]#template# is the same as calling a procedure.
+But while procedures built a single block of code that is then
+called multiple times, [.key]#templates# work more like C macros as a (textual) code substitution. Wherever
+we invoke a [.key]#template# the [.key]#template# source code is inserted at the call site.
+In this way Nim [.key]#templates#
+have indeed some similarity to C macros. But while C macros are executed by the C pre-processor and
+can do only plain source text substitutions, Nim [.key]#templates#
+operates on Nim's abstract syntax trees,
+are processed
+in the semantic pass of the compiler,
+integrate well with the rest of the language, and share none of C's pre-processor macros flaws.
+
+In some way Nim [.key]#templates# are a simplified application  of Nim's powerful [.key]#macro# and meta-programming
+system which we will discuss in detail in part VI of the book.
+
+In C we could use the "#define" pre-processur directive to define two simple C macros.
+
+[source, c]
+----
+#define PI 3.1416
+#define SQR(x) (x)*(x) 
+----
+
+The C pre-processor would then replace the symbol [.const]#PI# in the C source code with the [.type]#float# literal [.lit]#3.1416#.
+And as the C pre-processor can recognize some simple form of parameters, it would
+replace [.func]#SQR(a + b)# with [.code]#(a+b)*(a+b)#.
+
+In Nim we would define a [.key]#const# for [.const]#PI# and use a generic [.proc]#proc# or a [.key]#template# for [.func]#SQR()#:
 
 [source, nim]
 ----
-template sqr(i: int): int =
-  i * i
-
-var j = 7
-echo sqr(j)
+const PI = 3.1416
+proc sqr1[T](x: T): T = x * x 
+template sqr2(x: typed): typed = x * x
 ----
+
+Here the [.func]#sqr2()# [.key]#template# uses the special [.key]#typed# parameter, which specifies
+that the parameter has a well defined type in the [.key]#template# body, but that
+arbitrary data types are accepted. So [.func]#sqr1()# and [.func]#sqr2()# would work for all
+numeric types and also for other data types for which we have
+defined a [.op]#*# operation. When there is no [.op]#*# operator defined for the passed  data
+type, the compiler will give an error message.
+
+Nim [.key]#templates# accept like [.proc]#procs# all of Nim's ordinary data types, and additional
+the abstract meta-types [.key]#typed# and [.key]#untyped#.
+The abstract data types [.key]#typed# and [.key]#untyped# can be used only for the types of
+[.key]#template# and [.key]#macro# parameters, but not for parameters of procedures, functions,
+iterators, or to define variables.
+
+We will explain the differences between [.key]#typed#
+and [.key]#untyped# in detail later in this section -- the short version of the explanation is, that
+[.key]#typed# [.key]#template# parameters must have a well defined data type when we pass it to the [.key]#template#,
+while [.key]#untyped# parameters can be passed as still undefined symbolic name also.
+
+So we can in principle replace each procedure or function definition with a [.key]#template#.
+The important difference between procedures and [.key]#templates# is, that ordinary
+[.proc]#procs# are instantiated only once, generic [.proc]#procs# may be instantiated for each data type with which
+they are used, but [.key]#templates# are instantiated for each invocation of the [.key]#template#.
+The compiler creates for each defined [.proc]#proc# some machine code, which is executed whenever 
+the [.proc]#proc# is called. But for [.key]#templates# the compiler does some code substitution -- the source
+code of the [.key]#template# is inserted where the [.key]#template# is invoked. This avoids the need for an
+actual jump to a different machine code block when a procedure is called, but increases the
+total code size for each use of a [.key]#template#. So we would generally avoid [.key]#templates#
+that contain a lot code and are used often.
+
+For each ordinary [.proc]#proc# one block of machine code instructions is generated, and
+when the [.proc]#proc# is called, program executions has to jump to this block, and back
+when the [.proc]#proc# execution is done. This jumping involves some minimal overhead, which
+is noticeable for tiny [.proc]#procs# called often. To avoid this overhead we may use a [.key]#template# instead,
+or we may use inlined [.proc]#procs#, which we discussed in the previous section. [.proc]#Proc#
+inlining can be done by the compiler automatically when the [.proc]#proc# is defined in
+the source code file where it is used, or when we mark the [.proc]#proc# with the [.lit]#inline# pragma.
+Additional, when we compile our program with [.term]#-d:lto#, the compiler can inline all procedures and functions.
+Generally the compiler should know well when inlining makes sense, so in most
+cases it makes not much sense to just use [.key]#templates# instead of (small) procs
+just to avoid the [.proc]#proc# call overhead.
+
+[.key]#Templates# can be used as some form of alias. Sometimes we have nested data structures,
+and would like to have a shorter alias for the access of fields:
+
+[source, nim]
+----
+type
+  Point = object
+    x, y: int
+
+  Circle = object
+    center: Point
+
+template x(c: Circle): int = c.center.x
+
+template `x=`(c: var Circle; v: int) = c.center.x = v
+
+var a, b: Circle
+
+a.center.x = 7
+echo a.center.x
+
+b.x = 7
+echo b.x
+----  
+ 
+The two [.key]#templates# simplify the access of field [.var]#x#, and as [.key]#templates# are pure
+code substitution, the use of them costs no performance. Since version 1.6
+Nim has also the [.italic]#with# [.key]#macro#, which can be also used to save some typing.
+Note that in the second [.key]#template# we have called the second [.type]#int# parameter [.var]#v# --
+calling them [.var]#x# would give some trouble:
+ 
+----
+Error: in expression 'b.center.7': identifier expected, but found '7'
+----
+
+Nim's [.mod]#system# module uses [.key]#templates# to define some operators like
+
+[source, nim]
+----
+template `!=` (a, b: untyped): untyped =
+  not (a == b)
+----
+
+This way [.op]#!=# is always the opposite of [.op]#==#, so when we define the [.op]#==# operator
+for our own custom data types, [.op]#!=# is available for free.
+
+In some situations using [.key]#templates# instead of [.proc]#procs# can avoid some overhead.
+Let us investigate a [.func]#log()# [.key]#template#, that can print messages to [.var]#stdout#
+when a global boolean constant is set to [.lit]#true#:
+
+[source, nim]
+----
+const
+  debug = true
+
+template log(msg: string) =
+  if debug: stdout.writeLine(msg)
+
+var
+  x = 4
+log("x has the value: " & $x)
+----
+
+Here [.func]#log()# is called with the constructed argument [.code]#("x has the value: " & $x)#
+which implies a [.type]#string# concatenation operation at runtime. As we use a [.key]#template#, the
+invocation of [.func]#log("x has the value: " & $x)# is actually replaced by the compiler with code like
+
+[source, nim]
+----
+  if debug: stdout.writeLine("x has the value: " & $x)
+----
+
+So when [.const]#debug# is set to [.lit]#false#, absolutely no code is generated. For an ordinary, not inlined
+[.proc]#proc# the situation is different, the expensive [.type]#string# concatenation operation would always have to be
+performed, but the [.func]#log()# [.proc]#proc# would immediately return for [.code]#debug == false#. What exactly would happen
+when [.func]#log()# is an inlined [.proc]#proc# may depend on the actual used compiler backend.
+
+Note that the delayed (lazy) parameter evaluation for [.key]#template# parameters can have disadvantages:
+When we modify the [.func]#log()# [.key]#template# like
+
+[source, nim]
+----
+template log(msg: string) =
+  for i in 0 .. 2:
+    stdout.writeLine(msg)
+
+var x = 4
+log("x has the value: " & $x)
+----
+
+the expensive [.type]#string# concatenation operation would be done in principle three times
+in the [.key]#template# body.footnote:[In principle, as the compiler may always optimize that.]
+While for a [.proc]#proc# the already evaluated parameter would be passed.
+So when we access a parameter multiple times inside of a [.key]#template#, it can make sense to
+assign the parameter to a local variable and then use that variable only.
+
+[.key]#Templates# can inject entities defined in the [.key]#template# body into the surrounding scope.
+By default variables defined in the [.key]#template# body are not injected in the surrounding scope, but
+[.proc]#procs# are:
+
+[source, nim]
+----
+template gen =
+  var a: int
+  proc maxx(a, b: int): int =
+    if a > b: a else: b
+
+gen()
+echo maxx(2, 3)
+# echo a 
+----
+
+The call [.code]#echo maxx(2, 3)# compiles and works, while [.func]#echo a# complains about an undefined symbol.
+
+A very special property of [.key]#templates# and [.key]#macros# is, that we can pass to them code blocks
+when we use [.key]#untyped# for the type of the last parameter:
+
+[source, nim]
+----
+template withFile(f: untyped; filename: string; actions: untyped) =
+  var f: File
+  if open(f, filename, fmWrite):
+      actions
+      close(f)
+
+withFile(myTextFile, "thisIsReallyNotAnExistingFileWithImportantContent.txt"):
+  myTextFile.writeLine("line 1")
+  myTextFile.writeLine("line 2")
+----
+
+The [.key]#template# [.func]#withFile()# from the above example has three parameters --
+a parameter [.var]#f# of [.key]#untyped# type, a [.var]#filename# of [.type]#string# type, and as
+last parameter one more [.key]#untyped# parameter which we call actions.
+For these last [.key]#untyped# actions parameter we can pass an indented code block.
+
+When we invoke the [.func]#withFile()# [.key]#template#, we pass the first two parameters in the
+well know way by putting them in a parameter list enclosed in round brackets. But
+instead of passing this way also the final actions parameter, we put a colon after
+the parameter list, and pass this way the following indented code block as last [.key]#untyped# parameter.
+In the body of above [.key]#template# we have a [.func]#open()# call which opens a file with the specified
+filename and the [.lit]#fmWrite# mode, then executes the passed code block, and finally closes
+the file. The first parameter of our [.func]#withFile()# [.key]#template# has also a special property:
+As we use [.key]#untyped# for the [.var]#f# parameter, we can pass the still undefined symbol
+[.var]#myTextFile# to the [.key]#template#. In the [.key]#template# body this symbol is used as variable
+name, and our two [.func]#writeLine()# [.proc]#proc# calls can use it to refer to the file variable.
+
+As Nim [.key]#templates# are hygienic, the instance of the file variable created in the body
+of our [.key]#template# can be used by the passed code block, but it actually
+exists only in the [.key]#template#, and pollutes not the global name space of our program.
+
+We can use [.key]#templates# to create new [.proc]#procs#. An example is lifting [.proc]#procs# like [.func]#math.sqrt()#
+that accepts a scalar parameter and returns a scalar value, to work with [.type]#arrays#
+and sequences. The following example is taken from the official [.italic]#tut2# tutorial:
+
+[source, nim]
+----
+from std/math import sqrt
+
+template liftScalarProc(fname) =
+  proc fname[T](x: openarray[T]): auto =
+    var temp: T
+    type outType = typeof(fname(temp))
+    result = newSeq[outType](x.len)
+    for i in 0 .. x.high:
+      result[i] = fname(x[i])
+
+liftScalarProc(sqrt)   # make sqrt() work for sequences
+echo sqrt(@[4.0, 16.0, 25.0, 36.0])   # => @[2.0, 4.0, 5.0, 6.0]
+----
+
+The [.key]#template# called [.func]#liftScalarProc()# creates a generic
+[.proc]#proc#, that accept as parameter an [.type]#openArray[T]#
+and returns a [.type]#seq[T]#. Well, we should be able to understand the
+basic ideas used in that code, but it is still fascinating that it really works.
+
+=== Typed vs untyped parameters
+
+Parameters passed to [.key]#templates# can have all the data types
+that we can use for [.procs]#procs# including special types like [.type]#openarray# and [.type]#varargs#, and we
+can use as types additional the symbols [.key]#untyped#, [.key]#typed# or [.key]#typedesc#.
+
+The [.key]#typedesc# type can be used to pass type information to the [.key]#template#, e.g.
+when we want to create a variable of a special data type. The "meta-types"
+[.key]#typed# and [.key]#untyped# are used, when we want to create some form of generic
+[.key]#template#, that can accept different data types. Actually the distinction
+between [.key]#typed# and [.key]#untyped# parameters is not that difficult and important
+for [.key]#templates# as it is for [.key]#macros#, in most cases it is just clear if we need the [.key]#typed# or
+[.key]#untyped# parameter type for a [.key]#template#, or both work fine. We discuss
+the differences between [.key]#typed# and [.key]#untyped# in much more detail in part VI of
+the book, when we discuss [.key]#macros# and meta-programming.
+
+The following example demonstrates the use of the [.key]#untyped# and the [.key]#typedesc# parameter:
+
+[source, nim]
+----
+template declareInt(n: untyped) =
+  var n: int
+
+declareInt(i)
+i = 3
+echo i
+
+template declareVar(n: untyped; t: typedesc) =
+  var n: t
+
+declareVar(x, float)
+x = 3.0
+echo x
+----
+
+As the parameter [.var]#n# is [.key]#untyped#, the compiler allows us to pass
+an undefined symbol to the [.key]#template#. If we would change the parameter
+type to [.key]#typed# the compiler would complain with a message like 
+[.italic]#Error: undeclared identifier: 'i'#
+
+For the second [.key]#template# called [.func]#declareVar()# we use an additional parameter
+of [.key]#typedesc# type, so that the [.key]#template# can create for us a variable of just the passed
+data type.
+
+****
+Citing the manual: "An  [.key]#untyped# parameter means that symbol lookups and type resolution is not
+performed before the expression is passed to the [.key]#template#. This means that
+undeclared identifiers, for example, can be passed to the [.key]#template#.
+A [.key]#template# where every parameter is  [.key]#untyped# is called an immediate [.key]#template#. For historical reasons,
+[.key]#templates# can be explicitly annotated with an immediate pragma and then these [.key]#templates# do not take
+part in overloading resolution and the parameters' types are ignored by the compiler.
+Explicit immediate [.key]#templates# are now deprecated.
+For historical reasons, stmt was an alias for [.key]#typed# and expr was an alias for  [.key]#untyped#, but they are removed."
+****
+
+=== Passing a code block to a template
+
+In the [.func]#withFile()# example above we showed that we
+can pass a block of statements as the last argument to a [.key]#template# following the special [.op]#:# syntax.
+To demonstrate the difference between code blocks of [.key]#typed# and [.key]#untyped# data type
+we will cite the compiler manual, see https://nim-lang.org/docs/manual.html#templates-passing-a-code-block-to-a-template:
+
+Usually, to pass a block of code to a [.key]#template#, the parameter that accepts the block needs to be of type [.key]#untyped#.
+Because symbol lookups are then delayed until [.key]#template# instantiation time:
+
+[source, nim]
+----
+template t(body: typed) =
+  proc p = echo "hey"
+  block:
+    body
+
+t:
+  p()  # fails with 'undeclared identifier: p'
+----
+
+The above code fails with the error message that [.var]#p# is not declared. The reason for this is that the [.func]#p()#
+body is type-checked before getting passed to the body parameter and type checking in Nim implies symbol lookups.
+The same code works with [.key]#untyped# as the passed body is not required to be type-checked:
+
+[source, nim]
+----
+template t(body: untyped) =
+  proc p = echo "hey"
+  block:
+    body
+
+t:
+  p()  # compiles
+----
+
+=== Passing operators to templates
+
+One more use case for [.key]#templates# with [.key]#untyped# parameters is the generation
+of math operations for custom data types. Let us assume that we have created
+a custom [.type]#Vector# [.key]#object#, for which we have to define addition and subtractions
+operations. Instead of writing code for both cases, we can use a [.key]#template#
+and pass the actual math operator as [.key]#untyped# parameter:
+
+[source, nim]
+----
+type
+  Vector = object
+    x, y, z: int
+
+template genOp(op: untyped) =
+  proc `op`(a, b: Vector): Vector =
+    Vector(x: `op`(a.x, b.x), y: `op`(a.y, b.y), z: `op`(a.z, b.z))
+
+genOp(`+`)
+genOp(`-`)
+
+echo `+`(2, 3) # 5
+
+var p = Vector(x: 1, y: 1, z: 1)
+var p2 = p + p
+echo p2 # (x: 2, y: 2, z: 2)
+----
+
+This works, because for operators math like [.code]#1+2# can be written as [.code]#`+`(1, 2)# and because
+we can pass such an operator as [.key]#untyped# parameter to a [.key]#template#.
+
+=== Advanced template use
+
+For the advanced [.key]#template# stuff you should consult the compiler manual.
+
+This includes the symbol binding rules, identifier construction in [.key]#templates#,
+lookup rules for [.key]#template# parameters, hygiene in [.key]#templates#, use of the [.lit]#inject# pragma, and
+limitations of the method call syntax.
+
+All this is explained well in the compiler manual, so it makes no sense to repeat it here.
+And it makes more sense to read it when you actually have problems with the (default)
+behaviour of [.key]#templates# in special situations.
 
 == Casts and Type Conversion
 
@@ -16819,6 +17202,7 @@ We have added a few more simple examples and exercises:
 
 * <<Regular Expressions>>
 * <<Part V: External Packages>>
+* <<Templates>> (extended)
 
 ////
 Part I: Introduction
@@ -16838,3 +17222,43 @@ HJarausch_gitlab, untyped vs. typed is basically what stage you get the AST at
 10:08:15	PMunch	So in a DSL for example you typically use `untyped` because you want to take something that isn't Nim code and turn it into something that is. But for something where you pass an identifier and want to build some Nim code that is based on the type of that identifier you would need `typed`
 10:08:54	PMunch	In general `typed` is used less than `untyped` and rarely for blocks of code.
 ////
+
+////
+tail asciidoctor.css
+
+/* ======================== */
+.new{background-color: #FF0; color: #000}
+.recent{background-color: #FFA}
+.ndef{font-style: italic}
+.italic{font-style: italic}
+
+.op{font-family: monospace; font-weight: bold}
+.key{font-weight: bold}
+.proc{} /* the proc keyword in text */
+.mac{} /* the macro keyword in text */
+
+.type{font-family: monospace}
+.str{font-family: monospace} /* string type */
+.array{font-family: monospace} /* array type */
+
+.func{}
+
+.var{font-family: monospace; font-style: italic}
+.mod{font-family: monospace; font-variant: small-caps}
+
+.lit{font-family: monospace; font-style: italic}
+.const{font-family: monospace; font-style: italic}
+
+.code{font-family: monospace; background-color: #EEE; color: #000}
+.term{font-family: monospace; background-color: #EEE; color: #000}
+
+.plain{}
+.name{}
+.unit{} /* GB, nm*/
+
+/* .nim{} */
+/* .promo{font-variant: small-caps} */
+/* .new{border-color: #000; border-width: 3; background-color: #FF0; color: #000} border does nor work */
+
+////
+
