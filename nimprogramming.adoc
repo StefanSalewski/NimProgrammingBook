@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-FEB-23
+//v0.1, 2022-FEB-25
 :doctype: book
 :toc: left
 :icons: font
@@ -63,6 +63,8 @@ We use
 
 NOTE: We should say a bit more about operators somewhere -- why i++ is not supported and about the new
 unicode operators.
+
+sed  -E 's/ä([a-zA-Z]+) /\[\.\]\#\1\# /g' nimprogramming.adoc > hhh.adoc
 
 ////
 
@@ -2168,7 +2170,7 @@ window. In the code examples of the previous sections we always passed arguments
 type to the [.func]#echo# [.proc]#{proc}#, and the [.func]#echo# [.proc]#{proc}# automatically converted the integer numbers
 to a textual sequence of decimal digits, so that we could read it in the terminal. In the Nim programming language text is a predefined, built in
 data type that is called [.ndef]#string#. We will learn all the details of the string data type in the next section,
-for now it is sufficient that it exists and that we can use the [.func]#echo()# päroc to print text strings.
+for now it is sufficient that it exists and that we can use the [.func]#echo()# p[.]#roc# to print text strings.
 The [.func]#echo()# [.proc]#{proc}# has the ability to convert other data types like numbers or the boolean data type (true/false)
 automatically to human readable text strings,
 so that we can read the output in the terminal. Recall that most data types are stored internally in our computer
@@ -7805,39 +7807,274 @@ the same way to the same [.proc]#{proc}#.
 
 == Iterators
 
-We have already used some of Nim's standard iterators to iterate over the characters
-of a string or the content of a sequence. Declaring iterators is similar to declaring
-procedures, but we use the yield keyword to return a single value back to the caller
-of the iterator. Iterators are used in [.key]#for# loops, and the iteration continues until
-the end of the body of the iterator declaration is reached and the iterator terminates.
-In an earlier section we declared a procedure that extracted the decimal digits from
-a [.type]#string#. We can do the same with an iterator:
+In section <<For Loops and Iterators>> we used a [.key]#for# loop to iterate over the
+individual characters of a [.type]#string#. [.key]#For# loops are useful for various
+iteration purposes, e.g. to iterate over container types like [.type]#strings#,
+[.type]#arrays#, and sequences, or over a numeric [.type]#range#, and other countable
+entities. We could do the same with a [.key]#while# loop, but using a [.key]#for#
+loop is often more convenient and less error prone -- we do not have to care for
+increasing a loop variable and for the stop condition.
+
+Nim's [.key]#for# loops are built on [.key]#iterators#, that is whenever a
+[.key]#for# loop is executed an [.key]#iterator# is used under the hood.  Some
+[.key]#iterators# are used explicitly in [.key]#for# loops, e.g. [.func]#countup()#
+of Nim's standard library, others like [.func]#items()# or [.func]#pairs()# are
+executed implicitly when no explicit [.key]#iterator# name is specified.
+
+The creation and use of [.key]#iterators# is very easy in Nim. Before we will discuss
+all the details and some restrictions of [.key]#iterators#, and the important
+differences between inline and closure [.key]#iterators#, we will give a small
+example:
+
+We have already used some of Nim's standard [.key]#iterators# to iterate over the
+characters of a [.key]#string# or the content of a sequence.
+
+In an earlier section of the book we declared a procedure that extracts all the
+decimal digits from a [.type]#string#. We can do the same with an [.key]#iterator#:
 
 [source, nim]
 ----
-iterator decDigits(s: string) =
+iterator decDigits(s: string): char =
   var pos = 0
-  while pos < s.len and s[pos] notin {'0' .. '9'}:
+  while pos < s.len:
+    if s[pos] in {'0' .. '9'}:
+      yield(s[pos])
     inc(pos)
-  if pos < s.len:
-    inc(pos)
-    yield(s[pos - 1])
 
 for d in decDigits("df4j6dr78sd31tz"):
   stdout.write(d)
 stdout.write('\n')
 ----
 
-To avoid the
-need of declaring a [.var]#res# variable of character type, in above code we increase [.var]#pos# by
-one first and [.key]#yield# [.var]#s[pos - 1]#.
+The definition of an [.key]#iterator# is very similar to the definition of a
+[.proc]#proc# or function, but while a function returns a result only once to the
+caller, an iterator uses the [.key]#yield# statement to give data back to the call
+site multiple times, instead of returning just once.
 
-Nim supports closure-iterators and inline-iterators. The later have to be marked with
-the {.inline.} pragma in the header of the declaration. Inline-iterators are
-inserted like templates at the location where they are called and offer maximum
-performance, but each call increases the total code size. Closure iterators are
-invoked like ordinary procedures, the invocation eats some performance. Note:
-Iterators do not provide a predefined result variable as procedures do.
+Whenever a [.key]#yield# statement is reached in the body of the [.key]#iterator#,
+the yielded data is bound to the [.key]#for# loop variable(s), the body of the for
+loop is executed, and at the end of the [.key]#for# loop body control returns to the
+iterator, that is execution continues direct after the [.key]#yield# statement.  The
+[.key]#iterator's# local variables and execution state are automatically saved
+between calls.  The iteration process continues until the end of the body of the
+iterator declaration is reached and the iterator terminates.
+
+[.key]#Iterators# are used in [.key]#for# loops to iterate over containers,
+[.type]#ranges# or other data.  After the [.key]#for# keyword we specify one or more
+arbitrary variable names, which we then can use in the body of the [.key]#for# loop
+to access the yielded value(s).  The data type of this iteration variable(s) is
+inferred from the iterators return type, and its scope is limited to the body of the
+[.key]#for# loop.
+
+Nim's standard library defines for container types like [.type]#strings#,
+[.type]#array# and sequences [.key]#iterators# named [.func]#items()# and
+[.func]#pairs()# -- [.func]#items()# is the default name when a [.key]#for# loop with
+only one variable is used, and [.func]#pairs()# is the default name when two
+variables are used, e.g. the index position and the character when iterating over a
+[.type]#string#.
+
+In Nim's standard library you may find [.func]#items()# and [.func]#pairs()#
+[.key]#iterators# like these two:
+
+[source, nim]
+----
+iterator items(a: string): char =
+  var i = 0
+  while i < len(a):
+    yield a[i]
+    inc(i)
+
+iterator pairs(a: string): tuple[key: int, val: char] =
+  var i = 0
+  while i < len(a):
+    yield (i, a[i])
+    inc(i)
+
+var s = "Nim is nice."
+for c in items(s):
+  stdout.write(c, '*')
+echo ""
+for i, c in pairs(s):
+  echo i, ": ", c
+----
+
+In the example above we specified the [.key]#iterator# names [.func]#items()# and
+[.func]#pairs()# explicitly in the [.key]#for# statement, but as these names are the
+defaults, we can just write [.code]#for c in s:# and [.code]#for i, c in s:#.
+
+The two [.key]#iterators# in the example code from above use as argument a value type
+and return the single characters as value type. This way we can not modify the
+[.type]#string# content. When we intent to modify the content of a container by use
+of an [.key]#iterator#, we have to pass the container as [.key]#var# parameter, and
+return the elements as [.key]#var# also. By convention for iterating over mutable
+containers the iterator names [.func]#mitems()# and [.func]#mpairs()# are used, where
+the leading [.var]#m# stands for mutable.  We have to specify these names explicitly:
+
+[source, nim]
+----
+iterator mitems(a: var string): var char =
+  var i = 0
+  while i < len(a):
+    yield a[i]
+    inc(i)
+
+iterator mpairs(a: var string): tuple[key: int, val: var char] =
+  var i = 0
+  while i < len(a):
+    yield (i, a[i])
+    inc(i)
+
+from strutils import toLowerAscii
+var s = "NIM"
+for i, c in mpairs(s):
+  if i > 0:
+    c = toLowerAscii(c)
+echo s # Nim
+----
+
+Whenever we iterate over a container, we should not delete, insert or append elements
+to the container, as that may confuse the loop inside of the [.key]#iterator# body.
+[.key]#Iterators# of Nim's standard library check the length of the container and
+generate an exception when the length changes during the iteration.
+
+Nim differentiate between inline and closure [.key]#iterators#. When a [.key]#for#
+loop uses an inline [.key]#iterator#, then the actual [.key]#iterator# loop is
+inlined in the [.key]#for# loop body in a way that for each [.key]#yield# statement
+in the [.key]#iterator# body the body of the [.key]#for# loop is executed.  Actually
+the [.code]#for c in items(s): stdout.write(c, '*')# in our example from above is
+rewritten by the compiler into a code block like
+
+[source, nim]
+----
+var i = 0
+while i < len(a):
+  var c = a[i]
+  echo c, '*'
+  inc(i)
+----
+
+That is, the body of the [.key]#for# loop is inlined into the loop of the
+[.key]#iterator#.
+
+This results in very fast code with no overhead, but similar to the use of
+[.key]#templates#, this increases the total code size.  Actually, when the
+[.key]#iterator# should use multiple [.key]#yield# statements, then the code of the
+body of the [.key]#for# loop is inserted for each [.key]#yield# statement.
+
+Inline [.key]#iterators# are currently the default [.key]#iterator# type, so the
+[.key]#iterators# of the examples above are all inline [.key]#iterators#.
+
+Closure [.key]#iterators# behave more like procedures, the [.key]#iterator# is
+actually invoked, which costs some performance. We can use all the [.key]#iterators#
+of the examples from above as closure [.key]#iterators# by applying the closure
+pragma as in [.code]#iterator items(a: string): char {.closure.} =#.
+
+Closure [.key]#iterators# behaves like [.key]#objects#, we can assign instances of
+inline [.key]#iterators# to variables, and then call the instances explicitly:
+
+[source, nim]
+----
+iterator myCounter(a, b: int): int {.closure.} =
+  var i = a
+  while i < b:
+    yield i
+    inc(i)
+
+for x in myCounter(3, 5): # ordinary use of the operator
+  echo x
+
+echo "---"
+var counter = myCounter # use of an iterator instance
+while true:
+  echo counter(5, 7)
+  if counter.finished:
+    break
+----
+
+which gives us this output:
+
+----
+3
+4
+---
+5
+6
+0
+----
+
+Here we have used the [.func]#finished()# function to check if the [.key]#iterator#
+is done.
+
+Actually [.func]#finished()# returns [.lit]#true# only, when the [.key]#iterator# has
+already failed to [.key]#yield# a valid value, and not already when the last valid
+value was yielded. That is, why we get in the example above as last value the invalid
+value zero.
+
+We can avoid this behaviour, when we rewrite the loop as
+
+[source, nim]
+----
+var counter2 = myCounter
+while true:
+  let v = counter2(5, 7)
+  if counter2.finished:
+    break # v is invalid
+  echo v
+----
+
+Closure [.key]#iterators# are resumable functions and so one has to provide the
+arguments to every call. To get around this limitation one can capture parameters of
+an outer factory
+proc:footnote:[https://nim-lang.org/docs/manual.html#iterators-and-the-for-statement-firstminusclass-iterators]
+
+[source, nim]
+----
+proc mycount(a, b: int): iterator (): int =
+  result = iterator (): int =
+    var i = a
+    while i < b:
+      yield i
+      inc(i)
+
+var c1 = mycount(5, 7)
+for i in c1():
+  echo i
+
+echo "---"
+
+var c2 = mycount(2, 5)
+while true:
+  let v = c2()
+  if c2.finished:
+    break # v is invalid
+  echo v
+----
+
+In this example from the compiler manual the [.proc]#proc# [.func]#mycount()#
+captures the bound for the counter.  When we compile and run the code above we get:
+
+----
+5
+6
+---
+2
+3
+4
+
+----
+
+At the end of this section we will list some properties of [.key]#iterators#:
+[.key]#Iterators# have their own name space, so we can freely use for [.proc]#procs#
+and [.key]#iterators# the same names. [key]#Iterators# have no predefined
+[.key]#result# variable, and do not support recursion.  Inline [.key]#iterators# can
+be used only inside of [.key]#for# loops, and can not be forward declared, because
+the compiler must be able to inline an [.key]#iterator#.  (This restriction will be
+gone in a future version of the compiler.) And [.key]#iterators# do not support
+recursion.  Closure iterator are not supported by the JS backend, and cannot be
+executed at compile time.  Inline iterators are second class citizens; They can be
+passed as parameters only to other inlining code facilities like templates, macros,
+and other inline iterators. In contrast to that, a closure iterator can be passed
+around more freely.
 
 == Templates
 
@@ -17203,6 +17440,7 @@ We have added a few more simple examples and exercises:
 * <<Regular Expressions>>
 * <<Part V: External Packages>>
 * <<Templates>> (extended)
+* <<Iterators>> (extended)
 
 ////
 Part I: Introduction
