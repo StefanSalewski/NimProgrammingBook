@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-FEB-28
+//v0.1, 2022-MAR-02
 :doctype: book
 :toc: left
 :icons: font
@@ -83,7 +83,7 @@ In the year 1970 {wirth} invented the [.ndef]#Pascal# programming language to te
 his students the fundamentals of computer programming. While the initial core Pascal
 language was designed for teaching purposes only, it was soon expanded by commercial
 vendors and got some popularity. Later, Wirth presented the language [.ndef]#Modula-2#
-with improved syntax and support of modules for larger projects, and the
+with improved syntax and support for modules for larger projects, and the
 [.ndef]#Oberon# language family with additional support for [.ndef]#Object-Oriented
 Programming#.
 
@@ -103,7 +103,7 @@ school for various reasons and decide later that they need some programming skil
 maybe for a technical job. And there may exist some children that are not satisfied
 with the introduction to computer science taught at school. So we have decided to
 start this book with a short introduction to fundamental concepts -- most people can
-skip that part. In part II we explain the basics of computer programming step by step
+skip that part. In part II, we explain the basics of computer programming step by step
 in a way which should enable even children to learn independently. In this part we may repeat
 some of the stuff which we already mentioned in part I. We do that by intent, as some
 people may skip part I, and because it is generally not a bad idea to support the learning
@@ -112,7 +112,7 @@ Part III will give
 you an overview of the Nim standard library, and part IV will introduce some useful
 external packages. Part V will introduce advanced concepts like [.ndef]#asynchronous
 operations#, [.ndef]#threading# and [.ndef]#parallel processing#, and [.ndef]#macros#
-and [.ndef]#meta-programming#. Nim macros are very powerful but difficult at first.
+and [.ndef]#meta-programming#. Nim's macros are very powerful but difficult at first.
 Part VI may finally present some advanced examples.
 
 This book is basically a traditional text book, a very simple one with detailed
@@ -134,7 +134,7 @@ learned the first steps of computer programming themselves. And of course
 watching videos does not improve the reading and concentration issues that people have.
 "Crash course" and "Learning by doing"
 books may give you a good start, but for that we already have a lot of textual tutorials.
-The problem with these kinds of books is, that they may help you with solving some common tasks, but they do not
+The concern with these kinds of books is, that they may help you with solving some common tasks, but they do not
 really support a deeper understanding. The idea of a "Crash course" and "Learning by doing" may not be that bad in general, but in computer
 science starting with a larger example application may be an overwhelming process, as you have to learn
 a lot of stuff in parallel. It may work for you, but there is the danger that you forget all the details very quickly again.
@@ -208,7 +208,7 @@ releases, as a 1.8 or maybe already a 2.0 release with planned support for incre
 
 ****
 The source code of the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
-You may use the Github issue tracker to point us to mistakes or unclear explanations, we will try to
+You may use the GitHub issue tracker to point us to mistakes or unclear explanations, we will try to
 fix that. Please note that we are more interested in remarks to the content of the book currently, not that much
 in typos or grammar issues. Before the book will be officially published or a printed
 version will be created, we will run it through some correction software or hire a professional
@@ -281,7 +281,7 @@ Nearly all of today's desktop computers, and even most notebooks and cellphones
 contain not only a single CPU, but multiple CPUs, also called "Cores", so they can
 run different programs in parallel, or a single program can run parts of it on
 different CPUs, to increase performance or reduce total execution time. The so-called
-super computers can contain thousands of CPUs. Beside CPUs most computers have also
+super computers can contain thousands of CPUs. Beside CPUs, most computers have also
 at least one [.ndef]#GPU#, a [.ndef]#Graphic Processing Unit#, that can be used to
 display data on a screen or monitor, maybe for doing animations in games or for
 playing video. The distinction between CPU and GPU is not really sharp; generally a
@@ -430,7 +430,7 @@ digital data only. Basically that is that they work internally with integer numb
 stored in sequences of binary bits. All input for computers must have the form of
 integer numbers, and all output has the form of integer numbers. Whenever we want to
 feed computers with some sort of analogue data, like an analogue voltage, we have to
-convert it into a digital approximation. For that task special devices called
+convert it into a digital approximation. For that task, special devices called
 [.ndef]#analog to digital converters# (ADC) exists. And in some cases we have to
 convert the digital output data of computers to analogue signals, like when a
 computer plays music: The computer output in form of digital data is then converted
@@ -496,7 +496,7 @@ programs.
 == What is a Computer Program?
 
 A computer program is basically a sequence of numbers, which make some sense to a
-computer CPU, in such a way that the CPU recognizes the numbers as so called
+computer CPU, in such a way that the CPU recognizes the numbers as so-called
 [.ndef]#instructions# or [.ndef]#numeric machine code#, maybe the instruction to add
 two numbers.
 
@@ -551,10 +551,10 @@ school -- to add, multiply or divide two numbers with paper and pencil -- are al
 too. Even starting a car follows an algorithm -- when the temperature is below zero,
 and snow covers the vehicle, then you first have to clean the windows and lights. And
 when you first drive again after a longer break, you would have to check the tires
-before you start the engine. Algorithm can be carried out by strictly following the
+before you start the engine. The algorithm can be carried out by strictly following the
 instructions -- it is not necessary to really understand how and why it works.
 
-So an algorithm is a perfect fit for a computer, as computers are really good at
+So an algorithm is a perfect fit for a computer, as computers are excellent at
 following instructions without really understanding what they are trying to
 accomplish.
 
@@ -871,7 +871,7 @@ and the size of the Nim compiler executable itself is about 6.5 MB. It is possib
 shrink the executable size of "Hello World" programs to about 10 kB for use on tiny
 {uc}s.
 
-* Nim is fast. Generally performance is very close to other
+* Nim is fast. Generally, performance is very close to other
 high-performance languages such as C or {cpp}. There are some exceptions still: other
 languages may have libraries or applications that have been tuned for performance for
 many years, while similar Nim applications are so far less tuned for performance, or
@@ -915,9 +915,9 @@ of use cases.
 
 * Asynchronous operation, threading and parallel processing is supported.
 
-* Nim supports all popular operating systems like Linux, Windows, MacOS and Android.
+* Nim supports all popular operating systems like Linux, Windows, macOS and Android.
 
-* Usage of external libraries written in C is easy and and occurs directly
+* Usage of external libraries written in C is easy and occurs directly
 without any glue code, and Nim can even work together with code written in other
 languages, for example there are some Nim +<->+ Python interfaces available.
 
@@ -931,7 +931,7 @@ memory management strategies and full destructor support fully deterministic
 memory management comparable to memory management in {cpp} or Rust
 is available. So problems of conventional garbage collectors like delayed memory
 deallocation or longer pausing of programs due to the GC process are gone. And some
-larger companies have started using Nim in production, the most important
+larger companies have started using Nim in production, the most influential
 may be currently the Status Corp. with their Ethereum client development.
 
 === Nim supports many programming styles
@@ -955,8 +955,8 @@ user = User()
 user.say()
 ----
 
-In this Python snippet, we declare a class User, with a custom method named [.func]#say()#
-bound to this class. Then we create an instance variable of this class and call
+In this Python snippet, we declare a class User, with a custom method named [.func]#say()# bound
+to this class. Then we create an instance variable of this class and call
 its say() method.
 
 This tight bounding of methods to classes is not very flexible, e.g. extending the set
@@ -990,7 +990,7 @@ user.say()
 Instead of the classes, we use object types in Nim, and we define procedures and methods
 that can work on objects or other data types.
 
-As an example for the functional programming style in Nim we may
+As an example for the functional programming style in Nim, we may
 look at some code fragment from a real world app that has to generate
 a string from four numbers, separated by commas. Using the mapIt()
 procedure imported from the [.mod]#sequtils# module and
@@ -1176,7 +1176,7 @@ knowledge is typically sufficient to convert a C program to another language. Of
 conversion process is supported by tools, like the Nim c2nim tool. So learning some C later
 is really a good idea, and when you have some basic understanding of Nim and CS in general,
 learning some C is an easy task. Learning C before Nim would be an option still, as for
-C more learning resources exists. So, years ago some people recommended learning C or Python
+C more learning resources exists. So, years ago, some people recommended learning C or Python
 before Nim. But Nim has enough learning resources now, so we recommend indeed starting with
 Nim directly.
 
@@ -1246,7 +1246,7 @@ But for the program execution there exists some exceptions, e.g. program code en
 is not immediately executed where it appears in the program source code file, but later
 when the function is called. And the program execution is not a linear process -- we can use
 conditional expressions to skip parts of the program, or various loop constructs to repeat
-the execution of some program segments. Actually the program execution in Nim is more
+the execution of some program segments. Actually, the program execution in Nim is more
 similar to languages like Python or Ruby than to the C language: A C program always
 needs a main() function with exactly this name, and the execution of a C program
 always starts by a compiler generated call of this function.
@@ -1271,7 +1271,7 @@ we have no idea for a meaningful name and when we intend to use that variable as
 counter in a loop.
 
 In the lines 3 and 4 of our program we initialize the variables, that is, we give
-them a well-defined initial value. To do that we use the [.op]#=# operator to
+them a well-defined initial value. To do that, we use the [.op]#=# operator to
 assign it a value. Operators are special symbols like [.op]#{plus}#, [.op]#-#,
 [.op]#{asterisk}# or [.op]#/# to indicate our desire to do an addition, a subtraction, a
 multiplication or a division. Note that the [.op]#=# operator is used in Nim like
@@ -1308,7 +1308,7 @@ for increment. [.func]#inc(a, b)# increases the value of [.var]#a# by [.var]#b#,
 in the above block [.var]#i# is increased by one, and after that [.var]#sum# is
 increased by the current value of [.var]#i#. So when that block has been executed for the
 first time, [.var]#i# has the value [.lit]#1# and [.var]#sum# also has the value
-[.lit]#1#. At the end of that block execution starts again at the line with the
+[.lit]#1#. At the end of that block, execution starts again at the line with the
 [.key]#while# condition, now testing the expression [.code]#i < 100# with [.var]#i#
 containing the value [.lit]#1#. Again it evaluates to [.lit]#true#, the block is
 executed again, [.var]#i# gets the new value [.lit]#2#, and [.var]#sum# gets the
@@ -1345,16 +1345,16 @@ For instance in mathematically expressions, [.code]#a - b# or [.code]#a-b# is bo
 the case when [.var]#a# and [.var]#b# both have a numeric type for which an infix subtraction operator is defined, but
 the code segment [.code]#a -b# may give us an error message from the compiler. The reason is, that in this case,
 the [.op]#-# sign is directly attached to [.var]#b# but separated to [.var]#a# by at least one space. In this
-case, the Nim compiler would interpret the [.op]#-# sign as an unary operator attached to [.var]#b#.
-Even in the case that such an unary [.op]#-# may have been defined before, then the operands
+case, the Nim compiler would interpret the [.op]#-# sign as a unary operator attached to [.var]#b#.
+Even in the case that such a unary [.op]#-# may have been defined before, then the operands
 [.var]#a# and [.var]#b# would be not separated by an infix operator, which is an invalid syntax in Nim.
 An expression like [.code]#a - -b# would be a valid syntax instead -- unary minus attached to [.var]#b#, and
-[.var]#a# and [.var]#(-b)# separated by an infix [.op]#-# operator. In this example we have learned already that the same symbol
+[.var]#a# and [.var]#(-b)# separated by an infix [.op]#-# operator. In this example, we have learned already that the same symbol
 can have a different meaning in the Nim language, depending on the context. For operators or
 functions, this is called overloading, which most modern programming languages use.
-This sensitivity to the asymmetrically use of spaces applies also to the [.term]#less than# operator that we used in the above example:
-[.code]#a < b# or [.code]#a<b# is the infix notation that we generally intend for a comparison operation, while [.code]#a <b# would be generally invalid code.
-For infix operators we generally put a space on each side, as this improves readability, but it is not really needed
+This sensitivity to the asymmetric use of spaces applies also to the [.term]#less than# operator that we used in the above example:
+[.code]#a < b# or [.code]#a<b# is the infix notation that we generally intend for a comparison operation, while [.code]#a <b# would be mostly invalid code.
+For infix operators we typically put a space on each side, as this improves readability, but it is not really needed
 and so some people do not insert these spaces. Unary operators, like the unary [.op]#-# sign, should always precede
 a variable or a literal without a space.
 
@@ -1365,8 +1365,8 @@ paper and pencil, and after the initial learning phase you just will do it right
 
 == Binary Numbers
 
-When we write numbers in ordinary life we generally use the decimal system with base
-10 and the 10 available digits 0, 1, ... 9. To get the value of a decimal number we
+When we write numbers in ordinary life we typically use the decimal system with base
+10 and the 10 available digits 0, 1, ... 9. To get the value of a decimal number, we
 multiply each digit with powers of 10 depending on the position of the digit and sum
 the individual terms. The rightmost digit is multiplied with 10^0, the next digit
 with 10^1, and so on. A literal decimal number like 7382 has then the numerical
@@ -1379,13 +1379,13 @@ only two available digits, which we write as [.term]#0# and [.term]#1#. A number
 binary representation is a sequence of these two digits. Like in the decimal system,
 the numerical value results from the individual digits and their position: The binary
 number [.term]#1011# has the numerical value [.term]#1 {asterisk} 2^0 {plus} 1 {asterisk} 2^1 {plus} 0 {asterisk} 2^2 {plus} 1
-{asterisk} 2^3#, which is 11 in decimal notation. For binary numbers the base is 2, so we
-multiply the binary digits by powers of two. Formally addition of two binary numbers
+{asterisk} 2^3#, which is 11 in decimal notation. For binary numbers, the base is 2, so we
+multiply the binary digits by powers of two. Formally, addition of two binary numbers
 works like we know it from the decimal system: we add the matching digits and take
 carry into account: [.term]#1001 {plus} 1101 = 10110# because we start by adding the two
 least significant digits of each number, which are both 1. That addition 1{plus}1 results
 in a carry and result 0. The next two digits are both zero, but we have to take the
-carry from the former operation into account, so result is 1. For the next position
+carry from the former operation into account, so the result is 1. For the next position,
 we have to add 0 and 1, which is just 1 without a carry. And finally we have 1 {plus} 1,
 which results in 0 with a carry. The carry generates one more digit, and we are done.
 In the decimal system with base 10 a multiplication with 10 is easily calculated by
@@ -1398,7 +1398,7 @@ We sum the digits multiplied with powers of the base. And if we multiply an arbi
 number with the base, each of these powers increases obviously by one. Write it on a
 piece of paper when it is not yet clear to you.]
 
-In the binary system we call the digits often [.ndef]#bits#, and we number the bits
+In the binary system we call the digits typically [.ndef]#bits#, and we number the bits
 from right to left, starting with 0 for the rightmost bit -- we say that the binary
 number 10010101 is an 8-bit number because writing that number in binary
 representation needs 8 digits. Often we imagine the individual bits as small bulbs, a
@@ -1411,12 +1411,12 @@ Groups of 8 bits are called a [.ndef]#byte#, and sometimes 4 bits are called a
 
 One, two, four or 8 bytes are sometimes called a [.ndef]#word#, where a word is an
 entity which the computer can process in one single instruction. When we have a CPU
-with 8 byte word size this means that the computer can for example add two variables,
+with 8 byte word size, this means that the computer can for example add two variables,
 each 8 byte in size, in one single instruction.
 
 Let us investigate some basic properties of binary numbers. Let us assume that we
 have an 8-bit word (a byte). An 8-bit word can have 2^8 different states, as each bit
-can be set or unset independently from the other bits. That corresponds to numbers 0
+can be set or unset independently of the other bits. That corresponds to numbers 0
 up to 255 -- we assume that we work with positive numbers only for now, we will come
 to negative numbers soon. An important property of binary numbers in computers is the
 wrapping around, which is a consequence of the fact that we have only a limited set
@@ -1426,19 +1426,19 @@ stored with that number of bits. When we then add again 1, we get an overflow. T
 run-time system may catch that overflow, so we get an overflow error, or the number
 is just reset to zero, as it may happen in our car when we manage to drive one
 million miles, or when the ordinary clock jumps from 23:59 to 00:00 of the next day.
-An useful property of binary numbers is the fact that we can easily invert all bits,
-that is replace set bits by unset ones and vice versa. Let us use the prefix
+A useful property of binary numbers is the fact that we can easily invert all bits,
+that is, replace set bits by unset ones and vice versa. Let us use the prefix
 [.term]#!# to indicate the operation of bit inversion, then [.term]#!01001100# is
 [.term]#10110011#. It is an obvious and useful fact that for each number x we get a
 number with all bits set when we add x and !x. That is [.term]#x {plus} !x = 11111111#
-when we consider a 8 bit word. And when we ignore overflow, then it follows that
+when we consider an 8 bit word. And when we ignore overflow, then it follows that
 [.term]#x {plus} !x {plus} 1 = 0# for each number x. That is a useful property, which we can
 use when we consider negative numbers.
 
 Now let us investigate how we can encode negative numbers in binary form. In the
 binary representation we have only two states available, 0 or 1, a set bit or an
 unset bit. But we have no unitary minus sign. We could encode the sign of a number in
-the topmost bit of a word -- when the topmost bit is set that indicates that the
+the topmost bit of a word -- when the topmost bit is set, that indicates that the
 number is regarded as negative. Generally a modified version of this encoding is used,
 called [.ndef]#{twocom}#: a negative number is constructed by first inverting all the
 bits -- a 0 bit is transferred into a 1 bit and vice versa -- and finally the number
@@ -1451,29 +1451,29 @@ subtraction is by definition the inverse operation of the addition, that is A {p
 = A for each number A and B, or in other words, B - B = 0 for each number B.
 
 Assume we have a CPU that can do additions and that can invert all the bits of a
-number. Can we do subtraction with that CPU? Indeed we can. Remember the fact that
+number. Can we do subtraction with that CPU? Indeed, we can. Remember the fact that
 for each number X [.term]#X {plus} !X {plus} 1 = 0# as long as we ignore overflow. If that
-relation is true for each number, than it is obviously true for each B in the
+relation is true for each number, then it is obviously true for each B in the
 expression A - B, and we can write A - B = A {plus} (B {plus} !B {plus} 1) - B = A {plus} (!B {plus} 1) when
 we use the fact that in mathematics addition and subtraction is associative, that is
 we can group the terms as we want. But the term in the parenthesis is just the
 {twocom}, which we get when we invert all bits of B and add 1. So to do a subtraction
 we have to invert the bits of B, and then add A and !B and 1 ignoring overflow. That
-may sound complicated, but bit inversion is a very cheap operation in a CPU, which is
+may sound complicated, but a bit inversion is a very cheap operation in a CPU, which is
 always available, and adding 1 is also a very simple operation. The advantage is that
-we do not need separate hardware for the subtraction operation. Generally
+we do not need separate hardware for the subtraction operation. Typically,
 subtraction in this way is not slower than addition because the bit inversion and the
 addition of 1 can be performed at the same time in the CPU as an ordinary addition.
 
-From the equation above indicating A - B = A {plus} (!B {plus} 1) it is obvious that we
+From the equation above, indicating A - B = A {plus} (!B {plus} 1) it is obvious that we
 consider the {twocom} (!B {plus} 1) as the negative of B. Note that the {twocom} of zero
 is again zero, and {twocom} of 00000001 is 11111111. All negative numbers in this
-system have a bit set to 1 at the leftmost position. This restrict all positive
+system have a bit set to 1 at the leftmost position. This restricts all positive
 numbers to all the bit combinations where the leftmost bit is unset. For an 8-bit
-word this means that positive numbers are restricted to the bits 00000000 to
+word, this means that positive numbers are restricted to the bits 00000000 to
 01111111, which is the range 0 to 127 in decimal notation. The {twocom} of decimal
-127 is 10000001. Seems to be fine so far, but note there exists also the bit pattern
-10000000 which is -128 in decimal. For that bit pattern there exists no positive
+127 is 10000001. Seems to be fine so far, but note that there exists also the bit pattern
+10000000 which is -128 in decimal. For that bit pattern, there exists no positive
 value. If we try to build the {twocom} of that bit pattern, we would get the same
 pattern again. This is an asymmetry of {twocom} representation, which can not be
 avoided. It generally is no problem, with one exception. We can never invert the sign
@@ -1494,10 +1494,10 @@ only the case when the initial value before bit inversion was zero. So the leftm
 bit remains set for all numbers except initial zero, and zero maps to zero again!]
 
 Summary: when we work only with positive numbers, we can store in an 8-bit word,
-which is generally called a byte, numbers from 0 up to 255. In a 16-bit word we could
+which is called a byte, numbers from 0 up to 255. In a 16-bit word we could
 store values from 0 up to 2^16 - 1, which is 65535. When we need numbers which can be
-also negative we have for 8-bit words the range from -128 to 127 available, which is
--2^7 up to 2^7 - 1. For a signed 16-bit word the range would be -2^15 up to 2^15 - 1.
+also negative, we have for 8-bit words the range from -128 to 127 available, which is
+-2^7 up to 2^7 - 1. For a signed 16-bit word, the range would be -2^15 up to 2^15 - 1.
 
 While we can work with 8 or 16-bit words, for PC programming the CPU usually supports
 32 or 64 bit words, so we have a much larger number range available. But when we
@@ -1509,16 +1509,16 @@ One important note at the end of this section: whenever we have a word with a
 specific bit pattern stored in the memory of our computer, then we can not decide
 from the bit pattern directly what type of data it is. It can be a positive or a
 negative number, but maybe it is not a number at all but a letter or maybe something
-totally different. As an example consider this 8 bit word: 10000001. It could be 129
+totally different. As an example, consider this 8 bit word: 10000001. It could be 129
 if we have stored intentionally positive numbers in that storage location, or could
 be -127 if we intentionally stored a negative value. Or it could be not a number at
-all. Is that a problem? No it is not as long as we use a programming language like
-Nim which use static typing. Whenever we are using variables we declare their type
+all. Is that a problem? No, it is not as long as we use a programming language like
+Nim which use static typing. Whenever we are using variables, we declare their type
 first, and so the compiler can do bookkeeping about the type of each variable stored
 in the computer memory. The benefit is, that we can use all the available bits to
 encode our actual data, and we do not have to reserve a few bits to encode the actual
-data type of variables. For languages without static typing that is not the case. In
-languages like Python or Ruby we can use variables without a static type, so we can
+data type of variables. For languages without static typing, that is not the case. In
+languages like Python or Ruby, we can use variables without a static type, so we can
 assign whatever we want to it. That seems to be comfortable at first, but can be
 confusing when we write larger programs and the Python or Ruby interpreter has to do
 all the bookkeeping at run-time, which is slow and wastes memory for the bookkeeping.
@@ -1534,7 +1534,7 @@ C99 it is defined that unsigned int types wrap around, while the behavior for si
 ints is undefined and depends on the actual implementation of the C compiler.] In a
 statically-typed language each variable has a well-defined type, and the compiler can
 ensure at compile time that all operations on that variables are valid. If an
-operation is not valid then the compiler will give an error message. Then when these
+operation is not valid, then the compiler will give an error message. Then when these
 operations are executed at run-time they are always valid operations, and the actual
 content, like the actual numeric value, does not matter.
 
@@ -1544,11 +1544,11 @@ These number type with base 16 is by far not that important than the binary numb
 and it has not really a technical justification to exist, but you may get in touch
 with these numbers from time to time. Hexadecimal numbers are mostly a legacy from
 early days of computers, where computer programming was done not in real programming
-languages but with numeric codes. To represent the 16 hexadecimal digits the 10
-decimal digits are supported by the characters 'A' .. 'F'. The most important
-property of a hexadecimal digit is that it can represent four bits, a unit halve of a
-byte which is called sometimes a nibble. In old times when it was necessary to type
-in binary numbers it was sometimes easier to encode a nibble with a hexadecimal
+languages but with numeric codes. To represent the 16 hexadecimal digits, the 10
+decimal digits are supported by the characters 'A' .. 'F'. The most significant
+property of a hexadecimal digit is that it can represent four bits, a unit half of a
+byte, which is called sometimes a nibble. In old times, when it was necessary to type
+in binary numbers, it was sometimes easier to encode a nibble with a hexadecimal
 digit:
 
 [cols=3*,options="header"]
@@ -1631,11 +1631,11 @@ characters like a newline character are sometimes specified in hexadecimal form 
 == Installation of the Compiler
 
 We will not describe in too much detail how you can install the Nim compiler, because
-that strongly depends on your operating system, and because the install instructions
+that strongly depends on your operating system, and because the installation instructions
 may change in the future. We assume that you have a computer with an installed
 operating system and internet access, and you are able to do at least very basic
-operations with your computer, such as switching it on, log in and and opening a web
-browser or a terminal window. If that is not the case then you really should ask
+operations with your computer, such as switching it on, log in and opening a web
+browser or a terminal window. If that is not the case, then you really should ask
 someone for help for this basic step, and maybe for some more help for other basic
 tasks.
 
@@ -1648,8 +1648,8 @@ forum for help: https://forum.nim-lang.org/
 If you are using a Linux operating system, then your system generally provides a
 package manager, which should make the installation very easy.
 
-For example for a Gentoo Linux system you would open a root terminal and simple type
-[.term]#emerge -av nim#. That command would install Nim including all necessary dependencies
+For example, for a Gentoo Linux system, you would open a root terminal and simple type
+[.term]#emerge -av nim#. That command would install Nim, including all necessary dependencies
 for you. It may take a few minutes as Gentoo compiles all packages fresh from source
 code, but then you are done. Similar commands exist for most other Linux
 distributions.
@@ -1657,21 +1657,21 @@ distributions.
 Another solution, which is preferable when you want to ensure that you get the most
 recent Nim compiler, is compiling directly from the latest git sources. That process
 is also easy and is described here: https://github.com/nim-lang/Nim. But before you
-can follow those instructions you have to ensure that the git software and a working
+can follow those instructions, you have to ensure that the git software and a working
 C compiler is available on your computer.
 
 == Creation of Source Code Files
 
 Nim source code, as most source code of other programming languages, is based on text
 files. Text files are documents saved on your computer that contain only ordinary
-letters which you can type on your keyboard. No images or videos, no HTML content
-with fancy CSS styling. Generally source code should contain only ordinary ASCII
-text, that is no umlauts or unicode characters.
+letters, which you can type on your keyboard. No images or videos, no HTML content
+with fancy CSS styling. Generally, source code should contain only ordinary ASCII
+text, that is, no umlauts or Unicode characters.
 
-To create source code we generally use a text editor, which is a tool designed for
-creating and modifying of plain text files. If you do not have a text editor yet you
+To create source code, we typically use a text editor, which is a tool designed for
+creating and modifying of plain text files. If you do not have a text editor yet, you
 may also use a word processor for writing some source code, but then you have to
-ensure that the file is finally saved as plain ASCII text. Editors generally support
+ensure that the file is finally saved as plain ASCII text. Editors typically support
 syntax highlighting, that is keywords, numbers and such are displayed with a unique
 color or style to make it easier to recognize the content. Some editors support
 advanced features like checking for errors while you type the program source code.
@@ -1679,9 +1679,9 @@ advanced features like checking for errors while you type the program source cod
 A list of recommended editors is available at https://nim-lang.org/faq.html
 
 If you do not want to use a special editor now, then for Linux gedit or at least
-[.term]#nano# should be available. For Windows maybe something like notepad.
+[.term]#nano# should be available. For Windows, maybe something like notepad.
 
-Generally we store our Nim source code files in its own directory, that is a separate
+Typically, we store our Nim source code files in its own directory, that is a separate
 section of your hard-disk. If you work on Linux in a terminal window, then you can
 type
 
@@ -1693,20 +1693,20 @@ gedit test.nim
 ----
 
 You type these commands in the terminal window and press the [.term]#return# key
-after each of the above lines -- that is you type [.term]#cd# on your keyboard and
+after each of the above lines -- that is, you type [.term]#cd# on your keyboard and
 then press the [.term]#return# key to execute that command. The same for the next
 three commands. What you have done is this: you go to your default working area
 (home directory), then create a subarea named mynimfiles, then you go into that
-subarea and finally you launch the gedit editor -- the argument test.nim tells gedit
+subarea, and finally you launch the gedit editor -- the argument test.nim tells gedit
 that you want to create a new file called test.nim. If gedit is not available, or if
 you work on a computer without a graphical user interface, then you may replace the
 gedit command by nano. While gedit opens a new window with a graphical interface,
 nano opens only a very simple interface in the current terminal. An interesting
 editor without a GUI is vim or neovim. That is a very powerful editor, but it is
-difficult to learn and it is a bit strange as you have a command mode and an ordinary
+difficult to learn, and it is a bit strange as you have a command mode and an ordinary
 text input mode available. For neovim there is very good Nim support available.
 
-If you do not want to work from a terminal, or if you are using Windows or MAC OS,
+If you do not want to work from a terminal, or if you are using Windows or macOS,
 then you should have a graphical user interface which enables you also to create a
 directory and to launch an editor.
 
@@ -1714,22 +1714,22 @@ When the editor is opened, you can type in the Nim source code from our previous
 example and save it to a file named test.nim. Then you can terminate the editor.
 
 Note that the [.term]#return# key behaves differently in editors than in the terminal
-window: In the terminal window you type in a command and finally press the return key
-to "launch" or execute the command. In an editor the return key is not that special:
-if you press ordinary keys in your editor, than that key is inserted and the cursor
-moves one position to the right. And when you press the return key then an invisible
+window: In the terminal window, you type in a command and finally press the return key
+to "launch" or execute the command. In an editor, the return key is not that special:
+if you press ordinary keys in your editor, then that key is inserted and the cursor
+moves one position to the right. And when you press the return key, then an invisible
 newline character is inserted and the cursor moves to the start of the next line.
 
 == Launching the compiler and running the program
 
-If you are working from a Linux terminal then you can type
+If you are working from a Linux terminal, then you can type
 
 ----
 ls -lt
 cat test.nim
 ----
 
-That is you first show the content of your directory with the ls command and then
+That is, you first show the content of your directory with the ls command and then
 display the content of the Nim source code file that you just have typed in with the
 cat command.
 
@@ -1754,7 +1754,7 @@ typing
 ./test
 ----
 
-In your terminal window you see a number now, which is the sum of the numbers 1 to
+In your terminal window, you see a number now, which is the sum of the numbers 1 to
 100.
 
 ****
@@ -1764,16 +1764,16 @@ computer without such a prefix. The prefix is generally needed to protect you an
 your computer from erroneously launching a program in the current directory while
 you intended to launch a system command. Imagine you downloaded a zip file from
 internet, extract it, cd into the extracted directory and type [.term]#ls# to see the
-directory content. Imagine now that the directory contains an executable named ls
+directory content. Imagine now that the directory contains an executable named ls,
 which is executed instead of system [.term]#ls#. That foreign ls command may damage
 your system. So to execute non system commands, you generally have to use the prefix
-[.term]#./# where the period refers to the current directory. Of course you can
-install your own programs in a way that you don't need such a prefix any more -- just
+[.term]#./# where the period refers to the current directory. Of course, you can
+install your own programs in a way that you don't need such a prefix anymore -- just
 ask your Mom or Grandma if you don't know yourself already.
 ****
 
-If you have not managed to open a terminal where you can invoke the compiler -- well
-maybe then you should install some of the advanced editors like VS-Code. They should
+If you have not managed to open a terminal where you can invoke the compiler -- well,
+maybe then you should install some advanced editors like VS-Code. They should
 be able to launch the compiler and run the program from within the editor directly.
 
 The command
@@ -1787,9 +1787,9 @@ can infer that file extension. This command compiles our program in default debu
 uses the C compiler back end and generates a native executable. Debug mode means,
 that the generated executable contains a lot of checks, like array index checks,
 range checks, nil dereference checks and many more. The generated executable will run
-not very fast and it will be large, but when your program has bugs then the program
+not very fast, and it will be large, but when your program has bugs, then the program
 will give you a meaningful error message in most cases. Only after you have tested
-your program carefully you may consider compiling it without debug mode. You may do
+your program carefully, you may consider compiling it without debug mode. You may do
 that with
 
 ----
@@ -1803,25 +1803,25 @@ backend optimization by passing the option "-O3" to the C compiler backend, givi
 very fast and small executable file. The option -d:danger removes all checks, it
 includes -d:release. You should be aware that compiling with -d:danger means that
 your program may crash without any useful information, or even bad, may run, but
-contain uncatched errors like overflows and so may give you wrong results. Generally
+contain uncatched errors like overflows and so may give you wrong results. Generally,
 you should compile your program with plain [.term]#nim c# first. When you have tested
-it well and you may need the additional performance, you may switch to -d:release
+it well, and you may need the additional performance, you may switch to -d:release
 option. For games, benchmarks or other uncritical stuff you may try -d:danger.
 
 There exists many more compiler options, you can find them explained in the Nim
-manual or you may use the command nim --help and nim --fullhelp to get them
+manual, or you may use the command nim --help and nim --fullhelp to get them
 displayed. One important new option is --gc:arc to enable the new deterministic
 memory management. You may combine --gc:arc with -d:useMalloc to disable Nim's own
 memory allocator, this reduces the executable size and enables the use of Valgrind to
 detect memory leaks. Similar to --gc:arc is the option --gc:orc which can deal with
-cyclic data structures. Finally a very powerful option is --passC:-flto. This option
+cyclic data structures. Finally, a very powerful option is --passC:-flto. This option
 is for the C compiler backend and enables link time optimization (LTO). LTO enables
 inlining for all procedure calls and can significantly reduce the final program size.
-For a recent Nim compiler version instead of --passC:-flto also -d:lto can be used.
+For a recent Nim compiler version, instead of --passC:-flto also -d:lto can be used.
 We should mention that you can also try the {cpp} compiler backend with the cpp command
 instead of plain c command, and that you may compile with clang backend instead of
-default gcc backend with the --cc:clang option. You can additional specify the option
--r to immediately run the program after successful build. For testing small scripts
+default GCC backend with the --cc:clang option. You can additional specify the option
+-r to immediately run the program after successful build. For testing small scripts,
 the compiler invocation in the form "nim r myfile.nim" can be used to compile and run
 a program without generation of a permanent executable file. Here is an example how
 we use all these options:
@@ -1830,29 +1830,29 @@ we use all these options:
 nim c -d:release --gc:arc -d:useMalloc --passC:-flto --passC:-march=native board.nim
 ----
 
-In this example we additional pass -march=native to the C compiler backend to enable
+In this example, we additionally pass -march=native to the C compiler backend to enable
 use of the most efficient CPU instructions of our computer, which may result in an
-executable that will not run on older hardware. Of course we can save all these
-parameters in configuration files, so that we don't have to actual type then for each
+executable that will not run on older hardware. Of course, we can save all these
+parameters in configuration files, so that we don't have to actually type then for each
 compiler invocation. You may find more explanations to all the compiler options in
-the Nim manual or in later sections of this book, this includes the options for the
+the Nim manual, or in later sections of this book, this includes the options for the
 JavaScript backend.
 
 = Part II: The Basics
 
-In this part we will introduce the most important constructs of the Nim programming
+In this part we will introduce the most essential constructs of the Nim programming
 language, like statements and expression, conditional and repeated execution,
-functions and procedures, iterators, templates, exceptions and we will discuss
+functions and procedures, iterators, templates, exceptions, and we will discuss
 various basic data types including the basic container types array, sequence and
 string.
 
 == Declarations
 
 We can declare constants, variables, procedures or our custom data types.
-Declarations are used to give information to the compiler, for example about the type
+Declarations are used to give information to the compiler, for example, about the type
 of a variable that we intend to use.
 
-We will explain type and procedure declarations in later sections. Currently only
+We will explain type and procedure declarations in later sections. Currently, only
 constant and variable declarations are important.
 
 A constant declaration in its simplest form maps a symbolic name to a value, like
@@ -1863,7 +1863,7 @@ const Pi = 3.1415
 ----
 
 We use the reserved word [.key]#const# to tell the compiler that we want to declare a
-constant which we have named Pi and we assign it the numeric decimal value 3.1415.
+constant which we have named Pi, and we assign it the numeric decimal value 3.1415.
 Nim has a small set of reserved words like [.key]#var, const, proc, while# and
 others, to tell the compiler that we want to declare a variable, a constant, a
 procedure or that we want to use a while loop for some repeated execution.
@@ -1879,7 +1879,7 @@ easy to type on the keyboard and looks a bit angry for sensible people. And sour
 code usually contains a lot of assignments, so use of [.op]#=# makes some sense. We
 call [.op]#=# an operator. Operators are symbols which perform some basic operation,
 like [.op]#{plus}# for the addition of two numbers, or [.op]#=# for the assignment of a
-value to a symbol. With the above constant declaration we can use the symbol
+value to a symbol. With the above constant declaration, we can use the symbol
 [.term]#Pi# in our program's source code and don't have to remember or retype the
 exact sequence of digits. Using named constants like our Pi above makes it easy to
 modify the value -- if we notice that we need more precision, we can look up the
@@ -1890,7 +1890,7 @@ For numeric constants like our [.var]#Pi# value the compiler will do a substitut
 source code when the program is compiled, so where we write the symbol [.var]#Pi#
 the actual numeric value is used.
 
-For constant declarations it must be possible to determine its value at compile time.
+For constant declarations, it must be possible to determine its value at compile time.
 Expressions assigned to constants can contain simple operations like basic math, but
 some functions calls may be not allowed.
 
@@ -1909,18 +1909,18 @@ predefined numeric type indicating a signed integer type. The storage capacity o
 integer variable depends on the operating system of your computer. On 32-bit systems
 32 bits are used, and on 64-bit systems 64 bits are used to store one single integer
 variable. That is enough for even large signed integer numbers: the range is [.lit]#-2^31#
-up to [.lit]#2^31 - 1# for 32 bit systems and [.lit]#-2^63# up to [.lit]#2^63 - 1# for 64-bit systems.
+up to [.lit]#2^31 - 1# for 32-bit systems and [.lit]#-2^63# up to [.lit]#2^63 - 1# for 64-bit systems.
 
-For variables we generally use lower case names, but names of constants may start
+For variables, we generally use lower case names, but names of constants may start
 with an upper case letter.
 
 ****
-In some of the Nim documentation and in this book the terms [.ndef]#declaration# and [.ndef]#definition# may be
-used alternately, which is not fully correct. Precisely a declaration is a statement that something exists, while
+In some Nim documentation and in this book, the terms [.ndef]#declaration# and [.ndef]#definition# may be
+used alternately, which is not fully correct. Precisely, a declaration is a statement that something exists, while
 a definition is a more detailed description. In the C programming language we differentiate between a
 function declaration, which describes only the name of the function and the number and data types of its parameters, and
 a function definition, which also has to specify the names of the function parameters as well
-as the source code of the function body. In Nim function declarations are not used that often, as
+as the source code of the function body. In Nim, function declarations are not used that often, as
 they are only really needed when two functions call each other. For that case we declare the first function, so
 that we can already use it in the definition of the other function, before we finally also define the first function.
 For other entities like constants, variables, data types or modules a distinction between the terms
@@ -1929,10 +1929,10 @@ declaration and definition makes not that much sense, that is why we may use bot
 
 == Statements
 
-Statements, or instructions are a core component of Nim programs: they tell the
+Statements, or instructions, are a core component of Nim programs: they tell the
 computer what it shall do. Often statements are procedure calls, like the call of the
-[.func]#echo()# or [.func]#inc()# procedure which we have already seen in part I of
-the book. We will learn what procedures exactly are we will learn in later sections. For now, we
+[.func]#echo()# or [.func]#inc()# procedure, which we have already seen in part I of
+the book. We will learn what procedures exactly are in later sections. For now, we
 just regard procedures as entities that perform a well-defined task for us when we
 call (or invoke) them. We call them by just writing their name in our source file, followed
 by a list of parameters, also called arguments. When we write [.code]#echo 7# then
@@ -1941,7 +1941,7 @@ this case. When the parameter list has more than one argument, then we separate
 the arguments with a comma each, and generally we put an optional space after that comma.
 The effect of our procedure call is that the decimal number 7 is written
 to the terminal when we run the program after compilation. While in languages like
-C the parameter list has to be always enclosed in brackets, in Nim we can often leave the
+C the parameter list has to be always enclosed in brackets, in Nim we can frequently leave the
 brackets out, which is called command invocation syntax.
 
 [source, nim]
@@ -1956,7 +1956,7 @@ or when a procedure has only one single argument. For multiple
 arguments, or when the argument is a complicated expression, the use
 of brackets may be preferable. Some coding styles of other programming
 languages, like C, sometimes put a space between the procedure name and
-the opening bracket. For Nim we should not do that, the reason will become clear
+the opening bracket. For Nim, we should not do that, the reason will become clear
 when we later explain the tuple data type. A few procedures have no parameters at all.
 When we call these functions, we have to use always the syntax [.func]#myProc()# with an empty
 pair of brackets, to make it for the compiler clear that we want to call that function.
@@ -1979,7 +1979,7 @@ echo(cos(0) + 2)
 ----
 
 The Nim program above consists of a variable declaration and three statements: in the
-first line we declare the variable we want to use. In the next line we assign the
+first line, we declare the variable we want to use. In the next line we assign the
 value [.lit]#2 {plus} 3# to it, and finally in line 3 we use the procedure
 [.func]#echo()# to display the content of our variable in the terminal window.
 In the last line we use again the [.func]#echo# procedure with an ordinary parameter list
@@ -1994,7 +1994,7 @@ as the cos() function has to be imported from the [.mod]#math# module. A first l
 
 Nim programs are generally processed from top to bottom by the compiler, and when we
 execute the program after successful compilation, then it also executes from top to
-button. A consequence of this is that we have to write the lines of above program
+button. A consequence of this is that we have to write the lines of the above program
 exactly in that order. If we moved the variable declaration down, then the compiler
 would complain about an undeclared variable because the variable is used before it
 has been declared. If we exchanged lines 2 and 3, then the compiler would be still
@@ -2016,10 +2016,10 @@ var
   age: int
 ----
 
-These blocks are also called sections, .e.g. const section or var section, as known from the wirthian languages.
+These blocks are also called sections, e.g. const section or var section, as known from the wirthian languages.
 Note the indentation -- the lines after [.key]#const# and [.key]#var# start with some space
 characters, so they build a block which allows the compiler to detect where the
-declaration ends. Generally we use two spaces for each level of indentation. Other
+declaration ends. Typically, we use two spaces for each level of indentation. Other
 numbers would work also, but the indentation scheme should be consistent. Two spaces
 is the general recommendation, as it is clearly recognizable for humans in the source
 code, and because it doesn't waste too much space, that is, it would not generate
@@ -2039,7 +2039,7 @@ a = 2 * a + # <2>
   a * a
 ----
 <1> two statements separated by a semicolon on a single line
-<2> a longer math expression split over multiple lines. An operator as last character on a line indicates
+<2> a longer math expression split over multiple lines. An operator as the last character on a line indicates
 that the expression continues on the next, indented line.
 
 We can also declare multiple variables of the same type in one single declaration,
@@ -2069,20 +2069,20 @@ var
 ----
 
 The compiler recognizes in this case that we assign an integer literal to that
-variable and so silently gives the variable the [.type]#int# type for us. Type inference can
+variable, and so silently gives the variable the [.type]#int# type for us. Type inference can
 be comfortable, but may make it harder for readers to understand the code, or the
-type inference may not always do exactly what we want. For example in the above code
+type inference may not always do exactly what we want. For example, in the above code,
 year gets the type int, which is a signed 4 or 8 byte number. But maybe we would
 prefer an unsigned number, or a number which occupies only two bytes in memory. So
 use type inference with some caution.
 
-Note: For integral data we mostly use the int data type in Nim, which is a signed
+Note: For integral data, we mostly use the int data type in Nim, which is a signed
 type with 4 or 8-byte size. It usually does not make sense to use many different
 integral types -- signed, unsigned, and types of different byte size. Mixing them in
-numerical expressions can be confusing and maybe even decrease performance, because
+numerical expressions can be confusing and potentially even decrease performance, because
 the computer may have to do type conversion before it can do the math operation. For
 unsigned types, another problem is that math operations on unsigned operands could
-have a negative result. Consider the following example where we use a hypothetical
+have a negative result. Consider the following example, where we use a hypothetical
 data type "unsigned int" to indicate unsigned integers:
 
 [source, nim]
@@ -2098,8 +2098,8 @@ negative content. So what should happen -- an incorrect result or a program
 termination?
 
 Related to variable declarations is the initial start value of variables. Nim clears
-for us all the bits of our variables when we declare them, that is, numbers get
-always the initial start value zero if we do not assign a different value in the
+for us all the bits of our variables when we declare them, that is, numbers
+always get the initial start value zero if we do not assign a different value in the
 variable declaration.
 
 In this declaration
@@ -2124,21 +2124,21 @@ the assignment occurs only once, the content does not change later, during the p
 variable is immutable. Use of the [.key]#let# keyword may help the human reader of the
 source code with understanding what is going on, and it may also help the compiler doing
 optimizations to get faster, or more compact code. For now, we can just ignore [.key]#let#
-declarations and use [.key]#var# instead -- later ,we may use [.key]#let# where appropriate, and the
-compiler will tell us when [.key]#let# will not work and we have to use [.key]#var#.
+declarations and use [.key]#var# instead -- later, we may use [.key]#let# where appropriate, and the
+compiler will tell us when [.key]#let# will not work, and we have to use [.key]#var#.
 
 ****
 The way how we declare constants, variables, types and procedures in Nim is very
 similar as it was done in the wirthian languages Pascal, Modula and Oberon. People
-coming from languages like C argue sometimes that C uses a shorter and better
-variable declaration of the form [.code]#int velocity;# instead Nim's [.code]#var
-velocity: int#. Indeed that declaration is shorter in this case. And some people
+coming from languages like C sometimes argue that C uses a shorter and better
+variable declaration of the form [.code]#int velocity;# instead of Nim's [.code]#var
+velocity: int#. Indeed, that declaration is shorter in this case. And some people
 like it better that the data type is written first, they consider the data type more
 important than the name of the variable. That is a matter of taste, and the C
 notation would not work well for var/let/const distinction and for type declarations.
 ****
 
-With what we have learned in this section we can rewrite our initial Nim example from
+With what we have learned in this section, we can rewrite our initial Nim example from
 part I in this form:
 
 [source,nim]
@@ -2153,13 +2153,13 @@ while i < Max:
 echo sum
 ----
 
-In the code above we declare both variables of type [.type]#int# in a single line and take
+In the code above, we declare both variables of type [.type]#int# in a single line and take
 advantage of the fact that the compiler will initialize them with [.lit]#0# for us. And we
 use a named constant for the upper loop boundary. Another tiny fix is that we write
 [.code]#inc(i)# instead of [.code]#inc(i, 1)#. We can do that because there exists
 multiple procedures with the name [.func]#inc()# -- one which takes two arguments,
 and one which takes only one argument and always increases that argument by one.
-Procedures with the same name but different parameter lists are called overloaded procedures.
+Procedures with the same name, but different parameter lists, are called overloaded procedures.
 Instead of [.code]#inc(i)# we could have written also [.code]#i = i {plus} 1# and instead
 of [.code]#inc(sum, i)# we could write [.code]#sum = sum {plus} i#. That would generate
 identical code in the executable, so we can use whatever we like better.
@@ -2169,23 +2169,23 @@ identical code in the executable, so we can use whatever we like better.
 We have already used the [.func]#echo()# procedure for displaying textual output in the terminal
 window. In the code examples of the previous sections we always passed arguments of integer
 type to the [.func]#echo# [.proc]#{proc}#, and the [.func]#echo# [.proc]#{proc}# automatically converted the integer numbers
-to a textual sequence of decimal digits, so that we could read it in the terminal. In the Nim programming language text is a predefined, built in
+to a textual sequence of decimal digits, so that we could read it in the terminal. In the Nim programming language, text is a predefined, built in
 data type that is called [.ndef]#string#. We will learn all the details of the string data type in the next section,
 for now it is sufficient that it exists and that we can use the [.func]#echo()# [.proc]#proc# to print text strings.
 The [.func]#echo()# [.proc]#{proc}# has the ability to convert other data types like numbers or the boolean data type (true/false)
-automatically to human readable text strings,
+automatically to human-readable text strings,
 so that we can read the output in the terminal. Recall that most data types are stored internally in our computer
-as bits and bytes, which have no true human readable representation by default. Numbers, as most other data
+as bits and bytes, which have no true human-readable representation by default. Numbers, as most other data
 types stored in the computer, are actual abstract entities. We have learned already that all data in the computer
-is internally stored in binary form, that is as a bit pattern of [.lit]#0# and [.lit]#1#. But even that bit pattern is still an abstraction, we would
-need a procedure that prints a [.lit]#0# for each unset bit and a [.lit]#1# for each set bit to display the content of an internally stored
-number in binary form in the terminal or elsewhere. In the same way we need a procedure to print an internally stored number
-as a human readable sequence of decimal digits.
+is internally stored in binary form, that is, as a bit pattern of [.lit]#0# and [.lit]#1#. But even that bit pattern is still an abstraction, we would
+require a procedure that prints a [.lit]#0# for each unset bit and a [.lit]#1# for each set bit to display the content of an internally stored
+number in binary form in the terminal or elsewhere. In the same way, we require a procedure to print an internally stored number
+as a human-readable sequence of decimal digits.
 Even text strings are internally stored as abstract bit patterns, and we need
 conversion [.proc]#{procs}# to print the content for us as ordinary text. All that can be done by the [.func]#echo# [.proc]#{proc}#,
 but we do not care for the actual details at this point of the book.
 
-For our further experiments we may also want to be able to enter some user data
+For our further experiments, we may also want to be able to enter some user data
 in the terminal. As we do not know much about the various available data types and the
 [.proc]#{procs}# that can be used to read them in, we will just present a procedure that can read in
 a text string that the user has typed in the terminal window.
@@ -2206,12 +2206,12 @@ with the [.func]#echo()# [.proc]#{proc}#. To mark text literals unambiguously an
 from other literals like numeric literals or from variables, the string literals have to
 be enclosed in quotation marks.
 In
-the second line of our example program we use the [.func]#readLine()# function to read textual user input.
+the second line of our example program, we use the [.func]#readLine()# function to read textual user input.
 Note that we call [.func]#readLine()# a function, not a procedure, to emphasize that it returns a value.
 The [.func]#readLine()# function needs one parameter to know from where it should read --
-from the terminal window or from a file for example. The [.var]#stdin# parameter
+from the terminal window or from a file, for example. The [.var]#stdin# parameter
 indicates that it should read from the current terminal window -- [.var]#stdin# is a global
-variable of the [.mod]#system# ([.mod]#io#) module and indicates the standard input stream. Finally
+variable of the [.mod]#system# ([.mod]#io#) module and indicates the standard input stream. Finally,
 in line 3 we use again the [.func]#echo()# procedure to print some text. In this case
 we pass two arguments to [.func]#echo()#, a literal text enclosed in quotes, and then
 separated by a comma, the [.var]#mytext# variable. The [.var]#mytext# variable has
@@ -2223,11 +2223,11 @@ useful predefined data types in the next section.
 
 ****
 Nim supports the [.ndef]#method call syntax#, which was earlier called
-[.ndef]#Uniform Function Call Syntax# in the D programming language. With that syntax we can
+[.ndef]#Uniform Function Call Syntax# in the D programming language. With that syntax, we can
 write procedure calls in the form [.code]#a.f# instead of [.code]#f(a)#. We will discuss that syntax in
-more detail when we explain {profus}. For now it is enough that you know about the
+more detail when we explain {profus}. For now, it is enough that you know about the
 existence of that syntax, as we may use it at some places in the following sections.
-For example for the length of text strings we generally write [.code]#myTextString.len#
+For example, for the length of text strings, we generally write [.code]#myTextString.len#
 instead of [.code]#len(myTextString)#. Both notations are fully equivalent.footnote:[
 Here [.func]#len()# is a predefined function of the Nim standard library, len() is short for length,
 and that function returns the actual length of a text string as an integer value.]
@@ -2235,13 +2235,13 @@ and that function returns the actual length of a text string as an integer value
 
 When you try the example code from above, you may want a variant of it that does read
 in the textual input not on its own line, but directly after the prompt like "What is your name: Nimrod".
-As the [.func]#echo# [.proc]#{proc}# writes always a newline character after the last argument has been written, we have
+As the [.func]#echo# [.proc]#{proc}# always writes a newline character after the last argument has been written, we have
 to use a different function to get the input prompt on the same line. We can use the [.func]#write()# [.proc]#{proc}#
 from the [.mod]#system# module for this. As [.func]#write()# can not only write to the terminal, but also to files,
 it needs an additional parameter which specifies the destination. We can pass the variable [.var]#stdout#
-from the [.mod]#system# module to indicate that write() should write to our terminal window. Another desire of beginners is generally,
+from the [.mod]#system# module to indicate that write() should write to our terminal window. Another desire of beginners is, generally,
 to have the ability to read single character input without the need to press additional the return key.
-For that we can use the getch() function from the [.mod]#terminal# module -- that functions waits (blocks) until
+For that, we can use the getch() function from the [.mod]#terminal# module -- that functions waits (blocks) until
 a key is pressed and returns the ASCII character of the pressed key:
 
 [source,nim]
@@ -2271,32 +2271,32 @@ character, after all the arguments have been printed.
 The most fundamental data type -- in real life and in computer science -- are integer (whole) numbers.
 All other numeric data types, like fractional, floating point or complex numbers,
 and other fundamental types like the boolean type with its two values [.lit]#true# and [.lit]#false#, or character and
-text string types, can be represented as integers. For that reason the early computers built in the 1950's
+text string types, can be represented as integers. For that reason, the early computers built in the 1950s
 as well as today's tiniest {uc}s work internally only with integer numbers. As all CPUs are
 able to do basic bit operations like setting or clearing individual bits, and as bit patterns
-map well to mathematical sets, set data types are well supported by all CPUs, and so
+map well to mathematical sets, set data types are well-supported by all CPUs, and so
 [.type]#set# operations are generally very efficient.
 Advanced computers
-built in the 1980's got support for the important class of floating point numbers by special
+built in the 1980s got support for the important class of floating point numbers by special
 floating point processors for fast numerical computations. These floating point units are
-today generally integrated into the CPU, and GPUs can even process many floating point operations in parallel,
-where the precision is often restricted to ranges needed for games and graphics animation, that is 32 or even 16 bit.
+today typically integrated into the CPU, and GPUs can even process many floating point operations in parallel,
+where the precision is typically restricted to ranges needed for games and graphics animation, that is 32 or even 16 bit.
 Modern CPUs have often also some form of support for vector data types to process multiple
-values in one instruction (SIMD, Single instruction, multiple data).
+values in one instruction (SIMD, single instruction, multiple data).
 
 None numeric types like characters or text strings are internally represented by integer numbers --
-in the C language the data type to present text strings is called char, but it is indeed only a 8 bit
+in the C language the data type to present text strings is called char, but it is indeed only an 8-bit
 integer type which supports all the mathematical operations defined for ordinary int types. In Nim and
-the wirthian languages most math operations are not directly allowed for the [.type]#char# data type,
-which should prevent misuse and allows to catch logical errors by the compiler.
+the wirthian languages, most math operations are not directly allowed for the [.type]#char# data type,
+which should prevent misuse and allows catching logical errors by the compiler.
 
 Nim supports also
 some built in homogeneous container types like arrays and sequences, and many built in derived types
 like enums, sub-ranges and slices, distinct types and view types (experimental).
-The built in inhomogeneous container types object and tuple, which allow
+The built-in inhomogeneous container types object and tuple, which allow
 to group other types, are supported by a variant type container, which allows
 instances of that type to contain different child types at runtime. These inhomogeneous container types
-are similar as the struct and union types from the C programming language.
+are similar to the struct and union types from the C programming language.
 
 Other basic and advanced data types like complex and fractional numbers, types with arbitrary-precision arithmetic as well as
 hash sets and hash tables, dynamically linked list or tree structures are available through the Nim standard library
@@ -2304,7 +2304,7 @@ or external packages. And of course we are able to define our own custom data ty
 procedures working on them.
 
 Note that all the data types that are build into the language, like the primitive types int, float or char, as well
-as the built in container types like tuple, object, seq and string, are written in lower case, while
+as the built-in container types like tuple, object, seq and string, are written in lower case, while
 data types that are defined by the Nim standard library or that we define our self, by convention starts
 with a capital letter like the CountTables type defined in the [.mod]#tables# module. Some people may regard this as an inconsistency,
 some may say that in this way we can differentiate built in types from types defined by libraries. At least we may agree
@@ -2323,21 +2323,21 @@ integers: [.type]#int8#, [.type]#int16#, [.type]#int32# and [.type]#int64# are s
 types with well-defined bit and byte size, and [.type]#uint8#, [.type]#uint16#,
 [.type]#uint32# and [.type]#uint64# are the unsigned equivalents. The number at the
 end of the type name is the bit size; we get the byte size when we divide that value
-by [.lit]#8#. Additional we have the type [.type]#uint#, which corresponds to [.type]#int#
-and has same size, but stores unsigned numbers only. footnote:[When we are using the
+by [.lit]#8#. Additionally, we have the type [.type]#uint#, which corresponds to [.type]#int#
+and has the same size, but stores unsigned numbers only. footnote:[When we are using the
 term "size" here, this means how much space an instance of that type occupies in the RAM of the
 computer. A type of size 4 would occupy 4 bytes of the RAM of your computer.]
-Generally we should try to use the [.type]#int# type for all integral numbers, but sometimes it
+Generally, we should try to use the [.type]#int# type for all integral numbers, but sometimes it
 can make sense to use the other types. For example, when you have to work with a
 large collection of numbers, you know that each number is not very big, and your RAM
 is not really that large, then you may decide for example to use [.type]#int16# for
-all your numbers. Or when you know that your numbers will be really big and will not
+all your numbers. Or when you know that your numbers will be huge and will not
 fit in a 4 byte integer, then you may use the [.type]#int64# type to ensure that the
 numbers fit in that type even when your program is compiled and executed on a
-computer with a 32 bit OS.
+computer with a 32-bit OS.
 
 For integer numbers we have the predefined operators [.op]#{plus}#, [.op]#-# and [.op]#{asterisk}#
-available for addition, subtraction and multiplication. Basically these operations
+available for addition, subtraction and multiplication. Basically, these operations
 works as we may expect, but we have to remember that we may get overflows. For signed
 ints we get compile- or run-time errors in that case, while unsigned ints just wrap
 around, see example at the end of this section. For division of integers we have the
@@ -2377,19 +2377,19 @@ Result of i mod j
  4  0  1  0  0     0  0  1  0
 ----
 
-When performance matters we generally should try to use the "CPU native" number type
+When performance matters we generally should try to use the "CPU native" number type,
 what for Nim is the [.type]#int# type. And we should try to avoid using math expressions with
 different types, as the CPU may have to do type conversion in that case before the
-math operation can be applied. Adding two [.type]#int8# types can on some CPU's be slower than
+math operation can be applied. Adding two [.type]#int8# types can on some CPUs be slower than
 adding two [.type]#ints#, because the CPU may have to size extend the operands before the math
 operation is performed. But this depends on the actual CPU, and there are important
 exceptions: Multiplying two ints would result in an int128 result if int size is 64
 bit, which can be slow when the CPU does not support that operation well. Another
-important point to consider for maximum performance is the cache usage. If you are
+essential point to consider for maximum performance is the cache usage. If you are
 performing operations on a large set of data, then you may get a significant
 performance gain when large fractions of your data fits in the caches of your
 computer, as cache access is much faster than ordinary RAM access. So using smaller
-data types, i.e. [.type]#int32# instead Nim's default [.int]#int# which is int64 on a 64 bit OS may
+data types, i.e. [.type]#int32# instead Nim's default [.int]#int# which is int64 on a 64-bit OS, may
 increase performance in this special application.
 
 When we use Nim on tiny {uc}s, maybe even on 8-bit controllers like the popular AVR
@@ -2425,7 +2425,7 @@ var
 echo g, typeof(g)
 ----
 
-In arithmetic expressions integer types of different sizes are generally compatible
+In arithmetic expressions, integer types of different sizes are generally compatible
 when all the types are signed or unsigned, e.g.
 in the example code from above we could write [.code]#echo a {plus} b {plus} c#, and
 typeof(a {plus} b {plus} c) is int64, that is the expression is propagated to
@@ -2433,10 +2433,10 @@ the largest type of all the involved operands. But [.code]#echo a {plus} b {plus
 would not compile, as for such a mix of signed and unsigned operands it is
 not clear if signed or unsigned arithmetic should be used.
 Also note that
-even on a 64 bit OS [.code]#echo typeof(a) is typeof(b)# would print [.lit]#false#.
+even on a 64-bit OS, [.code]#echo typeof(a) is typeof(b)# would print [.lit]#false#.
 
-An important property of the current Nim implementation of A. Rumpf used with the C
-backend is the fact that unsigned integers does not generate overflow errors but
+An important property of the current Nim implementation of A. Rumpf, used with the C
+backend, is the fact that unsigned integers does not generate overflow errors but
 simple wrap around:
 
 [source, nim]
@@ -2448,23 +2448,23 @@ while true:
   echo x
 ----
 
-Above code would print the numbers [.lit]#0# up to [.lit]#127# and then terminate program execution
-due to an overflow error. But when we change the data type to [.type]#uint8# we would get a
+The above code would print the numbers [.lit]#0# up to [.lit]#127# and then terminate program execution
+due to an overflow error. But when we change the data type to [.type]#uint8#, we would get a
 continues sequence of the numbers [.lit]#0# up to [.lit]#255#. After the value [.lit]#255# is reached, the
 value wraps around to [.lit]#0# again and the process continues. This behavior can lead to
-strange bugs and is the reason that the Nim team generally recommends to avoid
+strange bugs and is the reason that the Nim team generally recommends avoiding
 unsigned integers.
 
-For compatibility with external libraries Nim has also the integer types [.type]#cint# and
+For compatibility with external libraries, Nim has also the integer types [.type]#cint# and
 [.type]#cuint#, which exactly match the C types [.type]#int# and [.type]#uint# when we compile for the C or
 {cpp} backend. For the JavaScript backend, the LLVM backend or other backends these
 types may be also available, for details you should consult the compiler
 documentation. For most {os} and C compilers the [.type]#int# and [.type]#uint# types in C are 4 bytes
 in size, but there can be exceptions, so we better should not write code that depends
-on the actual byte size of the types. The Nim types [.type]#cint# and [.type]#cuint# are generally only
+on the actual byte size of the types. The Nim types [.type]#cint# and [.type]#cuint# are mainly only
 used for parameter lists of (C) library functions. To match other integer types like
 C [.type]#char#, [.type]#short#, [.type]#long#, [.type]#longlong# Nim supports these types when we put a c letter in
-front of the name like clong. Again you should consult the Nim compiler manual when
+front of the name like clong. Again, you should consult the Nim compiler manual when
 you need more details, i.e. when you create bindings to external libraries.
 
 === Floating point types
@@ -2485,17 +2485,17 @@ var
 The variable [.var]#mean# is assigned the result of the division of two
 [.type]#float# literals -- the result has again the data type [.type]#float#,
 and so the compiler can infer for the type of variable [.var]#mean# that same type.
-If we printed the result of the division there
+If we printed the result of the division, there
 would be a decimal point and some digits following it. For variable [.var]#x# we specify the
 [.type]#float# type explicitly and assign the value [.lit]#12#. We could use type inference if we
 assigned [.lit]#12.0#, because the compiler can recognize by the decimal point that we want a
 [.type]#float#, not an [.type]#int# variable. In line 3 we use scientific notation for the float literal that we
-assign to [.var]#y#, and the assigned value is [.term]#1.2 {asterisk} 10^3 = 1200.0#. Literal values like
-[.lit]#2E3# are also valid [.type]#float# literals -- the value would be [.lit]#2000.0#. But
+assign to [.var]#y#, and the assigned value is [.term]#1.2 {asterisk} 10^3 = 1200.0#. Literal values, like
+[.lit]#2E3#, are also valid [.type]#float# literals -- the value would be [.lit]#2000.0#. But
 literals with a decimal point and no digits before or after the point -- [.lit]#1.# or [.lit]#.2# --
 are not valid in Nim.
 
-In the current Nim implementation [.type]#float# variables always occupy 64 bits. Nim has also the
+In the current Nim implementation, [.type]#float# variables always occupy 64 bits. Nim has also the
 data type [.type]#float64# which is currently identical to plain [.type]#float#, and [.type]#float32# which can
 store only smaller numbers and has less precision.footnote:[The fact that in the
 current Nim implementation of A. Rumpf float is identical to float64 should be seen
@@ -2504,24 +2504,24 @@ OS and CPU.] Floats can store values up to a magnitude of approximately
 [.lit]#1E308# with a positive or negative sign, and floats have a typical precision
 of 16 digits. That is, when you do a division of two arbitrary floats and print the
 result, you will get up to 16 valid digits.
-If you would try to print more than 16 significant digits, then the additional decimal places
+If you tried to print more than 16 significant digits, then the additional decimal places
 would be just some form of random garbage.
 Note: The number of significant digits of a floating point number is the
 total number of digits before and after the decimal point, but possible leading zero
 digits would not be counted. The reason that leading zeros are not significant is
-just that in the ordinary notation of numbers we always assume that there is just nothing
-before the first non zero digit. For our car odometer
+just that in the ordinary notation of numbers, we always assume that there is just nothing
+before the first non-zero digit. For our car odometer
 [.term]#001234.5 km# is identical to [.term]#1234.5 km#. And if we give our body size as
 [.lit]#1.80 m# or [.lit]#180 cm# makes no difference, both values have 3 significant digits.
 
-Generally we use floats whenever integers are not sufficient for some reason. For
-example when we have to do complicated mathematical operations which include
+Generally, we use floats whenever integers are not sufficient for some reason. For
+example, when we have to do complicated mathematical operations which include
 fractional operands like [.var]#Pi#, or when we have to do divisions and need the exact
 fractional value.
 
 The [.type]#float#, [.type]#float32# and [.type]#float64# data types provides the [.op]#{plus}#, [.op]#-#, [.op]#{asterisk}#
 and [.op]#/# operators for addition, subtraction, multiplication and division. Unlike
-for the [.type]#int# types, for the [.type]#float# types we get never overflow or underflow errors, and
+for the [.type]#int# types, for the [.type]#float# types we never get overflow or underflow errors, and
 also no error for a division by zero. But the result of an operation of two [.type]#float#
 operands can be a special value like system.Inf, system.NegInf or system.NaN. The
 first two indicate an over- or underflow, and NaN (Not a Number) indicates that the result of an
@@ -2534,7 +2534,7 @@ have not to check after each single operation.footnote:[ Well to some degree -- 
 1.0 is still Inf, but for Inf / Inf the result is not that obvious...]
 An interesting property of floating point numbers is, that
 when we test two variables of [.type]#float# type for equality, and one has the value [.lit]#NaN#, then the test is always false.
-That is the test [.code]#a == NaN# is always false.
+That is, the test [.code]#a == NaN# is always false.
 When we forget this fact, we may initialize a [.type]#float# variable to the value
 [.lit]#NaN# and later test with [code]#if a == NaN:# to check if we have already assigned a value,
 which is not what we really had in mind, as that test has always a negative result.
@@ -2544,15 +2544,15 @@ More useful constants and functions for the [.type]#float# data types can be fou
 [.mod]#std/fenv# module, and functions working with floats like the trigonometric ones
 are available from the [.mod]#std/math# module.
 
-For floats we have the operators [.op]#{plus}#, [.op]#-#, [.op]#{asterisk}# and [.op]#/#
+For floats, we have the operators [.op]#{plus}#, [.op]#-#, [.op]#{asterisk}# and [.op]#/#
 for addition, subtraction, multiplication and division. For powers with integral
-exponents you can use the [.op]#^# operator, but you have to import it from the
+exponents, you can use the [.op]#^# operator, but you have to import it from the
 [.mod]#std/math# module. The expression [.code]#x ^ 3# is the same as [.code]#x {asterisk} x
 {asterisk} x#. The [.mod]#math# module contains many more functions like [.func]#sin()# or
 [.func]#cos()#, [.func]#sqrt()# and [.func]#pow()#. The function name [.func]#sqrt()# is short for
 square-root, and [.func]#pow()# stands for power, so [.func]#pow(x, y)# is [.var]#x# to the power of [.var]#y#,
 when both operands have type float. For performance critical code you should always
-keep in mind that [.func]#pow()# is an actual function call, maybe a call of an dynamic library which can not be inlined,
+keep in mind that [.func]#pow()# is an actual function call, maybe a call of a dynamic library which can not be inlined,
 so a call of [.func]#pow(x, 2)# may be a lot
 slower than a plain [.code]#x {asterisk} x#. And even when using the [.op]#^# operator as in [.code]#x ^ 3#
 we should be a bit critical. But of course we always hope that the compiler will
@@ -2560,43 +2560,43 @@ optimize all that for us.
 
 The operators [.op]#{plus}#, [.op]#-#, [.op]#{asterisk}# and [.op]#/# can be used also when
 one operand is a [.type]#float# variable and the other operand is an [.type]#int# literal.
-In that case the compiler knows that we really intend to do a float operation and
+In that case, the compiler knows that we really intend to do a float operation and
 converts the int literal automatically to float type.
 But when one
 operand is a [.type]#float# variable and the other is an [.type]#int# variable, then an explicit type conversion
-is necessary like in [.code]#float(myIntVal) {asterisk} myFloatVal#.
+is necessary, like in [.code]#float(myIntVal) {asterisk} myFloatVal#.
 One explanation why in this case the int value is not automatically converted to float is,
-that this may mean a loss in precision, as large int64 values can not be presented as an float.
+that this may mean a loss in precision, as large int64 values can not be presented as a float.
 Well, for int32 this reason does not really apply, but still there is no automatic conversion.
 But indeed as Nim is used as a systems programming language, it seems to be a good
 decision to need explicit conversions in this case, as it makes it more clear what really is intended.
-And generally we should try to avoid to use a lot operations with mixed types, as
+And generally we should try to avoid using a lot of operations with mixed types, as
 that may make type conversions necessary, which may cost performance.
 If we really do not care, we may import the module
 [.mod]#std/lenientOps#, which defines the arithmetic operations for mixed operands.
 
 Float literals have the float data type by default, but as for integer literals we can also
-explicitly specify the data type: The suffixes [.lit]#f# and [.lit]#f32# specify a 32 bit float type, and
+explicitly specify the data type: The suffixes [.lit]#f# and [.lit]#f32# specify a 32-bit float type, and
 [.lit]#d# and [.lit]#f64# specify a 64 bit type. We can separate the suffix from the actual number
 with a [.lit]#'# character, but that is not required as long as there is no ambiguity. We can also
 specify float literals in binary, octal or hexadecimal notation, when we append one of these
 suffixes. In case of hexadecimal notation, the [.lit]#'# is obviously needed to separate the suffix, as
 [.lit]#f# and [.lit]#d# are valid hex digits.
 
-As for integer variables Nim supports also the compatible types [.type]#cfloat# and [.type]#cdouble#
+As for integer variables, Nim supports also the compatible types [.type]#cfloat# and [.type]#cdouble#
 which match the C types float and double when the C backend is enabled. For most C
-compilers C float matches Nim's float32 and C double matches Nim's float64.
+compilers, C float matches Nim's float32 and C double matches Nim's float64.
 
 ****
 Some CPUs and C compilers support also other floating point types beside the common
 float32 and float64 types. Intel x86 compatible CPUs generally support float80 math
-operations, and the gcc C compiler may support float128. But these types are not yet
-supported by the Nim compiler of A. Rumpf. But there may exists external packages
+operations, and the GCC C compiler may support float128. But these types are not yet
+supported by the Nim compiler of A. Rumpf. But there may exist external packages
 which supports these types by calling C functions, when the C backend is used.
 ****
 
 Two important properties of floats are that not all numbers can be represented
-exactly and that math operations are not absolutely accurate.
+exactly, and that math operations are not absolutely accurate.
 Recall that in our decimal system, some fractions like [.lit]#1/2# can be represented exactly
 as [.lit]#0.5# in decimal notation, while others like [.lit]#1/3# can be only approximated as [.lit]#0.3333...#
 As all data, floats are stored internally in binary form following the
@@ -2696,12 +2696,12 @@ which generates this output:
 
 The [.func]#echo()# procedure prints up to 16 significant digits for a [.type]#float# value, and so the
 accumulated tiny arithmetic errors become visible. After our remarks above that
-should be not surprising any more, the general solution is to round results to
+should be not surprising anymore, the general solution is to round results to
 less than 16 decimal digits before printing. Various ways to do that will be shown
 later in the book. A related issue of float arithmetic is caused by scaling and extinction.
 When we add numbers with very different magnitudes, the result may be just
-the value of the largest number, as in [.code]#echo 1.0 == 1.0 {plus} 1e-16# which prints [.lit]#true#.
-The tiny summand is just too small to actually chance the result, that is as when you
+the value of the largest number, as in [.code]#echo 1.0 == 1.0 {plus} 1e-16#, which prints [.lit]#true#.
+The tiny summand is just too small to actually change the result, that is as when you
 switch on a torch on a sunny day, it will not really become brighter.
 Maybe more surprising is, that calling [.func]#echo()# with some simple [.type]#float# literals
 will print a different value, like [.code]#echo 66.04# which gives [.lit]#66.04000000000001#
@@ -2710,18 +2710,18 @@ surprising for people who do not understand well what a statement like
 [.code]#echo 66.04# really does: We know already, that the value [.lit]#66.04# is converted
 by the compiler to an internally binary representation, and then converted
 back to a decimal string when we run the program. So it is not that surprising that
-in this process some tiny inaccuracies can accumulate. Actually it is possible to
+in this process some tiny inaccuracies can accumulate. Actually, it is possible to
 get exact 16 digits precision when a very smart conversion routine like the
 [.ndef]#ryu# or [.ndef]#dragonbox# algorithm is used.
 
-From the discussions above it should be clear that testing two floats for
-equality is often problematic. Instead for just testing for equality we may better
+From the discussions above, it should be clear that testing two floats for
+equality is regularly problematic. Instead of just testing for equality, we may better
 define a small epsilon value like [.code]#eps = 1e-14# and then write [.code]#(a - b).abs < eps#.
-Seems to be not bad, and can be seen often and works often, but not always.
-Imagine you write a program which processes chemical elements and you work
-with atomic mass and radii. So maybe the result with above test is that all the
+Seems to be not bad, and can be seen frequently and often works, but not always.
+Imagine you write a program which processes chemical elements, and you work
+with atomic mass and radii. So maybe the result with the above test is that all the
 atoms of the periodic table have equal mass and equal size, at least when
-you should use the SI system with meter and kilogram as base units. So a equality test like
+you should use the SI system with meter and kilogram as base units. So an equality test like
 
 [source, nim]
 ----
@@ -2732,29 +2732,29 @@ if (a - b).abs / (a.abs + b.abs + 1e-32) < eps: # a similar check, avoiding also
 ----
 
 may be a better solution in the general case.
-Whenever you need a general equality test you should think about the problem
+Whenever you need a general equality test, you should think about the problem
 and do some tests -- the code above are just untested possible examples.
 
-At the end of this sections some remarks about the performance of float data types
+At the end of this section some remarks about the performance of float data types
 compared to plain ints: On modern hardware like the popular x86 systems
 for the basic operations
 performance of floats and ints is very similar, addition, subtraction and even multiplication is basically done in
 only one clock cycle, and division may be a bit slower. Even operations like sqrt() which have
 been regarded as slow in the past are now close to a plain addition on modern hardware.
-As the CPU does its float arithmetic internally with 64 or even with 80 bit, float32
+As the CPU does its float arithmetic internally with 64 or even with 80 bits, float32
 is not faster than float 64, as long as the operations are not memory bound, that
 is large data sets are processed, so that it is an advantage when the data types are smaller so that more
-of it fits into the cache. For tiny {uc}s and embedded devices things are very different, as these devices
-generally have no floating point units. So the compiler has to emulate all the float arithmetic,
+of it fits into the cache. For tiny {uc}s and embedded devices, things are very different, as these devices
+typically have no floating point units. So the compiler has to emulate all the float arithmetic,
 maybe by use of libraries. This is very slow and produces large executables. So when
 writing software for modern desktop PCs, there is no reason to try to avoid float math, when
 solving the problem with float is easier. When the data extends a very width range, e.g. from
 nm to millions of km, or when operations like square root or trigonometric functions are needed,
-then there is generally no way and reason to avoid float.
+then there is typically no way and reason to avoid float.
 In the case that float or ints may work both, it is generally a good strategy to try to use
 ints as first try. Ints may still provide better performance for SIMD, threading and parallel processing,
-as ints may avoid the expensive saving of floating point CPU registers. For restricted hardware we should better
-try to avoid float math. But all this is a difficult topic, and these advice can give you only some
+as ints may avoid the expensive saving of floating point CPU registers. For restricted hardware, we should better
+try to avoid float math. But all this is a difficult topic, and these advices can give you only some
 simple recommendations, which may be wrong for a concrete case. So finally you have to decide yourself,
 and as always it is a good idea to do some performance tests.
 
@@ -2766,15 +2766,15 @@ References:
 
 === Distinct types
 
-Before we continue with subrange types we should introduce the distinct types. In the
-real world we have a lot of quantities for which the set of meaningful math
+Before we continue with subrange types, we should introduce the distinct types. In the
+real world, we have a lot of quantities for which the set of meaningful math
 operations is restricted and which should not be mixed with quantities of other
-types. For example we may have the quantities time and distance measured in seconds
+types. For example, we may have the quantities time and distance measured in seconds
 and meters and mapped to the float or int data type. While adding seconds and adding
 meters is a valid operation, adding seconds to meters makes no sense and would be a
-program bug if it should occur in the program code. But again dividing a distance by
+program bug if it should occur in the program code. But again, dividing a distance by
 a time period resulting in the average speed would be a valid operation. Nim provides
-the distinct keyword which allows us to define new data types that are based on
+the distinct keyword, which allows us to define new data types that are based on
 existing types, but that are not compatible with them or with other distinct types.
 And the new defined distinct types have no predefined operations, we have to define
 all desired operations our self.
@@ -2789,21 +2789,21 @@ var t: time = 0.2 # not allowed
 var t: Time = Time(0.2)
 ----
 
-For distinct types we have to define all the allowed operations our self. We can
-convert distinct types to the base types and then use operations of the base type or
+For distinct types, we have to define all the allowed operations our self. We can
+convert distinct types to the base types and then use operations of the base type, or
 we can borrow operations from the base type by use of the {.borrow.} pragma. Using
 distinct types can be complicated when the new type should support many operations,
 but it can make our code more save. For some data type with a very limited set of
-operations distinct types can be used easily. Distinct types are explained in detail
-in the Nim manual, we may explain then in more detail in later sections. For now it
+operations, distinct types can be used easily. Distinct types are explained in detail
+in the Nim manual, we may explain them in more detail in later sections. For now, it
 is enough that we know about their existence.
 
 === Subrange types
 
 Sometimes it makes sense to limit the range of numeric variables to only a sub-range.
-For this Nim uses the [.key]#range# keyword with this notation: [.code]#range[LowVal
+For this, Nim uses the [.key]#range# keyword with this notation: [.code]#range[LowVal
 .. HighVal]#. Values of this type can never be smaller than LowVal or larger than
-HighVal. For {curnim} we can define range types also by leaving out the [.code]#range[]#, that is
+HighVal. For {curnim} we can define range types also by leaving out the [.code]#range[]#, that is,
 by just two constants separated by [.code]#..#.
 
 [source, nim]
@@ -2824,7 +2824,7 @@ For the above example the base type of the defined ranges is int, so the ranges 
 compatible with the predefined int type, we can assign values of int type to our
 range types and vice versa. In our example the size of the range types is the size of the int base type,
 but of course we could use other base types, like [.code]#type Weekday = 1.int8 .. 7.int8#.
-If we try to assign to a range type a value that falls not into the allowed range
+If we try to assign to a range type a value that falls not into the allowed range,
 then we get a compile-time or run-time range error. This can help us to prevent or to
 discover errors in our programs.
 Note that whenever we use range types, the compiler may have to add additional
@@ -2833,9 +2833,9 @@ This check is active in debug mode and also when we compile with option [.term]#
 and is only ignored when we compile with [.term]#-d:danger# or explicitly disable range checks.
 So using a lot of range types may increase code size and decrease performance. For the example
 above, the line with the assignment [.code]#d = a# generates a runtime check. An important and often used
-range type is the data type Natural defined as [.code]#range[0 .. int.high]#. That type is compatible with the int type and
-does not wraps around as [.type]#uint# would do. It is often used as type for procedure parameters when
-the arguments has to be not negative. In the [.proc]#{proc}# body we sometimes copy arguments of natural type
+range type is the data type Natural, defined as [.code]#range[0 .. int.high]#. That type is compatible with the int type and
+does not wrap around as [.type]#uint# would do. It is regularly used as type for procedure parameters when
+the arguments have to be not negative. In the [.proc]#{proc}# body we sometimes copy arguments of natural type
 to an ordinary integer -- that way we can ensure a none negative start value, and can avoid many
 range checks in the procedure body.
 
@@ -2884,8 +2884,8 @@ if tl == red:
   tl = ...
 ----
 
-Enums support assignment, plain tests for (un)-equality and for smaller or greater.
-Additional the functions [.func]#succ()# and [.func]#pred()# are defined for [.type]#enums# to get the successor
+Enums support assignment, plain tests for (in)-equality and for smaller or greater.
+Additionally, the functions [.func]#succ()# and [.func]#pred()# are defined for [.type]#enums# to get the successor
 or predecessor of an enum, [.func]#ord()# or [.func]#int()# deliver the corresponding integer number
 and the [.op]#$# operator can be used to get the name of an enum. We can also iterate over
 enums, so we can print all the colors of our TrafficLight by
@@ -2920,7 +2920,7 @@ type
 ----
 
 We should avoid that, as these "enums with holes" generate some problems for the
-compiler and may be later deprecated. For example array indexing or iterating is
+compiler and may be later deprecated. For example, array indexing or iterating is
 obviously not possible for enums with holes.
 
 It is also possible to set the string that the stringify operator [.op]#$# returns, like in
@@ -2934,12 +2934,12 @@ type
     green = ("Go")
 ----
 
-Here the assigned numerical values should be 0, 2 and 3. Currently the enums numerical values
+Here the assigned numerical values should be 0, 2 and 3. Currently, the enums numerical values
 must be specified in ascending order always.
 
 When we have many enums in a program then name conflicts may occur, for example we
-may have an additional enum type named BaseColor which also has red and green
-members. For that case the {.pure.} pragma exists:
+may have an additional enum type named BaseColor, which also has red and green
+members. For that case, the {.pure.} pragma exists:
 
 [source, nim]
 ----
@@ -2948,7 +2948,7 @@ type
     red, green, blue
 ----
 
-With the pure pragma applied we can use the full qualified enum name when necessary,
+With the pure pragma applied, we can use the full qualified enum name when necessary,
 like BaseColor.red. But we can still use unqualified names like blue when there is no
 name conflict.
 
@@ -2958,7 +2958,7 @@ Boolean types are used to store the result of logic operations. The type is call
 [.type]#bool# in Nim and can store only two values, [.lit]#false# and [.lit]#true#. Although we have only two
 distinct states for a boolean variable and so one single bit would suffice to store a
 [.type]#bool#, generally a whole byte (8 bits) is used for storing a boolean variable. Most
-other programming languages including C do the same. The reason is that most CPU's
+other programming languages, including C do the same. The reason is that most CPUs
 can not access single bits in the RAM -- the smallest entity that can be directly
 accessed in RAM is a byte. The default initial state of a boolean variable is [.lit]#false#,
 corresponding to a byte with all bits cleared.
@@ -2972,7 +2972,7 @@ var
   iLikeOtherLangaugeBetter = false.
 ----
 
-In line three we assign to the variable adult the result of a logical comparison. The
+In line three, we assign to the variable adult the result of a logical comparison. The
 next two lines assign the boolean constants [.lit]#true# and [.lit]#false# to the
 variables, with their type [.type]#bool# inferred.
 
@@ -2982,7 +2982,7 @@ true when both values are true, and false otherwise. And [.code]#a or b# is true
 at least one of the values is true, and only false when both values are false.
 [.op]#Xor# is not used that often. It is called [.ndef]#exclusive or#, [.code]#a xor b# is
 false when both values have the same logic state, that is when both are true, or both
-are false. When the values are not the same, than the result of the xor operator is
+are false. When the values are not the same, then the result of the xor operator is
 true. The [.op]#xor# operator makes more sense for bit operations, which we will
 learn later -- for the boolean type, [.code]#a xor b# is identical to [.code]#a != b#.
 
@@ -3005,7 +3005,7 @@ if cond:
 a = 7 * cond.int
 ----
 
-The effect of the last line is identical to the [.key]#if# statement above. In very, very rare cases
+The effect of the last line is identical to the [.key]#if# statement above. In very, very rare cases,
 working with the actual int value of boolean variables may make sense, but generally we should
 avoid that. Later in the book there is a section about [.ndef]#branchless code# where we will
 present a [.proc]#{proc}# that actually may get faster by using such a trick.
@@ -3013,15 +3013,15 @@ present a [.proc]#{proc}# that actually may get faster by using such a trick.
 === Characters
 
 The data type for single characters is called [.type]#char# in Nim. A variable of type [.type]#char#
-has 8 bits and can store single characters. Indeed it stores 8-bit integers which are
-mapped to characters. The mapping is described by the ASCII table. For example the
+has 8 bits and can store single characters. Indeed, it stores 8-bit integers which are
+mapped to characters. The mapping is described by the ASCII table. For example, the
 integer value [.lit]#65# in decimal is mapped to the character [.lit]#A#. When we use single
 character literals, then we have to enclose the letter in single quotes. As only 8
 bits are used to store characters, we only have 256 different values, including upper
 and lower case letters, punctuation characters and some characters with a special
 meaning like a newline character to move the cursor in the terminal to the next line,
 or a backspace character to move the cursor one position backwards. Single characters
-are not used that often since we generally group them in sequences called strings to
+are not used that often, since we generally group them in sequences called strings to
 build text.
 
 The initial ASCII table contains only the characters with numbers 0 up to 127, here
@@ -3048,10 +3048,10 @@ decimal value less than 32 can not be printed and are called [.ndef]#control cha
 linefeed, carriage return, backspace, audible beep and such. Character 127 is also
 not printable, and is called DEL. An important property of this table is the fact
 that decimal digits and upper- and lower-case letters form contiguous blocks. So to
-test for example if a characters is an uppercase letter we can use this simple
+test for example if a characters is an uppercase letter, we can use this simple
 condition: [.code]#+c >= 'A' and c <= 'Z'+#.
 
-Characters with [.code]#ord() > 127# are so called umlauts, exotic characters of other
+Characters with [.code]#ord() > 127# are so-called umlauts, exotic characters of other
 languages, and some special characters. But these characters may be different on
 different computers, as the characters depend on the active [.ndef]#code-page#, which maps
 position to actual character, and there are multiple code pages. When we need more
@@ -3059,9 +3059,9 @@ than the plain ASCII characters, then we use strings in Nim, which display many 
 glyphs by using UTF-8 encoding.
 
 The control characters with a decimal value less than 32 can not be typed on the
-keyboard directly and for some characters with decimal value greater than 126 it can
+keyboard directly, and for some characters with decimal value greater than 126 it can
 be difficult to enter them on some keyboards. For these characters as well as for all
-other characters escape sequences can be used. Escape sequences start with the
+other characters, escape sequences can be used. Escape sequences start with the
 backslash character, and the following characters are interpreted in a special way:
 The backslash can follow a numeric value in decimal or hexadecimal encoding, or a
 letter which is interpreted in a special way. We mentioned already that the character
@@ -3072,7 +3072,7 @@ decimal 65 is 41 in hexadecimal notation [.term]#(4 {asterisk} 16^1 {plus} 1 {as
 often used control characters it is not easy to remember their numeric value, so
 another notation with a letter following the backslash can be used. For the important
 newline character we can use the decimal numeric value '\10', the hexadecimal value
-'\xA' or the symbolic form '\n'. Here the letter n stands for newline.
+'\xA' or the symbolic form '\n'. Here, the letter n stands for newline.
 
 We can regard the backslash character, which introduces escape sequences, as a special
 hinting symbol for the compiler: [.ndef]#Caution, the following characters must be interpreted in a special
@@ -3080,9 +3080,9 @@ way#.
 
 It is important that you understand that all these escape sequences are only
 a way to help the programmer to enter these invisible control characters -- the
-compiler replaces the control sequences immediately with the correct 8 bit
+compiler replaces the control sequences immediately with the correct 8-bit
 value from the ASCII table, so in the final compiled executable '\65' or '\n'
-are both only a plain 8 bit integer value:
+are both only a plain 8-bit integer value:
 
 [source, nim]
 ----
@@ -3157,15 +3157,15 @@ table lists a few important control characters:
 
 The hexadecimal numbers after the [.term]#\x# character can be upper or lower case
 and can have one or two hexadecimal digits. For symbolic control characters like '\a'
-for alert the upper case variant '\A' seems to be identical currently. The single
+for alert, the upper case variant '\A' seems to be identical currently. The single
 quote entered as [.lit]#'''# does give an error message, so you have to escape it as [.lit]#'\''#.
-Unfortunately by supporting this form of escaping it becomes impossible to enter a
+Unfortunately, by supporting this form of escaping it becomes impossible to enter a
 backslash character directly, so we have to escape the backslash character as [.lit]#'\\'# to
 print a single backslash.
 
 For Nim the most important control character is [.lit]#'\n'# which is used to start the
 output in a terminal window at the beginning of a new line. But [.lit]#'\n'# is generally not
-used as a single character but embedded in [.type]#strings#, that is sequences of characters.
+used as a single character but embedded in [.type]#strings#, that is, sequences of characters.
 We will learn more about strings soon. Note that the [.func]#echo()# function inserts a
 newline character automatically after each printed line, but the [.func]#write()# function
 does not:
@@ -3176,8 +3176,8 @@ echo 'N', 'i', 'm'
 stdout.write 'N', 'i', 'm', '\n'
 ----
 
-What may be a bit confusing is the fact that we use the backslash character as escape
-symbol, and at the same time above table has an entry [.lit]#'\e'# which is also called
+What may be a bit confusing is the fact that we use the backslash character as an escape
+symbol, and at the same time the above table has an entry [.lit]#'\e'# which is also called
 [ESC]. These [.lit]#'\e'# control character with decimal value [.lit]#27# is fully unrelated to the
 backslash character that we use to type in control characters. [ESC] is a different special
 character to start control sequences, it was used in the past to send special
@@ -3191,7 +3191,7 @@ characters of the C language, so you may also consult C literature for more deta
 
 In Nim integers, enumerations, characters and the boolean types are ordinal types.
 Ordinal types are countable and ordered, and for each of these types a lowest and
-largest member exists. The integer ordinal types supports the inc() and dec()
+largest member exists. The integer ordinal types support the inc() and dec()
 operations to get the next larger or next smaller value, and the other ordinal types
 use succ() and pred() for this operation. These operations can produce overflow or
 underflow like errors if applied to largest or smallest value. The function ord() can
@@ -3867,7 +3867,7 @@ Starting with Nim version 1.6 we got some support for unicode operators, which m
 be useful for some applications. For details please see the Nim compiler manual.
 
 Nim currently does not allow to insert tabular characters (tabs) in your source code,
-so you have to do the indentation of blocks by spaces only. Generally we use two
+so you have to do the indentation of blocks by spaces only. Typically, we use two
 spaces for each indentation level. Other numbers work also but you should stick to a
 fixed value.
 
@@ -5133,7 +5133,7 @@ buffer and so on.
 
 Nim slices are objects of type [.type]#Slice# that contain a lower [.ndef]#a# and an
 upper bound [.ndef]#b#. The [.mod]#system# module defines also the [.type]#HSlice# object called
-heterogeneous slice for which the lover and and upper bound can have different data types:
+heterogeneous slice for which the lover and upper bound can have different data types:
 
 [source, nim]
 ----
@@ -5851,7 +5851,7 @@ they match then we would have to skip the next entry. We can do that by the stat
 [.code]#f.next = f.next.next#. That is we replace the reference from the current element [.var]#f# to
 the next list entry, that is [.var]#f.next#, by the next entry of the next element, which is
 [.var]#(n.next).next#. We do not have to write the parenthesis. The [.var]#n.next.next# entry can be
-[.lit]#nil#, in that case it is the end of the list. If we found a matching name then we
+[.lit]#nil#, in that case, it is the end of the list. If we found a matching name then we
 terminate the inner loop with a [.key]#break# statement, and we are done. Otherwise we assign
 to [.var]#f# the value of [.var]#f.next# and continue the loop execution. Now to the special case
 that the name to delete is the first in the list. We need the first [.key]#if# branch for
@@ -6915,7 +6915,7 @@ parameter type, and then converts the second parameter, which is an integer lite
 to [.type]#float# automatically. This automatic conversion is only done for literal numbers,
 not for variables. The expression [.func]#sqrsum2(2, x)# does not compile, as due to
 the first parameter, which is an integer literal, a [.proc]#{proc}# for integer parameters is
-instantiated, and the second [.var]#x# parameter of [.type]float type is not compatible with the
+instantiated, and the second [.var]#x# parameter of [.type]#float# type is not compatible with the
 instantiated [.proc]#{proc}#.
 
 Generics can become a bit complicated, as we may use multiple different generic types
@@ -9390,7 +9390,7 @@ like the serialization of Nim data types to write them
 to external nonvolatile storage and read them back into the program later, or handling command
 line options and parameters for programs launched from within a terminal window.
 Further we will introduce you to important container data types like hash tables
-(sometimes called hash maps in other programming languages) and and various kinds
+(sometimes called hash maps in other programming languages) and various kinds
 of set data types. We will also introduce modules for working with regular expressions,
 and we will show how simple modules like the times or the random module can
 be used. Most modules mentioned in this part will be from the Nim standard library, so that
@@ -9572,6 +9572,129 @@ Note that write operations to [.var]#stdout# are generally buffered, so the resu
 of [.func]#write()# operations may remain invisible until we write a [.type]#string# containing
 a newline character or until we call the [.func]#flushfile()# function to enforce
 the writing of the buffer.
+
+== [.new]#Option types#
+
+Option types can be used to encapsulate values in a way that allows to mark the value as undefined.
+This can be especially useful for the return types of functions, which may or may not return a meaningful value.
+
+Let us assume that we have a function called [.func]#find()# that searches in a [.str]#string# for the
+first index position of a character:
+
+[source, nim]
+----
+proc find(s: string; c: char): int =
+  result = -1 # not found
+  var i = 0
+  while i < s.len:
+    if s[i] == c:
+      return i
+    inc(i)
+
+echo "Nim".find('i')
+----
+
+The function returns the index position or  [.lit]#-1# to indicate that the character has not been found.
+This works, as we use in Nim generally signed integers, and
+the valid [.str]#string# index positions are never negative, so it is obvious
+that a negative [.key]#result# is some form of error indication. In a similar
+way, whenever a function should return a reference or a [.key]#pointer#, the
+special value [.lit]#nil# can be used to indicate the absence of a value.
+Actually in most cases we can just define a special value as the
+indication for the absence of a [.key]#result# or as error indicator,
+for example [.func]#int.low#, [.func]#char(0)#, or [.lit]#NaN# for [.type]#float# results.
+
+Other ways to indicate failures is to [.key]#return# a boolean value for success and to [.key]#return#
+the actual [.key]#result# value as a [.key]#var# parameter, to [.key]#return# a [.type]#tuple#, which encloses a boolean
+for success indication and the actual [.key]#result#, or returning the [.key]#result(s)# as a sequence which can
+be empty in case of no success:
+
+[source, nim]
+----
+proc find(s: string; c: char; pos: var int): bool =
+  pos = 0
+  while pos < s.len:
+    if s[pos] == c:
+      return true
+    inc(pos)
+
+var p: int
+echo "Nim".find('i', p), ": ", p
+----
+
+[source, nim]
+----
+proc find(s: string; c: char): tuple[succ: bool, pos: int] =
+  var i = 0
+  while i < s.len:
+    if s[i] == c:
+      return (true, i)
+    inc(i)
+
+echo "Nim".find('i')
+----
+
+[source, nim]
+----
+proc find(s: string; c: char): seq[int] =
+  var i = 0
+  while i < s.len:
+    if s[i] == c:
+      result.add(i)
+    inc(i)
+
+echo "Nim".find('i')
+----
+
+For a more formalized way to indicate the absence of a meaningful [.key]#result#,
+many modern programming languages provide the concept of [.type]#Option# types,
+which are called sometimes also [.type]#Maybe# types.
+[.type]#Option# types can encapsulate an arbitrary data type and provide
+functions like [.func]#isSome()# or [.func]#isNone()# to test for the existence of a valid value, and
+functions like [.func]#get()# to extract the actual value from the [.type]#Option# type:
+
+[source, nim]
+----
+import std/options
+
+proc find(s: string; c: char): Option[int] =
+  var i = 0
+  while i < s.len:
+    if s[i] == c:
+      return some(i)
+    inc(i)
+
+var res = "Nim".find('i')
+if res.isSome:
+  echo res.get
+----
+
+The [.mod]#options# module of Nim's standard library provides the generic [.type]#Option[]# data type
+and the functions [.func]#some()#, [.func]#isSome()# and [.func]#isNone()# to create a new [.type]#Option# type encapsulating
+some data, and to check if data is present. In the code above we use [.func]#some(i)# to wrap the
+integer value in the [.type]#Option# type when we have found a match. For no match,
+the [.proc]#proc# [.key]#returns# the default empty [.type]#Option# type instance. When we use the [.func]#find()# function with the
+[.type]#Option[int]# [.key]#result#, we have to call first [.func]#isSome()# to check if valid data is available, and
+then call [.func]#get()# to get the actual data.
+
+Nim's [.type]#Option# types are based on [.key]#objects#. The generic [.type]#Option[T]# type is an [.key]#object# with two fields,
+a boolean indicating the presence of data, and a field which can store the actual data.
+Nim uses also an optimization: When the data type is of [.key]#ref# or [.key]#pointer# type, then the
+[.]#bool# field is not necessary, as the absence of data is equivalent to a data entity with [.lit]#nil# value.
+
+The overhead of [.type]#Option# types is not that big -- a [.proc]#proc# which would return an 4-byte integer
+would return an [.key]#object# instead -- the additional boolean field would increase the size
+of the [.key]#result# to 5 bytes, which is generally extended by the compiler to multiples
+of the word size, that is 8 byte total. So we have 100 % size overhead for the worst case.
+And the loss of performance for the encapsulation of data in [.type]#Option# types
+should be not significant in most use cases.
+
+The [.mod]#options# module provides some more procedures for the handling of [.key]#Option# types,
+but this short introduction should be enough to get you started.
+
+References:
+
+* https://en.wikipedia.org/wiki/Option_type
 
 == Serialization -- storing data permanently on external storage
 
@@ -10105,7 +10228,7 @@ The [.func]#readLines()# [.proc]#{proc}# takes a filename
 and the number of lines to read as parameters and returns a [.type]#seq# of [.var]#strings#. When the
 file does not contain at least the number of requested lines an EOF exception is raised.
 Another provided [.proc]#{proc}# is [.func]#readAll()# which reads the whole file content into a returned [.str]#string# variable.
-For [.func]#readAll()# to work the actual file position has to be the the start of the file. In case of an
+For [.func]#readAll()# to work the actual file position has to be the start of the file. In case of an
 error an exception is raised.
 
 We can also write and read binary data directly to a file, without converting it
@@ -10135,7 +10258,7 @@ other data unintentionally. So we would generally not use these [.proc]#{procs}#
 helper [.proc]#{procs}#, when we really need or want this form of binary file access. Fast storing big data sets with restricted hardware may
 be an use case, e.g. storing a [.type]#float32# takes only 4 bytes on the storage medium and file io is fast, while
 that number as human readable digits may need more than 8 bytes (1.234567E3) and converting to
-[.str]#string# and and parsing back costs some time.
+[.str]#string# and parsing back costs some time.
 
 In the same way we can use [.func]#writeBuffer()# and [.func]#readBuffer()# to store [.type]#tuples#, [.key]#objects# and [.type]#arrays#
 or sequences of these directly in binary form:
@@ -11402,7 +11525,7 @@ Note that line three may create a temporary copy of the sequence,
 which may be not that nice for optimal performance. We discussed that
 topic already in part II of the book, Nim 2.0 may improve the situation further by
 introducing views which create no copies. Beside the [.op]#s[a .. b]# slice operator which includes
-the elements at position [.var]#a# and [.var]#b#, there is [.op]#s[a ..< b]# which does not include position [.var]#b# and and [.op]#s[a .. ^b]#
+the elements at position [.var]#a# and [.var]#b#, there is [.op]#s[a ..< b]# which does not include position [.var]#b# and [.op]#s[a .. ^b]#
 where position [.var]#b# is taken from the end of the [.type]#seq# or [.type]#array#, e.g. [.lit]#^1# is the last position, [.lit]#^2# the second last.
 
 For deleting elements from a sequence we have [.func]#del()# which replaces the element at the specified position with the
@@ -11648,7 +11771,7 @@ important, then we could convert both sequences to a [.type]#set# and build the 
 but when order does not matter we may use sets instead of sequences from the beginning.
 
 Maybe you missed also a [.func]#shift()# function which other container types or programming languages may provide, that is
-used similar to [.func]#pop()#, but deletes and returns the the first item of a [.type]#seq#? Well it should be obvious why a
+used similar to [.func]#pop()#, but deletes and returns the first item of a [.type]#seq#? Well it should be obvious why a
 [.func]#shift()# is not provided by default and why such a function would generally be avoided -- the function
 name gives you already a good hint. And if you should need such a function it should be no problem
 to implement one if efficiency is really not important. But maybe in that case it would be better to
@@ -11785,7 +11908,7 @@ with the restriction that each number should occur exactly once in the sequence.
 segment like [.code]#s[i] = (rand(99) {plus} 1)# would not work, as the same numbers could be generated multiple times
 or not at all. The obvious solution for this task is to fill an array first with consecutive numbers [.lit]#1# to [.lit]#100# and
 then exchange the initial positions with destination positions determined by [.func]#rand(99)#
-The [.mod]#random module provides the [.func]#shuffle()# function for this shaking of a container.
+The [.mod]#random# module provides the [.func]#shuffle()# function for this shaking of a container.
 A related function is [.func]#sample()#, which is used to randomly select an element from an [.type]#openArray# or a [.type]#set#.
 
 References:
@@ -14374,7 +14497,7 @@ The above [.proc]#{proc}# looks not that bad, but maybe we can improve it, maybe
 temporary array? The actual problem is, that we do not know how many total digits
 the integer argument will need in advance, and so it is impossible to position
 all the digits at the correct position in the result string. A possible solution is to use
-a function that gives us the the number of decimal places of an integer number. Indeed we have such a function
+a function that gives us the number of decimal places of an integer number. Indeed we have such a function
 available, it is [.func]#math.log10()#. Remember, log10(1) is zero, log10(10) is one, log10(100) is two and so on.
 So basically what we need. The logarithm function is not that slow on modern desktop computers, so
 it should be OK to use it. At the end of this section we will consider how we may replace it for tiny
@@ -14408,7 +14531,7 @@ argument value zero, for that value we use the default value [.lit]#i == 0#. Act
 in all cases [.lit]#i {plus} 1# is the total number of digits that we have to generate -- for the case that we
 have to generate a minus sign we increase [.var]#i# by one. We pre-allocate a [.var]#result# string
 with [.var]#i {plus} 1# positions, and put a minus sign at position zero, which is overwritten in the while
-loop when the argument was not negative. As we know the the total number of digits of our number
+loop when the argument was not negative. As we know the total number of digits of our number
 we can use the variable [.var]#i# to put the digits at the correct positions in the while loop.
 The careful reader may wonder if [.code]#log10(v.float).int# will really work for sure
 for all integer arguments of [.var]#v#, or if we better should round the argument like
@@ -15383,7 +15506,7 @@ y = 7
 m1(y)
 ----
 
-This compiles, but as the assignment [.code]y = 7 is executed at program runtime, while the [.mac]#macro# body
+This compiles, but as the assignment [.code]#y = 7# is executed at program runtime, while the [.mac]#macro# body
 is already executed at compile time, we should not expect that the [.func]#echo()# statement in the [.mac]#macro# body
 prints the value [.lit]#7#. Instead we get just [.var]#y# for both [.func]#echo()# calls. Now let us investigate what happens when we use
 [.type]#typed# instead of [.type]#int# for the [.mac]#macro# parameter:
@@ -16296,7 +16419,7 @@ main()
 
 The [.func]#spawn()# function executes an ordinary Nim function by a thread of the
 pool. Note that syntactically we do not pass a function and the functions arguments
-to [.func]#spawn#, but an expression, which is the the actual call of the [.proc]#{proc}#!
+to [.func]#spawn#, but an expression, which is the actual call of the [.proc]#{proc}#!
 [.func]#Spawn()# returns immediately a variable of [.type]#FlowVar[T]# type, which is
 a container type that can store the result of our passed function. In the example
 above we used FlowVar[int] as our [.proc]#{proc}# [.var]#sum# returns an integer value, but of
@@ -17430,7 +17553,7 @@ proc main =
 The structure of this client implementation is a bit different from the server one.
 The main reason is, that we have to use Nim's [.var]#threadpool# and [.key]#spawn# to
 avoid the blocking behaviour of the [.func]#readLine()# [.proc]#{proc}#. Note that our
-[.func]#main()# [.proc]#{proc}# is not marked with the [.var]{.async.} pragma and contains no
+[.func]#main()# [.proc]#{proc}# is not marked with the [.var]#{.async.}# pragma and contains no
 [.key]#await# statement. Only the [.func]#doConnect()# [.proc]#{proc}#, which connects to the
 server and then watches for messages send by the server is marked with the
 [.var]#async# pragma and awaits the new messages. The [.func]#main()# [.proc]#{proc}# creates
@@ -17654,6 +17777,10 @@ We have added a few more simple examples and exercises:
 * <<Iterators>> (extended)
 * <<Exceptions>> (extended)
 
+=== March 2022
+
+* <<Option types>>
+
 ////
 Part I: Introduction
 II The Basics
@@ -17713,7 +17840,7 @@ tail asciidoctor.css
 ////
 
 ////
-from std/strutils import startswith
+from std/strutils import startswith, replace
 proc main =
   const filename = "nimprogramming.adoc"
   var skip = false
@@ -17727,12 +17854,13 @@ proc main =
     if l.startsWith("----"):
       skip = not skip
       continue
-    if skip or skipcom or l.startsWith("[") or l.startsWith("==") or l.startsWith("* ") or l.startsWith("References:") or l.startsWith("//") or l.startsWith("|"):
+    # if skip or skipcom or l.startsWith("[") or l.startsWith("==") or l.startsWith("* ") or l.startsWith("References:") or l.startsWith("//") or l.startsWith("|"):
+    if skip or skipcom or l.startsWith("[source, nim]") or l.startsWith("==") or l.startsWith("References:") or l.startsWith("//") or l.startsWith("|"):
       continue
     if l.startsWith("****"):
       echo ""
     else:
-      echo l
+      echo l.replace(" Nim ", " Tim ")
 
 main()
 ////
