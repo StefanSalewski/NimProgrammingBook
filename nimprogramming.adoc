@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAR-05
+//v0.1, 2022-MAR-09
 :doctype: book
 :toc: left
 :icons: font
@@ -9383,7 +9383,7 @@ The [.key]#include# statement should be not confused with the [.key]#import# sta
 insert a text file at the position where the [.key]#include# statement occurs. [.key]#Include# can be
 used to split very large modules in smaller entities.
 
-= Part III: The Nim Standard Library
+= Part III: Nim's Standard Library
 
 In this part of the book, we will introduce you to some of the most essential
 modules of the Nim standard library. This includes modules for common operations
@@ -9397,6 +9397,24 @@ and we will show how simple modules like the times or the random module can
 be used. Most modules mentioned in this part will be from the Nim standard library, so that
 you will not have to install external packages for that. But there may be some exceptions, e.g. for
 some external nimble packages with a very useful functionality and an easy user interface.
+One of these exceptions is the [.mod]#regex# module: Nim's standard library comes with the [.mod]#re# and [.mod]#nre#
+modules, which both uses the PCRE C library. We have decided to introduce the [.nim]#regex# module
+instead, which is an external package written completely in Nim language.
+
+Formally, Nim distinguish between pure and impure libraries and wrappers. The majority of
+Nim's library consist of pure libraries, that are modules complete written in Nim code.
+Impure libraries provide a high level Nim interface, and can be used like pure libraries, but
+use C libraries under the hood. Examples are the two modules [.mod]#re# and [.mod]#nre#
+which both uses the PCRE C library, and some
+database modules.  Impure libraries can be used like the pure ones, when the underlying
+C library is installed. The few wrappers that are shipped with Nim provide only a low level
+interface to C libraries, which may use unsafe [.type]#pointers# as proc parameters and may require the user
+to do manual memory management. Some impure modules uses these wrappers and hide
+all the ugly stuff for us, but we generally do not use the wrappers directly.
+
+Nim's standard library is supported by thousands of external packages, which can easily be installed with Nim's package managers,
+and then can be used in the same way as the modules of the standard library. The next part of the book will
+introduce you to the use of external packages and presents some of the most important ones.
 
 == Command Line Arguments
 
@@ -10146,9 +10164,9 @@ in a try/except block, or we could use an [.func]#open()# variant which returns 
 When the file is successfully opened, we can use [.proc]#{procs}# like [.func]#write()# or [.func]#writeLine()# to
 write text [.str]#strings# to the file. Both [.proc]#{procs}# accept multiple arguments and apply the stringify operator
 [.op]#$# on them before writing the content. [.func]#WriteLine()# writes a [.lit]#'\n'# after the last argument to start a new line.
-When done, we call [.func]#close()# to close the file. The {OS} would close the file for us when our program terminates, so
+When done, we call [.func]#close()# to close the file. The {os} would close the file for us when our program terminates, so
 calling close is not that important, but when we open many files without closing them we may get
-errors from the {OS} finally about too many open files and our program may fail or terminate.
+errors from the {os} finally about too many open files and our program may fail or terminate.
 
 The [.func]#close()# [.proc]#{proc}# gets passed the file not as a var parameter, so it can not set the file
 to value nil. When the file has the value nil, then the [.func]#close()# call is ignored, but when we would call
@@ -10312,7 +10330,7 @@ when we use the [.var]#stdout# [.type]#File# variable, maybe to ask the user a q
 We would call [.func]#sdtout.flushFile()# to ensure that the user really sees the text on the screen
 immediately. The [.func]#echo()# [.proc]#{proc}# calls [.func]#flushFile()# automatically after each output operation.
 When we close a file [.func]#flushFile()# should be called automatically, but when
-our program is terminated without calling [.func]#close()# it may depend on the actual implementation and {OS}
+our program is terminated without calling [.func]#close()# it may depend on the actual implementation and {os}
 
 The [.mod]#io# module provides some more useful procedures, but we will
 stop this introducing section here and continue with the [.mod]#streams# module in the next section.
@@ -12308,6 +12326,8 @@ for k, v in ct:
   echo k, ": ", v
 ----
 
+We will give an extended example for the use of a CountTable for counting words in a text file below, see <<CountTable>>.
+
 A [.type]#Table# instance stores entries not in the order of insertion. When we iterate over the [.var]#table#,
 we get the results not back in the order of insertion. If we really should need to preserve
 the insertion order, we may use the [.type]#OrderedTable# variant. Note that an [.type]#OrderedTable#
@@ -12559,10 +12579,230 @@ the benefit of iteration over elements at runtime, while tuples have the benefit
 that we can access elements by names and by an integer constant. For performance, [.type]#array#
 or [.type]#tuple# should make no difference here.
 
+=== CountTable
+
+We mentioned this data type already very briefly in one of the preceding sections,
+but as it really can be very useful sometimes, we should show an extended example.
+The [.type]#CountTable# data type is a variant of the ordinary [.type]#Table# type, that is used to
+count instances of arbitrary data types, most often strings or integer numbers.
+The [.type]#CountTable# can use as keys the same data types as the ordinary [.type]#Table#, but its
+value type is always an integer. And instead of using operators like [.op]#[]=# to insert
+values into the table, we use the [.func]#inc()# procedure to increase the occurrence counter
+for the key.
+Actually, the first call of [.func]#inc()# adds the key to the table instance and sets it counter to one, and each subsequent
+call of [.func]#inc()# with the same key increases the counter by one.
+A typical use case for [.type]#CountTables# is to count the occurrences of words
+in a text file:
+
+[source, nim]
+----
+import std/tables
+
+from strutils import split
+
+proc main =
+  const FileName = "t.nim"
+
+  var t: CountTable[string]
+
+  for l in FileName.lines:
+    for w in l.split:
+      t.inc(w)
+  
+  for k, v in pairs(t):
+    echo k, " ", v
+
+main()
+----
+
+When we compile and run the above program, we get for that source code this output:
+
+.Click to see it
+[%collapsible]
+====
+----
+ 30
+main() 1
+t.inc(w) 1
+proc 1
+split 1
+const 1
+main 1
+var 1
+in 3
+strutils 1
+from 1
+v 2
+", 1
+FileName.lines: 1
+= 2
+import 2
+t: 1
+w 1
+CountTable[string] 1
+"t.nim" 1
+FileName 1
+l 1
+pairs(t): 1
+k, 2
+" 1
+for 3
+l.split: 1
+std/tables 1
+echo 1
+----
+====
+
+Counting words in text files can help us find rare spelling errors and words that we use too frequently, like
+"generally", "problem" or "course" in this book. But for that application we would have to extend
+the code from the above so that it ignores punctuation characters, and sorts the output. You should be already
+able to add that functionality yourself.
+
 References:
 
 * https://nim-lang.org/docs/tables.html
 * https://nim-lang.org/docs/hashes.html
+
+== Hash Sets
+
+The [.mod]#sets# module provides the generic [.type]#HashSet[T]# data type and the related procedures and functions.
+[.type]#HashSets# behave similar to Nim's built-in [.type]#set# type,
+but while the base types of the built-in [.type]#set# type is restricted to ordinal data types of 8 or 16 bit size, there is no such restriction
+for [.type]#HashSets#.
+That is, [.type]#HashSets# can be used like hash [.type]#Tables# for most of Nim's data types, including
+user defined types like [.key]#objects#. From the implementation, [.type]#HashSets# are very similar to hash [.type]#Tables# -- while
+a hash [.type]#Table# uses a key entity to access a value instance, [.type]#HashSets# uses only the key, e.g. to test if the key is
+contained in the set. A typical use of [.type]#HashSets# is to test if a [.str]#string# in contained
+in a collection of [.str]#strings#:
+
+[source, nim]
+----
+import std/sets
+
+var s: HashSet[string] = toHashSet(["var", "type", "const", "while"])
+
+var v = stdin.readLine
+
+if v in s:
+  echo v, " is a Nim keyword"
+----
+
+The functions and procedures provided by the [.mod]#sets# module are used similar to
+the ones of the [.mod]#tables# module -- we have [.func]#excl()# and [.func]#incl()# to remove or add elements
+to a set instance, and operations to create the union, intersection or difference of
+two [.type]#HashSets#. As the basic {behav} of [.type]#HashSets# is so similar to hash [.type]#Tables#, we will
+not try to explain the available functions -- whenever you may have a concrete use case
+for Nim's [.type]#HashSets#, you can consult the module documentation. Remember, that as
+for hash [.type]#Tables#, for data types used as keys, a [.func]#hash()# function and the [.op]#==# operator must have been defined.
+
+A more interesting point is, when you should use Nim's built-in [.type]#set# type, and when
+the [.type]#HashSet#. Well, Nim's built-in [.type]#set# type is restricted to ordinal types of 8 or 16 byte size as base type, that
+is byte, int8, uint8, bool, char, enum, int16 and uint16. For other base types, we have to use
+the [.type]#HashSet#. So why do we not always use [.type]#HashSets# only? The reason is, that the implementation
+is different. The built-in [.type]#set# type is internally a bit vector. To store a [.type]#set# with an 8-bit base type,
+256 bits are needed, that is 10 bytes. For this data type, operations like union, intersection or difference
+map well to basic CPU instructions like [.func]#bitor# and [.func]#bitand#, and are very efficient. The same is true
+for the [.func]#incl()# and [.func]#excl()# operations, which map well to fast CPU instructions. So whenever 
+we can use the built-in [.type]#set# type with a 8-bit base type, then we should use that, and not a [.type]#HashSet#.
+For a 16-bit base type, the set requires already 8192 bytes -- for a union, intersection or difference
+all these bytes have to be combined in some way. The [.func]#incl()# and [.func]#excl()# operations should be still really fast --
+a few math operations (div 8) gives the byte location, and then a CPU instruction tests if a bit is set or sets
+a bit. So the built-in [.type]#set# type should work still fine with a 16-bit base types, and for dense populated
+[.type]#sets# the built-in type should be the best option in most cases. Here, dense populated means, that
+most of the provided bits are really needed and used. For sparse populated [.type]#sets#, the situation
+is different. Imagine you have a few numbers, all smaller than [.lit]#int16.high+1#, but some larger than
+[.lit]#int8.high#. For this use case, a [.type]#HashSet[int16]# should consume less storage, and may offer
+comparable performance. Just test it yourself!
+
+== Operating system services
+
+The [.mod]#os# module supports basic interactions with the {os},
+like accessing the file system,
+reading command line arguments,
+executing  shell commands and external processes
+or retrieving environment variables.
+The abstractions of the [.mod]#os# module allows us to write programs
+that may interact with the OS but still can be compiled and run unchanged on various {os}s
+including Windows, macOS and Linux.
+
+This module is quite large, and it would make no sense to
+introduce many of its content here. When you have the feeling
+that you may need some functionality that is related to OS services,
+you just should consult the API documentation of the [.mod]#os# module.
+
+We have already used some functions of the [.mod]#os# module in earlier
+section of the book, for example the [.func]#paramCount()# and [.func]#paramStr()# functions
+to process command line arguments, and the [.func]#fileExists()# and [.func]#getFileSize()#
+functions to test if a file already exists, and to get the file size in bytes.
+Whenever we intend to access the file system, we have to take into account the fact that
+the three major {os}s uses different separator characters for file paths, and different
+paths for folders like the user's home directory. Functions like [.func]#getHomeDir()# or  [.func]#getAppDir()#
+makes it easier to navigate in the file system structure, and functions like  [.func]#joinPath()#
+or [.func]#addFileExt()# helps us to construct file or folder names:
+
+[source, nim]
+----
+import std/os
+const FileName = "data"
+const FileExt = "txt"
+var path = getAppDir()
+path = joinPath(path, FileName)
+path = addFileExt(path, FileExt)
+echo path
+if fileExists(path):
+  echo "File: ", path, " already exist."
+else:
+  path.writeFile("Testing the os module.\n")
+----
+
+The iterator [.func]#envPairs()# can be used to list all the environment variables, and
+[.func]#getEnv()# to get the value of a specific variable:
+
+[source, nim]
+----
+import std/os
+
+for k, v in envPairs():
+  echo k, ": ", v
+
+echo getEnv("USERNAME")
+----
+
+Or we may use the [.func]#walkDir()# iterator to iterate over the content of a folder: 
+
+[source, nim]
+----
+import std/os
+
+for k, p in walkDir(getAppDir()):
+  echo k, ": ", p
+----
+
+[.func]#WalkDir()# returns a [.type]#tuple# -- the [.type]#PathComponent# enumeration like [.lit]#pcFile# or [.lit]#pcDir#,
+which gives us the type of the directory entry,  and the path as a string.
+
+The function [.func]#execProcess()# to run a shell command is provided by the [.mod]#osproc# module: 
+
+[source, nim]
+----
+import std/osproc
+
+when defined(windows):
+  # var output = execProcess("cmd.exe /c ipconfig")
+  var output = execProcess("cmd.exe /c ipconfig" , options={poUsePath, poStdErrToStdOut, poEvalCommand, poDaemon})
+else:
+  var output = execProcess("ifconfig")
+  echo output
+----
+
+Here we used [.code]#when defined(windows):# to test if the code has been compiled for windows or for Linux/macOS, so that we can use
+the correct command string. For windows, flashing of the console window may be an issue, see
+https://forum.nim-lang.org/t/7320#46431.
+
+Other functions of the [.mod]#os# module that can sometimes be useful are [.func]#sleep()# to delay the program execution for
+a time period specified in milliseconds, and [.func]#parseCmdLine()# which splits the  command line argument [.type]#string#
+into several components. But in the next section we will present the [.mod]#parseopt# module, which is an advanced command line parser,
+and in part V of the book, we will present the external [.var]#cligen# package which is even more powerful.
 
 == [.new]#Regular Expressions#
 
