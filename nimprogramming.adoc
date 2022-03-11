@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAR-09
+//v0.1, 2022-MAR-11
 :doctype: book
 :toc: left
 :icons: font
@@ -8091,7 +8091,7 @@ earlier in this book.
 ****
 
 Nim [.key]#templates# are a simple, parameterized code substitution mechanism,
-and are used similarly way
+and are used similarly
 as procedures.
 The syntax to [.italic]#invoke# a [.key]#template# is the same as calling a procedure.
 But while procedures built a single block of code that is then
@@ -12803,6 +12803,249 @@ Other functions of the [.mod]#os# module that can sometimes be useful are [.func
 a time period specified in milliseconds, and [.func]#parseCmdLine()# which splits the  command line argument [.type]#string#
 into several components. But in the next section we will present the [.mod]#parseopt# module, which is an advanced command line parser,
 and in part V of the book, we will present the external [.var]#cligen# package which is even more powerful.
+
+==  [.new]#Command line parsing#
+
+For Linux users, it is not uncommon to use a [.italic]#terminal window# or [.italic]#shell# to launch programs by
+typing in textual commands instead of clicking on icons or pictograms. In the introducing
+sections of the book, we said, that one way to launch the Nim compiler is to
+type a command like [.term]#nim c --gc:arc test1.nim# in a terminal window.
+
+Pure Windows users, who never use terminal windows to interact with the computer, may
+skip this section. For the others, we will give a short introduction to the structure of
+command line arguments, and how we can process them with the [.mod]#parseopt# module
+of Nim's standard library.
+
+Working from within a terminal window can have some benefits in some scenarios,
+and some simple tools may have no graphical user interface at all, so that you can
+only use them from the terminal.
+From within a terminal window, we can type in command names like [.term]#ls# or [.term]#df#, and press the return
+key to just execute a program with that name. Or we can pass additional options and arguments to these programs,
+e.g. the command [.term]#ls -l /tmp#  would list the directory entries of the [.var]#/tmp# folder displayed as one entry per line.
+Here [.term]#ls# is the command or program name, [.lit]#-l# is an option, indicating that we desire an output format
+with only one entry per line, and [.var]#/tmp# is the actual argument, which is the [.var]#/tmp# folder. Don't get confused by
+the slash character in front of the [.var]#tmp# directory name -- the slash has no special relevance for the argument parsing,
+it is just that on Linux systems [.lit]#/# is the name of the upmost level of the file system, called the file system [.italic]#root#,
+so [.var]#/tmp# is the folder named [.var]#tmp# at the file system root.
+
+We said that in the [.term]#ls# command above,  [.term]#-l# was an option. That option indicates for the [.term]#ls# command that we want the output
+with only one entry per line. For the [.term]#ls# command, some other options can be specified in a short and in a long form:
+The notations [.term]#-s# and [.term]#--size# can both be used to tell [.term]#ls# to print the file size.
+Short options are always introduced by a single [.italic]#minus# character,
+and each following single character then stands for a distinct option, e.g. [.term]#-lt# ask for a single
+entry per line output which included the modification time for the entry. For the long options, which
+starts with two [.italic]#minus# signs, only a single option name like "size" can be specified.
+
+Additional to these plain short and long options, there exist also options with [.italic]#values#. The values are
+separated from the option name with a colon or an equal sign. Imagine that we have a command called "fancyPrint"
+which can print out text documents, and allows us to specify single pages to print instead of the whole
+document. That may be done with the short and long options [.term]#p# and [.term]#page#, each requiring a numeric value like
+[.term]#fancyPrint -p:17 mydoc.pdf# or [.term]#fancyPrint --page:17 mydoc.pdf#.
+ 
+In principle, it is possible to mix short and long options with and without values and arguments
+freely, which can make the evaluation of command line strings difficult. Usually options have to be specified
+in front of arguments, but some programs relax this, e.g. [.term]#ls /tmp -l# works also. And some (older)
+programs recognize options without a leading minus sign, e.g. [.term]#tar cf hhh.tar hhh/#
+specifies that the archiving tool  should create (c) a file (f) named [.term]#hhh.tar# with the content
+of folder [.term]#hhh#. Here the single letter [.term]#c# without a leading minus sign is interpreted as some form of command,
+[.term]#c# stands for [.italic]#create#. In a similar way, the Nim compiler interprets the first single letter as a command -- [.term]#c#  for compiling
+with the C backend.
+
+After this short introduction to command line options, we will investigate how we can use Nim's
+[.mod]#parseopt# module to process the command line string and extract the various options and parameters.
+
+Let us start with this simple example:
+
+[source, nim]
+----
+import std/parseopt
+
+var p = initOptParser()
+while true:
+  p.next
+  case p.kind
+  of cmdEnd:
+    break
+  of cmdLongOption:
+    echo p.key, ": ", p.val
+  of cmdShortOption:
+    echo p.key, ": ", p.val
+  of cmdArgument:
+    echo "Arg: ", p.key, p.val
+----
+
+When you compile and run this code in a terminal window, you can pass various combinations of
+short and long options, with and without values, and one or more arguments like file names.
+This call
+
+----
+./t -a=3 --verbose h.txt
+----
+
+would generate this output:
+
+----
+a: 3
+verbose: 
+Arg: h.txt
+----
+
+The first option with key [.term]#a# has value [.lit]#3#, [.term]#verbose# is a long option without a value, and [.term]#h.txt#
+is recognized as argument, which may be a file name in this case.
+
+Our program starts with a call of [.func]#initOptParser()#, which returns an [.type]#OptParser# [.key]#object#.
+We call [.func]#initOptParser()# without any parameter -- in this case, the function construct the
+command line [.str]#string# itself by a series of [.func]#commandStr()# calls of the [.mod]#os# module.
+In the [.code]#while true:# loop, we have to call [.func]#p.next# to get the next option. Then we can
+access the [.var]#kind# field, which is an enumeration type with the possible values [.lit]#cmdEnd#, 
+[.lit]#cmdShortOption#, [.lit]#cmdLongOption# or [.lit]#cmdArgument#. This kind field tells us
+of what kind the current option is, and the [.var]#key# and [.var]#val# fields of the [.type]#OptParser#
+instance gives us the actual option name and the value when available.
+
+Instead of this explicit [.key]#while# loop, we can also use the [.func]#getopt()# [.key]#iterator#:
+
+[source, nim]
+----
+import std/parseopt
+
+var p = initOptParser()
+for kind, key, val in getopt(p):
+  case kind
+  of cmdEnd:
+    assert false # break
+  of cmdLongOption:
+    echo key, ": ", val
+  of cmdShortOption:
+    echo key, ": ", val
+  of cmdArgument:
+    echo "Arg: ", key, val
+----
+
+When we use this [.key]#iterator#, we do not actually get the kind value of [.lit]#cmdEnd#, but we still need
+that [.key]#case# label or an [.code]#else: discard# branch of the [.key]#case# statement to cover all possible cases, otherwise
+the code would not compile.
+
+The [.mod]#parseopt# module supports additional to pass option values without the need to separate the option name
+and the option value with a [.term]#:# or a [term]#=#, e.g. a command line like [.term]#-a3#. To make that work, we have to tell
+the parser which options  have values and which do not:
+
+[source, nim]
+----
+import std/parseopt
+
+var p = initOptParser(shortNoVal = {'h', 'v'}, longNoVal = @["help", "verbose"])
+for kind, key, val in getopt(p):
+  case kind
+  of cmdEnd:
+    assert false
+  of cmdLongOption:
+    echo key, ": ", val
+  of cmdShortOption:
+    echo key, ": ", val
+  of cmdArgument:
+    echo "Arg: ", key, val
+----
+
+Now we can call our program like
+
+----
+./t -p13 --quality low --verbose report.pdf
+----
+
+and get this output:
+
+----
+p: 13
+quality: low
+verbose: 
+Arg: report.pdf
+----
+
+We specified for [.func]#initOptParser()# that the short options [.term]#h#, [term]#v# and the long options [.term]#help#, [.term]#verbose#
+have no values, but work just like a plain switch. These specifications tells that function, on the other hand,
+that all other options do use values, so the numeric value [.lit]#13# after the [.term]#p# options is recognized as value, as well
+as the [.lit]#low# value that follows after [.term]#quality#. As the [.term]#verbose# option has no value, [.term]#report.pdf# is recognized as argument.
+
+You may still wonder if the [.mod]#parseopt# module supports command, as used in [.term]#nim c --gc:arc mycode.nim#?
+Yes this works, we would get this output:
+
+----
+./t c --gc:arc mycode.nim
+Arg: c
+gc: arc
+Arg: mycode.nim
+----
+
+The command [.term]#c# is recognized as argument, and in our program we would have to
+detect that an argument called just "c" is a command name and not a file name.
+To avoid ambiguity, we may have to care not only for the value of arguments, but
+also for its position in the command [.str]#string#, maybe by use of an additional
+position counter, or maybe we call [.func]#paramStr(1)# to get the first
+parameter directly.
+
+Note that all the option values are [.str]#strings#, you have to validate these [.str]#strings# yourself, and you may have to convert them
+to integers or other data types when required.
+
+At the end of this section, we will sketch how an actual program may use the [.mod]#parseopt# module.
+We assume that we want to create a tool that can print a single PDF file -- the complete content
+or just a specified page, with a selectable print quality. So the base structure of our program may look like
+
+[source, nim]
+----
+import std/parseopt
+
+proc print =
+  
+  var 
+    pages = "all" # default values
+    quality = "medium"
+    verbose = false
+    filename = ""
+    argcount = 0
+
+  var p = initOptParser(shortNoVal = {'h', 'v'}, longNoVal = @["help", "verbose"])
+  for kind, key, val in getopt(p):
+    case kind
+    of cmdLongOption:
+      case key
+      of "help":
+        echo "This tool ...."
+        quit(0)
+      of "verbose":
+        verbose = true
+      of "pages":
+        pages = val
+      of "quality":
+        quality = val
+      else:
+        echo "Invalid long option:", key, " with value ", val
+    of cmdShortOption:
+      echo key, ": ", val
+    of cmdArgument:
+      inc(argcount)
+      if argcount > 1:
+        echo "Too many arguments"
+        quit(1)
+      filename = key
+    else:
+      discard
+
+  if argcount == 0:
+    echo "missing filename"
+    quit(0)
+  echo "Printing file: ", filename
+  echo "pages: ", pages
+  echo "quality:", quality
+  echo "verbose mode: ", verbose
+
+print()
+----
+
+In this example, we left out the interpretation for the short options, which
+should be processed similarly as the long ones. You see that the actual use of the
+[.mod]#parseopt# module still requires a lot of code for validation and interpretation
+of options and arguments. In part V of the book, we will present the external
+cligen package, which further simplifies the command line parsing.
 
 == [.new]#Regular Expressions#
 
@@ -18022,6 +18265,7 @@ We have added a few more simple examples and exercises:
 === March 2022
 
 * <<Option types>>
+* <<Command line parsing>>
 
 ////
 Part I: Introduction
