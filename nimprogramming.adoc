@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAR-11
+//v0.1, 2022-MAR-13
 :doctype: book
 :toc: left
 :icons: font
@@ -15649,6 +15649,120 @@ References:
 * https://github.com/zevv/npeg
 * https://en.wikipedia.org/wiki/Parsing_expression_grammar
 
+== [.new]#Cligen, a Command-Line Interface generator#
+
+In part III of the book, we presented the module [.mod]#parseopt# of Nim's standard library, which can help
+us to parse the command line [.str]#string# -- for programs launched from within a terminal
+window by typing the command name followed by a set of options and arguments. There we also
+explained the difference between short and long option names, and options with and without values.
+If you can not remember these terms, you should read that section again, or maybe skip this
+section completely, for the case that you are not interested in creating tools that are used from
+within a terminal window.
+
+In that <<Command line parsing>> section, we said, that with the external package [.italic]#cligen#
+the processing of options and parameters for command line tools can be simplified a lot.
+The basic idea of the [.italic]#cligen# package is, that the parameter list of Nim procs
+is already a valuable specification for parameters: It provides names, data types, and optional default
+values for a set of parameters, in a form which is already familiar to the Nim user.
+The [.mod]#cligen# module allows us to just create a top level proc with a parameter list,
+which can be called directly from the command line with all the
+parameters passed in fully automatically. We only have to call the
+[.func]#dispatch()# [.key]#macro# on that procedure -- that [.key]#macro# does all the magic for
+us. If you want to try this package, you can install it with the
+Nimble package manager with this command:
+
+----
+nimble install cligen
+----
+
+At the end of section <<Command line parsing>>, we gave the sketch of
+a tool called [.var]#fancyPrint# that could be used to print files. That tool
+had options to select single pages to print, and to specify the print quality.
+With [.mod]#cligen# we only have to create the proc definition, and to call
+[.func]#dispatch()# on it:
+
+[source, nim]
+----
+import cligen
+
+type
+  Quality = enum
+    low, medium, high
+
+const
+  AllPages = -1
+
+proc fancyPrint(page = AllPages; quality = medium; verbose = false; files: seq[string]) =
+  if files.len == 0:
+    echo "Missing names of files to print!"
+    quit()
+  if verbose:
+    if page == AllPages:
+      echo "We print all the pages of the specified files!"
+    else:
+      echo "We print page ", $page, " only"
+    echo "Print quality: ", quality
+  for f in files:
+    echo "Printing ", f, " ..."
+    # insert the real code here!
+
+dispatch(fancyPrint)
+----
+
+When you have installed [.mod]#cligen# already as suggested above, you can compile and run this
+code:
+
+----
+nim c fancyprint,nim
+...
+./fancyprint -p12 --quality:high --verbose file1.pdf file2.pdf
+...
+
+We print page 12 only
+Print quality: high
+Printing file1.pdf ...
+Printing file2.pdf ...
+----
+
+Long and short option names, with and without values are supported, you can use [.lit]#=# or [.lit]#:# to separate option
+names from its values, and leaf out the separator as in [.term]#-p12# when there is no ambiguity.
+Long options can be abbreviated if there is no ambiguity, i.e. we could call our app like
+[.term]#./fancyprint --p12 --qual:high --verb file.pdf#.
+
+By default, the letter for the short option is the first character of the long option name, but that
+can be customized. As option values, most basic Nim data types can be used, this includes numeric types,
+enumeration types and boolean types. For boolean options, instead of giving the short or long option name
+without a value to activate that option, it is also possible to use values like [.lit]#false#,  [.lit]#true#,  [.lit]#on#,
+ [.lit]#off#,  [.lit]#0#,  [.lit]#1# to switch that option off or on.
+When in the proc parameter list, a value has no default value, then it will become mandatory.
+We can call the tool also with  [.lit]#-h# or  [.lit]#--help# to get an informative overview of the intended use:
+
+----
+Usage:
+  fancyPrint [optional-params] [files: string...]
+Options:
+  -h, --help                        print this cligen-erated help
+  --help-syntax                     advanced: prepend,plurals,..
+  -p=, --page=     int      -1      set page
+  -q=, --quality=  Quality  medium  select 1 enum Quality
+  -v, --verbose    bool     false   set verbose
+----
+
+You can also display a summary about the  [.mod]#cligen# syntax
+with the parameter  [.lit]#help-syntax#. The [.mod]#cligen# module offers some more advanced
+features, which we will not discuss here in detail: We can use
+a command mode, to support app calls like [.term]#nim c ...#, where the first
+argument selects which command is called. Or you can specify that a different
+letter than the first one of the long option name is used as short option.
+Or, instead of directly calling a proc, we can use [.mod]#cligen# to initialize an
+[.key]#object# instance, which is then passed as parameter to a proc. It is even possible to use other data
+types as values than the primitive Nim types, when we define converter
+procs for that data types.
+
+References:
+
+* https://github.com/c-blake/cligen
+
 = Part VI: Advanced Nim
 
 In this part of the book we will try to explain the more difficult parts of the Nim programming language:
@@ -18266,6 +18380,7 @@ We have added a few more simple examples and exercises:
 
 * <<Option types>>
 * <<Command line parsing>>
+* <<Cligen, a Command-Line Interface generator>>
 
 ////
 Part I: Introduction
