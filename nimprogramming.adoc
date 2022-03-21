@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAR-13
+//v0.1, 2022-MAR-20
 :doctype: book
 :toc: left
 :icons: font
@@ -18252,6 +18252,410 @@ languagetool.org software used from the command line with the pyLanguagetool app
 
 //=== Is there a way I could get a `ref` from a non-ref object?
 
+== [.new]#Nimble -- a package manager#
+
+****
+Note: As its position in the appendix already indicates, this section had a hard time to
+make it in the book at all, and it will be the first which is removed in the case
+that the (printed) book will become too heavy. You may remember, that we said
+in the introduction, that this book will not cover the Nimble package manager at all.
+Indeed, there are good reason to leave Nimble out -- Nimble is not the only package manager, and
+Nimble is explained in the Manning book and in the GitHub README already.
+Also note, that this section is written from someone with only a very basic knowledge
+of the Git version control system, and most content is based on old memories and
+have not been tested, as testing a new GitHub registration process is not
+easily possible, one would need a valid, but still unused email address for
+registration, and one would have to delete the account after the test again.
+****
+
+[.ndef]#Nimble#, initial called [.nedef]#Babel#, is Nim's default package manager, which is currently shipped
+together with the Nim compiler, and can be used to install additional Nim packages.
+Nim packages are collections of Nim modules and other related files, which have been created to
+serve a special purpose or to solve a special task, and have been made available to
+other Nim users. Nim's packages are usually distributed in the form of Nim source code modules,
+which are used as libraries. But packages can also contain complete applications programs,
+and may even contain pre-compiled executables. In part IV of the book, we have already used the
+library packages nim-regex and cligen. An example of a package containing a complete
+application is the [.ndef]#c2nim# tool, which can convert C source code to Nim code.
+You can find a longer introduction into the Nimble package manager in the Manning book, and a detailed description
+on the Nimble GitHub page. As the GitHub page is not really intended as an introduction, and
+as some people may not have a copy of the Manning book, we will give a short introduction
+into Nimble, which includes its use to install packages, as well as the creation and distribution
+of packages.
+
+=== Purpose of package managers
+
+Package managers are used to install software on single computers or whole computer networks.
+The software to install can be libraries, which will be used by other programs, or applications, which can be run
+by the user.
+
+Packages and package managers can be divided into two categories: Most Linux distributions have one or more
+package manager closely couple to the OS, which are used to install libraries and executables for that OS.
+These packages managers are usually executed from a user with administrator rights and install
+the software system-width, in a way that all users of that computer can access it. Most well known
+tools and libraries like Firefox, Gimp, GCC, CGAL, BOOST and GTK are installed this way. The other category
+of package managers are the ones which are strongly coupled to a single programming language
+and helps the user to install tools or libraries for this programming language. These package-managers
+are mostly used by the user directly without administrator privileges and install the software
+for this user only -- other users of the computer would not notice the installation at all.
+Well known examples of this latter kind of packages managers are pip for Python, npm for JavaScript,
+Gem for Ruby, and finally Nimble for Nim.
+
+Package managers do not only simplify the installation, update and de-installation of
+software, but they may also install dependencies and resolve versioning conflicts:
+When we intend to install a package [.lit]#A#, that package may require again packages
+[.lit]#B# and [.lit]#C#, which may again require other packages. Most package managers, including
+Nimble can resolve and install dependencies for us automatically.
+A big problem can occur when packages are available in multiple, incompatible version.
+A common practice is to assign version numbers to packages -- these version
+numbers are typically built of three parts, each separated with a period, like [.lit]#1.2.14#.
+Larger numbers indicate a never package version. A common scheme for
+version numbers is called [.ndef]#semantic versioning#, where the leftmost number
+is the major version, the second number is the minor version, and the rightmost
+number is the patch level. The rightmost number is increased for each tiny change of the
+software, e.g. for small bug fixes. The minor version number is increased for larger
+changes, e.g. when new functionality is added. And the major version number is
+only increased, when there are drastically changes, that is when the API has changed,
+perhaps due to a complete rewrite of the library.
+A major version number of zero often indicates that the package or library is
+still in development, and not really considered mature -- but there are many exceptions
+to this rule, many packages, libraries or tools seems to never reach a major
+version [.lit]#1#, but still work very fine. On the other hand, a major version greater zero
+can indicate some stability promises -- the API should not change that much anymore,
+and the authors may have the feeling that the software works reliable. But this
+is very subjective -- after reaching a version [.lit]#1.0# the development process may just stop, as the authors are exhausted,
+or soon after a [.lit]#1.0# release, development of a [.lit]#2.x# version may start, with a completely new API.
+So the [.lit]#1.x# version may be stable, but will become legacy soon.
+A special aspect of version numbers is, that sometimes the
+major version number is increased from zero to one just to indicate some
+stability promises, so the content of a version [.lit]#0.9.7# may be nearly identical
+with a version [.lit]#1.0#.
+
+Unfortunately, even tiny bug fixes for packages or libraries, for which the major and minor version does not change,
+can already generate some trouble, as the fix may change the {behave} of the package,
+and our application program that uses this package may be sensible to this change.
+But these issues are easily fixable. More serious issues may arise when we create larger
+applications, that have to use multiple packages: A package [.lit]#A# may be available in two incompatible
+major versions [.lit]#1.7# and [.lit]#2.1#. And our software may depend on two external packages called
+[.lit]#B# and [.lit]#C#, where package [.lit]#B# requires package [.lit]#A# in version [.lit]#1.7#, but package [.lit]#C# requires package [.lit]#A#
+in a version [.lit]#>= 2.0#. This is a serious problem, which may be unresolvable. For OS-bound packages
+managers, this is a common concern. It may be solved, when
+package updates are bundled, so that when a package changes it major version, all
+packages that require it, are also updated. Another possible solution is, that for dynamic libraries
+multiple versions are installed in parallel, or that multiple package versions are installed
+in so-called [.ndef]#slots#, which can coexists on the same computer. A prominent example
+is the GTK GUI toolkit, which can be installed in a [.lit]#3.0# and a [.lit]#4.0# slot. But that is
+in no way free from issues -- an actual example in early 2022 is libsoup, which is currently
+available and used in incompatible [.lit]#2.x# and [.lit]#3.x# versions.
+
+For package managers like Nimble, that provide only packages related to a
+programming languages, version conflicts are not that likely, but
+when we create really large applications which require a lot of external packages,
+version conflicts may occur. The package manager may help us to resolve
+these conflicts by attempting to select a set of package versions that are compatible.
+
+Nimble can work with local packages that are stored on the user's file system, and with external packages
+provided by repository hosting services.
+Nimble uses as foundation for external packages [.ndef]#Distributed Version Control Systems# (DVCS)
+like Git or Mercurial, and the packages are hosted on online platforms like GitHub or GitLab.
+
+While Nim uses currently no dedicated central package repository, it supports a centralized list with
+package names and some metadata. We can upload our own packages to hosting servers and register
+the package, to allow others a very easy installation. For registered packages, the command
+[.term]#nimble install package_name# downloads and installs the package for us. Other packages, that
+are available somewhere on the Internet, but are not yet registered in Nim's package database,
+can be downloaded and installed in a similar way, but we have to specify the full path to the package,
+like https://github.com/stefansalewski/gintro.git.
+
+Nimble can be used also to install packages that are locally stored on our computer, this
+includes packages that we have manually downloaded from the interned, or packages
+that are not saved on a remote location at all.
+
+Nimble packages are basically plain directories, which have to include a special text file,
+which name is constructed from the package name and the .nimble extension.
+These files are sometimes called .nimble files,
+and provide some metadata about the package, including the current version, the license,
+dependencies, and a short textual description.
+The .nimble files use a Nim-based file format that supports a subset of Nim’s features.
+We can define variables and procedures in .nimble files, and import other modules.
+
+The directory structure of a valid nimble package has to follow
+a well-defined shape, which we will discuss later in detail.
+When we have a valid local package directory somewhere on our file system, then we can [.term]#cd# into
+it and call [.term]#nimble install# to install that package, without having to download all the files (again)
+from a remote server. This installation from an existing directory does not only save us the download,
+but also allows us to fix the package before the installation. Maybe the package needs some
+tiny fixes to compile and work with the latest compiler version?
+
+****
+Note: Nimble may use the Git tool to download Git repositories, so the [.term]#nimble# command
+may not work properly when Git is not installed on your computer. As you will need the Git tool
+in any case, you should ensure that it is installed, and install it if it is missing. To check
+if Git and Nimble are available, you may execute in a terminal window these commands:
+[.term]#git --version# and [.term]#nimble --version#
+****
+
+As a concrete example, we will show the three ways how we can install the [.ndef]#RTree# package:
+
+----
+nimble install rtree
+nimble install https://github.com/stefansalewski/RTree.git
+
+cd /tmp
+git clone https://github.com/stefansalewski/RTree.git
+cd RTree
+nimble install
+----
+
+This works, as the RTree directory has a valid structure, and because
+it includes a valid package specification called rtree.nimble:
+
+----
+/tmp/RTree $ tree
+.
+├── LICENSE
+├── README.adoc
+├── rtree.nimble
+├── src
+│   ├── drawingarea.nim
+│   └── rtree.nim
+└── tests
+    ├── config.nims
+    └── test.nim
+
+/tmp/RTree $ cat rtree.nimble
+# Package
+
+version       = "0.2.0"
+author        = "Stefan Salewski"
+description   = "R-Tree"
+license       = "MIT"
+srcDir        = "src"
+
+# Dependencies
+
+requires "nim >= 1.0.0"
+
+skipFiles = @["drawingarea.nim"]
+----
+
+When we install a package with Nimble in one of these three ways, Nimble copies
+the module files to a location where the Nim compiler can easily find them --
+for the RTree example from above, this is ~/.nimble/pkgs/rtree-0.2.0/
+for Linux. Sometimes it may be useful to launch the nimble command with the
+--verbose flag, which displays a lot of additional information, including the location where
+the module files get installed.
+
+Another useful command of the Nimble tool is the [.lit]#search# command, which searches
+in Nim's central package list for packages marked with tags indicating its purpose.
+We may search for terms like GUI, png, mp3 and such. We can combine the search command with
+the [.lit]#--ver# flag to get all the versions of the packages listed, like [.term]#nimble search GTK --ver#.
+
+=== Creating and publishing Nimble packages
+
+For creating new packages, we can create the folder structure and the .nimble file manually, maybe by copying
+an existing package and editing it, or we can use the [.term]#nimble init# command.
+When we use [.term]#nimble init#, we can first create a folder, [.term]#cd# into that folder and call [.term]#nimble init#,
+or we let Nimble create the folder by specifying the folder name like [.term]#nimble init MyTest#.
+Nimble will ask a few questions, and create the folder structure for us. You should test this exercise now,
+to get a feeling for the process. Just move to a temporary directory like [.term]#/tmp# on Linux, and enter
+[.term]#nimble init MyNewPkg#.
+
+----
+nimble init MyNewPkg
+... accepting all the defaults results in
+
+/tmp $ tree MyNewPkg/
+MyNewPkg/
+├── MyNewPkg.nimble
+├── src
+│   ├── MyNewPkg
+│   │   └── submodule.nim
+│   └── MyNewPkg.nim
+└── tests
+    ├── config.nims
+    └── test1.nim
+
+cat MyNewPkg/MyNewPkg.nimble
+# Package
+
+version       = "0.1.0"
+author        = "Stefan Salewski"
+description   = "A new awesome nimble package"
+license       = "MIT"
+srcDir        = "src"
+
+
+# Dependencies
+
+requires "nim >= 1.7.1"
+----
+
+We see immediately a tiny issue: Nimble accepts the package name with upper case letters, and use
+it for the module name. But by convention, module names should be all lower case for Nim. We can manually fix that,
+or use a package name with all lowercase letters.
+For most packages, names with only lower case letters should be OK, but sometimes
+we may like to have package names like RTtree. Note that the package name itself
+and all the file and folder names of the package should not contain hyphens or the [.italic]#at# symbols ('-', '@') --
+the minus sign is generally not allowed for Nim symbols, and the [.lit]#@# has a special meaning for Nimble.
+
+Important is, that the created directory
+structure contains the .nimble file, and a [.var]#scr# folder. When our whole package consists of only one module, 
+that file would be MyNewPkg/src/mynewpkg.nim, and we would not need the subdirectory
+MyNewPkg/src/MyNewPkg. After installation of the packages, we could use the module then
+just as [.code]#import mynewpkg#. For the case that our package consists of multiple files,
+we put the files in the folder MyNewPkg/src/mynewpkg and import the files as
+[.code]#import mynewpkg/[mod1, mod5]#.
+
+Another, sometimes useful functionality of Nimble is, that we can
+define task at the end of .nimble files, like
+
+----
+task test, "Run the packages tests!":
+  exec "nim r tests/mytest.nim"
+----
+
+This allows us to execute [.term]#nimble test# from within the package directory
+to compile and run package tests.
+
+=== Public packages
+
+Currently, most external Nim packages are hosted at GitHub, but other Git platforms
+like GitLab should work also with Nimble, and in principle even the Mercurial format
+should be supported.
+
+As GitHub is currently very popular, we will briefly explain how you can create public
+Nim GitHub packages. First, you need a GitHub account, which you can create easily by following
+the instruction on their homepage at GitHub.com. You require your username, a valid email address, and have to select your GitHub password.
+Since August 2021 GitHub requires to use personal access tokens instead of the original passwords,
+when you want to modify your repositories. For the case that GitHub has not asked you to create an access token during
+the initial registration, you have to create one now before you can continue. The GitHub page or
+a search engine should give you the detailed instructions how you can create a personal access token.
+The token is a long ASCII string, which you may store in some file, and paste in later when
+GitHub ask for passwords when uploading files. Later, you can save the token in the local git database
+somehow, that may save you from the copy/paste process.
+
+When you have an account, you can easily create new public repositories following the instructions
+on the GitHub page. Let us assume you have created a repository named fft, a package
+to support the [.ndef]#fast Fourier transform#. Then you can download that Git repository with
+this instruction:
+
+----
+git clone https://github.com/yourname/fft.git
+----
+
+To make a valid Nimble package out of this repository, you have at least to create
+the subdirectory src/fft and a fft.nimble file. You can do this manually, or you
+can do it with [.term]#nimble init fft# or [.term]#cd fft; nimble init#.footnote:[Be careful
+when you execute the init command on directories which do already contain valuable data, as
+Nimble may overwrite files. Make a backup!]
+If your package consist of only one file, you should call it [.var]#fft.nim# and copy it into
+[.var]#fft/src/#. Or, if you have multiple files, create a directory [.var]#fft/src/fft# and copy the files
+to that location, maybe with file names [.var]#fft.nim# and [.var]#ffpsup.nim#.
+As you have modified the local repository folder, it is not consistent anymore with
+the remote repository. You can check that with the command [.term]#git status# executed inside the folder.
+To make it consistent again, you have to push your changes to the GitHub server, which can be done with these
+commands:
+
+----
+git add -A
+git commit -m "created initial Nimble file"
+git push origin main
+git status
+----
+
+The command [.term]#add -A# adds all the created files and directories to the Git content,
+the [.term]#commit -m# commits the changes with the specified message, and
+finally [.term]#push origin main# uploads all the modifications to GitHub.
+When you now visit the GitHub page of your remote repository, you should
+see the changes.
+
+Other people can now already install your package by
+
+----
+nimble install https://github.com/yourname/fft.git
+# or with
+git clone https://github.com/yourname/fft.git
+cd fft
+nimble install
+----
+
+Whenever you create or update a package, you should care for possible dependencies
+and the required compiler version. The requirements field of the .nimble file
+lists all the dependencies, like [.term]#requires "nim >= 1.6.0", nim-regex, bigints#.
+Nimble supports the command [.lit]#c#,
+which can be used from within a package directory, and
+which we can use to compile the package and to verify the requirements:
+While the command [.term]#nim c myapp.nim# always searches for libraries at
+all known locations (current folder, Nimble packages, and standard library)
+the command [.term]#nimble c myapp.nim# firsts check the requirement field of
+[.var]#myapp.nimble#, and refuses to use nimble packages that are not listed under
+requirements. On the other hand, when an external package is listed under requirements, but is not yet
+installed, then the [.term]#nimble c# command tries to install it.
+
+If you think that your package is really useful for many other Nim users,
+you may decide to publish your package, that is to add it to Nim's central
+package list. This can be done in two ways: You can just call
+from within your package folder the command [.term]#nimble publish#.
+Then you are asked for some data, e.g. a list of tag names and a description,
+and the publishing process should start. After manual approval
+by some Nim devs, which checks if your package has a valid structure
+and its name does not conflict with existing packages, your packages
+gets added to the official package list. Unfortunately, the [.term]#nimble publish#
+command have failed for some people in the past. So you may prefer
+to publish your package manually by creating a pull request at
+the package list repository.
+
+After successful publication, people can download your package just by giving its name,
+that is with [.term]#nimble install fft#. This publishing process may be a bit complicated, but it
+is necessary only ones: It is not necessary to publish the package again, when you update the package.
+
+When you intend to create a public packages, that is used by a lot of people and that is regularly
+updated, it may make some sense to create tagged versions of your package. That way people will
+be able to easily install an older version, in the case that they have issues with the most recent version,
+and other packages, that may use your package, can require the version that they need.
+Currently, creating tagged versions with Nimble is a bit complicated, as you have to update the
+version in the .nimble file first: Actually the correct procedure to add a (new) tag is:
+
+* Update all the files of your packages, that includes all the modules and the README file.
+
+* Update the version field in the nimble file.
+
+* Upload all your modifications to GitHub, with an action sequence like
+
+----
+git add -A
+git commit -m "new version v0.2.1"
+git push origin main
+----
+
+Now, after you have uploaded all modified files, including the nimble file with the version
+field update to this new version, you can
+create a new tag and push the actual version tags to Github:
+
+----
+git tag v0.2.1
+git push origin --tags
+----
+
+Now, other users will get this new version by default, but they can still
+install older versions. For testing purposes, you can always push modified
+module files to GitHub, without creating a new tag. These changes will be invisible
+for most users, only users that explicitly request the latest changes with the tag [.lit]#\#head#
+will get these latest changes:
+
+----
+nimble install fft # install latest tagged version, or
+nimble install fft@v0.2.0 # install existing older version, or
+nimble install fft@#head # install latest changes
+----
+
+References:
+
+* https://github.com/
+* https://github.com/nim-lang/nimble
+* https://github.com/nim-lang/packages
+
 == ASCII Table
 
 [source, nim]
@@ -18381,6 +18785,7 @@ We have added a few more simple examples and exercises:
 * <<Option types>>
 * <<Command line parsing>>
 * <<Cligen, a Command-Line Interface generator>>
+* <<Nimble>>
 
 ////
 Part I: Introduction
@@ -18399,6 +18804,14 @@ HJarausch_gitlab, untyped vs. typed is basically what stage you get the AST at
 10:06:35	PMunch	typed is done after the next step. Nim looks through the syntax tree and checks types, procedure signatures, etc. and makes sure that all the code is semantically correct. I.e `1 + "hello"` is syntactically correct because + has two arguments. But it isn't semantically correct because there is no `+` function that takes an int and a string, and no automatic conversion between the two (unless of course you have made one).
 10:08:15	PMunch	So in a DSL for example you typically use `untyped` because you want to take something that isn't Nim code and turn it into something that is. But for something where you pass an identifier and want to build some Nim code that is based on the type of that identifier you would need `typed`
 10:08:54	PMunch	In general `typed` is used less than `untyped` and rarely for blocks of code.
+
+
+Do we have
+
+- What is a lib and a module
+- private and public entities in mo0dules
+-what are namespaces
+
 ////
 
 ////
