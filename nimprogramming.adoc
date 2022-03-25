@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAR-20
+//v0.1, 2022-MAR-25
 :doctype: book
 :toc: left
 :icons: font
@@ -9592,7 +9592,7 @@ of [.func]#write()# operations may remain invisible until we write a [.type]#str
 a newline character or until we call the [.func]#flushfile()# function to enforce
 the writing of the buffer.
 
-== [.new]#Option types#
+== [.recent]#Option types#
 
 Option types can be used to encapsulate values in a way that allows to mark the value as undefined.
 This can be especially useful for the return types of functions, which may or may not return a meaningful value.
@@ -12804,7 +12804,7 @@ a time period specified in milliseconds, and [.func]#parseCmdLine()# which split
 into several components. But in the next section we will present the [.mod]#parseopt# module, which is an advanced command line parser,
 and in part V of the book, we will present the external [.var]#cligen# package which is even more powerful.
 
-==  [.new]#Command line parsing#
+==  [.recent]#Command line parsing#
 
 For Linux users, it is not uncommon to use a [.italic]#terminal window# or [.italic]#shell# to launch programs by
 typing in textual commands instead of clicking on icons or pictograms. In the introducing
@@ -13047,7 +13047,7 @@ should be processed similarly as the long ones. You see that the actual use of t
 of options and arguments. In part V of the book, we will present the external
 cligen package, which further simplifies the command line parsing.
 
-== [.new]#Regular Expressions#
+== [.recent]#Regular Expressions#
 
 A [.ndef]#regular expression#, shortened as [.ndef]#regex# or [.ndef]#regexp#, is a
 sequence of characters that specifies a search pattern, which is used to find or
@@ -15323,7 +15323,7 @@ own game engine based on OpenGL or Vulkan, is a very demanding task.
 So maybe we will add a section about game programming at the end, when the rest of the book
 is done, or maybe when the next edition of the book is published.
 
-= [.new]#Part V: External Packages#
+= [.recent]#Part V: External Packages#
 
 In this part of the book, we will present you some external packages, which
 can easily be installed with Nim's package manager(s).
@@ -15649,7 +15649,7 @@ References:
 * https://github.com/zevv/npeg
 * https://en.wikipedia.org/wiki/Parsing_expression_grammar
 
-== [.new]#Cligen, a Command-Line Interface generator#
+== [.recent]#Cligen, a Command-Line Interface generator#
 
 In part III of the book, we presented the module [.mod]#parseopt# of Nim's standard library, which can help
 us to parse the command line [.str]#string# -- for programs launched from within a terminal
@@ -17413,6 +17413,502 @@ message is displayed in the terminal window. This applies not only to the thread
 the [.mod]#threads# module, but also when the [.func]#spawn()# function is applied to
 run functions by one of the threads in the pool.
 
+=== [.new]#Parsing data files in parallel#
+
+As a practical application for parallel code execution, we will finally present an example for
+the process of parsing textual data files to extract some information.
+A commonly used file format to store data in files is a [.ndef]#comma-separated values# (CSV) file.
+Each line of the file is a data record, consisting of one or more fields, separated by commas.
+
+An example can be a file which stores the population and total area (in km^2)
+of all the districts of our county, like
+
+----
+#District,Country,State,Vehicle registration,Area,Population
+#
+Stade,Germany,Lower Saxony,STD,110.03,47611
+Cuxhaven,Germany,Lower Saxony,CUX,161.91,48326
+Berlin,Germany,Berlin,B,891.7,3769495
+----
+
+Perhaps we want to find the district with the highest or lowest area or population,
+or the one with the lowest population density?
+
+As we have no real data files for this task available, and we should avoid generating unnecessary
+Internet traffic by downloading some test files just for our experiments, 
+we will generate a dummy CSV file as a first step:
+
+[source, nim]
+----
+import std/[random, strformat]
+from std/os import fileExists
+from std/strutils import join, toUpperAscii
+
+const
+  Lchars = {'a' .. 'z'}
+  Uchars = {'A' .. 'Z'}
+  Lines = 1e6.int
+  FileName = "csvdata.txt"
+
+proc rstr(l: int): string =
+  let len = rand(l) + 1 
+  result = newString(len)
+  result[0] = sample(Uchars)
+  for i in 1 ..< len:
+    result[i] = sample(Lchars)
+
+proc main =
+  if os.fileExists(FileName):
+    echo "File exists, we may overwrite important data"
+    quit()
+
+  var f: File = open(FileName, fmWrite)
+  f.writeLine("#District,Country,State,Vehicle registration,Area,Population\n#")
+
+  for i in 0 ..< Lines:
+    let dist = rstr(12)
+    let count = rstr(8)
+    var state = rstr(14)
+    for i in 2 .. state.high - 2:
+      if rand(7) == 7: # in rare cases name may enclose a space
+        state[i] = ' '
+        state[i + 1] = toUpperAscii(state[i + 1])
+        break
+    let vreg = rstr(3)
+    let area = fmt"{rand(28.0 .. 1e6):1.2f}"
+    let pop = $rand(500 .. 5e6.int)
+
+    let res = [dist, count, state, vreg, area, pop].join(",")
+    f.writeLine(res)
+
+  f.close
+
+main()
+----
+
+There is no reason to further explain the above code here, as all that was explained already
+in previous sections of the book. The usual strategy for parsing CSV files is, that
+we read the file line by line, and process the data fields of each line. The first choice of
+people coming from other languages may be to use regexes for separating
+the components of each line. Regexes allow a very flexible parsing of [.str]#strings#,
+but regex parsing is not very fast, and as our file has a very simple format, where the
+different fields are cleanly grouped by separating commas, other methods
+for extracting the data fields may be faster and simpler. But as regexes may be indeed
+useful for more complicated data extraction tasks, we will start with a small
+regex code example. Regex matching gives us only the substrings, but does not
+convert [.str]#strings# containing floating point or integer numbers to numeric values. We will
+leave this conversion out for now -- later we can use [.func]#parseInt()# or [.func]#parseFloat()#
+to get the numeric values. The code for our first regex solution is straight forward,
+we have introduced all the needed functions in earlier sections of the book:
+
+[source, nim]
+----
+import regex
+from std/strutils import repeat
+const
+  FileName = "csvdata.txt"
+  P = """([^,]+)"""
+  r = re(repeat(P & ',', 5) & P)
+
+proc main =
+  var m: RegexMatch
+  for l in Filename.lines:
+    if l[0] != '#': # skip first two and all other comment lines
+      if match(l, r, m):
+        when true: # debug
+          discard
+        else:
+          for i in 0 .. 5:
+            stdout.write(m.group(i, l))
+            stdout.write(' ')
+          echo ""
+      else:
+        assert false
+
+main()
+----
+
+The only part you may wonder about is the regex pattern: We have used [.code]#[^,]# to create a character class.
+The [.op]#^# has a special meaning if used in square brackets: It inverts the characters, that is [.code]#[^,]# actually
+match all characters that are not a comma. This makes some sense in our case, as our data
+fields are separated by commas. The pattern [.code]#P = """([^,]+)"""# matches one or more characters that are not commas.
+The outer round brackets indicate that we want to capture the match. We build our final pattern
+by the concatenation of pattern [.var]#P# following by a comma, repeated five times, and a final [.var]#P#.
+In the [.key]#for# loop, we skip all lines starting with a hash character, and we have commented
+out the printout of the actual captures, so that we can later measure the time for
+the pure regex parsing.
+
+As one more possible solution, we may try PEG parsing:
+
+[source, nim]
+----
+import npeg
+const
+  FileName = "csvdata.txt"
+
+const p = peg("line"):
+  line <- (>data * sep)[5] * >data
+  data <- +(1 - ',')
+  sep <- ','
+
+proc main =
+  for l in Filename.lines:
+    if l[0] != '#':
+      let m = p.match(l)
+      when false: # only for debugging
+        if m.ok:
+          echo m.matchLen
+          echo m.captures
+        else:
+          assert false
+
+main()
+---- 
+
+This solution should be again not surprising for you, as we have discussed the [.mod]#npeg# module
+in part V of the book in some detail. We used [.code]#+(1 - ',')# as a pattern to grep the data fields, that
+is one or more repetitions of any character that is not a comma. The [.code]#[5]# indicates exactly five
+repetitions -- it may be a bit surprising that we have to put this expression after the pattern
+expression, while operators like [.op]#{asterisk}#, [.op]#{plus}# and [.op]#?# have to put in front for the [.mod]#npegs# module.
+
+The third and maybe most obvious solution, is to just use [.func]#split()# of the [.mod]#strutils# module:
+
+[source, nim]
+----
+import strutils
+const
+  FileName = "csvdata.txt"
+
+proc main =
+  for l in Filename.lines:
+    if l[0] != '#':
+      let res = l.split(',')
+      when false:
+        assert res.len == 6
+        echo res
+main()
+----
+
+For this use case, [.func]#split()# is the simplest solution, and it should be faster than the
+regex and PEG solution. But for each call, [.func]#split()# returns a seq with six [.str]#strings#,
+which have to be newly allocated for each call. So even faster solutions may be possible.
+So let us try the [.mod]#parseutils# module now:
+
+[source, nim]
+----
+import parseutils
+const
+  FileName = "csvdata.txt"
+
+proc main =
+  for l in Filename.lines:
+    if l[0] != '#':
+      var i: int
+      var dist, count, state, vreg: string
+      var area, pop: string
+      #var area: float
+      #var pop: int
+      i += parseUntil(l, dist, ',', i) + 1
+      i += parseUntil(l, count, ',', i) + 1
+      i += parseUntil(l, state, ',', i) + 1
+      i += parseUntil(l, vreg, ',', i) + 1
+      i += parseUntil(l, area, ',', i) + 1
+      i += parseUntil(l, pop, ',', i) + 1
+      # i += parseFloat(l, area, i) + 1
+      # i += parseInt(l, pop, i) + 1
+      when false:
+        echo dist, ";", count, ";", state, ";", vreg, ";", area, ";", pop
+
+main()
+----
+
+As we have discussed the [.mod]#parseutils# module in part V of the book in much detail,
+the above code should be easily understandable for you. For extracting the area
+and population data, we will use [.str]#string# parsing only for now, and avoid
+the also available [.func]#parseFloat()# and [.func]#parseInt()# functions, as we want to compare
+the performance of the four solutions before we continue.
+
+The following
+table lists the runtimes for the four different ways of
+parsing the CSV data into [.str]#strings#. We used a CSV file
+with one million lines. Additional, as the last row of
+the table, we have used [.mod]#parseutils# to parse the area
+and population directly into numeric variables.
+The CSV data have been generated with our program from the start of this section,
+and we compiled our parsers with [.term]#-d:release#, and with default GC and with [.term]#--gc:arc#.
+The [.func]#time# shell command was used to measure the program runtimes. 
+
+[cols=3*,options="header"]
+[%autowidth]
+|===
+|Methode
+|Runtime refc
+|Runtime arc
+
+|regex
+|3209 ms
+|8206 ms
+
+|npeg
+|2013 ms
+|1854 ms
+
+|split()
+|717 ms
+|797 ms
+
+|parseutils
+|514 ms
+|544 ms
+
+|parseutils float/int
+|492 ms
+|522 ms
+
+|===
+
+As expected, regex parsing is the slowest, and with [.term]#--gc:arc# it is even slower.
+The use of [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
+
+Can we further improve the performance? Indeed, for the concrete data format,
+and when we are only interested to find numeric extreme values, then
+actually parsing the first four [.str]#strings# is not really necessary:
+
+[source, nim]
+----
+import parseutils
+const
+  FileName = "csvdata.txt"
+
+proc main =
+  for l in Filename.lines:
+    if l[0] != '#':
+      var i: int
+      var dist, count, state, vreg: string
+      var area: float
+      var pop: int
+      i = l.high
+      while l[i] != ',':
+        dec(i)
+      dec(i)
+      while l[i] != ',':
+        dec(i)
+      inc(i)
+      i += parseFloat(l, area, i) + 1
+      i += parseInt(l, pop, i) + 1
+      when false:
+        echo dist, ";", count, ";", state, ";", vreg, ";", area, ";", pop
+
+main()
+----
+
+This reduced the runtime with [.term]#--gc:arc# to 232 ms. Parsing the two numeric
+values is enough to find the line with the extreme value -- we can then just
+return the whole line [.str]#string#, from which the other fields can then be extracted.
+But this optimization is a bit dangerous, for corrupted data our backward scanning
+loops may run before the start of the line string, generating a runtime error.
+
+==== Making it parallel
+
+The next task is to somehow distribute all the work to a set of threads. The number of
+threads should be at least as large as the number of physical cores of our computer, so
+that we can really distribute all the work on all available cores. Our first idea may be
+to use a thread for each line of the file, but obviously really creating millions of threads make not much sense,
+and even feeding millions of procs to spawn of the [.mod]#threadpool# should generate a lot of overhead.
+Processing only one line is just too less work for a thread, so that the switching process generates too
+much overhead. A better idea seems to be to use a thread for maybe a few thousand lines.
+
+So our first task is to split the whole file into chunks or fragments, where each chunk
+should contain a number of lines. Seems to be easy, but this splitting of the whole CSV file
+into chunks should be really fast, so using the [.func]#lines()# iterator is not a good idea.
+But the [.mod]#io# module provides the functions [.func]#readBytes()# or [.func]#readChars()#, which we can use to read
+the CSV file fast in larger block. Here is a first sketch of the code:
+
+[source, nim]
+----
+const
+  FileName = "csvdata.txt"
+
+proc main =
+  var buf = newString(1024)
+  var f: File = open(FileName, fmRead)
+  while not f.endOfFile:
+    let res = f.readChars(buf) 
+    #stdout.write(buf) # wrong for last read, setLen(res) is missing in  this sketch
+
+  f.close
+
+main()
+----
+
+This first attempt takes only 12 ms to read the file in. But the obvious issue is, that
+the chunks of [.lit]#1024# bytes contain fractional lines. To fix that, we can just do a backward
+search for the line end marker [.lit]#'\n'# in the buffer:
+
+[source, nim]
+----
+const
+  FileName = "csvdata.txt"
+  BlockSize = 1024 - 1 # one byte for the terminating NULL char? 
+
+proc main =
+  var buf = newString(BlockSize)
+  var f: File = open(FileName, fmRead)
+  while not f.endOfFile:
+    let res = f.readChars(buf)
+    if f.endOfFile:
+      buf.setLen(res)
+    else:
+      var i = res - 1
+      while buf[i] != '\n':
+        dec(i)
+      inc(i)
+      f.setFilePos(i - res, fspCur)
+      buf.setLen(buf.len + i - res)
+    stdout.write(buf)
+    echo "---"
+    assert buf[buf.high] == '\n'
+    buf.setLen(BlockSize) # reset initial size for the next read
+
+  f.close
+
+main()
+----
+
+The code from above is again easy, we only have to get the indices right.
+The [.func]#setFilePos()# function may be new for you, we use it to jump back in the file.
+The [.func]#setFilePos()# function allows it to set the new position relative to the file start,
+to the actual position, or to the file end. As we want to move back, we used the mode [.lit]#fspCur#
+to indicate the actual position.
+We have added an [.func]#echo()# statement that prints "---" after each chunk, which
+helps us to verify that the chunk boundaries are really the line endings.
+Without the output operations, this code runs in 25 ms, which is still not that bad.
+Now we can just pass each chunk to its own thread, which then can select and return a
+candidate line from this chunk. So we finally have only to select the best of all candidates.
+
+We will use Nim's [.mod]#threadpool# for the actual parallel processing, as [.func]#spawn# offers an easy
+way to return results to the main thread. Using the [.mod]#threads# module should also work, but
+then we would need [.type]#channels# to return results.
+
+[source, nim]
+----
+import std/threadpool
+import std/parseutils
+from strutils import splitLines
+const
+  FileName = "csvdata.txt"
+  BlockSize = 1024 * 1024 - 1
+
+type
+  Res = object
+    dist, count, state, vreg: string
+    area: float
+    pop: int
+
+proc candidate(lines: string): ref Res =
+  var res: Res
+  result = new Res
+  result[] = Res(area: NegInf, pop: int.low)
+  for l in lines.splitLines():
+    if l.len > 0 and l[0] != '#': # skip first two and all other comment lines
+      var i: int
+      i += parseUntil(l, res.dist, ',', i) + 1
+      i += parseUntil(l, res.count, ',', i) + 1
+      i += parseUntil(l, res.state, ',', i) + 1
+      i += parseUntil(l, res.vreg, ',', i) + 1
+      i += parseFloat(l, res.area, i) + 1
+      i += parseInt(l, res.pop, i) + 1
+      if res.pop > result.pop:
+        result[] = res 
+
+proc main =
+  var flowVarSeq: seq[FlowVar[ref Res]]
+  var buf = newString(BlockSize)
+  var f: File = open(FileName, fmRead)
+  while not f.endOfFile:
+    let res = f.readChars(buf)
+    if f.endOfFile:
+      buf.setLen(res)
+    else:
+      var i = res - 1
+      while buf[i] != '\n':
+        dec(i)
+      inc(i)
+      f.setFilePos(i - res, fspCur)
+      buf.setLen(buf.len + i - res)
+    flowVarSeq.add(spawn candidate(buf))
+    assert buf[buf.high] == '\n'
+    buf.setLen(BlockSize)
+
+  f.close
+
+  var final = Res(area: NegInf, pop: int.low)
+  for c in flowVarSeq:
+    let h = ^c
+    if h.pop > final.pop:
+      final = h[]
+
+  echo "Final result:", final
+
+main()
+----
+
+Note that we have to compile the program always with [.term]#--threads:on#.
+When we compile the code above with option [.term]#-d:release#, it takes 120 ms to run, on a four core Intel box.
+That is indeed a performance improvement of a factor of four, which is not bad.
+Unfortunately, when we compile the code with [.term]#-d:release --gc:arc# we get runtimes of about 500 ms,
+which is no improvement compared to the single threaded code. And with [.term]#-d:release --gc:orc#
+the runtime is even in the range of 700 ms. We can currently not say what the reason for this difference is --
+but of course the default GC works fine and gives us very good results.
+When you think about the code a few minutes, its basic idea should become clear: We read a block from
+the CSV file, and when the end of the file is not yet reached, we go back to the last newline character.
+Then we use [.func]#spawn# to run our [.func]#candidate()# proc with the [.italic]#fixed# data block as parameter.
+Similarly, as before, the [.func]#candidates()# proc uses functions from [.mod]#parseutils# to parse the lines
+and select the best candidate. To simplify the data handling, we have declared a [.type]#Res# [.key]#object#,
+which contains the parsed fields. All the [.type]#FlowVar[ref Res]# instances are collected in a sequence.
+When the end of the file is reached and all the data chunks have been passed to a spawned [.func]#candidate()# proc,
+we can start reading the [.type]#FlowVar# sequence. The [.op]#^# operator blocks, until
+the thread has finished, and we can access the data of the [.type]#FlowVar# to select the optimum from all the candidates.
+
+To allow an easy testing of our code, we have decided to select the line with the highest population
+count. So we can just edit our CSV file with a text editor, replace the population of a line with a very large value, and
+proof if our program will really find that line. Searching for minimal or maximal area, or for
+population density, requires only some tiny modifications of the code.
+
+You may wonder why we have added the condition [.code]#if l.len > 0# in the body of the [.func]#candidate()#
+proc. Well, our data chunks end with newline characters, and the [.func]#splitLines()# iterator
+gives an empty line for the last split. That empty line has to be ignored. The test [.code]#l.len > 0#
+should cost not that much performance. You may think yourself about a way to save this test,
+by passing only chunks to [.func]#candidate()# proc that do not end with a newline character. Seems to be possible,
+but then we have to care for the fact, that our whole CSV file may end with a newline, or may not end with a newline.
+We have to take care of that.
+
+The performance of our code strongly depends on the used [.var]#BlockSize#. We used one megabyte,
+which results in about 40 [.func]#spawn# calls for our 44 MB CSV file. Smaller block sizes decrease
+the performance, as more [.func]#spawn# calls increases the overhead for managing the threads of the pool.
+For playing with the program, using an explicit [.var]#BlockSize# makes some sense. But for 
+a real world application, it would make more sense to start with some useful number of threads, and calculate
+the blocksize by dividing the CSV file size by the number of desired threads. As total thread count, we would
+usually use at least the number of physical CPU cores, but not a much larger value, to avoid unnecessary overhead for thread management.
+
+Maybe you wonder why we chose as result for the [.func]#candidate()# proc [.code]#ref Res#, and not just [.type]#Res#. The
+reason is, that currently a spawned proc may only return a value [.key]#object#, when the [.key]#object# has no
+fields that contain data types that are handled by the garbage collector. For details, you may consult
+the compiler manual.
+
+Note that the call [.code]#spawn candidate(buf)# copies the [.var]#buf# parameter. This way all the chunks of the initial
+CSV file have to be copied, which may minimally decrease performance. But copying of data
+blocks is fast -- modern hardware has memory bandwidths of a few dozen GB/s. Our initial sketch for only reading
+in the CSV file took 12 ms, so we may guess that copying all the chunks may take not more time. As an alternative
+solution to the above code, we could try the [.mod]#threads# module, using [.type]#channels# to pass the candidates back, or maybe
+the [.key]#parallel# construct. Or we may experiment with so-called [.ndef]#memory mapped files#, see https://nim-lang.org/docs/memfiles.html.
+
+****
+Note: All the example codes in this section are nearly untested. The intention of this section was only to show you
+which strategies can be used to parse CSV files, and how the parsing may be optimized and parallelized. The results seem
+to be reasonable, so we assume that the example programs do at least in principle that of what was intended.
+****
+
 References
 
 * http://callbackhell.com/
@@ -17422,6 +17918,7 @@ References
 * https://github.com/status-im/nim-chronos
 * https://github.com/mratsim/weave
 * https://en.wikipedia.org/wiki/Lock_(computer_science)
+* https://en.wikipedia.org/wiki/Comma-separated_values
 
 //== Async and Await
 //== Asynchronous execution with async/await
@@ -18252,7 +18749,7 @@ languagetool.org software used from the command line with the pyLanguagetool app
 
 //=== Is there a way I could get a `ref` from a non-ref object?
 
-== [.new]#Nimble -- a package manager#
+== [.recent]#Nimble -- a package manager#
 
 ****
 Note: As its position in the appendix already indicates, this section had a hard time to
@@ -18786,6 +19283,7 @@ We have added a few more simple examples and exercises:
 * <<Command line parsing>>
 * <<Cligen, a Command-Line Interface generator>>
 * <<Nimble>>
+* <<Parsing data files in parallel>>
 
 ////
 Part I: Introduction
@@ -18809,8 +19307,9 @@ HJarausch_gitlab, untyped vs. typed is basically what stage you get the AST at
 Do we have
 
 - What is a lib and a module
-- private and public entities in mo0dules
--what are namespaces
+- private and public entities in modules
+- what are namespaces
+
 
 ////
 
