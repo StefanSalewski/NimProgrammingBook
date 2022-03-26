@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAR-25
+//v0.1, 2022-MAR-26
 :doctype: book
 :toc: left
 :icons: font
@@ -17856,10 +17856,13 @@ main()
 Note that we have to compile the program always with [.term]#--threads:on#.
 When we compile the code above with option [.term]#-d:release#, it takes 120 ms to run, on a four core Intel box.
 That is indeed a performance improvement of a factor of four, which is not bad.
-Unfortunately, when we compile the code with [.term]#-d:release --gc:arc# we get runtimes of about 500 ms,
+Unfortunately, when we compile the code with [.term]#-d:release --gc:arc#, we get runtimes of about 500 ms,
 which is no improvement compared to the single threaded code. And with [.term]#-d:release --gc:orc#
-the runtime is even in the range of 700 ms. We can currently not say what the reason for this difference is --
-but of course the default GC works fine and gives us very good results.
+the runtime is even in the range of 700 ms.
+At the end of this section we will present a solution which works fine also for [.term]#--gc:arc# -- for
+[.term]#--gc:orc# the runtime is decreased to 300 ms at least.
+//We can currently not say what the reason for this difference is --
+//but of course the default GC works fine and gives us very good results.
 When you think about the code a few minutes, its basic idea should become clear: We read a block from
 the CSV file, and when the end of the file is not yet reached, we go back to the last newline character.
 Then we use [.func]#spawn# to run our [.func]#candidate()# proc with the [.italic]#fixed# data block as parameter.
@@ -17902,6 +17905,95 @@ blocks is fast -- modern hardware has memory bandwidths of a few dozen GB/s. Our
 in the CSV file took 12 ms, so we may guess that copying all the chunks may take not more time. As an alternative
 solution to the above code, we could try the [.mod]#threads# module, using [.type]#channels# to pass the candidates back, or maybe
 the [.key]#parallel# construct. Or we may experiment with so-called [.ndef]#memory mapped files#, see https://nim-lang.org/docs/memfiles.html.
+
+==== Fixes for ARC and ORC
+
+As we found out, the performance is currently disappointing when we compile with [.term]#--gc: arc# or [.term]#--gc:orc#.
+One easy way to fix that is, when we use additional the compiler option [.term]#-d:useMalloc#. This avoids
+the use of Nim's own memory allocator, which seems to be slow when we compile with [.term]#--threads:on#.
+The issue becomes very obvious due to the fact, that the current implementation of the [.func]#splitLines()#
+iterator calls [.func]#subStr()# for each [.key]#yield#, and [.func]#subStr()# does allocate a new [.str]#string#. Actually
+it is not really necessary to do a [.str]#string# allocation for each [.key]#yield#. As [.str]#strings# have value semantic,
+it would be possible to reuse the same [.string]#string# -- the [.func]#lines()# iterator does that. It may be even possible
+to avoid allocations at all, by using the [.type]#openArray[char]# data type as result type for the iterator, see  https://forum.nim-lang.org/t/6968#43685.
+But actually we do not need the [.func]#splitLines()# iterator at all, we can again just use [.func]#parseUntil()#:
+
+[source, nim]
+----
+import std/[threadpool, parseutils]
+
+const
+  FileName = "csvdata.txt"
+  BlockSize = 1024 * 1024 - 1
+
+type
+  Res = object
+    dist, count, state, vreg: string
+    area: float
+    pop: int
+
+proc candidate(lines: string): Res =
+  var
+    res: Res
+    j: int
+    l = newStringOfCap(127) # avoid reallocations
+  result = Res(area: NegInf, pop: int.low)
+  while true:
+    j += parseUntil(lines, l, '\n', j) + 1
+    if l.len == 0:
+      break
+    if l[0] != '#':
+      var i: int
+      i += parseUntil(l, res.dist, ',', i) + 1
+      i += parseUntil(l, res.count, ',', i) + 1
+      i += parseUntil(l, res.state, ',', i) + 1
+      i += parseUntil(l, res.vreg, ',', i) + 1
+      i += parseFloat(l, res.area, i) + 1
+      i += parseInt(l, res.pop, i) + 1
+      if res.pop > result.pop:
+        result = res
+
+proc main =
+  var flowVarSeq: seq[FlowVar[Res]]
+  var f: File = open(FileName, fmRead)
+  while not f.endOfFile:
+    var buf = newString(BlockSize) # passed as sink parameter to candidates()
+    let res = f.readChars(buf)
+    if f.endOfFile:
+      buf.setLen(res)
+    else:
+      var i = res - 1
+      while buf[i] != '\n':
+        dec(i)
+      inc(i)
+      f.setFilePos(i - res, fspCur)
+      buf.setLen(buf.len + i - res)
+    flowVarSeq.add(spawn candidate(buf))
+    assert buf[buf.high] == '\n'
+
+  f.close
+
+  var final = Res(area: NegInf, pop: int.low)
+  for c in flowVarSeq:
+    let h = ^c
+    if h.pop > final.pop:
+      final = h
+
+  echo "Final result:", final
+
+main()
+----
+
+This code, compiled with [.term]#nim c --threads:on -d:release --gc:arc t.nim#, runs in less than
+100 ms. With [.term]#-d:useMalloc# we can save a few more ms. With [.term]#--gc:orc# we get a runtime
+of 300 ms, which is not that great. As you may have noticed, we have used only [.type]#Res#
+value [.key]#objects# in the code above, we do not need references. This is possible when we only compile
+with [.term]#--gc:arc# or [.term]#--gc:orc#, for [.term]#--gc:refc# we would get the compile Error:   [.italic]#cannot create a flowVar of type: Res#.
+We have done one additional modification -- we allocate the buffer [.var]#buf# inside of the [.key]#while# loop. This may
+look strange, as we generally avoid allocations in loops. But as [.func]#candidates()# gets a copy of the
+[.var]#buf# [.str]#string#, and ARC uses move semantics and sink parameters, this may make sense. The compiler
+may pass the newly allocated [.var]#buf# variable just to candidates, instead of copying it. And
+we do not have to call [.code]#buf.setLen(BlockSize)# at the end of the loop.
 
 ****
 Note: All the example codes in this section are nearly untested. The intention of this section was only to show you
@@ -19310,6 +19402,10 @@ Do we have
 - private and public entities in modules
 - what are namespaces
 
+Missing?
+
+-- debugging
+-- profiling
 
 ////
 
