@@ -1,0 +1,74 @@
+/* https://docs.asciidoctor.org/asciidoctor/latest/html-backend/default-stylesheet/ */
+
+@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
+@import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css";
+
+/*
+h1, h2, h3, h4, h5, h6, #toctitle,
+.sidebarblock > .content > .title {
+  color: rgba(0, 0, 0, 0.8);
+}
+*/
+
+/* .key{font-family: monospace; font-weight: bold; background-color: #DDD; color: #000} */
+/* .op{font-family: monospace; font-weight: bold; background-color: #DDD; color: #000} */
+/* .op{font-family: monospace; font-weight: bold} */
+/* .var{font-family: monospace; background-color: #DDD; color: #000} */
+/* .var{font-family: monospace; font-style: italic} */
+/* .mod{font-family: monospace; font-style: italic} */
+/* .lit{font-family: monospace; font-style: italic} */
+/* .const{font-family: monospace; font-style: italic} */
+/*.type{font-family: monospace; background-color: #DDD; color: #000} */
+/* .array{font-family: monospace; background-color: #DDD; color: #000} */
+/* .func{font-family: monospace; background-color: #DDD; color: #000} */
+/* .func{font-family: monospace} */
+/* .plain{} */
+/* .str{} */
+/* .mac{} */
+/* .proc{} */
+/* .name{} */
+/* .nim{} */
+/* .code{font-family: monospace; background-color: #DDD; color: #000} */
+/* .term{font-family: monospace; background-color: #DDD; color: #000} */
+/* .promo{font-variant: small-caps} */
+/* .ndef{font-style: italic; color: #000} */
+/* .italic{font-style: italic} */
+/* .new{border-color: #000; border-width: 3; background-color: #FF0; color: #000} border does nor work */
+/* .new{background-color: #FF0; color: #000} */
+/* .recent{background-color: #FFA} */
+
+
+/* ======================== */
+.new{background-color: #FF0; color: #000}
+.recent{background-color: #FFA}
+.ndef{font-style: italic}
+.italic{font-style: italic}
+
+.op{font-family: monospace; font-weight: bold}
+.key{font-weight: bold}
+.proc{} /* the proc keyword in text */
+.mac{} /* the macro keyword in text */
+
+.type{font-family: monospace}
+.str{font-family: monospace} /* string type */
+.array{font-family: monospace} /* array type */
+
+.func{}
+
+.var{font-family: monospace; font-style: italic}
+.mod{font-family: monospace; font-variant: small-caps}
+
+.lit{font-family: monospace; font-style: italic}
+.const{font-family: monospace; font-style: italic}
+
+.code{font-family: monospace; background-color: #EEE; color: #000}
+.term{font-family: monospace; background-color: #EEE; color: #000}
+
+.plain{}
+.name{}
+.unit{} /* GB, nm*/
+
+/* .nim{} */
+/* .promo{font-variant: small-caps} */
+/* .new{border-color: #000; border-width: 3; background-color: #FF0; color: #000} border does nor work */
+
