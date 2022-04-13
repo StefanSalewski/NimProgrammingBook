@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-APR-10
+//v0.1, 2022-APR-13
 :doctype: book
 :toc: left
 :icons: font
@@ -4080,7 +4080,7 @@ var
   strange__error: int # illegal
 ----
 
-Generally we use camel case like [.var]#leftMargin# for variable names, not snake case like
+Generally, we use camel case like [.var]#leftMargin# for variable names, not snake case like
 [.var]#left_margin#.
 
 Current Nim has the special property that names are case-insensitive and that
@@ -5016,7 +5016,7 @@ It may help to remember that for plain variables the data type comes last also l
 in var i: int.]
 
 The first [.key]#for# loop of the above program fills our [.type]#array# -- that is, for each of the [.lit]#8#
-storage places in the array we fill in some well-defined data. We use the
+storage places in the array, we fill in some well-defined data. We use the
 [.func]#mitems()# iterator here, because we want to modify the content of our [.type]#array#
 -- we fill in numbers [.lit]#1 .. 8#. In the next [.key]#for# loop, we square each storage location,
 and finally we print the content. In the last [.key]#for# loop, we do not modify the content,
@@ -5373,9 +5373,9 @@ buffer and so on.
 
 == Slices
 
-Nim slices are objects of type [.type]#Slice# that contain a lower [.ndef]#a# and an
-upper bound [.ndef]#b#. The [.mod]#system# module defines also the [.type]#HSlice# object called
-heterogeneous slice for which the lover and upper bound can have different data types:
+Nim [.plain]#slices# are [.key]#objects# of type [.type]#Slice# with two fields, a lower bound [.ndef]#a# and an
+upper bound [.ndef]#b#. The [.mod]#system# module defines also the [.type]#HSlice# [.key]#object#, called
+heterogeneous slice, for which the lower and upper bound can have different data types:
 
 [source, nim]
 ----
@@ -5386,9 +5386,9 @@ type
   Slice*[T] = HSlice[T, T] ## An alias for `HSlice[T, T]`.
 ----
 
-As the [.type]#Slice# and [.type]#Slice# objects are not a built-in type, their Names
-start with capital letters. Slices are not used that often directly, but mostly indirectly with
-the range operator, e.g. to access sub-ranges of strings and other containers.
+As the [.type]#Slice# and [.type]#HSlice# [.key]#objects# are not built-in types, their names
+start with capital letters. [.type]#Slices# are not used that often directly, but mostly indirectly with
+the [.op]#..# range operator, e.g. to access sub-ranges of [.type]#strings# and other containers.
 
 One example for its direct use from the
 [.mod]#system# module is
@@ -5399,35 +5399,42 @@ proc contains*[U, V, W](s: HSlice[U, V], value: W): bool {.noSideEffect, inline.
   result = s.a <= value and value <= s.b
 ----
 
-Slices are used by functions of the standard library
-or by user defined functions to access sub-ranges of strings, arrays and sequences.
-Applied to these container data types, slices look syntactically like sub-ranges:
+[.type]#Slices# are used by functions of the standard library
+or by user defined functions to access sub-ranges of [.type]#strings#, [.type]#arrays# and sequences.
+Typically, we do not use an explicit [.type]#Slice# [.key]#object#, but we create the [.type]#Slice# by use of the
+infix [.op]#..# operator, which takes two integers and returns a [.type]#Slice# with these bounds:
+
+Applied to container data types, slices look syntactically like sub-ranges:
 
 [source, nim]
 ----
-var
-  m = "Nim programming is difficult."
+var m = "Nim programming is difficult."
 m[19 .. 28] = "not easy."
 echo m
 echo "Indeed " & m[0 .. 18] & "is much fun!"
+var s = HSlice[int, int](a: 0, b: 18)
+echo "Indeed " & m[s] & "is much fun!" # the same as line four
 ----
 
-In line three we use the slice to replace the sub-string "is difficult." which starts
-at position 19 with another string. Note that the replacement can be a longer or a
-shorter string, that is, the slice supports not only overwriting characters, but also
-inserting or deleting operations. In the last line, we use the slice to access a
-sub-string and create a new string with it. As we learned earlier in the strings
+In line two we use the slice to replace the sub-string "is difficult.", which starts
+at position 19, with another string. Note that the replacement can be a longer or a
+shorter [.type]#string#, that is, the slice supports not only overwriting characters, but also
+inserting or deleting operations. In line two, the actual [.type]#Slice# [.key]#object# is constructed by
+the [.op]#..# operator and the two integer bounds.
+In line four, we use the slice to access a
+sub-string and create a new [.type]#string# with it. As we learned earlier in the <<Strings>>
 section already, we can use the [.op]#^# operator to access elements counted from the
-end of the container, so we could have written line three also as [.code]#m[19 .. ^1]
-= "not easy."#.
+end of the container, so we could have written line two also as [.code]#m[19 .. ^1]
+= "not easy."#. The last two lines in the above example show that we could have used
+a real [.type]#HSlice# [.key]#object# to access the sub-string instead.
 
-Slices can be used in a similar way for arrays, strings and sequences. But we have to
-remember that slices are only objects with a lower and an upper bound, so there must
-be always a procedure that accepts the container and the slice as arguments to do the
+[.type]#Slices# can be used in a similar way for arrays, strings and sequences. But we have to
+remember that [.type]#Slices# are only [.key]#objects# with a lower and an upper bound, so there must
+be always a procedure that accepts the container and the [.type]#Slice# as arguments to do the
 real work.
 
-When we care for utmost performance, then we have to be a bit carefully with slices,
-as slices can generate copies. Consider this example:
+When we care for utmost performance, then we have to be a bit carefully with [.type]#Slices#,
+as the use of [.type]#Slices# can generate copies. Consider this example:
 
 [source, nim]
 ----
@@ -5446,10 +5453,11 @@ proc main =
     sum += x.i
 ----
 
-Here, we use the slice operator to exclude the first element from our summing
-operation. Unfortunately, in current {curnim} use of the slice operation in this way
-creates a copy of our sequence, which increases the run-time and memory consumption.
-We may try to use the new toOpenArray() expression and try a construct like
+Here, we use the slice construction operator [.op]#..# to exclude the first element from our summing
+operation. Unfortunately,  when we use the slice operation in this way, the Nim compiler
+may create a copy of our sequence, which increases the run-time and memory consumption.
+At least for Nim versions up to 1.6 this was the case, never versions may use view types instead to avoid the copy.
+We may try to use the new [.func]#toOpenArray()# expression and try a construct like
 
 [source, nim]
 ----
@@ -5500,12 +5508,12 @@ But this is work in progress, so the situation may improve, see
 
 == Value Objects and References
 
-We have already used different types of variables -- integers, floats, or the custom
+We have already used different types of variables -- integers, floats, characters, or the custom
 Computer object, and some more. We said that variables are named memory regions,
 where the content of our variables is stored. We call this type of variables also
-value objects.
+value types.
 
-Value objects always implies copies when we do an assignment
+Value types always imply copies when we do an assignment:
 
 [source, nim]
 ----
@@ -5521,13 +5529,22 @@ we assign the content of variable [.var]#i# to variable [.var]#j#, and finally w
 content of variable [.var]#i# with the new literal value [.lit]#3#. The output of the [.func]#echo()# statement
 should be [.term]#3# and [.term]#7#, because in line 3 we copy the content of variable [.var]#i#, which is
 currently the value [.lit]#7#, into variable [.var]#j#. The new assignment in line 4 in no way
-touched the content of variable [.var]#j#.
+touches the content of variable [.var]#j#.
 
-Maybe that is not too surprising, but when we would have references instead of plain
-variables, then the situation would be different, as we will see soon.
+In section <<Objects>> we saw that the fields of [.key]#object# types like our [.type]#Computer# data type
+behave in the same way -- assignments copy the content. The [.type]#tuple# data type, which has some
+similarity to [.op]#objects#, and which we will introduce later in the book, behaves the same.
+All these data types are stack allocated, and we say that the data types have value or copy semantic.
+Even strings and sequences, which use actually a heap allocated data buffer, behave in the same way in Nim.
 
 Whenever possible, we should use this simple form of variables, as they are fast and
 easy to use.
+
+Maybe that is not too surprising for you, but when we would have references instead of plain
+variables, then the situation would be different, as we will see soon. Actually some other
+programming languages use reference semantic for entities like strings by default, for example
+in Ruby an assignment of a string variable to another variable does not copy the content, so
+that both variables still use the same data buffer -- when we then modify one variable, the content of the other changes too.  
 
 But there exist situations where we need some sort of indirection, and then
 references and pointers come into play. For example, when the data entities depend in
@@ -5548,7 +5565,9 @@ Now imagine that you know a good car repair shop. You can give the telephone num
 or location of that car repair shop to your neighbor, so he can use that shop too. So
 you gave him a reference to the shop, but you gave him not a copy. You can also give
 some of your other friends each a reference to that shop, which is nearly no effort
-for you. While backing a cake for all of them would be some effort.
+for you. While backing a cake for all of them would be some effort. But there is some
+danger with references: When one of your friends gets angry and burns down the
+car repair shop, then you and all your other friends have a serious problem.
 
 You can regard names of persons as some sort of reference too. Imagine you have a
 list with the names of all the people you intend to invite to your birthday party,
@@ -5576,13 +5595,13 @@ somewhere in the RAM when the program is executed. Well, when we do really not w
 to access it by variable name, then there is still one chance: We can search in the
 whole RAM for the desired content. In practice, we would never do that, as it is
 stupid and would take very long, but we could do. But how can we detect our variable?
-How can we be sure that it is indeed ours? Generally we can not. Even when we are
+How can we be sure that it is indeed ours? Generally, we can not. Even when we are
 sure that the variable must reside somewhere in the RAM, typically the variable is
 marked in no way, of course. Even when we would know the value which is stored in that
 variable, we would only know what bit pattern it should have, so for most words of
 the RAM with a different bit pattern we could say for sure that it can not be our
 variable, but whenever we find the expected bit pattern than it can be just a
-coincidence, there can be many more words in RAM with that content. In some way it is
+coincidence, there can be many more words in RAM with that content. In some way, it is
 as you would search a person, and you know that that person lives in a long road with
 numbered houses. If you only know that the person wears brown shoes, but you know not
 the number of the house nor the name of the person and no other unique property of
@@ -5611,7 +5630,7 @@ var
 Here the variable [.var]#p# is of type [.type]#pointer#, we could use it to point to some arbitrary
 memory address. The variable [.var]#ip# is of type [.code]#ptr int#, which indicates that it
 should only point to memory addresses where a variable with data type [.type]#int# resides. So
-a [.type]#ptr# is a pointer that is bound to a specific data type. Generally we speak only
+a [.type]#ptr# is a pointer that is bound to a specific data type. Generally, we speak only
 about pointers, if we are referring to an untyped [.type]#pointer# or a typed [.type]#ptr# is generally
 clear from the context.
 
@@ -5769,12 +5788,12 @@ References:
 
 In the previous section, we learned the basics about pointers. We used the [.func]#addr()#
 operator to initialize the pointer by assigning the address of an already existing
-object. This is in practice not that often done, and it can be a bit dangerous, as it
+entity. This is in practice not that often done, and it can be a bit dangerous, as it
 is not always guaranteed that the variable on which we applied [.func]#addr()# will exist as
 long as our pointer exist. So the pointer may point later to a memory location that
-is already freed or used by a totally different object already. So the use of [.func]#addr()#
-is more reserved for advanced programmers who know well what they do, and most of the
-time [.func]#addr()# is not necessary at all or is only necessary for really low level code,
+is already freed or used by a totally different object. So the use of [.func]#addr()#
+is more reserved for advanced programmers, who know well what they do, and most of the
+time [.func]#addr()# is not necessary at all, or is only necessary for really low level code,
 maybe when interfacing with external libraries written in C. Instead of using [.func]#addr()#
 to assigning to pointers a valid address, often procedures like [.func]#alloc()# or [.func]#create()#
 are used to reserve a block of memory:
@@ -5796,9 +5815,9 @@ ensures that the block has the size of an integer value. After [.var]#ip# has a 
 we can store a value in that memory location and read it again. Note that multiple
 pointers can point to the same memory location: We declared one more [.type]#int ptr# called
 [.var]#ip2#. But for that pointer, we do not allocate a new block, but we assign the old block
-that we allocated for [.var]#ip# to [.var]#ip2#. Now both pointers points to the same object, the [.type]#int#
+that we allocated for [.var]#ip# to [.var]#ip2#. Now both pointers points to the same [.plain]#object#, the [.type]#int#
 value [.lit]#13#. We may call [.var]#ip2# an alias, as it is a different way to access the same
-object.
+entity.
 
 When we use [.func]#alloc()# or [.func]#create()# to allocate memory blocks, then we have to deallocate
 them when we need them not anymore. Otherwise, that memory blocks couldn't be reused.
@@ -5811,10 +5830,10 @@ automatically by the OS.
 The use of procedure pairs like [.func]#alloc()# and [.func]#dealloc()# is common practice in low level
 programming languages like C, but it is inconvenient and dangerous: We can forget to
 call [.func]#dealloc()# and waste resources, or we may even deallocate memory blocks, but still
-use it by our pointers. The later would at some point of time crash our program, as
+use it by our pointers. The latter would at some point in time crash our program, as
 we would use memory blocks which are already released and may be used for other
 variables -- from our own program or from other programs. Note that in the source
-code above there is only one single [.func]#dealloc()# call. The reason for that is, that we
+code above, there is only one single [.func]#dealloc()# call. The reason for that is, that we
 only allocated one single memory block in one single [.func]#create()# call, [.var]#ip2# is only one
 more pointer that points to that block. If we had used an additional
 [.func]#dealloc(ip2)# call, then that would be a so-called double free error.
@@ -5834,13 +5853,18 @@ For References, we have still to do the allocation our self, then we can use the
 references, and when we are not using them anymore, then the GC frees the
 corresponding memory block. A typical scenario is that we use references in a
 procedure or in an otherwise limited block of code: We declare the reference in that
-code block, allocated and use it, and when the code block is left the GC frees the
+code block, allocated and use it, and when the code block is left, the GC frees the
 allocated memory for us. You may think that the fact that we still have to allocate
 the memory for our references our self is still a concern, as we may forget that
 step. Well it is not that dangerous, when we forget the allocation step, we would use
 a reference with value [.lit]#nil#, which would immediate result in a runtime error. So we
 would see the problem immediately. Other pointer errors, like missing de-allocation
-or use after free, are not that obvious and more dangerous.
+or use after free, are not that obvious and more dangerous. In languages like C tools
+like Valgrind are used to check for errors like "use after free". Valgrind is a very helpful tool,
+but it can not find all errors that may occur, and it reports can be very verbose. We may
+use Valgrind as well when we compile our Nim program with [.term]#--gc:arc# and [.term]#-d:useMalloc# -- this
+can be used to ensure that our program really works perfectly, maybe when we have to
+use C libraries, and it may help us to find the cause for bugs.
 
 With references, we can rewrite our previous example code in this way:
 
@@ -5848,6 +5872,7 @@ With references, we can rewrite our previous example code in this way:
 ----
 var ip: ref int
 new(ip)
+echo ip[] # zero
 ip[] = 13
 echo ip[] * 3
 var ip2: ref int
@@ -5858,8 +5883,10 @@ echo ip2[] * 3
 We have replaced [.type]#ptr# by [.type]#ref#, and instead of [.func]#alloc()# or [.func]#create()# we are using the
 [.func]#new()# [.proc]#{proc}# which gets the uninitialized [.key]#ref# as a parameter and allocates a managed
 memory block for it, that is after the [.func]#new()# call [.var]#ip# has a well-defined value
-referring to a managed memory block that can store an integer value. Again, we can
-use one more [.key]#ref# and assign that [.key]#ref# the value of the other, so now both references
+referring to a managed memory block that can store an integer value.
+The content of that memory block is cleared initially, so [.code]#echo ip[]# would give zero.
+Again, we can
+use one more reference [.var]#ip2# and assign that [.key]#ref# the value of the other, so now both references
 the same memory block. The advantage here is that we don't have to care about
 freeing that block, the GC will do that when appropriate.
 
@@ -5874,11 +5901,11 @@ echo ip2[]
 ----
 
 Here, we are using the reference [.var]#ip2# to assign to the memory block the literal value
-[.lit]#7#. After that assignment, both echo statements would display that new content.
+[.lit]#7#. After that assignment, both [.func]#echo()# statements would display that new content.
 
 Using references and pointers to store basic data types like integers is not done
-that often, in most cases we work with larger objects, and we create some relations
-between the objects. We will try that in the next section.
+that often, in most cases we work with larger [.key]#objects#, and we create some relations
+between the [.key]#objects#. We will try that in the next section.
 
 === References to Objects
 
@@ -5886,8 +5913,8 @@ You should still wonder for what references are really useful -- they seem to be
 a more complicated version of plain value type variables.
 
 Now let us assume we want to create a list of things or persons, maybe a list of our
-previously used Computer data type, or perhaps a list of persons we will invite to our
-next party. We will create the party list for now, as the Computer data type we used
+previously used [.type]#Computer# data type, or perhaps a list of persons we will invite to our
+next party. We will create the party list for now, as the [.type]#Computer# data type we used
 before has already many fields, and filling all the fields would be some effort, so
 let us use a new [.type]#Friend# data type which should store only the friend's name for the
 beginning -- we may add more fields later when necessary. So we may have
@@ -5922,7 +5949,7 @@ type
 ----
 
 Now our [.type]#Friend# data type is a reference to an [.key]#object# , and the [.key]#object#  itself has an
-additional [.var]#next# field which is again of type [.type]#Friend#.
+additional [.var]#next# field, which is again of type [.type]#Friend#.
 
 That is some sort of recursion. If that should appear as too strange, then imagine
 you have some numbered paper cards, each with two fields: One field name, one field
@@ -5936,19 +5963,19 @@ dynamically created data structures consisting of elements (called nodes), where
 node has a field which is a references or pointer to its successor or predecessor.
 When the nodes have only a successor field, then we call the list a [.ndef]#single
 linked list#, and when it also has a predecessor field, then we call it a
-[.ndef]#double linked list#. Contrary to arrays and Nim's sequences lists do not
+[.ndef]#double linked list#. Contrary to arrays and Nim's sequences, lists do not
 allow access to arbitrary elements, we can only traverse the list starting from its
-first element for single linked lists, or also from its last elements for double
+first element for single linked lists, or also from its last elements, for double
 linked lists. The first element of a list is also called its [.ndef]#head#, and the
-last element is called its [.ndef]#tail#. Often the head and the tail elements are
-just plain nodes, but the head can be also an extended node object with additional
-fields carrying information for the whole list, maybe an additional string field for
+last element is called its [.ndef]#tail#. Often, the head and the tail elements are
+just plain nodes, but the head can be also an extended node [.key]#object# with additional
+fields, carrying information for the whole list, maybe an additional [.type]#string# field for
 the list name. In this section, we use the simplest form of a list, which is a single-linked
-list where the head is just an ordinary node. If the head has the value nil,
+list, where the head is just an ordinary node. If the head has the value nil,
 then the list is empty.
 ****
 
-Now we create a small Nim program which reads in names of our friends from the
+Now we create a small Nim program, which reads in names of our friends from the
 terminal, creates a list of all friends, and finally prints the list.
 
 [source, nim]
@@ -5982,38 +6009,38 @@ variable is arbitrary, we could have used [.var]#el# for element, maybe.
 
 This example code seems to be not that easy. But it is not really difficult, and when
 you have understood it, you can call yourself a Nim programmer already. Perhaps you
-should think about the code above for a few minutes before reading the explanations
+should think about the code above for a few minutes, before reading the explanations
 below.
 
 First, let us summarize what our program should do: It should read in some names of
-our friends which we would like to invite to our next party. Of course, when entering
+our friends, which we would like to invite to our next party. Of course, when entering
 the names, we would need a way to tell that we are done. In our program we can do
 that in two ways, we can enter an empty name by just pressing the return key, or we
-can enter the text "quit" to stop the loop. Unfortunately, that means that we can
+can enter the text "quit" to stop the loop. Unfortunately, that means, that we can
 never invite a friend with that name to our parties. When we have terminated the
 input loop, then the next loop prints all the entries to the terminal.
 
 Let us start with the type and variable declarations: We use a user defined type
-named [.type]#Friend# which is a reference to an [.key]#object# , that object type has a field [.var]#name# of
+named [.type]#Friend# which is a reference to an [.key]#object#, that object type has a field [.var]#name# of
 type [.type]#string#, and a field [.var]#next# which is again a reference to the same data type.
 
-We are using two variables, one called [.var]#n# of type [.type]#string# to read in a name or the quit
+We are using two variables, one called [.var]#n# of type [.type]#string# to read in a name or the [.italic]#quit#
 command from terminal, and a variable called [.var]#f# of type [.type]#Friend#. The variable [.var]#f# seems
-to match only to one single friend, but as the type of [.var]#f# has a [.var]#next# field it can be a
+to match only to one single friend, but as the type of [.var]#f# has a [.var]#next# field, it can be a
 whole list of friends, with [.var]#f# being the start or head of that list.
 
 In the code above, we are using a special [.key]#while# loop -- special because the construct
 [.code]#while true:# and because the loop contains a [.key]#break# statement. Earlier, we said
 that we should avoid the [.key]#break# statement in loops, because it interrupts the control
 flow and can make it more difficult to understand and prove the flow. But in this
-case that form makes some sense: For the first loop we have to first read in a name
+case that form makes some sense: For the first loop, we have to first read in a name
 from the terminal, and then we can decide what to do, so we can not really evaluate a
 condition after the [.key]#while# statement at the top. So we use the simple constant
 condition [.lit]#true#, which would never terminate the loop. We need a [.key]#break# inside the loop
 body to terminate the loop.
 
-Let us investigate the second loop first as it is really easy: In the [.key]#while# condition
-we check if current value of [.var]#f# is [.lit]#nil#, that is, if there are no more entries in our
+Let us investigate the second loop first, as it is really easy: In the [.key]#while# condition
+we check if the current value of [.var]#f# is [.lit]#nil#, that is, if there are no more entries in our
 list. For that case, we terminate the loop, as we are done. If [.var]#f# has not the value
 [.lit]#nil#, then [.var]#f# points to a valid content, that is, there is at least a valid name, which
 we access by the field access operator and print it with [.code]#echo f.name#. Note that in
@@ -6032,7 +6059,7 @@ The input loop is also not that complicated: To make the process of adding more
 friends to the list easy, we always add the new names at the beginning. First, we ask
 the user to enter a name. We use [.func]#write(stdout)# for this, as [.func]#echo()# always generates a
 newline, but we want to read in the name on the same line. If the name is empty or
-has the special value "quit" then we terminate the input loop. In the loop we are
+has the special value "quit", then we terminate the input loop. In the loop we are
 using a temporary variable called [.var]#node# of type [.type]#Friend#, we allocate a memory block for
 it with [.func]#new()#.footnote:[The name of this temporary variable is fully arbitrary and
 does not indicate a special meaning. We could have used el as abbreviation for
@@ -6060,7 +6087,7 @@ current end of the list, or we would have to traverse the list from head to tail
 whenever we would like to add elements at the tail.
 
 For one more exercise, let us consider deleting entries in our list. Basically that
-operation is very easy, we would just skip one entry. Lets add this code to the
+operation is very easy, we would just skip one entry. Let's add this code to the
 program above:
 
 [source, nim]
@@ -6107,7 +6134,7 @@ may copy the code segment above to the end of the former code, and maybe add one
 copy of our printing loop at the end again. Then you should have a program that reads
 in a list, prints the contents, then ask for names to delete, and finally prints the
 resulting list. Perhaps you can improve the code, or maybe you can detect special
-corner cases where it may fail. What is for example when some of your friends have
+corner cases where it may fail. What is, for example, when some of your friends have
 the same name? May the program fail in that case? Or you may add more fields to your
 [.type]#Friend# data type. Possibly a textual field with content male or female, and you can
 report the ratio of male to female. And potentially remove males from the list when we
@@ -6139,19 +6166,28 @@ echo ro1 == ro3 # true
 
 == Procedures and Functions
 
-Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are the most common way to
+//(Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are the most common way to
 //structure larger programs in smaller parts each with a dedicated task.
-structure, or break larger programs into smaller, dedicated tasks which are to be performed.
+//structure, or break larger programs into smaller, dedicated tasks which are to be performed.
+
+Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are used to
+structure the program source code. Functions are a subtype of procedures, that do return a value but
+do not modify global variables or otherwise change the state of the program. When we talk about procedures in this book, then what
+we say applies to functions as well, unless stated otherwise. Usually, procedures and functions are used
+to group sequences of statements that perform a specific task. We can pass parameters to functions,
+e.g. data that the procedure should process, and the procedure can return a result.
+Related sets of procedures can be grouped into library modules, e.g. procedures that
+perform various string operations. We will discuss the use and creation of modules later in the book.
 
 The terms procedure
 and function were used in Pascal and the other languages of Wirth already, while C
-uses the term function only, and Fortran generally uses the term subroutine instead.
-And finally, Python and Ruby are using the really strange terms [.func]#def# and [.func]#fun# for it.
+uses the term function only, and Fortran uses the term subroutine instead.
+And finally, Python and Ruby are using the really strange terms [.italic]#def# and [.italic]#fun# for it.
 
 Nim's procedures are basically similar, but much more advanced than its equally named cousins
 in the wirthian languages, or the plain functions in the C language: Nim's procedures support generics and overloading, named parameters and default values,
-the special parameter types varargs and openArray,
-various ways to return a result and finally multiple calling conventions including the
+the special parameter types [.type]#varargs# and [.type]#openArray#,
+various ways to return a result, and finally multiple calling conventions including the
 method and command calling conventions.
 
 === Introduction
@@ -6197,7 +6233,7 @@ Note that this is only a declaration so far -- the compiler could recognize the
 construct, its parameters and its result type. Sometimes we call this construct a
 procedure-header.
 
-Typically we do not only declare a function, but we define it, that is, we add an equal
+Typically, we do not only declare a function, but we define it, that is, we add an equal
 sign to the procedure header and add an indented procedure body that contains the
 code that is performed for each invocation.
 
@@ -6228,7 +6264,7 @@ For the program execution, we have to know that [.proc]#{procs}# are only execut
 them. That is, when we write a [.proc]#{proc}# at the top of our source code, then that [.proc]#{proc}# is
 processed by the compiler, but it is not executed during program runtime before we
 call it. Actually, as the Nim compiler supports "death code removal", code of
-procedures that we never call would not make it in to our final executable at all.
+procedures that we never call would not make it into our final executable at all.
 
 ****
 The procedure body builds a new scope. We can declare entities like variables,
@@ -6259,7 +6295,7 @@ var i: int = 7; x: float = 3.1415
 p(i, 13, 19, x, 2.0, "We call proc p() with a lot of parameters")
 ----
 
-Here compatible data types means, that for the [.var]#i#, [.var]#j#, and [.var]#k# parameters which are specified as [.type]#int# type
+Here compatible data types means, that for the [.var]#i#, [.var]#j#, and [.var]#k# parameters, which are specified as [.type]#int# type
 in the [.proc]#{proc}# definition, variables of smaller [.type]#int# types like [.type]#int16# would work. For the two parameters
 of [.type]#float# type, we would have to pass floating point variables or a [.type]#float# literal. As a special case an [.type]#int# literal
 would work also, as the compiler knows the desired data type and automatically converts the [.type]#int# literal into a [.type]#float#
@@ -6278,8 +6314,8 @@ var
 p(n, n, m, 1234567890, z, "")
 ----
 
-Actually [.type]#float32# types and [.type]#int# literals up to ten digits seems to work for [.type]#float# parameters, but even on 64
-bit systems the [.type]#int64# data type is not allowed for [.type]#int# parameters. As you see from the example above, it is
+Actually [.type]#float32# types and [.type]#int# literals up to ten digits seems to work for [.type]#float# parameters, but even on 64-bit
+systems the [.type]#int64# data type is not allowed for [.type]#int# parameters. As you see from the example above, it is
 possible to pass the same variable multiple times as a parameter, and empty string literals are of course allowed too.
 
 Nim does also support default values for [.proc]#{proc}# parameters and named parameters, that is, that we can leave parameters unspecified
@@ -6297,11 +6333,11 @@ Here we used named parameters when calling the [.proc]#{proc}# [.func]#p()#, thi
 can let it unspecified and just use the default value.
 
 Functions always return a result, and procedures can return a result, but they don't have to.
-In the C language function results can just be ignored, but in Nim whenever there is a result, then we have to
-use it at the call site, that is we have to assign the returned value to a variable, or we have to use it in an expression.
+In the C language, function results can just be ignored, but in Nim whenever there is a result, then we have to
+use it at the call site, that is, we have to assign the returned value to a variable, or we have to use it in an expression.
 Nim enforces this, as generally the returned value is important, the returned value may be the actual
 result as in a [.func]#sin()# call, or it may give us additional information, like the number of read characters
-when we do text processing or maybe an error indication, like end of file. For the rare conditions when we
+when we do text processing, or maybe an error indication, like end of file. For the rare conditions when we
 really intend to ignore the result of a function call, we can call that function as [.code]#discard myProcWithResult(a, b,...)#.
 Another solution is to apply the {.discardable.} pragma to the function definition, we will learn more about pragmas later.
 When a procedure should not return a result, then we can use the [.type]#void# return type or just leave the return type out --
@@ -6336,8 +6372,8 @@ Note that the last line in the above code is not a call of [.func]#myF()#, but a
 the variable [.var]#p#. Will will discuss this use case soon.
 
 We have already learned, that we can also use the method call syntax, like 7.myFunc instead of myFunc(7),
-and we can use the command invocation syntax like in [.code]#echo "Hello"# and that we should avoid putting a space
-between the [.proc]#{proc}# name and the opening bracket as that would be interpreted as a call with a tuple argument.
+that we can use the command invocation syntax like in [.code]#echo "Hello"#, and that we should avoid putting a space
+between the [.proc]#{proc}# name and the opening bracket, as that would be interpreted as a command call with a tuple argument.
 When the function or [.proc]#{proc}# expects multiple arguments, then we separate the arguments with commas, and
 we put generally a space after each comma:
 
@@ -6353,13 +6389,13 @@ echo p (1, 2) # argument looks like a tuple, so this would not compile
 For the [.proc]#{proc}# definition above, we wrote the body statement directly after the equal sign -- that
 is possible, and sometimes used for very short [.proc]#{procs}#. And indeed, here [.func]#p()# is a function.
 
-In the examples above we have passed plain integers as parameters to procedures, but
+In the examples above, we have passed plain integers as parameters to procedures, but
 of course [.proc]#{proc}# parameters can have any type, we can pass strings, array, objects and all that.
 The way we pass the parameters to the [.proc]#{procs}# is sometimes called "pass by value", an old term
 introduced for the Pascal language, used to indicate that the passed parameter seems to be copied
 to the [.proc]#{proc}#, the [.proc]#{proc}# is not able to modify the original instance. In the next section, we will
 learn about the [.key]#var# parameter type, which is used when we want to allow the [.proc]#{proc}# to modify the
-original instance. In the wirthian languages the procedure parameters actually get copied, so
+original instance. In the wirthian languages, the procedure parameters actually get copied, so
 inside the [.proc]#{proc}# we could modify it, but we modified only the copy, the original instance remained unchanged.
 In Nim, it is a bit different. When we pass parameters by value to a [.proc]#{proc}#, we can not modify it at all
 in the [.proc]#{proc}# body. When we require a mutable copy, we have to generate that copy ourself in the [.proc]#{proc}# body.
@@ -8346,7 +8382,7 @@ are processed
 in the semantic pass of the compiler,
 integrate well with the rest of the language, and share none of C's preprocessor macros flaws.
 
-In some way Nim [.key]#templates# are a simplified application  of Nim's powerful [.key]#macro# and meta-programming
+In some way, Nim [.key]#templates# are a simplified application  of Nim's powerful [.key]#macro# and meta-programming
 system, which we will discuss in detail in part VI of the book.
 
 In C we could use the "#define" preprocessur directive to define two simple C macros.
