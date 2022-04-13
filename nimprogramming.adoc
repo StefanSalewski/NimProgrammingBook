@@ -852,7 +852,7 @@ JavaScript backend, so it supports web development well.
 |Imperative (procedural), structured, functional, object-oriented
 |Static, strong, inferred
 |Python-like
-|Native, web browser (JavaScript)
+|Native, interpreted (nimscript or nodejs backend), web browser (JavaScript)
 |GC, refcount, destructors
 |Yes
 |AST based, hygenic
