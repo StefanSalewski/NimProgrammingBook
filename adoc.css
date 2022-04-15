@@ -52,6 +52,8 @@ h1, h2, h3, h4, h5, h6, #toctitle,
 .type{font-family: monospace}
 .str{font-family: monospace} /* string type */
 .array{font-family: monospace} /* array type */
+.tup{font-family: monospace} /* tuple type, tuple is indeed a keyword */
+.obj{font-family: monospace} /* object type, object is indeed a keyword */
 
 .func{}
 
