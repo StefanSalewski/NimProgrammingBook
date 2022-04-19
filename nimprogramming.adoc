@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-APR-15
+//v0.1, 2022-APR-19
 :doctype: book
 :toc: left
 :icons: font
@@ -1387,7 +1387,7 @@ destination, but instead use a literal numeric constant with value [.lit]#0#. Wh
 computer has executed lines 3 and 4 the variables sum and i each contain the start
 value [.lit]#0#. When we use the [.op]#=# operator for an assignment, we usually
 put a space character on both sides of the operator, but this is only a convention to improve
-the readability of the source code, and not really necessary. Actually convention
+the readability of the source code, and not really necessary. Actually, convention
 is to put a space on both sides of most Nim infix operators whenever we use them, this
 includes the arithmetic operators, the assignment operator, or relational operators
 like [.op]#<# or [.op]#>#. And when we use a colon or a semicolon to separate two
@@ -1445,11 +1445,11 @@ Note that you have to do the indentation really with spaces, as Nim does not acc
 its source files.
 Also note that the Nim compiler does distinguish between words starting with a lower or an upper case letter.
 Nim keywords are written always in lower case, and when we define a variable as [.var]#sum# then we
-should always refer to it in exactly this notion.footnote:[Actually Nim relaxes this strict notation a bit, which is called
+should always refer to it in exactly this notion.footnote:[Actually, Nim relaxes this strict notation a bit, which is called
 "style insensitivity" and is explained later in the book in more detail.]
 Also note that spaces in the Nim source code are important and can change the semantic: While
 in C spaces are mostly only used to separate distinct symbols, in Nim spaces have some more functionality.
-For instance in mathematically expressions, [.code]#a - b# or [.code]#a-b# is both a valid subtraction in
+For instance, in mathematically expressions, [.code]#a - b# or [.code]#a-b# is both a valid subtraction in
 the case when [.var]#a# and [.var]#b# both have a numeric type for which an infix subtraction operator is defined, but
 the code segment [.code]#a -b# may give us an error message from the compiler. The reason is, that in this case,
 the [.op]#-# sign is directly attached to [.var]#b# but separated from [.var]#a# by at least one space. In this
@@ -5254,7 +5254,7 @@ proc main =
 main()
 ----
 
-When we run above code, we get:
+When we run the above code, we get:
 
 ----
 8
@@ -5374,7 +5374,7 @@ buffer and so on.
 == Slices
 
 Nim [.plain]#slices# are [.key]#objects# of type [.type]#Slice# with two fields, a lower bound [.ndef]#a# and an
-upper bound [.ndef]#b#. The [.mod]#system# module defines also the [.type]#HSlice# [.key]#object#, called
+upper bound [.ndef]#b#. The [.mod]#system# module also defines the [.type]#HSlice# [.key]#object#, called
 heterogeneous slice, for which the lower and upper bound can have different data types:
 
 [source, nim]
@@ -5541,7 +5541,7 @@ Whenever possible, we should use this simple form of variables, as they are fast
 easy to use.
 
 Maybe that is not too surprising for you, but when we would have references instead of plain
-variables, then the situation would be different, as we will see soon. Actually some other
+variables, then the situation would be different, as we will see soon. Actually, some other
 programming languages use reference semantic for entities like [.str]#strings# by default, for example
 in Ruby an assignment of a [.str]#string# variable to another variable does not copy the content, so
 that both variables still use the same data buffer -- when we then modify one variable, the content of the other changes too.  
@@ -6318,7 +6318,7 @@ var
 p(n, n, m, 1234567890, z, "")
 ----
 
-Actually [.type]#float32# types and [.type]#int# literals up to ten digits seems to work for [.type]#float# parameters, but even on 64-bit
+Actually, [.type]#float32# types and [.type]#int# literals up to ten digits seems to work for [.type]#float# parameters, but even on 64-bit
 systems the [.type]#int64# data type is not allowed for [.type]#int# parameters. As you see from the example above, it is
 possible to pass the same variable multiple times as a parameter, and empty [.str]#string# literals are of course allowed too.
 
@@ -6402,9 +6402,9 @@ learn about the [.key]#var# parameter type, which is used when we want to allow 
 original instance. In the wirthian languages, the procedure parameters actually get copied, so
 inside the [.proc]#{proc}# we could modify it, but we modified only the copy, the original instance remained unchanged.
 In Nim, it is a bit different. When we pass parameters by value to a [.proc]#{proc}#, we can not modify it at all
-in the [.proc]#{proc}# body. When we require a mutable copy, we have to generate that copy ourselve in the [.proc]#{proc}# body.
+in the [.proc]#{proc}# body. When we require a mutable copy, we have to generate that copy ourselves in the [.proc]#{proc}# body.
 This allows some optimizations: Nim needs not really to copy the [.proc]#{proc}# parameters, as they are immutable, Nim can just
-work with [.type]#pointers# to the original instances internally. Actually there are rumors, that for parameters
+work with [.type]#pointers# to the original instances internally. Actually, there are rumors, that for parameters
 smaller than [.code]#3 {asterisk} sizeof(float)# Nim copies the instances, but for larger instances Nim works internally
 with [.type]#pointers# to the original value. But this is an implementation detail -- data copied to the [.proc]#{procs}#
 stack allow the fastest access, but on the other hand the initial copy process can be expensive, so it is a compromise.
@@ -6702,7 +6702,7 @@ func sqr(i: real): real =
 ----
 
 We have only changed the parameter and result data type. Now there is no conflict
-with the [.proc]#{proc}# with the same name which we defined for integers. Note that Nim use only
+with the [.proc]#{proc}# with the same name which, we defined for integers. Note that Nim use only
 the parameter list for overload resolution, but not the result type of a [.proc]#{proc}# or
 function. The reason for that is, that Nim supports type inference, and that would not
 work when we would have two [.proc]#{procs}# with the same name each accepting an [.type]#int# parameter, but
@@ -6798,7 +6798,7 @@ proc main =
 main()
 ----
 
-When we compile and run above code, we get:
+When we compile and run the above code, we get:
 
 ----
 ref 0x7f054a904050 --> [i = 3]
@@ -6819,14 +6819,14 @@ address [.lit]#0x7f054a904050# is now unused and will be freed by the Nim memory
 === Special Argument Types: OpenArray and Varargs
 
 The [.type]#openArray# and [.type]#varargs# data types can be used only in parameter lists. [.type]#OpenArray#
-is a type which allows to pass [.type]#arrays# and sequences to the procedure or function.
+is a type which allows passing [.type]#arrays# and sequences to the procedure or function.
 Allowing that makes sense, as [.type]#arrays# as well as sequences store their content in a block of
 memory, which can be processed uniformly. Although [.type]#arrays# generally do not have to
-start with index number [.lit]#0#, when passed as [.type]#openArray# the first element is mapped to
+start with index number [.lit]#0#, when passed as [.type]#openArray#, the first element is mapped to
 index [.lit]#0#, and the index of the last element is available by using the [.func]#high()# function
 on the passed [.type]#array# parameter. Whenever we write a procedure that accepts an [.type]#array# or
 a sequence, we should consider using the [.type]#openArray# parameter type to allow passing in
-both data types. [.type]#Strings# can be passed also to [.proc]#{procs}# accepting [.type]#openArrays# with [.type]#char#
+both data types. [.type]#Strings# can also be passed to [.proc]#{procs}# accepting [.type]#openArrays# with [.type]#char#
 base type. Note that a [.proc]#{proc}# with [.type]#openArray# parameter type can not change the length
 of a passed [.type]#seq#, as for the [.type]#openArray# parameter type sequences are handled like
 [.type]#arrays#. So in the code below, [.proc]#{proc}# [.var]#t1# generates a compiler error while [.var]#t2# compiles
@@ -6840,6 +6840,10 @@ proc t1(x: var openarray[int]) =
 proc t2(x: var seq[int]) =
   x.setLen(7)
 ----
+
+Actually, since Nim version 1.6, it is possible to use the [.type]#openArray# type as result type of [.proc]#procs#
+and even as local variables. But these [.type]#View types# are still experimental,
+see https://nim-lang.org/docs/manual_experimental.html#view-types.
 
 The [.type]#varargs# parameter type is similar to the [.type]#openArray# type, but it additional allows
 passing an arbitrary number of single arguments. The compiler automatically collects
@@ -6883,24 +6887,24 @@ var msg = ["Hello", "World"]
 print(msg)
 ----
 
-Surprisingly that does not compile, while it works when we replace [.type]#varargs# with
+Surprisingly, that does not compile, while it works when we replace [.type]#varargs# with
 [.type]#openArray#.
 
 === Procedures bound to a Data Type
 
 In some other programming languages like Python or Ruby, we can define class methods
-or static methods which are bound to a class or type and can be called as
+or static methods, which are bound to a class or type and can be called as
 MyType.myProc. In Nim, we can do something similar by use of the [.key]#typedesc# [.proc]#{proc}#
 parameter type:
 
 [source, nim]
 ----
 type
-    Factory = object
-        name: string
+  Factory = object
+    name: string
 
 proc start(t: typedesc[Factory]) =
-    echo "Factory.start"
+  echo "Factory.start"
 
 Factory.start
 ----
@@ -6908,9 +6912,9 @@ Factory.start
 Here, we used the method call syntax instead of [.func]#start(Factory)#. We will learn more
 about the [.key]#typedesc# data type later.
 
-=== Scoping , Visibility and Locality
+=== Scoping, Visibility and Locality
 
-Scoping, visibility and locality is an important concept in computer programming to
+Scoping, visibility and locality is an important concept in computer programming, to
 keep the source code clean. Imagine that a variable which we declare at some point in
 our program would be visible everywhere. That would even for medium size programs
 generate a lot of confusion -- whenever we would need a variable, we would have to
@@ -6920,7 +6924,7 @@ also, as all variables declared somewhere would reside permanently in memory.
 So most programming languages including Nim support the concept of locality -- names
 declared inside a procedure body or inside another form of block are only visible
 there and can only be used there. We say that they are only visible in that scope.
-For Nim we can say that whenever Nim's syntax requires a new level of indentation,
+For Nim, we can say that whenever Nim's syntax requires a new level of indentation,
 that is a new statement block, then all symbols declared in that block are only
 visible in that block and in sub-blocks of this block, but not outside that block.
 Nim has another important concept of visibility, which is called modules and allows
@@ -6947,10 +6951,10 @@ echo x # ?
 echo y # ?
 ----
 
-In line one we declare a so-called global variable, that one is visible after
+In line one, we declare a so-called global variable, that one is visible after
 declaration, that is below the line where it is declared, in the entire program. The
 variables declared in the [.proc]#{proc}# [.var]#p1# are called local variables, they are not visible
-outside that [.proc]#{proc}# [.var]#p1#. The variable [.var]#x# is declared at the start of the [.proc]#{proc}# body and
+outside of that [.proc]#{proc}# [.var]#p1#. The variable [.var]#x# is declared at the start of the [.proc]#{proc}# body and
 is visible in the whole [.proc]#{proc}# everywhere, while variable [.var]#y# is declared in the [.key]#if# block
 and is visible only there. So it should be clear if the last two echo statements for
 [.var]#x# and [.var]#y# compile fine? Remember that symbols that we define inside a new scope
@@ -6963,7 +6967,7 @@ Related to visibility of variables is their lifetime, that is the duration of ho
 they exist and how long they can store a value. Global variables exist for the entire
 program runtime -- when you have assigned a value to it that value can be used
 everywhere as long as the program runs, and as long as you do not assign a different
-value of course. Global variables are generally stored in a special memory region
+value of course. Global variables are generally stored in a special memory region,
 that is called the BSS region.
 
 Variables of value type defined locally inside a procedure or function do exist only
@@ -6996,7 +7000,7 @@ from the stack.
 
 So why can the stack not be used for memory blocks which [.func]#alloc()# or [.func]#new()# provides
 for us: An important fact for the use of the stack to store variables is that the
-total size, which is needed by a [.proc]#{proc}# for all the static variables must be a compile-time
+total size, which is needed by a [.proc]#{proc}# for all the static variables, must be a compile-time
 constant. The stack [.type]#pointer# is adjusted by that amount when the [.proc]#{proc}# starts, and
 all the local variables are accessed with a fixed offset to that stack [.type]#pointer# then.
 When we use [.func]#alloc()# or [.func]#new()# in a [.proc]#{proc}#, then we may call that multiple times like we
@@ -7004,7 +7008,7 @@ did in our previous list example, and for [.func]#alloc()# an additional fact is
 size that [.func]#alloc()# should reserve can be a runtime value. So the total amount of RAM
 that [.func]#alloc()# or [.func]#new()# would allocate is a runtime value, and we can not use the stack
 for it. Instead, [.func]#alloc()# and [.func]#new()# allocates a block of memory in a more dynamic
-fashion, which is basically that they ask the OS for a free block of right size
+fashion, which is basically that they ask the OS for a free block of the right size
 somewhere in the available RAM. That block is later given back to the OS for reuse by
 functions like [.func]#dealloc()# or automatically by the GC.
 
@@ -7105,7 +7109,7 @@ echo sqr(2)
 echo sqr(3.1415)
 ----
 
-We put a square bracket after the function name which includes a symbolic name, and
+We put a square bracket after the function name, which includes a symbolic name, and
 that name is then used instead of concrete types in the [.proc]#{proc}# header or in the [.proc]#{proc}#
 body.
 
@@ -7182,7 +7186,7 @@ proc sqrsum3[T1, T2](x: T1; y: T2): float =
   (x * x).float + (y * y).float
 
 var i: int = 2
-var x:float = 3.0
+var x: float = 3.0
 
 echo sqrsum(i, x)
 #echo sqrsum2(i, x)
@@ -7191,7 +7195,7 @@ echo sqrsum2(x, 2)
 echo sqrsum3(i, x)
 ----
 
-The commented out lines would give you a compiler error. The reason for this is that
+The commented out lines would give you a compiler error. The reason for this is, that
 the [.proc]#{proc}# [.var]#sqrsum2[T]# defines a generic [.proc]#{proc}#, but the compiler enforces that both
 parameters have the same type. The expression [.func]#sqrsum2(x, 2)# compiles fine,
 as due to the first parameter [.var]#x# the compiler instantiates a [.proc]#{proc}# for a [.type]#float#
@@ -7273,7 +7277,7 @@ The output of our program looks like
 (name: "Alice", size: 162), (name: "Bob", size: 184)
 ----
 
-We can avoid the restriction of a matching field name when we provide getter and setter procedures
+We can avoid the restriction of a matching field name, when we provide getter and setter procedures
 which the library [.proc]#{procs}# can use to access the important fields:
 
 [source, nim]
@@ -7475,24 +7479,24 @@ procedure. Again we get the desired sorted output:
 (name: "Alice", size: 162), (name: "Bob", size: 184)
 ----
 
-This last method is used often in Nim's standard library, e.g. for sorting
+This last method is often used in Nim's standard library, e.g. for sorting
 sequences with custom [.obj]#objects#. Unfortunately, this way can introduce some performance
-regression, as the procedure variable has to be passed to the called [.proc]#{proc}# and so
+regression, as the procedure variable has to be passed to the called [.proc]#{proc}#, and so
 inlining of that passed [.proc]#{proc}# is not possible for the compiler. footnote:[Of course, compiler
 become smarter every day, so that restriction may disappear in the future.]
 
 === Method Call Syntax
 
-A useful coding style introduced by OPP languages is the method call syntax, which
-was initially used in OOP programming style for [.obj]#objects#, and later applied by
+A useful coding style introduced by OOP languages is the method call syntax, which
+was initially used in the OOP programming style for [.obj]#objects#, and later applied by
 languages like Ruby to all data types. Ruby in some way regards all data as [.obj]#objects#.
 
 Method call syntax means, that for example for a variable [.var]#s# of data type [.type]#string# we do
-write [.func]#s.add(c)# instead of [.func]#add(s, c)#. Or for an integer variable [.var]#i# we may write [.func]#i.abs#
+write [.func]#s.add(c)# instead of [.func]#add(s, c)#. Or for an integer variable [.var]#i#, we may write [.func]#i.abs#
 instead of [.func]#abs(i)#. That is, we put the first parameter of the [.proc]#{proc}# parameter list in
 front of the [.proc]#{proc}# name, and separate that parameter from the [.proc]#{proc}# name by a period.
-The compiler regards both notation as equivalent. The advantage of the method call
-syntax is that we may save a character and that it is more clear with what "object"
+The Nim compiler regards both notation as equivalent. The advantage of the method call
+syntax is, that we may save a character and that it is more clear with what "object"
 we are working, as it stands in front of the expression.
 
 Most OOP languages allows that notation only for a class, for example the [.str]#string#
@@ -7532,9 +7536,9 @@ echo p(7)
 The output of the two [.func]#echo# statements should be [.lit]#14# and [.lit]#49# -- we called in both cases
 the same [.proc]#{proc}# variable with the same parameter, but the [.proc]#{proc}# variable [.var]#p# was in the
 first call an alias for [.var]#p1#, and in the second call an alias for [var]#p2#. Note, when we
-assign a [.proc]#{proc}# to a [.proc]#{proc}# variable we do only write the name of that [.proc]#{proc}#, there is no
+assign a [.proc]#{proc}# to a [.proc]#{proc}# variable, we do only write the name of that [.proc]#{proc}#, there is no
 [.func]#()# involved. That is because we assign that [.proc]#{proc}# to the [.proc]#{proc}# variable, but we do not
-call the [.proc]#{proc}# in this case. Of course, when we assign a [.proc]#{proc}# to a [.proc]#{proc}# variable then
+call the [.proc]#{proc}# in this case. Of course, when we assign a [.proc]#{proc}# to a [.proc]#{proc}# variable, then
 the [.proc]#{proc}# signatures have to match, that is the parameter list and the result have to
 be compatible.
 
@@ -7560,7 +7564,7 @@ t(ep2, 3.1415)
 ----
 
 A common use case for a function as a [.proc]#{proc}# parameter is sorting. We can use the same
-sort procedure for different data types when we provide a [.func]#cmp()# [.proc]#{proc}# that can compare
+sort procedure for different data types, when we provide a [.func]#cmp()# [.proc]#{proc}# that can compare
 that data type.
 
 [source, nim]
@@ -7590,7 +7594,7 @@ elements in the passed [.type]#array#, and that returns -1, 0, or 1 as the resul
 comparison. We could easily sort other data types like [.str]#strings# or our custom [.obj]#objects#
 by an arbitrary key, as long as we can provide a matching [.func]#cmp()# [.proc]#{proc}#. For the [.func]#cmp()#
 [.proc]#{proc}# it is important that it returns a well-defined result based on the input, and
-when both parameters are equal it should really return [.lit]#0#. If you exchanged the
+when both parameters are equal, it should really return [.lit]#0#. If you exchanged the
 return values [.lit]#1# and [.lit]#-1# in the [.func]#cmp()# [.proc]#{proc}# above, you would invert the sort order.
 
 === Nested Procedures and Closures
@@ -7638,13 +7642,13 @@ To get the digits, we use a local procedure that uses the [.var]#pos# variable o
 enclosing procedure, and also access the parameter [.var]#s# of the enclosing procedure. The
 closure [.func]#nextDigit()# checks if the position in the [.type]#string# is still valid, that is, if
 it is still smaller than the length of the [.type]#string#, and also checks if the current
-character is a digit. The first check uses the standard procedure [.func]#len()# which return
+character is a digit. The first check uses the standard procedure [.func]#len()#, which returns
 the length of a passed [.type]#string# parameter, that is, how many characters the [.type]#string#
 contains. We have used the method call syntax here instead of using the ordinary [.proc]#{proc}#
-call [.func]#len(s)#. The next check test if the current character is not a decimal digit. For
+call [.func]#len(s)#. The next check tests, if the current character is not a decimal digit. For
 that test we could use a series of compares like [.code]#if c == '0' or c == '1' or ... or c
 == '9'.# But to make such tests easier and faster, Nim offers one more data type, the
-[.type]#set# type. And the [.op]#notin# operator tests if a value is not contained in a [.type]#set# constant.
+[.type]#set# type. And the [.op]#notin# operator tests, if a value is not contained in a [.type]#set# constant.
 An important point for the expression after the [.key]#while# statement is, that it is
 processed from left to right. That fact is here critical, because we have first to
 check if [.var]#pos# is still a valid position, before we can use the subscript operator [.op]#[]#
@@ -7655,12 +7659,12 @@ position in the [.str]#string#, and we would get a runtime range error.
 While the position is still valid, but the current character is not a digit, we
 increase the position. The [.key]#while# loop can end by two conditions: Either the current
 character is a digit, or we have reached the end of the [.type]#string#, and we have to stop.
-For the last case we use a special stop mark, we return a special character which we
+For the last case, we use a special stop mark, we return a special character which we
 have entered in escape notation as [.lit]#'\x0'#. That is a very special character, that is
 used in C to mark the end of [.str]#strings#. It is the first character in the ASCII table
-and has the decimal value [.lit]#0#. We said earlier that characters are encoded in 8 bit
+and has the decimal value [.lit]#0#. We said earlier, that characters are encoded in 8 bit
 and correspond to the unsigned integer numbers [.lit]#0# up to [.lit]#255#. [.lit]#'\x0'# is just a special
-notation for the first character which corresponds to integer value [.lit]#0#. Well, when the
+notation for the first character, which corresponds to integer value [.lit]#0#. Well, when the
 end of the [.type]#string# is reached, then we return that character. Otherwise, we return the
 current character. Remember, from the while condition we know that the [.type]#string# end is
 reached, or the current character is a digit. As we tested for the [.type]#string# end before, we can
@@ -7747,8 +7751,8 @@ When we compile the above program, we get the message "Generating separator stri
 Here we had to use the [.func]#debugEcho()# [.proc]#{proc}# instead of the ordinary [.func]#echo()#, because
 [.func]#echo()# is not really a pure function, and the compiler would complain when we use
 [.func]#echo()# in a pure function. [.func]#DebugEcho()# is not really pure as well, but the compiler ignores that
-fact, which is OK for debugging purposes. We could even make [.func]#gesSep()# a plain [.proc]#{proc}# and then use
-[.func]#echo()#, the compiler would not complain. But it would complain, if, for instance we would access
+fact, which is OK for debugging purposes. We could even make [.func]#genSep()# a plain [.proc]#{proc}# and then use
+[.func]#echo()#, the compiler would not complain. But it would complain, if, for instance, we would access
 global variables from inside the [.func]#genSep()# [.proc]#{proc}#.
 
 === Inlining Procedures
@@ -7758,20 +7762,20 @@ Calling procedures and functions is always some overhead
 be saved, the stack [.type]#pointer# and the program counter have to be updated, and finally the instruction cache
 has to be filled with new instructions.
 
-So for tiny [.proc]#{procs}# actually calling the [.proc]#{proc}# may take more time than processing the actual code inside the
-proc. To avoid this additional effort, {profus}s can be inlined. The compiler may do this automatically for us, but we
-can support it by applying the {.inline.} prama to tiny [.proc]#{procs}#.footnote:[Automatically inlining of [.proc]#{procs}# from imported
+So for tiny [.proc]#{procs}#, actually calling the [.proc]#{proc}# may take more time than processing the actual code inside the [.proc]#{proc}#.
+To avoid this additional effort, {profus} can be inlined. The compiler may do this automatically for us, but we
+can support it by applying the {.inline.} pragma to tiny [.proc]#{procs}#.footnote:[Automatically inlining of [.proc]#{procs}# from imported
 modules is not easy, as the C compiler backend does only inline functions from other source code files when
 link time optimization is enabled. With the inline pragma applied, the Nim compiler copies that [.proc]#{proc}# from the imported
 module to the module where it is actually used, so the C compiler can inline it.]
-For inlined [.proc]#{procs}# the code
+For inlined [.proc]#{procs}#, the code
 is just inserted directly at the call site. This may increase the total executable size, when the [.proc]#{proc}# is used often.
 So we should use the inline pragma with some care. Another option is to just compile the whole program
-with link time optimization passing the option -d:lto to the compiler, that way the C backend
+with [.ndef]#link time optimization# passing the option -d:lto to the compiler, that way the C backend
 can automatically inline all [.proc]#{proc}# code, even [.proc]#{procs}# from imported modules. One more option is to use
 [.key]#templates# instead of tiny [.proc]#{procs}# -- [.key]#templates# always do a plain code substitution, so [.key]#templates# may behave
 very similar to inline [.proc]#{procs}#. We will discuss [.key]#templates# later. The following example show how we can apply
-the inline pragma to {profus}s:
+the inline pragma to {profus}:
 
 [source, nim]
 ----
@@ -7779,7 +7783,7 @@ proc max(a, b: int): int {.inline.} =
   if a < b: b else: a
 ----
 
-Note that functions from shared libraries can not be in lined, so calling external C functions, directly or indirectly,
+Note that functions from shared libraries can not be inlined, so calling external C functions, directly or indirectly,
 may be slower than expected.
 
 === Recursion
@@ -7811,7 +7815,7 @@ the [.proc]#{proc}# into an iterative solution without recursion. Note that recu
 
 === Converters
 
-Nim's [.key]#converters# are a special variant of functions that are called automatically by
+Nim's [.key]#converters# are a special variant of functions, that are called automatically by
 the compiler when argument types do not match.
 
 [source, nim]
@@ -7844,8 +7848,8 @@ and one from [.type]#int# to boolean, that does not mean that we can pass a char
 [.proc]#{proc}# that expects a boolean. We would have to declare one more [.key]#converter# that
 directly converts character to boolean.
 
-Whenever we do consider using [.key]#converters# we should think twice -- [.key]#converters# may be
-confusing, may have some strange effects and may increase compile time.
+Whenever we do consider using [.key]#converters#, we should think twice -- [.key]#converters# may be
+confusing, may have some strange effects, and may increase compile time.
 
 Maybe you wondered why we wrote above [.key]#converter# in such a verbose way? Well it was
 done intentionally, but you are right of course, we can write it just as
@@ -7881,7 +7885,7 @@ automatically ensure that always the matching method for each instance is called
 
 A classical example is a drawing program, where we have different geometrical shapes
 like rectangle, circle and many more. All the geometrical [.obj]#objects# are stored is some
-form of list, and when we want to draw all of them on the screen then we have to call
+form of a list, and when we want to draw all of them on the screen, then we have to call
 only an unspecific draw() method, and the compiler ensures that for each shape the
 matching draw method is called. In Nim, that may look like
 
@@ -7932,20 +7936,20 @@ drawing a circle
 drawing a line segment
 ----
 
-So we can have a sequence of the base type, add various subtypes and then iterate
-over the list to draw all the various subtypes. Of course, in the same way we could
+So we can have a sequence of the base type, add various subtypes, and then iterate
+over the list to draw all the various subtypes. Of course, in the same way, we could
 do many more task like moving, rotating or storing all the [.obj]#objects# in one call. The
 compiler does the right dynamic dispatching for us, we have just to provide all
 necessary methods. The need of the base method seems to be a bit strange, some other
 OOP languages do not need that. The base method is marked by a {.base.} pragma, we
-will discuss the purpose of pragmas later. In the example we have used only one level
+will discuss the purpose of pragmas later. In the example, we have used only one level
 of sub-classing, but of course we can use many levels, for example we can again
 subclass the Circle by a FilledCircle with a color field.
 
 The OOP coding style can be very convenient for some tasks, one important use case
-could be graphical user interfaces where the graphical elements like labels, buttons,
+could be graphical user interfaces, where the graphical elements like labels, buttons,
 frames built in natural way a hierarchical structure. Another typical use case are
-drawing applications with code similar to our basic example.
+drawing applications, with code similar to our basic example.
 
 Note that the OOP style only works with [.key]#ref# [.obj]#objects#, but not with value [.obj]#objects#. The
 obvious reason is that we can have collections of different subtypes stored in
@@ -7954,7 +7958,7 @@ have to have equal size. For references, that is the case, as references are bas
 [.type]#pointers#. But different value types would have different size. Linked lists would be
 no better solution, as again we can not build lists with value [.obj]#objects#.
 
-For maximum performance OOP code with [.key]#ref# [.obj]#objects# is generally not optimal, as the
+For maximum performance, OOP code with [.key]#ref# [.obj]#objects# is generally not optimal, as the
 dispatching itself needs some time, and as the [.key]#ref# [.obj]#objects# are not contained in a
 single block of memory, but are distributed in the whole RAM, which is not cache
 friendly.
@@ -7965,7 +7969,7 @@ friendly.
 
 [.type]#Tuples# are heterogeneous container types similar to
 the struct type in C. As Nim's [.key]#object# type creates no overhead
-as long as we use no inheritance and so also directly corresponds to the C
+as long as we use no inheritance, and so also directly corresponds to the C
 struct type, [.tup]#tuples# are very similar to Nim's [.obj]#objects#.
 The biggest advantage of [.tup]#tuples# is, that we can create anonymous
 [.tup]#tuples#, and that Nim supports the automatic unpacking of [.tup]#tuple# variables
@@ -7998,22 +8002,22 @@ proc findBestNextMove(): (dest: int; check: bool) =
 let (dst, check) = findBestNextMove()
 ----
 
-In the code example above we show two equivalent ways to define a [.tup]#tuple# type,
+In the code example above, we show two equivalent ways to define a [.tup]#tuple# type,
 but actually we
-do not use that type at all but return an anonymous [.tup]#tuple# from our [.proc]#{proc}#, that is a
+do not use that type at all, but return an anonymous [.tup]#tuple# from our [.proc]#{proc}#, that is a
 pair of an [.type]#int# and a [.type]#bool#.
 
 Using automatic [.tup]#tuple# unpacking
 and type inference, our [.var]#dst# and [.var]#check# variables gets the data types [.type]#int# and [.type]#bool#.
 
 [.key]#Tuples# are also useful when a function has to return a value and also an error state,
-or if it may not be able to return something at all in a special case. For reference types
-we could return [.lit]#nil# then, but for results of value type like [.type]#int# or [.type]#float# we may not have a well-defined
+or if it may not be able to return something at all in a special case. For reference types,
+we could return [.lit]#nil# then, but for results of value type like [.type]#int# or [.type]#float#, we may not have a well-defined
 error indicating constant, so we can return a [.tup]#tuple# with an additional [.type]#bool# indicating success or error.
 But of course we could use exceptions instead, or we could use Nim's option type instead. We
 will learn more about that later.
 
-Here are two examples which uses a [.tup]#tuple# as a [.proc]#{proc}# parameter:
+Here are two examples, which uses a [.tup]#tuple# as a [.proc]#{proc}# parameter:
 
 [source, nim]
 ----
@@ -8042,7 +8046,7 @@ Untyped languages like Ruby or Python allow that of course, and we can do it in 
 with [.key]#ref# types and inheritance too, as we showed in a previous section with our [.type]#Shape#
 base type and various geometric shapes. We could store that [.key]#ref# types in [.type]#arrays# or
 sequences or linked list and use dynamic dispatch for processing the various
-subtypes. That is convenient but gives not maximum performance due to dynamic
+subtypes. That is convenient, but gives not maximum performance due to dynamic
 dispatch at runtime and due to bad cache use. So we may like to have a value type
 with different content, so that we can store all the value types in a [.type]#seq# and all
 entities reside in a compact block of memory for good cache use.
@@ -8080,19 +8084,19 @@ for el in s:
   draw(el)
 ----
 
-[.key]#Objects# variants can have common fields like the boolean state visible above, but the
+[.key]#Objects# variants can have common fields like the boolean state [.var]#visible# above, but the
 other fields are not allowed to use the same names, so we had to use [.var]#x0# and [.var]#y0# for
 the names of the center coordinates in the circle variant.
 
 As you can see, we can store all the different [.obj]#object# variants as value [.obj]#objects# in a
 sequence and iterate over it. Note that [.obj]#object# variants may waste some storage, as
 all variants are silently enlarged to have the exact same size, so that all variant
-types can be stored in an [.type]#array# or sequences and can be passed as [.proc]#{proc}# parameters in
+types can be stored in an [.type]#array# or sequences, and can be passed as [.proc]#{proc}# parameters in
 the same way to the same [.proc]#{proc}#.
 
 == Iterators
 
-In section <<For Loops and Iterators>> we used a [.key]#for# loop to iterate over the
+In section <<For Loops and Iterators>>, we used a [.key]#for# loop to iterate over the
 individual characters of a [.type]#string#. [.key]#For# loops are useful for various
 iteration purposes, e.g. to iterate over container types like [.type]#strings#,
 [.type]#arrays#, and sequences, or over a numeric [.type]#range#, and other countable
@@ -8101,7 +8105,7 @@ loop is often more convenient and less error prone -- we do not have to care for
 increasing a loop variable and for the stop condition.
 
 Nim's [.key]#for# loops are built on [.key]#iterators#, that is, whenever a
-[.key]#for# loop is executed an [.key]#iterator# is used under the hood.  Some
+[.key]#for# loop is executed, an [.key]#iterator# is used under the hood.  Some
 [.key]#iterators# are used explicitly in [.key]#for# loops, e.g. [.func]#countup()#
 of Nim's standard library, others like [.func]#items()# or [.func]#pairs()# are
 executed implicitly when no explicit [.key]#iterator# name is specified.
@@ -8114,7 +8118,7 @@ example:
 We have already used some of Nim's standard [.key]#iterators# to iterate over the
 characters of a [.key]#string# or the content of a sequence.
 
-In an earlier section of the book we declared a procedure that extracts all the
+In an earlier section of the book, we declared a procedure that extracts all the
 decimal digits from a [.type]#string#. We can do the same with an [.key]#iterator#:
 
 [source, nim]
@@ -8183,7 +8187,7 @@ for i, c in pairs(s):
   echo i, ": ", c
 ----
 
-In the example above we specified the [.key]#iterator# names [.func]#items()# and
+In the example above, we specified the [.key]#iterator# names [.func]#items()# and
 [.func]#pairs()# explicitly in the [.key]#for# statement, but as these names are the
 defaults, we can just write [.code]#for c in s:# and [.code]#for i, c in s:#.
 
@@ -8255,7 +8259,7 @@ of the examples from above as closure [.key]#iterators# by applying the closure
 pragma as in [.code]#iterator items(a: string): char {.closure.} =#.
 
 Closure [.key]#iterators# behaves like [.key]#objects#, we can assign instances of
-inline [.key]#iterators# to variables, and then call the instances explicitly:
+closure [.key]#iterators# to variables, and then call the instances explicitly:
 
 [source, nim]
 ----
@@ -8290,7 +8294,7 @@ which gives us this output:
 Here, we have used the [.func]#finished()# function to check if the [.key]#iterator#
 is done.
 
-Actually [.func]#finished()# returns [.lit]#true# only, when the [.key]#iterator# has
+Actually, [.func]#finished()# returns [.lit]#true# only, when the [.key]#iterator# has
 already failed to [.key]#yield# a valid value, and not already when the last valid
 value was yielded. That is, why we get in the example above as last value the invalid
 value zero.
@@ -8399,7 +8403,8 @@ In C we could use the "#define" preprocessur directive to define two simple C ma
 #define SQR(x) (x)*(x) 
 ----
 
-The C pre-processor would then replace the symbol [.const]#PI# in the C source code with the [.type]#float# literal [.lit]#3.1416#.
+The C pre-processor would then replace the symbol [.lit]#PI# in the C source code with the [.type]#float# literal [.lit]#3.1416#,
+before the code is processed by the C compiler.
 And as the C pre-processor can recognize some simple form of parameters, it would
 replace [.func]#SQR(a + b)# with [.code]#(a+b)*(a+b)#.
 
@@ -8437,11 +8442,11 @@ they are used, but [.key]#templates# are instantiated for each invocation of the
 The compiler creates for each defined [.proc]#proc# some machine code, which is executed whenever 
 the [.proc]#proc# is called. But for [.key]#templates#, the compiler does some code substitution -- the source
 code of the [.key]#template# is inserted where the [.key]#template# is invoked. This avoids the need for an
-actual jump to a different machine code block when a procedure is called, but increases the
+actual jump to a different machine code block, when a procedure is called, but increases the
 total code size for each use of a [.key]#template#. So we would typically avoid [.key]#templates#
 that contain a lot of code and are used often.
 
-For each ordinary [.proc]#proc# one block of machine code instructions is generated, and
+For each ordinary [.proc]#proc#, one block of machine code instructions is generated, and
 when the [.proc]#proc# is called, program executions has to jump to this block, and back
 when the [.proc]#proc# execution is done. This jumping involves some minimal overhead, which
 is noticeable for tiny [.proc]#procs# called frequently. To avoid this overhead, we may use a [.key]#template# instead,
@@ -8500,7 +8505,7 @@ This way [.op]#!=# is always the opposite of [.op]#==#, so when we define the [.
 for our own custom data types, [.op]#!=# is available for free.
 
 In some situations, using [.key]#templates# instead of [.proc]#procs# can avoid some overhead.
-Let us investigate a [.func]#log()# [.key]#template#, that can print messages to [.var]#stdout#
+Let us investigate a [.func]#log()# [.key]#template#, that can print messages to [.var]#stdout#,
 when a global boolean constant is set to [.lit]#true#:
 
 [source, nim]
@@ -8516,7 +8521,7 @@ var
 log("x has the value: " & $x)
 ----
 
-Here [.func]#log()# is called with the constructed argument [.code]#("x has the value: " & $x)#
+Here [.func]#log()# is called with the constructed argument [.code]#("x has the value: " & $x)#,
 which implies a [.type]#string# concatenation operation at runtime. As we use a [.key]#template#, the
 invocation of [.func]#log("x has the value: " & $x)# is actually replaced by the compiler with code like
 
@@ -8526,7 +8531,7 @@ invocation of [.func]#log("x has the value: " & $x)# is actually replaced by the
 ----
 
 So when [.const]#debug# is set to [.lit]#false#, absolutely no code is generated. For an ordinary, not inlined
-[.proc]#proc# the situation is different, the expensive [.type]#string# concatenation operation would always have to be
+[.proc]#proc#, the situation is different, the expensive [.type]#string# concatenation operation would always have to be
 performed, but the [.func]#log()# [.proc]#proc# would immediately return for [.code]#debug == false#. What exactly would happen
 when [.func]#log()# is an inlined [.proc]#proc# may depend on the actual used compiler backend.
 
@@ -8585,14 +8590,14 @@ withFile(myTextFile, "thisIsReallyNotAnExistingFileWithImportantContent.txt"):
 
 The [.key]#template# [.func]#withFile()# from the above example has three parameters --
 a parameter [.var]#f# of [.key]#untyped# type, a [.var]#filename# of [.type]#string# type, and as
-last parameter one more [.key]#untyped# parameter which we call actions.
+last parameter one more [.key]#untyped# parameter, which we called actions.
 For these last [.key]#untyped# actions parameter, we can pass an indented code block.
 
 When we invoke the [.func]#withFile()# [.key]#template#, we pass the first two parameters in the
 well-know way by putting them in a parameter list enclosed in round brackets. But
 instead of passing this way also the final actions parameter, we put a colon after
 the parameter list, and pass this way the following indented code block as last [.key]#untyped# parameter.
-In the body of the above [.key]#template# we have an [.func]#open()# call which opens a file with the specified
+In the body of the above [.key]#template#, we have an [.func]#open()# call which opens a file with the specified
 filename and the [.lit]#fmWrite# mode, then executes the passed code block, and finally closes
 the file. The first parameter of our [.func]#withFile()# [.key]#template# has also a special property:
 As we use [.key]#untyped# for the [.var]#f# parameter, we can pass the still undefined symbol
@@ -8637,14 +8642,14 @@ can use as types additional the symbols [.key]#untyped#, [.key]#typed# or [.key]
 The [.key]#typedesc# type can be used to pass type information to the [.key]#template#, e.g.
 when we want to create a variable of a special data type. The "meta-types"
 [.key]#typed# and [.key]#untyped# are used, when we want to create some form of generic
-[.key]#template#, that can accept different data types. Actually the distinction
+[.key]#template#, that can accept different data types. Actually, the distinction
 between [.key]#typed# and [.key]#untyped# parameters is not that difficult and important
 for [.key]#templates# as it is for [.key]#macros#, in most cases it is just clear if we need the [.key]#typed# or
 [.key]#untyped# parameter type for a [.key]#template#, or both work fine. We discuss
 the differences between [.key]#typed# and [.key]#untyped# in much more detail in part VI of
 the book, when we discuss [.key]#macros# and meta-programming.
 
-The following example demonstrates the use of the [.key]#untyped# and the [.key]#typedesc# parameter:
+The following example demonstrate the use of the [.key]#untyped# and the [.key]#typedesc# parameter:
 
 [source, nim]
 ----
@@ -8665,10 +8670,10 @@ echo x
 
 As the parameter [.var]#n# is [.key]#untyped#, the compiler allows us to pass
 an undefined symbol to the [.key]#template#. If we changed the parameter
-type to [.key]#typed# the compiler would complain with a message like 
+type to [.key]#typed#, the compiler would complain with a message like 
 [.italic]#Error: undeclared identifier: 'i'#
 
-For the second [.key]#template# called [.func]#declareVar()# we use an additional parameter
+For the second [.key]#template#, called [.func]#declareVar()#, we use an additional parameter
 of [.key]#typedesc# type, so that the [.key]#template# can create for us a variable of just the passed
 data type.
 
@@ -8704,7 +8709,7 @@ t:
   p()  # fails with 'undeclared identifier: p'
 ----
 
-The above code fails with the error message that [.var]#p# is not declared. The reason for this is that the [.func]#p()#
+The above code fails with the error message that [.var]#p# is not declared. The reason for this is, that the [.func]#p()#
 body is type-checked before getting passed to the body parameter, and type checking in Nim implies symbol lookups.
 The same code works with [.key]#untyped# as the passed body is not required to be type-checked:
 
@@ -8764,11 +8769,11 @@ And it makes more sense to read it when you actually have problems with the (def
 
 == Casts and Type Conversion
 
-While we have various types of casts in {cpp}, we have only one cast and type
-conversions in Nim. In Nim, [.key]#cast# just reinterpret the same bit pattern for another
+While we have various types of casts in {cpp}, we have only one cast, and type
+conversions in Nim. In Nim, [.key]#cast# just reinterprets the same bit pattern for another
 data type. For example, the boolean value [.lit]#false# is internally encoded as a [.type]#byte# with
 all bits cleared, and [.lit]#true# is encoded as a [.type]#byte# with all bits but the least
-significant one cleared. We could [.key]#cast# a [.type]#bool# to an [.type]#int8# of the same size and would get a
+significant one cleared. We could [.key]#cast# a [.type]#bool# to an [.type]#int8# of the same size, and would get a
 number with decimal value [.lit]#0# or [.lit]#1#. Casting is not a real operation at all, as nothing is really
 done. We watch the same bit pattern, just from a different perspective. But casting is
 dangerous, it violates the safe type system of the language, and it can go very
@@ -8777,7 +8782,7 @@ numbers. We can [.key]#cast#, but the result would be far away from what we may 
 While [.type]#int64# has the well known and simple value encoding, that is rightmost bit
 stands for [.lit]#2^0#, next bit for [.lit]#2^1# and so far, the encoding of floating point numbers is much more
 difficult and has not such a simple scheme. In [.type]#floats#, some bits represent the so-called
-mantissa and some bits represent the exponent. When we [.key]#cast#, we may again get a
+mantissa, and some bits represent the exponent. When we [.key]#cast#, we may again get a
 number, but the value is not easy predictable. We have to be very carefully when
 we [.key]#cast# between types of different size. Nim may permit that, but we have to think
 what may really happen. When we [.key]#cast# between a [.type]#bool# and an [.type]#int64#, in one direction 7
@@ -8797,20 +8802,20 @@ without problems, for the conversion we use the type like a [.proc]#{proc}# call
 CPUs should have fast instructions for basic conversion.
 
 Nim generally only allows type conversions that involve not too much effort. So we
-should not expect [.code]#var i ="1234"; echo i.int {asterisk} 7# to be available. Such a conversion is
-expensive, at runtime it costs many CPU cycles as we would have to extract the
+should not expect [.code]#var i: string ="1234"; echo i.int {asterisk} 7# to be available. Such a conversion is
+expensive, at runtime it costs many CPU cycles, as we would have to extract the
 digits, multiply with it weight and sum them up. So for that operation, functions like
-[.func]#parseInt()# are available from the Nim standard library that accept a [.type]#string# as
+[.func]#parseInt()# are available from the Nim standard library, that accept a [.type]#string# as
 argument and return an [.type]#int#. There exists different variants of [.func]#parseInt()#, one may
 raise exceptions for invalid input, the other may return a boolean.
 
 == Bitwise Operations
 
-All systems programming languages, and most other languages, have support for
+All systems programming languages, and most other programming languages, have support for
 bit manipulation operations, which includes querying and setting individual bits
 of variables, and combining the bits of two or more variables. As the CPU hardware
 supports these operations directly, these operations are very efficient. In the
-C programming language operators like [.op]#&#, [.op]#|#, [.op]#<<#, [.op]#>>#, [.op]#^#, [.op]#~# are used
+C programming language, operators like [.op]#&#, [.op]#|#, [.op]#<<#, [.op]#>>#, [.op]#^#, [.op]#~# are used
 for bit-wise [.op]#and# and [.op]#or# operations, for shifting all the bits of a variable to the left or to
 the right, and for the process of inverting all the bits and for applying the exclusive-or operation
 on the bits of two operands. Actually, for the right shift operation, we have to distinguish between a
@@ -8823,9 +8828,9 @@ Nim prefers to use textual operators instead of cryptic symbols,
 so the logical operators [.op]#and#, [.op]#or# and [op]#not# have overloads to work on the actual bit pattern of integer
 variables instead of on boolean values, and for logical left and right shifts the operators are called
 [.op]#shr# and [.op]#shl#. For [.op]#shl# shifted in bits from the right are always cleared, while
- [.op]#shr# shifts in cleared bits from the left for unsigned arguments, but preserved the
+[.op]#shr# shifts in cleared bits from the left for unsigned arguments, but preserves the
 leftmost set bit for signed arguments, which corresponds to an arithmetic shift operation.
-The Nim standard library provides also an [.func]#ashr()# function for arithmetic shifts, but that
+The Nim standard library also provides an [.func]#ashr()# function for arithmetic shifts, but that
 one seems to be a legacy.
 
 [source, nim]
@@ -8851,8 +8856,8 @@ parameter determines how many bits are actually printed.
 Remember, that for
 unsigned numbers, [.op]#shl# by one position is a multiplication by two, and shr by one position is a division by two.
 Negative numbers are not allowed for the number of bits to shift -- [.code]#i = i shl -1# does compile, but the result is
-always zero. For all the shift operations, n shifts each by one position would give the same result as one single shift
-by n positions. For most modern CPU hardware, all the bit shifting operations are very fast and generally take only one clock
+always zero. For all the shift operations, [.var]#n# shifts each by one position would give the same result as one single shift
+by [.var]#n# positions. For most modern CPU hardware, all the bit shifting operations are very fast and generally take only one clock
 cycle, independent of how many positions we move the bit pattern and independent if it is a logical or an arithmetic shift operation.
 
 We can use the [.op]#and# and the [.op]#or# operator to extract single bits, or to set single bits:
@@ -8869,10 +8874,10 @@ This should be enough to teach you the most basic bit operations.
 Actually, we need these operations not that often, but we should be aware of their
 existence. The overloading of the [.op]#and#, the [.op]#or# and the [.op]#not# operator for signed and unsigned
 integer numbers may be convenient, but it may sometimes lead to confusion, when
-we intend to do boolean operations but instead actually do operations on bit patterns.
+we intend to do boolean operations, but instead actually do operations on bit patterns.
 It was suggested to call the operators bitand, bitor and bitand instead, and
 indeed the [.mod]#bitops# module of Nim's standard library defines operators with these names and
-provide additional more useful bit operations, including counting the number of set bits in
+provide additional, more useful bit operations, including counting the number of set bits in
 a variable or determining the number of leading zero bits. These operations are not
 needed that frequently, but sometimes they can be very useful, and they are supported by fast CPU
 instructions on modern PC hardware. Note that while we have shown these bit operations
@@ -8889,11 +8894,11 @@ various strategies to handle such situations. One is to terminate our program, w
 do that by a plain [.func]#assert()# or [.func]#quit()# statement. If we have absolutely no idea how
 to recover from an error, then that may be our best option. The user may restart the
 program, or the program may be restarted by some sort of supervisor program. For more
-expectable errors some form of error indicator may be a better solution, for example
+expectable errors, some form of error indicator may be a better solution, for example
 a [.func]#parseInt()# procedure may return a boolean value for success. As we have to return
 the numerical result for success as well, the [.func]#parseInt()# [.proc]#{proc}# may return a [.tup]#tuple#, or may use a [.key]#var#
 parameter in which the actual integer value is returned. Whenever a [.proc]#proc# returns a reference, then the 
-return value [.lit]#nil# may be used to indicate some form of error, or we may use Nim's option
+return value [.lit]#nil# may be used to indicate some form of error, or we may use Nim's [.type]#Option#
 type to allow the caller to detect if a returned value is invalid.
 
 Another popular strategy to handle error states is the use of [.type]#Exceptions#. When somewhere
@@ -9134,8 +9139,8 @@ or when we create high level Nim bindings to C libraries we can use
 finalizers or destructors to deallocate entities of the C libs when a corresponding
 Nim (proxy) [.obj]#object# is freed. Libraries like the gintro GTK bindings make use of this.
 
-Finalizers are procedures that can be passed as a second optional parameter to the
-system [.func]#new()# [.proc]#{proc}#. That way the finalizer [.proc]#{proc}# is attached to the data type of the variable which
+Finalizers are procedures that can be passed as a second, optional parameter to the
+system [.func]#new()# [.proc]#{proc}#. That way, the finalizer [.proc]#{proc}# is attached to the data type of the variable which
 we pass as first parameter to [.func]#new()# and that finalizer [.proc]#{proc}# is
 automatically called whenever that variable is freed by the Nim memory management system.
 As finalizers are passed as a parameter to a [.func]#new()# call, and [.func]#new()# is only used for
@@ -9144,16 +9149,16 @@ references, finalizers work only for [.key]#ref# data types.
 Destructors do not have this restriction. We define the destructor for a value type, but
 it is also called for reference types by the compiler.
 
-Starting with version 1.4 Nim got scope based resource management when
-the program is compiled with [.code]#--gc:arc# or [-code]#--gc:orc#. In that case
+Starting with version 1.4, Nim got scope based resource management, when
+the program is compiled with [.code]#--gc:arc# or [-code]#--gc:orc#. In that case,
 variables are immediately deallocated when they go out of scope, and if
-a destructor was defined for the data type of that variable it is called automatically.
+a destructor was defined for the data type of that variable, it is called automatically.
 
 For the programming language {cpp} it is a common practice that resources like files are closed and released
 automatically by destructors when they go out of scope, and now this is also
-possible for Nim. To make use of destructors for our own data types we
+possible for Nim. To make use of destructors for our own data types, we
 have to define a [.proc]#{proc}# called [.func]#=destroy# which gets an instance of our data type passed as
-a var value [.obj]#object#:
+a [.key]#var# value [.obj]#object#:
 
 [source, nim]
 ----
@@ -9177,10 +9182,10 @@ randomize()
 test()
 ----
 
-In the for loop we enter a new scope when the [key]#if# condition is evaluated to [.lit]#true#,
-and at the end of the [.key]#if# block we leaf the scope and the destructor is called automatically.
-Inside the destructor [.proc]#{proc}# we could do some cleanup tasks, close files and release resources.
-Destructors are also called when [.key]#ref# [.obj]#objects# go out of scope:
+In the [.key]#for# loop, we enter a new scope when the [key]#if# condition is evaluated to [.lit]#true#,
+and at the end of the [.key]#if# block, we leaf the scope and the destructor is called automatically.
+Inside the destructor [.proc]#{proc}#, we could do some cleanup tasks, close files and release resources.
+Destructors are also called, when [.key]#ref# [.obj]#objects# go out of scope:
 
 [source, nim]
 ----
@@ -9204,7 +9209,7 @@ randomize()
 test()
 ----
 
-To use destructors we have to compile with the option [.code]#--gc:arc# or [.code]#--gc:orc#, otherwise
+To use destructors, we have to compile our program with the option [.code]#--gc:arc# or [.code]#--gc:orc#, otherwise
 the specified destructor [.proc]#{procs}# are just ignored. In our code, we can test for working destructors with
 a construct like [.code]#when defined(gcDestructors):#.
 
@@ -9275,7 +9280,7 @@ So using destructors to destroy data from C libraries should be possible now.
 
 === Destructors and Inheritance
 
-When we use OOP style programming with subclassing of [.key]#ref# [.obj]#objects#, then
+When we use an object-oriented programming style with subclassing of [.key]#ref# [.obj]#objects#, then
 it is useful to know that for subclassed [.key]#ref# [.obj]#objects# the destructor of the
 parent class is automatically invoked when we do not define our own one
 for our subclassed type. This works also when we import the parent
@@ -9341,7 +9346,7 @@ proc main =
 main()
 ----
 
-When we compile module t.nim with --gc:arc or --gc:orc and run it, we get this output:
+When we compile module [.var]#t.nim# with [.term]#--gc:arc# or [.term]#--gc:orc# and run it, we get this output:
 
 ----
 0
@@ -9355,16 +9360,16 @@ destroy O1 O1:ObjectType
 destroy O1 O1:ObjectType
 ----
 
-So when our variables o1 to o5 go out of scope, then the destructors are called.
-Module tt.nim defines a [.key]#ref# [.obj]#object# type, but the destructor [.proc]#{proc}# takes a var value
+So when our variables [.var]#o1# to [.var]#o5# go out of scope, then the destructors are called.
+Module [.var]#tt.nim# defines a [.key]#ref# [.obj]#object# type, but the destructor [.proc]#{proc}# takes a [.key]#var# value
 parameter. The destructor is called when a value [.obj]#object# or a [.key]#ref# [.obj]#object# goes out of scope.
-Our variable o1 has type tt.O1, so it was indeed expected that its destructor from module tt.nim
-is called. Variable o2 is a [.key]#ref# [.obj]#object# with parent O1, as we define no destructor for this type, the destructor
-of the parent type is called. The variables o3 and o4 are of [.key]#ref# [.obj]#object# and of value [.obj]#object# types, each with
-a field of type O1, and for that field the destructor for O1 is called. Finally, for type O5 we define
-our own destructor, which then additional calls the destructor of module tt.
+Our variable [.var]#o1# has type [.type]#tt.O1#, so it was indeed expected that its destructor from module [.type]#tt.nim#
+is called. Variable [.var]#o2# is a [.key]#ref# [.obj]#object# with parent [.type]#O1#, as we define no destructor for this type, the destructor
+of the parent type is called. The variables [.var]#o3# and [.var]#o4# are of [.key]#ref# [.obj]#object# and of value [.obj]#object# types, each with
+a field of type [.type]#O1#, and for that field the destructor for [.type]#O1# is called. Finally, for type [.type]#O5# we define
+our own destructor, which then additional calls the destructor of module [.mod]#tt#.
 
-Destructors are mostly used for library implementations, e.g. for a file data type, which is
+Destructors are mostly used for library implementations, e.g. for a [.type]#File# data type, which is
 automatically closed when a file variable goes out of scope. As you may never have to use
 destructors yourself, it is not necessary to remember all these details. But it is good to know
 that destructors behave in a way as we may have expected, and when you later wants to use
@@ -9415,7 +9420,7 @@ For [.var]#o2# and [.var]#o3#, we allocate memory as usual, without use of a fin
 But when [.var]#o2# and [.var]#o3# goes out of scope, even for these two variables, the finalizer [.proc]#{proc}# [.func]#finO()#
 is called. The reason for this is, that the system [.proc]#{proc}# [.func]#new()# binds the optional finalizer [.proc]#{proc}#
 to the data type of the passed [.key]#ref# variable. This binding process occurs for the first
-call with a passed finalizer [.proc]#{proc}# and can not be reverted. We can later call [.func]#new()# without
+call with a passed finalizer [.proc]#{proc}#, and can not be reverted. We can later call [.func]#new()# without
 finalizer or use the similar [.func]#O()# call to initialize the [.key]#ref# variable, but that can not undo the binding. And using a
 different finalizer [.proc]#{proc}# for the same data type would not work anymore. Passing the same finalizer
 [.proc]#{proc}# multiple times is OK and may be a common use case, but it has no real effect, as the first call
@@ -9466,7 +9471,7 @@ main()
 We import module [.var]#tt.nim# and subclass the [.type]#ref object# type [.type]#tt.O#.
 While module [.var]#tt.nim# defines a generic finalizer [.proc]#{proc}# [.func]#fin()#, we can
 not use that one for our subclased type [.type]#OO#, but have to copy it
-from module [.var]#tt.nim# into our main module and we may have even to use a different
+from module [.var]#tt.nim# into our main module, and we may have even to use a different
 [.proc]#{proc}# name. Otherwise, we get the compiler message
 
 ----
@@ -9485,7 +9490,7 @@ collect and logically group data types and the related procedures. In some way,
 modules are Nim's classes.
 
 In Nim, each module directly corresponds to one text file. Submodules as known from
-Ruby, that divide a single text file in multiple modules are not supported by Nim
+Ruby, that divide a single text file into multiple modules, are not supported by Nim
 currently.
 
 Every text file with Nim source code is basically a module, and that module can be
@@ -9494,11 +9499,11 @@ have to be exported to make them visible and usable by other modules. That is do
 like in Oberon by appending an asterisk character to all names that should be
 exported. These restricted exports allow hiding implementation details -- all
 symbols not exported are private to that module and can be changed and improved at
-any time without noticing the importing module. Note that when we append the asterisk
+any time without noticing the importing module. Note, that when we append the asterisk
 to the name of an [.obj]#object# to export that type, the [.obj]#object#'s fields are still hidden and can not
 be accessed from within the importing module. You may append an asterisk to selected field
 names as well, or you may provide exported getter and setter [.proc]#{procs}# for the field access.
-A read-only export as known from the Oberon language is currently not possible with Nim.
+A read-only export, as known from the Oberon language, is currently not possible with Nim.
 
 We can import whole modules, that is, all symbols that are marked for export by the
 asterisk, or we can import only the symbols that we need by specifying their names.
@@ -9533,12 +9538,12 @@ When we import modules, then we put the import statement generally at the top of
 importing module, that way it is easy to see what modules are imported. The imported symbols
 can be used in the code after the import statement.
 Module names should be lower case and may as other Nim symbols only contain letters,
-decimal digits and the underscore character.
-We can import multiple modules with a single import statement when we separate the module names with commas.
-Starting with Nim v1.6 it is recommended to import modules from Nim's standard library with the [.var]#std#
+decimal digits, and the underscore character.
+We can import multiple modules with a single import statement, when we separate the module names with commas.
+Starting with Nim v1.6, it is recommended to import modules from Nim's standard library with the [.var]#std#
 prefix as in [.code]#import std/math# or [.code]#import std/[strutils, sequtils]#.
 Importing the same module multiple times is not a problem, and does not increase the
-code file of the final executable.
+file size of the final executable.
 Note that in the import statement
 the module names have to be used literally, so this would not work:
 
@@ -9565,7 +9570,7 @@ want, we can use the qualified form also.
 
 Nim programmer mostly prefer importing whole modules and use unqualified names,
 while that is considered bad style in some other languages like Python. In untyped
-languages like Python unqualified imports may indeed pollute the name space and
+languages like Python, unqualified imports may indeed pollute the name space and
 generate many name conflicts, but in statically typed languages like Nim unqualified
 imports seems to generate name conflicts only in very rare cases. Procedures with the
 same name typically have different parameter lists, so the overload resolution of the
@@ -9573,7 +9578,7 @@ compiler can decide what [.proc]#{proc}# is to be used. And when really a name c
 then the compiler will tell us, and we can easily fix it by prefixing the [.proc]#{proc}# name
 with its module name.
 
-For data types, constants or enums chances for name conflicts may be not that tiny,
+For data types, constants, or enums, chances for name conflicts may be not that tiny,
 so we may have to use qualified names.
 
 We can also enforce a fully qualified import in Nim by a notation like
@@ -9596,14 +9601,14 @@ For imports, we have also the except keyword, so we may do something like
 import strutils except toUpper
 ----
 
-The except keyword can be used to prevent possible name conflicts without having to
+The except keyword can be used to prevent possible name conflicts, without having to
 use qualified names.
 
 Note that the system module is imported automatically, we should not import it
 directly. Also note, that Nim always imports only what is really needed in the final
 executable, so importing only a few symbols from a module has no code size benefit
-over importing the whole module. Still, it may improve readability of your code when
-you import only single symbols when you are sure that you require not more. Maybe like
+over importing the whole module. Still, it may improve readability of your code, when
+you import only single symbols for the case that you are sure that you require not more. Maybe like
 [.code]#from math import Pi#. Note that you can even in that case access other symbols of that
 module by fully qualified names like [.func]#math.sin()#.
 
@@ -9632,7 +9637,7 @@ from tables as maps import nil
 With this import statement, you could access symbols from the [.var]#tables# module only by
 use of the [.var]#maps# module prefix like [.func]#maps.newTable()#.
 
-Finally, with the [.key]#export# keyword one library module can export other modules, which it
+Finally, with the [.key]#export# keyword, one library module can export other modules, which it
 imports itself. This may simplify the use of connected modules. As an example, when
 using the [.var]#gintro# bindings for GTK4, we import all the needed modules generally like
 [.code]#import gintro/[glib, gobject, gtk4]#. We may decide to simplify that import statement
@@ -9646,7 +9651,7 @@ export glib, gobject, gtk4
 ----
 
 Then a user of [.var]#gintro# could just write [.code]#import gtkplus# to have access to all
-the modules. Actually for GTK this is not really a good idea, we will tell you more
+the modules. Actually, for GTK this is not really a good idea, we will tell you more
 about the [.var]#gintro# module and maybe about one more of Nim's GUI libraries in the second half of the book.
 
 === Cyclic Imports
@@ -9654,7 +9659,7 @@ about the [.var]#gintro# module and maybe about one more of Nim's GUI libraries 
 Typically, we try to arrange our own modules in a tree-like bottom-up structure. A module [.var]#x# may define basic
 types and simple functions working with these types, and a higher level module [.var]#y# may import all symbols
 from module [.var]#x# and extend the functionality. But in rare cases it may be necessary that the modules [var]#x# and [.var]#y#
-import each other, as [.var]#x# has to use types or functions of module [.var]#y#, and vice versa. This case is called cyclic import and is
+import each other, as [.var]#x# has to use types or functions of module [.var]#y#, and vice versa. This case is called cyclic import, and is
 currently not supported by Nim. Indeed, we should generally try to avoid cyclic imports when possible, as cyclic imports
 make the software design difficult. But sometimes we can not really avoid these cycles. In that case, currently the best solution is,
 to put all the concerned data types in a separate low level module, which is then imported from both other modules.
@@ -9669,25 +9674,25 @@ used to split very large modules in smaller entities.
 = Part III: Nim's Standard Library
 
 In this part of the book, we will introduce you to some of the most essential
-modules of the Nim standard library. This includes modules for common operations
+modules of Nim's standard library. This includes modules for common operations
 like the serialization of Nim data types to write them
 to external nonvolatile storage and read them back into the program later, or handling command
 line options and parameters for programs launched from within a terminal window.
-Further, we will introduce you to important container data types like hash tables
+Further, we will introduce you to important container data types like [.ndef]#hash tables#
 (sometimes called hash maps in other programming languages) and various kinds
-of set data types. We will also introduce modules for working with regular expressions,
-and we will show how simple modules like the times or the random module can
+of [.ndef]#set# data types. We will also introduce modules for working with [.ndef]#regular expressions#,
+and we will show how simple modules like the [.mod]#times# or the [.mod]#random# module can
 be used. Most modules mentioned in this part will be from the Nim standard library, so that
-you will not have to install external packages for that. But there may be some exceptions, e.g. for
-some external nimble packages with a very useful functionality and an easy user interface.
+you will not have to install external packages to use them. But there may be some exceptions, e.g. for
+some external Nimble packages with a very useful functionality and an easy user interface.
 One of these exceptions is the [.mod]#regex# module: Nim's standard library comes with the [.mod]#re# and [.mod]#nre#
-modules, which both uses the PCRE C library. We have decided to introduce the [.nim]#regex# module
+modules, which both uses the PCRE C library. We have decided to introduce the [.mod]#regex# module
 instead, which is an external package written completely in Nim language.
 
-Formally, Nim distinguish between pure and impure libraries and wrappers. The majority of
-Nim's library consist of pure libraries, that are modules complete written in Nim code.
+Formally, Nim distinguish between [.italic]#pure# and [.italic]#impure# libraries, and [.italic]#wrappers#. The majority of
+Nim's standard library consist of pure libraries, that are modules completely written in Nim code.
 Impure libraries provide a high level Nim interface, and can be used like pure libraries, but
-use C libraries under the hood. Examples are the two modules [.mod]#re# and [.mod]#nre#
+use C libraries under the hood. Examples are the two modules [.mod]#re# and [.mod]#nre#,
 which both uses the PCRE C library, and some
 database modules.  Impure libraries can be used like the pure ones, when the underlying
 C library is installed. The few wrappers that are shipped with Nim provide only a low level
@@ -9716,7 +9721,7 @@ but Nim's standard library and some external packages allow also much more advan
 of command line arguments. For simple cases, the C-like way is sufficient. For C programs
 the command line arguments are even coupled very closely to the language itself, the
 number of arguments and the list of parameters are the two typical parameters
-of the C main() function and are used in this way:
+of the C [.func]#main()# function and are used in this way:
 
 [source, c]
 ----
@@ -9737,10 +9742,10 @@ int main( int argc, char *argv[] ) {
 ----
 
 Here [.var]#argc# is the number of available arguments, and [.var]#argv# is an [.type]#array# containing the
-actual arguments in form of [.str]#strings#. These values are passed to each C program by the
-OS when the program is launched from inside a terminal. Actually the value of [.var]#argc# is the number
+actual arguments in form of C [.str]#strings#. These values are passed to each C program by the
+OS when the program is launched from inside a terminal. Actually, the value of [.var]#argc# is the number
 of passed arguments plus one, that is when we specify no arguments at all, [.var]#argc# has the value one.
-And [.var]#argv[0]# is always the name of the executed program. We have to know that command line arguments
+And [.var]#argv[0]# is always the name of the executed program. We have to know, that command line arguments
 passed to a program are separated by white space, that is at least, by one space or tab character. For this
 reason, we have to enclose single arguments containing white space in double quotes:
 
@@ -9754,12 +9759,12 @@ Executing program ./a.out
 The argument supplied is Nim two
 ----
 
-In Nim we have the same functionality available by use of the [.func]#paramCount()#
+In Nim, we have the same functionality available by use of the [.func]#paramCount()#
 and [.func]#paramStr()# [.proc]#{procs}#, which we have to import from the [.mod]#os# module.
 But [.func]#paramCount()# gives us the actual number of parameters, so
 when we call our program on the command line without any arguments, [.func]#paramCount()#
 will return the value zero. The symbol [.func]#paramStr()# is not a global [.type]#array# variable, but a procedure.
-ParamStr(0) gives us the name of our executable, and with arguments greater zero
+[.func]#ParamStr(0)# gives us the name of our executable, and with arguments greater zero
 we get the passed arguments as [.type]#strings# in ascending order. Using an index number
 for an argument that was not provided will cause [.func]#paramStr()# to raise an exception.
 
@@ -9804,9 +9809,10 @@ book, we used already the [.func]#readLine()# and the [.func]#getch()# [.proc]#{
 and for waiting on a single key press event.
 
 For input and output operations in a terminal window, the [.mod]#io# module defines the three
-variables [.var]#stdin#, [.var]#stdout# and [.var]#stderr# of [.type]#File# data type. We will discuss file-based input and output
-operations in more detail in part III of the book. Many [.proc]#{procs}# of the [.mod]#io# module expects
-as first parameter a variable of [.type]#file# type. We can explicitly open a named file to write data
+variables [.var]#stdin#, [.var]#stdout# and [.var]#stderr# of [.type]#File# data type.
+// We will discuss file-based input and output operations in more detail in part III of the book.
+Many [.proc]#{procs}# of the [.mod]#io# module expects
+as first parameter a variable of [.type]#File# type. We can explicitly open a named file to write data
 to external media like the SSD, or we can just use the [.var]#stdin# and [.var]#stdout# variables
 to read data from the keyboard and to write text to the terminal window. Unlike other named
 files, we do not have to call [.func]#open()# or [.func]#close()# on [.var]#stdin# and [.var]#stdout#
@@ -9821,7 +9827,7 @@ stdout.flushFile
 
 We mentioned already, that the [.func]#readline()# function let you type
 textual user input, including spaces, and that you have to terminate
-your input by pressing the return key to pass the input [.str]#string# to the OS
+your input by pressing the return key to pass the input [.str]#string# to the OS,
 which forwards the input to our program. This form of input is sometimes
 called blocking, as for the time that we wait for user input, our program is really
 waiting, it can not do other work til the user has pressed the return key.
@@ -9833,10 +9839,10 @@ In the literature [.var]#stdin#, [.var]#stdout# and [.var]#stderr# are often cal
 can be used instead of [.var]#stdout# for writing error messages. This can be useful
 in special cases, when we have an application where we want to redirect
 error messages to a file or to separate regular output and error messages.
-For more details about these stream or file variables and the use of the [.var]#stderr# variable,
+For more details about these stream or file variables, and the use of the [.var]#stderr# variable,
 you may consult external literature, if you should really need that info.
 
-The [.mod]#io# module does not provide read functions for other basic data types like numeric or
+The [.mod]#io# module does not provide [.func]#read()# functions for other basic data types like numeric or
 boolean types. So we should use [.func]#readLine()# to read the user input in [.type]#string# form, which we can convert
 by functions like [.func]#parseInt()#, [.func]#parseFloat()# or similar functions to numeric data. Note that parsing [.proc]#{procs}#
 like [.func]#parseInt()# are provided by the module [.mod]#strutils# as well as by the module [.mod]#parseutils# -- one function raises an exception for invalid input,
@@ -9902,7 +9908,7 @@ the valid [.str]#string# index positions are never negative, so it is obvious
 that a negative [.key]#result# is some form of error indication. In a similar
 way, whenever a function should return a reference or a [.type]#pointer#, the
 special value [.lit]#nil# can be used to indicate the absence of a value.
-Actually in most cases we can just define a special value as the
+Actually, in most cases we can just define a special value as the
 indication for the absence of a [.key]#result# or as error indicator,
 for example [.func]#int.low#, [.func]#char(0)#, or [.lit]#NaN# for [.type]#float# results.
 
@@ -9950,7 +9956,7 @@ echo "Nim".find('i')
 
 For a more formalized way to indicate the absence of a meaningful [.key]#result#,
 many modern programming languages provide the concept of [.type]#Option# types,
-which are called sometimes also [.type]#Maybe# types.
+which are also called sometimes [.type]#Maybe# types.
 [.type]#Option# types can encapsulate an arbitrary data type and provide
 functions like [.func]#isSome()# or [.func]#isNone()# to test for the existence of a valid value, and
 functions like [.func]#get()# to extract the actual value from the [.type]#Option# type:
@@ -9972,7 +9978,7 @@ if res.isSome:
 ----
 
 The [.mod]#options# module of Nim's standard library provides the generic [.type]#Option[]# data type
-and the functions [.func]#some()#, [.func]#isSome()# and [.func]#isNone()# to create a new [.type]#Option# type encapsulating
+and the functions [.func]#some()#, [.func]#isSome()#, and [.func]#isNone()# to create a new [.type]#Option# type encapsulating
 some data, and to check if data is present. In the code above, we use [.func]#some(i)# to wrap the
 integer value in the [.type]#Option# type when we have found a match. For no match,
 the [.proc]#proc# [.key]#returns# the default empty [.type]#Option# type instance. When we use the [.func]#find()# function with the
@@ -9982,7 +9988,7 @@ then call [.func]#get()# to get the actual data.
 Nim's [.type]#Option# types are based on [.key]#objects#. The generic [.type]#Option[T]# type is an [.key]#object# with two fields,
 a boolean indicating the presence of data, and a field which can store the actual data.
 Nim uses also an optimization: When the data type is of [.key]#ref# or [.type]#pointer# type, then the
-[.]#bool# field is not necessary, as the absence of data is equivalent to a data entity with [.lit]#nil# value.
+[.type]#bool# field is not necessary, as the absence of data is equivalent to a data entity with [.lit]#nil# value.
 
 The overhead of [.type]#Option# types is not that big -- a [.proc]#proc# which would return an 4-byte integer
 would return an [.key]#object# instead -- the additional boolean field would increase the size
@@ -10002,12 +10008,12 @@ References:
 
 When you start writing larger programs, these programs may create data which you may want to
 store permanently on external nonvolatile storage like SSDs or traditional hard disks of your computer.
-For textual data, this is very easy, as you basically only has to write and read a stream
+For textual data, this is very easy, as you only have to write and read a stream
 of unstructured bytes. But when your program deals with [.obj]#object# instances, container data
-types like sequences or references, things become more complicated. Writing the data
+types like sequences, or references, things become more complicated. Writing the data
 is always easy -- you can just convert all the fields of your [.obj]#object# data type to [.str]#strings#
 and write them to a stream or a file. But the reading back part is much more difficult: You would
-have to read in the data as [.str]#strings# and then process each [.str]#string# -- maybe converting to a [.type]#float# number --
+have to read in the data as [.str]#strings#, and then process each [.str]#string# -- maybe converting to a [.type]#float# number --
 and then assign to the matching field of an [.obj]#object# instance.
 
 When your data consists only of value [.obj]#objects# and no references, then you may consider
@@ -10022,28 +10028,28 @@ Two popular text formats are [.ndef]#JSON# and [.ndef]#YAML#. JSON is a simple f
 very good readable for humans. YAML is more complicated, but more flexible and is very good
 readable for humans.
 
-For Nim, we have already many modules which we can use for storing data in JSON or YAML format available.
+For Nim, we have already many modules available, which we can use for storing data in JSON or YAML format.
 The Nim standard library includes the [.mod]#marshal# and the [.mod]#json# module. The [.mod]#marshal# module uses, like
-the [.mod]#json# module the json data file format, is easy to use and simple, but is not really designed
+the [.mod]#json# module, the JSON data file format, is easy to use and simple, but is not really designed
 to generate human-readable data files, as the stored data is not stored as a sequence of individual lines.
 So we will describe and use the [.mod]#json# module in this section, which is also easy to use, but has some larger
-set of functionality and can generate real human readable text files by use of the pretty() function.
+set of functionality and can generate real human-readable text files by use of the pretty() function.
 
 Other available external packages for data serialization are the nim-serialization module set from (https://github.com/status-im/nim-serialization)
 and the very powerful but complicated NimYaml implementation (https://nimyaml.org/). We may describe these packages
 in part V of the book.
 
 When we have to store and read back Nim data to nonvolatile storage media, we have some serious
-points to consider: First we have to handle various data types like integers, [.type]#floats#, [.str]#strings#, [.obj]#objects# -- and
+points to consider: First, we have to handle various data types like integers, [.type]#floats#, [.str]#strings#, [.obj]#objects# -- and
 even the container types like sequences. And we may have to support reference types and maybe also inherited types
 and containers filled with heterogeneous, subclassed reference [.obj]#objects#. The [.mod]#json# module supports all Nim data types,
 including containers and references, but not heterogeneous sequences.
 
-For our first json example, let us assume that we have written a small tool that
+For our first JSON example, let us assume that we have written a small tool that
 let the user create some geometrical shapes, and we want to store the shapes
 to a file and read it back. For that, we generally use an intermediate step, which
-converts the data to a [.str]#string# and the [.str]#string# back to the data [.obj]#object#. The [.str]#string# is
-then written to a file or stream and read back. Let us start with the [.str]#string# conversion --
+converts the data to a [.str]#string#, and the [.str]#string# back to the data [.obj]#object#. The [.str]#string# is
+then written to a file or stream, and read back. Let us start with the [.str]#string# conversion --
 storing that [.str]#string# and reading it back from the file will be explained soon.
 
 [source, nim]
@@ -10144,15 +10150,15 @@ When we run the program, we would get this output:
 ----
 
 As you can see, we converted the instance [.var]#d1# of type [.type]#Data# to a [.str]#string#, and then we convert
-that [.str]#string# back to variable [.var]#d2# with matching content. We have made intentionally
+that [.str]#string# back to variable [.var]#d2#, with matching content. We have made intentionally
 the [.type]#Circ# a [.key]#ref# [.key]#object#, so we can see that the conversion works for value and reference [.obj]#objects#.
 In the example program, we applied the %{asterisk} macro to our data instance [.var]#d1# to get a [.type]#JsonNode#, and
 finally use the [.func]#pretty()# function to get a nice multi-line [.str]#string#. To fill the variable [.var]#d2# with
-the content stored in [.var]#str1#, we first have to apply [.func]#parseJson()# on the [.str]#string# and then use [.func]#to()# to
-unmarshal the json node into the matching [.key]#object# type.
+the content stored in [.var]#str1#, we first have to apply [.func]#parseJson()# on the [.str]#string#, and then use [.func]#to()# to
+unmarshal the JSON node into the matching [.key]#object# type.
 
 Now let us investigate what happens when we try to use the [.mod]#json# module with
-a container with heterogeneous [.key]#ref# [.key]#objects#. For that we subclass the [.type]#Disc# type,
+a container with heterogeneous [.key]#ref# [.key]#objects#. For that, we subclass the [.type]#Disc# type,
 creating a new [.type]#Arc# type:
 
 [source, nim]
@@ -10314,7 +10320,7 @@ for el in d2.elements:
     echo "found arc with endAngle: ", Arc(el).endAngle
 ----
 
-For this example program, we use OOP programming style and keep all the geometric [.obj]#object# instances as
+For this example program, we use the object-orientated programming style and keep all the geometric [.obj]#object# instances as
 references in a single sequence. Note that doing this is not always a good idea, as this OOP style with
 the use of references and dynamic run-time dispatch can be slower due to many small heap allocations for
 each [.key]#ref# [.key]#object# and due to the dynamic dispatch ([.key]#if# el [.key]#of# ...) overhead. Using multiple, homogeneous sequences with value types for each of our
@@ -10331,11 +10337,11 @@ Our program defines an additional [.type]#Storage# data type, which contains hom
 We then copy all our [.key]#ref# [.key]#objects# from the elements sequence in the matching sequences of the storage [.obj]#object# using the
 dynamic [.key]#of# type query to select the exactly matching sequence.
 
-After that we can use the already known json functions to serialize the storage [.obj]#object# into a [.str]#string#, store the [.str]#string#
-to a file, read it back and deserialize the data again into a different variable of [.type]#Storage# data type. Finally, we use a simple [.key]#for# loop
+After that, we can use the already known JSON functions to serialize the storage [.obj]#object# into a [.str]#string#, store the [.str]#string#
+to a file, read it back, and deserialize the data again into a different variable of [.type]#Storage# data type. Finally, we use a simple [.key]#for# loop
 to copy the [.key]#ref# [.key]#objects# from the temporary storage [.key]#object# into a [.type]#Data# variable called d2. For storing the data to an external
-nonvolatile medium we use the [.type]#File# data type and the related functions [.func]#open()#, close, [.func]#write()# and [.func]#read()#. Their use should be
-obvious: We pass an uninitialized variable of [.type]#File# data type, a file name and a file mode to [.func]#open()#, use [.func]#write()# to write
+nonvolatile medium, we use the [.type]#File# data type and the related functions [.func]#open()#, close, [.func]#write()# and [.func]#read()#. Their use should be
+obvious: We pass an uninitialized variable of [.type]#File# data type, a file name, and a file mode to [.func]#open()#, use [.func]#write()# to write
 the whole [.str]#string#, and use [.func]#readAll()# to read the data back. When done with each file, we use [.func]#close()# to close the file.
 The [.type]#File# data type is part of the [.mod]#io# module, which is again part of the [.mod]#system# module, so we don't have to import these modules.
 We could have used as an alternative also the [.mod]#streams# module. We will learn some more details about the [.type]#File# data type
@@ -10344,8 +10350,8 @@ and the [.mod]#streams# module in later sections of the book.
 NOTE: We should mention that unfortunately, live is not always that easy, as sometimes we can not
 freely select the textual output format. Imagine that you create a CAD (computer aided design) tool
 that should be compatible with another existing tool. In this case, the textual storage format
-is already defined by the existing tool, and generally that format does not match the json or
-yaml file format. Even when the format should be one of these, matching it exactly would be difficult.
+is already defined by the existing tool, and generally that format does not match the JSON or
+YAML file format. Even when the format should be one of these, matching it exactly would be difficult.
 While writing out own data in that foreign format is still not really difficult, as we can just write
 single matching [.str]#strings#, reading in the textual data is more complicated: Typically, we would read the input file line by line, and
 we would have to inspect and interpret each input [.str]#string#, maybe by use of regular expressions or a custom parser.
@@ -10362,17 +10368,17 @@ References:
 == Streams and Files
 
 In the previous section, we learned how we can store structured data like
-a sequence of [.obj]#objects# in human-readable form to nonvolatile media
+a sequence of [.obj]#objects#, in human-readable form to nonvolatile media
 by use of the [.mod]#json# module.
 
-Text in form of a single [.str]#string# or in form of a container holding
-multiple [.str]#strings# is some kind of unstructured data which we can
+Text in form of a single [.str]#string#, or in form of a container holding
+multiple [.str]#strings#, is some kind of unstructured data, which we can
 write directly to nonvolatile storage, and later read it back.
 We can do the same with containers of basic, unstructured data types
 like integer or floating point numbers, and with some restrictions we can even
 write [.type]#tuples# or [.obj]#objects# directly as raw bits and bytes to external storage and read
 it back later. Of course, this way the stored data is a binary blob, which can not
-be read or modified by other tools like a text editor. But that may be not
+be read or modified by other tools, like a text editor. But that may be not
 intended or advantageous at all, maybe we do scientific data processing with
 a single tool, and we just want to temporarily store the data and continue
 with the processing later.
@@ -10395,8 +10401,8 @@ in the stream.
 We will use the [.type]#File# data type of the [.mod]#io# module first. As the [.mod]#io# module is part of the [.mod]#system# module, we do
 not have to import it before we can use it. The principle usage of files is, that we call the function [.func]#open()# to open
 a file with given name, call some [.proc]#{procs}# to write or read data, and finally [.func]#close()# the file.
-While Nim support destructors when we compile with --gc:arc or --gc:orc, the [.mod]#io# module
-does not yet use them, so we should actually call close() to close the file.
+While Nim support destructors, when we compile with --gc:arc or --gc:orc, the [.mod]#io# module
+does not yet use them, so we should actually call [.func]#close()# to close the file.
 
 ****
 Historically, a file is a one dimensional data type, which is accessed in sequential order. Up to the end of the
@@ -10405,8 +10411,8 @@ which could be read or written only slowly in sequential order. Read or write op
 place only at the actual position, and available functions like [.func]#f.setFilePos()# were very slow
 as it involves moving the tape. The introduction of hard disks and solid state disks removed this restriction,
 and modern {os} often buffers files in RAM for longer time periods, so that files may have actually
-similar performance as [.type]#arrays# or sequences. The funny fact is, that with the modern CPU caches
-the ordinary RAM storage can look similar slow and sequential compared to the extreme fast cache as
+similar performance as [.type]#arrays# or sequences. The funny fact is, that with the modern CPU caches,
+the ordinary RAM storage can look similar slow and sequential compared to the extreme fast cache, as
 magnetic tapes in the past.
 ****
 
@@ -10438,7 +10444,7 @@ to ensure that we do not overwrite important data.
 
 Module [.mod]#io# provides multiple overloaded [.func]#open()# [.proc]#{procs}#. We use here a variant
 which returns a file, and raises an exception for the unlikely case of an error.
-We provide a file name and a file mode as parameters. We use mode [.const]#fmWrite# as we want
+We provide a file name and a file mode as parameters. We use mode [.const]#fmWrite#, as we want
 to create a new file. Note that [.const]#fmWrite# would clear the content of an existing file, so
 we can not use [.const]#fmWrite# to append data to an existing file. We would have to use
 [.const]#fmReadWriteExisting# or [.const]#fmAppend# to append data to an already existing file.
@@ -10448,15 +10454,15 @@ When the file is successfully opened, we can use [.proc]#{procs}# like [.func]#w
 write text [.str]#strings# to the file. Both [.proc]#{procs}# accept multiple arguments and apply the stringify operator
 [.op]#$# on them before writing the content. [.func]#WriteLine()# writes a [.lit]#'\n'# after the last argument to start a new line.
 When done, we call [.func]#close()# to close the file. The {os} would close the file for us when our program terminates, so
-calling close is not that important, but when we open many files without closing them we may get
+calling close is not that important, but when we open many files without closing them, we may get
 errors from the {os} finally about too many open files and our program may fail or terminate.
 
-The [.func]#close()# [.proc]#{proc}# gets passed the file not as a var parameter, so it can not set the file
-to value nil. When the file has the value nil, then the [.func]#close()# call is ignored, but when we would call
-[.func]#close()# multiple times with a non [.lit]#nil# argument we get a program crash.
+The [.func]#close()# [.proc]#{proc}# gets passed the file not as a [.key]#var# parameter, so it can not set the file
+to value [.lit]#nil#. When the file has the value [.lit]#nil#, then the [.func]#close()# call is ignored, but when we would call
+[.func]#close()# multiple times with a non [.lit]#nil# argument, we get a program crash.
 We may use the try/finally or the defer construct to ensure that we really close the file when done.
 
-The [.mod]#io# module provides some [.proc]#{procs}# like [.func]#writeBuffer()#, [.func]#writeBytes()# or [.func]#writeChars()# which gives us
+The [.mod]#io# module provides some [.proc]#{procs}# like [.func]#writeBuffer()#, [.func]#writeBytes()# or [.func]#writeChars()#, which gives us
 as return value the actual number of bytes written. This return value should generally match
 the requested number of bytes to write, but can be smaller when the write operation fully
 or partially failed, e.g. because the storage medium had no capacity left.
@@ -10483,10 +10489,10 @@ proc main =
 main()
 ----
 
-The [.func]#readLine()# [.proc]#{proc}# reads in a line of text. The LF, CR or CRLF line end markers
+The [.func]#readLine()# [.proc]#{proc}# reads in a line of text. The [.const]#LF#, [.const]#CR# or [.const]#CRLF# line end markers
 are not part of the returned text [.str]#string#. Of course, we may get an
-empty [.str]#string# with length zero back when we read a line which
-immediately starts with LF, CR or CRLF, or we may get back a [.type]#string#
+empty [.str]#string# with length zero back, when we read a line which
+immediately starts with [.const]#LF#, [.const]#CR# or [.const]#CRLF#, or we may get back a [.type]#string#
 with no visible characters but only a few spaces or tabulator characters [.lit]#'\t'#
 when a line contains only white space.
 When our [.func]#read()# operations have moved the actual file io position to the
@@ -10496,7 +10502,7 @@ The [.mod]#io# module provides a [.func]#readLine()# [.proc]#{proc}# that return
 and one that takes an existing [.str]#string# as a [.key]#var# parameter. The latter may be a bit faster,
 as it can avoid the allocation of a new buffer when the passed [.str]#string# has already enough capacity.
 
-The [.mod]#io# module provides a function called [.func]#endOfFile()# with a boolean result
+The [.mod]#io# module provides a function called [.func]#endOfFile()# with a boolean result,
 which we can use to check if the end of file position is already reached.
 The provided functions [.func]#readBuffer()#, [.func]#readBytes()# or [.func]#readChars()# return
 the actual number of bytes read, which can be smaller than the requested value when
@@ -10504,7 +10510,7 @@ the end of the file is reached earlier. Currently, [.func]#readChars()# checks i
 [.type]#openArray[char]# has enough capacity for the request, but [.func]#readBytes()# does no
 check!
 
-We can use also the [.func]#lines()# [.key]#iterator# to iterate over the lines of a text file, or use the [.func]#readLines()#
+We can also use the [.func]#lines()# [.key]#iterator# to iterate over the lines of a text file, or use the [.func]#readLines()#
 [.proc]#{proc}# to read the content line by line.
 
 [source, nim]
@@ -10524,12 +10530,12 @@ proc main =
 main()
 ----
 
-As iterating over the comple file line by line moves
+As iterating over the complete file line by line moves
 the actual file position to the end of the file, we called [.func]#setFilePos()# to move again to the start position.
 The [.func]#readLines()# [.proc]#{proc}# takes a filename
-and the number of lines to read as parameters and returns a [.type]#seq# of [.var]#strings#. When the
-file does not contain at least the number of requested lines, an EOF exception is raised.
-Another provided [.proc]#{proc}# is [.func]#readAll()# which reads the entire file content into a returned [.str]#string# variable.
+and the number of lines to read as parameters, and returns a [.type]#seq# of [.var]#strings#. When the
+file does not contain at least the number of requested lines, an [.const]#EOF# exception is raised.
+Another provided [.proc]#{proc}# is [.func]#readAll()#, which reads the entire file content into a returned [.str]#string# variable.
 For [.func]#readAll()# to work, the actual file position has to be the start of the file. In case of an
 error, an exception is raised.
 
@@ -10594,12 +10600,12 @@ Output should look like
 (x: 3.1415, i: 12, b: true)
 ----
 
-But of course this is dangerous and fragile. We just show that example as beginner
+But of course, this is dangerous and fragile. We just show that example, as beginner
 typically ask about it, and may want to try it at least once. Obviously this can
 only
-work when the [.type]#tuples# or [.key]#objects# contain only plain data types, that is no [.str]#string#, no
+work, when the [.type]#tuples# or [.key]#objects# contain only plain data types, that is no [.str]#string#, no
 references and of course no other nested container types like sequences or tables. And reading back
-data may fail when we use a different OS or a different compiler version.
+data may fail, when we use a different OS or a different compiler version.
 
 The [.mod]#io# module provides the [.type]#File# variables [.var]#stdin#, [.var]#stdout# and [.var]#stderr#,
 which are the standard input, output and error streams.
@@ -10612,11 +10618,11 @@ all buffer content of buffered files is actually written to the file. This is im
 when we use the [.var]#stdout# [.type]#File# variable, maybe to ask the user a question in the terminal window.
 We would call [.func]#sdtout.flushFile()# to ensure that the user really sees the text on the screen
 immediately. The [.func]#echo()# [.proc]#{proc}# calls [.func]#flushFile()# automatically after each output operation.
-When we close a file [.func]#flushFile()# should be called automatically, but when
-our program is terminated without calling [.func]#close()# it may depend on the actual implementation and {os}
+When we close a file, [.func]#flushFile()# should be called automatically, but when
+our program is terminated without calling [.func]#close()#, it may depend on the actual implementation and {os}.
 
 The [.mod]#io# module provides some more useful procedures, but we will
-stop this introducing section here and continue with the [.mod]#streams# module in the next section.
+stop this introducing section here, and continue with the [.mod]#streams# module in the next section.
 
 References:
 
@@ -10638,7 +10644,7 @@ they go out of scope.
 We can create a new [.type]#FileStream# by calling the overloaded [.proc]#{procs}# [.func]#newFileStream()#
 with an already opened file or a filename as parameter, or we can use [.func]#openFileStream()#.
 The latter raises an exception when the stream can not be opened, while the former [.proc]#{procs}#
-just return nil. We can write and read textual data with the [.mod]#streams# module in a very similar way as we did it with the
+just return [.lit]#nil#. We can write and read textual data with the [.mod]#streams# module in a very similar way as we did it with the
 [.mod]#io# module and the [.type]#File# data type:
 
 [source, nim]
@@ -10662,13 +10668,13 @@ proc main =
 main()
 ----
 
-We test again if a file with that name already exists. Then we try to create a
+We test again, if a file with that name already exists. Then we try to create a
 new [.type]#FileStream# by using file mode [.const]#fmReadWrite#, so that we can write and
 read from that file. Finally, we write two numbers, which are automatically
-converted to [.type]#strings#, set the file position back to the beginning and verify
+converted to [.type]#strings#, set the file position back to the beginning, and verify
 what we wrote by reading it in again, before we close the stream.
 
-In a very similar way, we can write to and read from [.str]#string# streams
+In a very similar way, we can write to and read from [.str]#string# streams:
 
 [source, nim]
 ----
@@ -10689,29 +10695,29 @@ In the example above, we do not test if the stream variable is not [.lit]#nil#, 
 
 For buffered streams, we can call [.func]#flush()# to ensure that the buffer content (of file streams) is written,
 similar as we can do it for plain [.type]#Files# of the [.mod]#io# module.
-Instead of [.func]#io.endofFile()# we use the [.proc]#{proc}# [.func]#atEnd()# to test if the current stream position
+Instead of [.func]#io.endofFile()#, we use the [.proc]#{proc}# [.func]#atEnd()#, to test if the current stream position
 is already at the end of the stream. Functions [.func]#getPosition()# and [.func]#setPosition()# are
 available to query or set the actual position in the stream. While the [.mod]#io# module
 with its [.type]#File# data type supports for [.func]#io.setFilePos()# although position modes relative to the actual position or relative to the file end,
 [.func]#streams.setPosition()# always use absolute values, that is positions measured from the beginning of the stream.
-The [.mod]#streams# module provides also the low level [.proc]#{procs}# [.func]#readData()# and [.func]#readDataStr()#
-which reads data to a memory region or into a [.str]#string# and returns the actual number of bytes read
+The [.mod]#streams# module also provides the low level [.proc]#{procs}# [.func]#readData()# and [.func]#readDataStr()#,
+which reads data to a memory region or into a [.str]#string#, and returns the actual number of bytes read
 to indicate success. And as for the [.mod]#io# module, a [.proc]#{proc}# [.func]#readAll()# is available to read all data
 of a stream into the returned [.str]#string# variable.
 
 The [.proc]#{procs}# [.func]#writeLine()# writes the passed arguments always as [.type]#strings#. The overloaded [.func]#write()#
 [.proc]#{procs}# with [.type]#varargs# arguments write the passed values as [.str]#strings# and apply the stringify operator [.op]#$#
-if necessary. The same does the [.func]#writeLine()# [.proc]#{proc}#, but it writes a newline character
+if necessary. The same does the [.func]#writeLine()# [.proc]#{proc}#, but it writes a newline character,
 when all passed variables have been written. One more overloaded write [.proc]#{proc}# for single [.str]#string# parameters exist.
 
 But for single non [.str]#string# arguments a generic [.func]#write()# [.proc]#{proc}# is used, which writes numbers
 (and other data types like boolean types or single characters) directly in binary form without converting them to [.type]#strings#.
 
 To read the binary numbers back, we can use functions like [.func]#readFloat64()# which have a
-well-defined return type and read a fixed number of bytes. Or we can use the generic [.func]#read()# [.proc]#{proc}#
+well-defined return type and read a fixed number of bytes. Or we can use the generic [.func]#read()# [.proc]#{proc}#,
 which accepts a [.key]#var# parameter which defines the data type that we intend to read in binary form.
-Additional to the various [.func]#read()# [.proc]#{procs}# the [.mod]#streams#
-module provides a set of [.func]#peek()# [.proc]#{procs}# which reads data in without moving the actual
+Additional to the various [.func]#read()# [.proc]#{procs}#, the [.mod]#streams#
+module provides a set of [.func]#peek()# [.proc]#{procs}#, which reads data in without moving the actual
 position in the stream forward. This may be useful for parsing of files, as we can
 read the same information multiple times easily. Internally, the [.func]#peek()# functions uses
 a call of [.func]#setPosition()# to save the current position and one more call of [.func]#setPosition()#
@@ -10748,23 +10754,23 @@ main()
 ----
 
 In the example above, we write a three byte long [.str]#string# and a [.type]#float64# to the file stream.
-We call [.func]#setPosition(0)# to read the stream from the beginning again, and then
+We call [.func]#setPosition(0)#, to read the stream from the beginning again, and then
 read in an [.type]#int16# with the function [.func]#peekint16()# without moving the actual position
 forward, followed from [.func]#readInt8()#, which moves the actual position one byte forward.
-(Instead of [.func]#readInt8()# we could also call [.func]#read()# with variable [.var]#i8# as passed [.key]#var# parameter.)
-Then we read in two bytes and finally the [.type]#float64# value at the end of the stream.
-Finally, we check by use of the function [.func]#getFileSize()# from the [.mod]#os# module if
+(Instead of [.func]#readInt8()#, we could also call [.func]#read()# with variable [.var]#i8# as passed [.key]#var# parameter.)
+Then we read in two bytes, and finally the [.type]#float64# value at the end of the stream.
+Finally, we check, by use of the function [.func]#getFileSize()# from the [.mod]#os# module, if
 the file has really the expected size.
 
 The [.mod]#streams# module provides many functions, and the possible writing data
 as [.str]#strings# or in binary form can make using that module a bit daunting at first.
-But most [.proc]#{procs}# have examples in the API docs which helps you to use it.
+But most [.proc]#{procs}# have examples in the API docs, which helps you to use it.
 
 ****
-For reading [.str]#strings# and whole lines the [.mod]#streams# module provides functions like
+For reading [.str]#strings# and whole lines, the [.mod]#streams# module provides functions like
 [.func]#readLine()#, [.func]#peekLine()#, [.func]#readStr()# and [.func]#peekStr()# each in a variant which returns a newly allocated
-[.str]#string# and one that uses a passed [.key]#var# parameter to return the [.str]#string#. The variants with
-[.key]#var# parameters may be a bit faster, as they can avoid allocating a new [.str]#string# when the passed
+[.str]#string#, and one that uses a passed [.key]#var# parameter to return the [.str]#string#. The variants with
+[.key]#var# parameters may be a bit faster, as they can avoid allocating a new [.str]#string#, when the passed
 in [.key]#var# parameter has already enough capacity.
 ****
 
@@ -10774,22 +10780,29 @@ References:
 
 == String Processing
 
-[.str]#string# processing is a wide area. Nim's standard library provides various modules
-like [.mod]#strutils#, [.mod]#parseutils# and [.mod]#strscans# for supporting this task, and external packages
-supports more advanced operation like [.str]#string# pattern matching with regular expressions (regex).
+[.str]#String# processing is a wide area. Nim's standard library provides various pure Nim modules
+like [.mod]#strutils#, [.mod]#parseutils# and [.mod]#strscans# for supporting this task, and the impure [.mod]#re# and [.mod]#nre# modules and external packages
+supports more advanced operations like [.str]#string# pattern matching with [.italic]#regular expressions# (regex)
+or by use of the [.italic]#parsing expression grammar# (PEG).
 We will start with the [.mod]#strutils# module, which is one of the mostly used modules of
 the Nim standard library. Then we will introduce some more specialized modules like
-[.mod]#strscans#, [.mod]#parsecvs#, [.mod]#parseutils#, [.mod]#strformat#, and finally we will give an introduction to the use of regular expressions
-(regex) and to the use of the parsing expression grammar (PEG). While we describe generally
-only modules of Nim's standard library in this part III of the book, we will make an exception
-for regex and PEG. The reason for this is, that regex and PEG use is closely related to
-basic [.str]#string# processing and that very powerful external packages exists, which are not
-too difficult to use and so needs not too much introductory explanation.
+[.mod]#strscans#, [.mod]#parsecsv#, [.mod]#parseutils# and [.mod]#strformat#.
+While parsing [.str]#strings# with regular expressions or by use of the parsing expression grammar
+is very flexible and powerful, it is not that easy, not the fastest solution, and not that often really needed.
+So we have moved the Regex section to the end of this part III of the book, and we introduce
+PEGs later in part V, where we discuss some useful external packages.
+
+// and finally we will give an introduction to the use of regular expressions
+//(regex) and to the use of the [.italic]#parsing expression grammar# (PEG). While we describe generally
+//only modules of Nim's standard library in this part III of the book, we will make an exception
+//for regex and PEG. The reason for this is, that regex and PEG use is closely related to
+//basic [.str]#string# processing, and that very powerful external packages exists, which are not
+//too difficult to use and so needs not too much introductory explanation.
 
 Whenever we do [.str]#string# processing in Nim, we should care a bit for performance,
 as some [.str]#string# operations can be slow by design. For simple tasks, we should
 prefer to use functions from the simple modules like [.mod]#strutils# when possible, and
-use regex or PEG only when really necessary or when performance is uncritical.
+use Regex or PEG only when really necessary or when performance is uncritical.
 And even when we use elementary simple functions like a [.str]#string# split, it is
 generally good to have a feeling how the requested operations may work.
 Whenever [.str]#string# functions return a [.str]#string# as a result, this implies an allocation, which
@@ -10799,15 +10812,17 @@ it is often the first choice when we read in lines of text from files and want t
 it. But as for each section of the split line a [.str]#string# is allocated, it may be not as fast as desired.
 In some cases the compiler may be able to optimize the slitting process, but
 it may be also a good idea to think about other ways to extract the data, maybe by
-applying [.proc]#{procs}# from the [.mod]#strscans# module which can parse lines directly into passed [.key]#var#
-parameters avoiding unnecessary allocations.
+applying [.proc]#{procs}# from the [.mod]#strscans# module, which can parse lines directly into passed [.key]#var#
+parameters, avoiding unnecessary allocations. Nim 2.0 may get support for [.ndef]#view types#, which functions
+like split() may use as return types to reuse slices of the initial string instead of
+allocating new result strings.
 
 ****
 Remember that Nim [.str]#strings# are value types and have value semantic.
 [.str]#String# assignment copies the [.str]#string# content and does not create just
-a reference as in some other programming languages. Nim defines also
+a reference as in some other programming languages. Nim also defines
 a [.str]#string# variant called [.type]#TaintedString#, which is mainly just an alias for
-an ordinary [.str]#string# as long as the taint mode is not turned on. Functions like
+an ordinary [.str]#string#, as long as the taint mode is not turned on. Functions like
 [.func]#io.readLine()# return tainted [.str]#strings#, which typically can be used like ordinary [.type]#strings#.
 ****
 
@@ -10818,25 +10833,25 @@ in Nim is a variable size container for ASCII characters. [.str]#Strings# can be
 the bytes of the [.str]#string# can be interpreted as Unicode glyphs. Nim has also a [.type]#cstring# data type,
 which was initially introduced to be compatible with the character [.type]#arrays# used in C libraries
 as [.type]#strings#, but is now called compatible [.str]#string# as [.type]#cstrings# do also support the JavaScript backend.
-Nim [.str]#strings# can be passed directly to C libs, as a Nim [.str]#string# contains a Null terminated buffer
+Nim [.str]#strings# can be passed directly to C libraries, as a Nim [.str]#string# contains a [.lit]#Null# terminated buffer
 for the actual data, which is identical to a C language [.str]#string#. So whenever we convert a Nim [.str]#string# to a C language [.var]#string#
 or pass a Nim [.str]#string# to a C library, this is free of costs, while converting a C [.str]#string# to a Nim [.str]#string# always
-means allocating a new Nim [.str]#string# and coping the data content. Technically for a Nim [.str]#string# [.var]#s#
+means allocating a new Nim [.str]#string# and coping the data content. Technically, for a Nim [.str]#string# [.var]#s#
 [.code]#addr s[0]# is the C [.str]#string# [.type]#pointer#, called {asterisk} char in C language. Whenever we pass [.str]#strings# to
 C libraries, we have to care for the fact that Nim's garbage collector may deallocate the [.var]#string#
-automatically. Most C libs create copies of passed [.str]#strings# when the libs use the [.str]#string# for
-a longer time span. GTK for example does this with text for its widgets. But when the
-C lib does not copy the [.str]#string# but use it directly for a longer time, then it can occur that
+automatically. Most C libs create copies of passed [.str]#strings#, when the library uses the [.str]#string# for
+a longer time span. GTK, for example, does this with text for its widgets. But when the
+C library does not copy the [.str]#string#, but use it directly for a longer time, then it can occur that
 the Nim code frees the [.str]#string#, as the only one Nim variable referring to the [.str]#string# goes
 out of scope, but the C library still uses the [.str]#string#. For that rare case, we may call
 [.func]#GC_ref()# on the [.str]#string# to prevent garbage collection, but that may generate memory leaks then.
-For the case that C libs create [.type]#strings#, they provide generally also a function to deallocate the
-[.str]#string#. When we use such a C function, it is typically the best solution that we copy
-the [.str]#string# from the C lib to a Nim [.str]#string# and immediately deallocate the C [.str]#string# by a
-call of the provided [.func]#free()/dealloc()# function. For most C libs there exist good high level bindings
+For the case that C libraries create [.type]#strings#, they provide generally also a function to deallocate the
+[.str]#string#. When we use such a C function, it is typically the best solution, that we copy
+the [.str]#string# from the C library to a Nim [.str]#string# and immediately deallocate the C [.str]#string# by a
+call of the provided [.func]#free()/dealloc()# function. For most C libraries, there exist good high level bindings,
 which do not have this issues, so we mostly can use the C libs like pure Nim libs.
 
-Nim' s [.mod]#system# module provides already some basic [.str]#string# operation like accessing single
+Nim's [.mod]#system# module provides already some basic [.str]#string# operations, like accessing single
 characters by the subscript operator [.op]#[]#, accessing slices of multiple adjacent characters, or
 joining multiple [.str]#strings# with the [.op]#&# operator. The overloaded [.func]#add()# functions to
 append single characters or other [.str]#strings# to existing [.str]#string# variables are also provided by
@@ -10853,15 +10868,15 @@ s[0 .. 4] = "We low" # result is: "We love Nim!"
 We start the above example by assigning to the [.str]#string# variable [.var]#s# a string literal,
 then we append one more [.str]#string# literal, and finally replace the last character
 and the first five characters by another character and by another [.str]#string#.
-Note that by using the slice operator we can not only replace character ranges, but we can also
+Note that by using the slice operator, we can not only replace character ranges, but we can also
 replace slices of different length. This way, we can also delete ranges in the [.type]#string#
 by replacing it with the empty [.str]#string# [.var]#""#.
 
 The [.mod]#system# module also defines the stringify operator [.op]#$#, which converts
-expressions to the [.str]#string# presentation when we put it in front of it. [.proc]#{procs}#
-like [.func]#echo()# apply the stringify operator automatically on all of its arguments when necessary.
+expressions to the [.str]#string# presentation when we put it in front of it. Procedures
+like [.func]#echo()# apply the stringify operator automatically to all of its arguments when necessary.
 And the [.mod]#system# module provides the [.func]#contains()# function, which we can use to
-test if a [.str]#string# contains a character. Instead of contains, we can also use the [.op]#in# operator.
+test if a [.str]#string# contains a character. Instead of [.func]#contains()#, we can also use the [.op]#in# operator.
 
 ----
 echo $7
@@ -10869,14 +10884,14 @@ echo "Nim".contains('i')
 echo 'i' in "Nim"
 ----
 
-The [.mod]#system# module also provides the [.proc]#{procs}# [.func]#newString()# and [.func]#newStringOfCap()#
+The [.mod]#system# module also provides the [.proc]#{procs}# [.func]#newString()# and [.func]#newStringOfCap()#,
 which are mostly used for optimizing purposes. The function [.func]#newString(n)# creates a [.type]#string#
 of length [.var]#n#, but with uninitialized content. We would have to assign characters
 to the positions [.code]#0 .. n-1# to create a valid [.str]#string#. The function [.func]#newStringOfCap()# creates
 a [.str]#string# with length zero, but with a buffer capacity of [.var]#n# characters.
 When we know the needed buffer capacity, or at least a lower bound of it, it makes sense
 to create the [.str]#string# with [.func]#newStringOfCap()# with optimal buffer size to avoid reallocations.
-Of course, we could still append more data, Nim would allocate a larger buffer and copy content.
+Of course, we could still append more data, Nim would allocate a larger buffer and copy the old content.
 
 [source, nim]
 ----
@@ -10895,12 +10910,12 @@ Filling in characters into an existing [.str]#string# by use of the subscript op
 the [.func]#add()# function has to check if the [.str]#string# has still enough capacity and because
 [.func]#add()# has to increase the actual [.str]#string# length by one for each call.
 
-Note that a single character like [.lit]#'a'# is very different from a [.str]#string# with only
+Note, that a single character like [.lit]#'a'# is very different from a [.str]#string# with only
 one character like [.lit]#"a"#. A character in Nim is nothing more than a single byte, while
 a [.str]#string# -- even one with only one character or an empty one -- is an opaque entity with length, capacity and a [.type]#pointer# to a data buffer.
 When a single character is sufficient, we should
 use that and not a [.str]#string# containing a single character. A function call like [.func]#s.add("a")#
-may produce less optimized code than [.func]#s.add('a')#, but maybe the compiler optimized
+may produce less optimized code than [.func]#s.add('a')#, but maybe the compiler optimizes
 the former for us. When we consider optimization, we may wonder if
 in
 
@@ -10915,7 +10930,7 @@ echo s
 line 3 allocates a new [.str]#string# or just copies the [.str]#string# literal [.lit]#"Bye."#
 in the existing data area. Well we would hope for the latter of course.
 
-Another interesting question is if in
+Another interesting question is, if in
 
 ----
 var s = "Result is: "
@@ -10937,10 +10952,10 @@ for i in 0 .. s.len():
   echo '*'
 ----
 
-It is not necessary to introduce a temporary variable like let [.code]#l = s.len()# to avoid
+It is not necessary to introduce a temporary variable like [.code]#let l = s.len()# to avoid
 many function calls. In C this is different, as in C a call of function [.func]#strLen()# would not only
-imply a function call, but that function would really have to count all characters up to
-the terminating [.lit]#'\x0'# as C [.str]#strings# have no length field.
+imply a function call, but that function would really have to count all the characters up to
+the terminating [.lit]#'\x0'#, as C [.str]#strings# have no length field.
 The function [.func]#setLen()# is mostly used to truncate [.type]#strings#. A call like [.func]#s.setLen(0)#
 makes [.var]#s# look like a newly allocated [.str]#string#, but its data buffer can be reused. Reusing
 [.str]#strings# is generally better for performance than allocating many new [.type]#strings#.
@@ -10948,16 +10963,18 @@ The [.func]#setLen()# function is rarely used to increase the [.str]#string# len
 of a larger data buffer can occur, and the [.str]#string# would still look the same
 as initially all the new [.str]#string# positions would still contain the default binary zero content.
 We would have to fill in actual characters by use of the [.op]#[]# subscript operator.
+In Nim version 1.6, a call of [.func]#s.setLen(0)# overwrites the whole old content with [.lit]#'\0'#, which
+can cost some performance and may be avoided in version 2.0.
 To get the lowest and highest character index of a [.str]#string#, we can use [.func]#s.low# and [.func]#s.high#.
-[.func]#s.low# should be always return zero, and [.func]#high()# is identical to [.code]#len() - 1#, so [.func]#high()# is
+[.func]#s.low# should always return zero, and [.func]#high()# is identical to [.code]#len() - 1#, so [.func]#high()# is
 [.lit]#-1# for an empty [.str]#string#. Note that while calling [.func]#high()# and [.func]#len()# on a Nim [.type]#string#
 has no costs, this may be different to C [.str]#strings# as these have no length field.
 
-The [.mod]#system# module provides the overloaded [.op]#&# operator which we can use
+The [.mod]#system# module provides the overloaded [.op]#&# operator, which we can use
 to concatenate [.type]#chars# and [.type]#strings#, the [.op]#&=# operator to append a new [.str]#string# to an existing [.str]#string#, and
 the [.func]#add()# functions to append characters or [.str]#strings# to an existing [.str]#string#. For
-best performance we should try to use always the most simple, "native" operations,
-at least as that does not make the code ugly, or we know for sure that the compiler optimizes
+best performance, we should try to use always the most simple, "native" operations,
+at least when that does not make the code ugly, or we know for sure that the compiler optimizes
 it for us.
 
 [source, nim]
@@ -10970,7 +10987,7 @@ s.add('m') # better
 The function [.func]#add()# can be also used to add a [.type]#cstring# to a [.str]#string#, and the JS backend
 allows even to append one [.type]#cstring# to another one by [.func]#add()# calls.
 
-Module [.mod]#system# also exports a [.func]#substr()# [.proc]#{proc}# which copies and return a [.type]#slice# of a [.str]#string#.
+Module [.mod]#system# also exports a [.func]#substr()# [.proc]#{proc}#, which copies and returns a [.type]#slice# of a [.str]#string#.
 Overloads with optional first index with default [.lit]#0# and optional last index with default
 [.var]#s.high# exists.
 
@@ -11004,19 +11021,22 @@ as we may pass sequences as [.type]#openArray# to functions, which
 also avoids one level of indirection. Also note, that while a Nim [.str]#string# is
 a value type, so we can not test it for [.lit]#nil# or return [.lit]#nil# from a [.proc]#{proc}#
 that shall return a [.str]#string#, this restriction does not hold for [.var]#cstrings#.
+Unfortunately, recent Nim versions have started to complain when we use cstrings as proc parameters.
+In some scenarios, e.g. when we use Nim trampoline functions to call C libraries, these complaints
+may be not really justified.
 
 === Module stringutils
 
 The module [.mod]#stringutils# provides a set of functions (120 currently) and a few [.key]#iterators#
 for simple [.str]#string# operations. Using that functions and [.key]#iterators# is simple in most cases and
-mosty well explained in the API docs. Remembering which functions exist, their exact name
+mostly well explained in the API docs. Remembering which functions exist, their exact name
 and the function arguments can be a bit difficult at first. We will introduce in this section some of the
 most used or more difficult functions, and give some warnings when the actual performance
 may be not as good as expected.
 
 Performance critical operations are generally that one which has to allocate new [.str]#strings# or that has
 to shift many characters, like text inserting operations. Note that some functions of this module,
-like [.func]#toUpperAscii()# work only with the lower and upper ASCII letters. For Unicode operations
+like [.func]#toUpperAscii()# work only with the lower and upper ASCII letters. For Unicode operations,
 we may need the [.mod]#unicode# module.
 
 ****
@@ -11426,7 +11446,7 @@ moves during the whole capering process from the start of the input [.str]#strin
 its end. The end may not be reached if the capering fails at some point.)
 The last parameter
 has always the type [.type]#set[char]# with a default value indication which
-characters that [.proc]#{proc}# can process. Actually a default value seems to be necessary, but the
+characters that [.proc]#{proc}# can process. Actually, a default value seems to be necessary, but the
 actual value seems not to matter.
 The [.proc]#{proc}# returns the number of
 characters that should be skipped. Zero is a valid return value, so
@@ -11588,7 +11608,7 @@ we have used $. at the end of the pattern [.str]#string#. The $. matches only wh
 [.str]#string# is reached, so that [.func]#scanf()# would return false if there are more characters in
 the input [.str]#string# left.
 
-The latest version of the [.mod]#strscans# module provides also a variant of the [.func]#scanf()# macro
+The latest version of the [.mod]#strscans# module also provides a variant of the [.func]#scanf()# macro
 called [.func]#scanTuple()# which returns a [.tup]#tuple#. We could use it in this way in our example above:
 
 [source, nim]
@@ -11798,7 +11818,7 @@ available to get the lowest and the highest index position of an [.type]#array# 
 As [.type]#arrays# can have negative indices, [.func]#low()# can be less than zero for [.type]#arrays#, but for
 sequences and [.type]#openArray# [.proc]#{proc}# parameters [.func]#low()# is always zero.
 
-Module [.mod]#system# provides also the [.op]#@# [.type]#array# to [.type]#seq# operator:
+Module [.mod]#system# also provides  the [.op]#@# [.type]#array# to [.type]#seq# operator:
 
 [source, nim]
 ----
@@ -14910,7 +14930,7 @@ The difference of two [.type]#arrays# or sequences A and B is the set (A - B) of
 [1, 2, 5, 2, 9, 7, 0] - [7, 4, 1, 10, 7] == [2, 5, 2, 9, 0]
 ----
 
-Actually such difference of [.type]#array# or seq containers is not needed that often, that is why that function may not be provided by the
+Actually, such difference of [.type]#array# or seq containers is not needed that often, that is why that function may not be provided by the
 Nim standard library.footnote:[Ruby provides such an operator: https://ruby-doc.org/core-3.0.0/Array.html#method-i-2D ]
 Building such kind of differences is much easier and faster with sets or hash sets, so whenever possible we should
 use these containers from the beginning when we know in advance that we have to build differences.
@@ -15916,7 +15936,7 @@ the content of the outer bracket starts with an arbitrary number of uncaptured s
 
 ==== "Look ahead" operators
 
-The PEG syntax defines also the two non-capturing [.var]#and# and [.var]#not# syntactic predicates,
+The PEG syntax also defines the two non-capturing [.var]#and# and [.var]#not# syntactic predicates,
 which uses the symbols [.var]#&# and [.var]#!# and provide a powerful syntactic look ahead and disambiguation facility.
 A common use of the [.var]#!# predicate is to terminate a parsing expression with [.lit]#!1#. Here the [.lit]#1# matches everything, and [.lit]#!1#
 would only match when there is nothing left to match, that is the [.str]#string# end is reached.
@@ -17098,7 +17118,7 @@ main()
 Again, [.func]#dumpAstGen()# shows us the structure of the needed AST.
 We use [.func]#repr()# to get the [.str]#string# representation of the two
 [.mac]#macro# arguments and replace in the [.func]#dumpAstGen()# output the arguments of the [.func]#newIdentNode()#
-calls with that values. When we compile and run above program, we get
+calls with that values. When we compile and run the above program, we get
 
 ----
 $ ./t
@@ -17457,7 +17477,7 @@ our example that parameter type is a plain integer, but of course we can use oth
 data types including [.obj]#objects#, [.tup]#tuple#s or container types like sequences.
 
 As [.func]#createThread()# does not return a result, we call [.func]#echo()# in our
-[.func]#sum()# [.proc]#{proc}# to show what is going on. Actually calling [.func]#echo()# from
+[.func]#sum()# [.proc]#{proc}# to show what is going on. Actually, calling [.func]#echo()# from
 within a [.proc]#{proc}# running as a thread may be not a good idea, as multiple [.func]#echo()#
 calls from different threads may interfere. We may use the [.mod]#locks# module to
 make the output operation atomic, but to keep our example short and simple, we ignore
@@ -18992,7 +19012,7 @@ in the book already a way to avoid the blocking {behav} of the [.func]#readLine(
 [.proc]#{proc}# by use of Nim's [.var]#threadpool# library. We will use that method again for
 the [.func]#realLine()# calls, and combine it with the async/await pattern for
 sending messages to the server and for watching for other messages from the server.
-Actually our client example program follows closely the client program from
+Actually, our client example program follows closely the client program from
 [.ndef]#Mr. Picheta#, the creator of Nim's async/await framework, which he sketched
 in the [.ndef]#Manning# book years ago:
 
@@ -19487,7 +19507,7 @@ updated, it may make some sense to create tagged versions of your package. That 
 be able to easily install an older version, in the case that they have issues with the most recent version,
 and other packages, that may use your package, can require the version that they need.
 Currently, creating tagged versions with Nimble is a bit complicated, as you have to update the
-version in the .nimble file first: Actually the correct procedure to add a (new) tag is:
+version in the .nimble file first: Actually, the correct procedure to add a (new) tag is:
 
 * Update all the files of your packages, that includes all the modules and the README file.
 
@@ -19687,6 +19707,7 @@ Do we have
 
 Missing?
 
+--std/parsecsv
 -- repeat macro
 -- debugging
 -- profiling
@@ -19698,7 +19719,7 @@ Missing?
 Asciidoctor issues:
 
 -- footnotes with roles do not work:
-footnote:[Actually Nim relaxes this strict notation a bit, which is called
+footnote:[Actually, Nim relaxes this strict notation a bit, which is called
 [.ndef]#style insensitivity# and is explained later in the book in more detail.]
 
 
