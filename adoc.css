@@ -69,8 +69,7 @@ h1, h2, h3, h4, h5, h6, #toctitle,
 .plain{}
 .name{}
 .unit{} /* GB, nm*/
-
-/* .nim{} */
+.nim{}
 /* .promo{font-variant: small-caps} */
 /* .new{border-color: #000; border-width: 3; background-color: #FF0; color: #000} border does nor work */
 
