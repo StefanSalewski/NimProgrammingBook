@@ -852,7 +852,7 @@ JavaScript backend, so it supports web development well.
 |Imperative (procedural), structured, functional, object-oriented
 |Static, strong, inferred
 |Python-like
-|Native, web browser (JavaScript)
+|Native, interpreted (nimscript or nodejs backend), web browser (JavaScript)
 |GC, refcount, destructors
 |Yes
 |AST based, hygenic
@@ -4562,7 +4562,7 @@ A [.code]#when defined()# construct can be used to test for predefined or our ow
 give the optional option [-term]#-d:gintroDebug# to the compiler and test in the code of that module
 for this option, like [.code]#when defined(gintroDebug):#.
 
-One difference of the [.key]#when# to the [.key]#if# statement is, that the "then" branches do not open a new scope, so
+One difference of the [.key]#when# to the [.key]#if# statement is, that the "when" branches do not open a new scope, so
 variables which we define there are still visible after the construct has been processed:
 
 [source, nim]
