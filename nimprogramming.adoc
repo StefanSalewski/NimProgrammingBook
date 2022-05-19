@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAY-06
+//v0.1, 2022-MAY-19
 :doctype: book
 :toc: left
 :icons: font
@@ -28,6 +28,9 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
 :twocom: two's complement
 :cpp: C++
 //:plus: +
+// asterisk
+:hashtag: #
+:dhashtag: ##
 :pp: ++
 :behav: behavior
 :cdefine: #define
@@ -315,7 +318,7 @@ integrated with the core components. All the physical parts of a computer are al
 called [.ndef]#hardware#, while the programs running on that hardware are called
 [.ndef]#software#.
 
-A less visible but also very important class of computers are [.ndef]#{uc}#s and
+A less visible but also very important class of computers are [.ndef]#{uc}s# and
 so-called [.ndef]#embedded devices#, tiny pieces with typically a hull of black plastic
 with some electrical contacts. The devices can contain all necessary elements,
 that is the CPU, some RAM, and persistent storage that can store programs and data when no
@@ -1196,7 +1199,7 @@ and the use of Nim in the area of embedded systems development.
 Nim was created by Mr. A. Rumpf in 2008, supported by a few volunteers. Finally, in
 2018 Nim got some significant monetary support from [.ndef]#Status Corp.# and in 2019
 the stable Nim version 1.0 was released. But still, Nim is developed by a small core team
-and some volunteers, while some other languages like Java, C#, Go, or Rust are
+and some volunteers, while some other languages like Java, C{hashtag}, Go, or Rust are
 supported by large companies, or like C and {cpp} have a very long history and
 well-trained users. And finally, there are many competing languages, some with a
 longer history, and some possibly better suited for special purposes, like JavaScript,
@@ -1372,7 +1375,7 @@ counter in a loop.
 In the lines 3 and 4 of our program, we initialize the variables, that is, we give
 them a well-defined initial value. To do that, we use the [.op]#=# operator to
 assign a value to the variable. Operators are special symbols like [.op]#{plus}#, [.op]#-#,
-[.op]#{asterisk},# or [.op]#/# to indicate our desire to do an addition, a subtraction, a
+[.op]#{asterisk}#, or [.op]#/# to indicate our desire to do an addition, a subtraction, a
 multiplication, or a division. Note that the [.op]#=# operator is used in Nim like
 in many other programming languages for assignment, and not like in traditional
 mathematics as an equality test. The reason for that is, that in computer programming,
@@ -2773,12 +2776,12 @@ suffixes. In the case of hexadecimal notation, the [.lit]#'# is obviously needed
 
 As for integer variables, Nim supports also the compatible types [.type]#cfloat# and [.type]#cdouble#
 which match the C types [.type]#float# and double when the C backend is enabled. For most C
-compilers, C [.type]#float# matches Nim's [.type]#float#32 and C double matches Nim's [.type]#float#64.
+compilers, C [.type]#float# matches Nim's [.type]#float32# and C double matches Nim's [.type]#float64#.
 
 ****
 Some CPUs and C compilers also support other floating-point types beside the common
-[.type]#float#32 and [.type]#float#64 types. Intel x86 compatible CPUs generally support float80 math
-operations, and the GCC C compiler may support [.type]#float#128. But these types are not yet
+[.type]#float32# and [.type]#float64# types. Intel x86 compatible CPUs generally support float80 math
+operations, and the GCC C compiler may support [.type]#float128#. But these types are not yet
 supported by the Nim compiler of A. Rumpf. But there may exist external packages
 which support these types by calling C functions when the C backend is used.
 ****
@@ -3999,14 +4002,15 @@ Both echo() commands above generate exactly the same machine code!
 === Comments
 
 Comments are not really a data type, but they are also important. Ordinary comments
-start with the hashtag character [.lit]#\## and extend to the end of the line. The [.lit]#\##
+start with the hashtag character [.lit]#{hashtag}# and extend to the end of the line. The [.lit]#{hashtag}#
 character itself and all following characters up to the line end are ignored by the
-compiler. You can also start the comment with [.lit]#\#\##, then it is a documentation comment.
+compiler. You can also start the comment with [.lit]#{dhashtag}#, then it is a documentation comment.
 It is also ignored by the compiler but can be processed when you use tools to
 generate documentation for your code. Documentation comments are only allowed at
 certain places, often they are inserted at the beginning of a procedure body to
 explain its use. There are also multi-line comments, which start with the two
-characters +#[+ and end with +]#+. These forms of comments can extend over multiple
+//characters +#[+ and end with +]#+. These forms of comments can extend over multiple
+characters [.lit]#{hashtag}[# and end with [.lit]#]{hashtag}#. These forms of comments can extend over multiple
 lines and can be nested, that is, multi-line comments can contain again plain or multi-line
 comments.
 
@@ -8396,7 +8400,7 @@ integrate well with the rest of the language, and share none of C's preprocessor
 In some way, Nim [.key]#templates# are a simplified application  of Nim's powerful [.key]#macro# and meta-programming
 system, which we will discuss in detail in part VI of the book.
 
-In C we could use the "#define" preprocessor directive to define two simple C [.mac]#macros#.
+In C we could use the "{cdefine}" preprocessor directive to define two simple C [.mac]#macros#.
 
 [source, c]
 ----
@@ -8422,7 +8426,7 @@ Here the [.func]#sqr2()# [.key]#template# uses the special [.key]#typed# paramet
 that the parameter has a well-defined type in the [.key]#template# body, but that
 arbitrary data types are accepted. So [.func]#sqr1()# and [.func]#sqr2()# would work for all
 numeric types and also for other data types for which we have
-defined a [.op]#*# operation. When there is no [.op]#*# operator defined for the passed  data
+defined a [.op]#{asterisk}# operation. When there is no [.op]#{asterisk}# operator defined for the passed  data
 type, the compiler will give an error message.
 
 Nim [.key]#templates# accept like [.proc]#procs# all of Nim's ordinary data types, and additional
@@ -16409,7 +16413,7 @@ macro m1(x: static[int]): untyped =
 m1(3)
 ----
 
-This code should compile fine, and print the message [.lit]#"executing [.mac]#macro# body"# during the compile process,
+This code should compile fine, and print the message [.lit]#"executing macro body"# during the compile process,
 and indeed, it does. The next example is not that easy:
 
 [source, nim]
@@ -16941,7 +16945,7 @@ main()
 
 We start with the [.func]#dumpAstGen()# [.mac]#macro# applied to a [.func]#test()# [.proc]#{proc}#, which contains an [.func]#echo()# statement.
 So when we compile that code, we get an initial idea of how a [.type]#NimNode#, that shall print the
-[.proc]#{proc}# name, should look. To use pragma #macros, we annotate the [.proc]#{proc}# with the [.mac]#macro# name enclosed
+[.proc]#{proc}# name, should look. To use pragma [.mac]#macros#, we annotate the [.proc]#{proc}# with the [.mac]#macro# name enclosed
 in the pragma symbols {..}. The annotated [.proc]#{proc}# is then passed to the pragma with that name in the form
 of a syntax tree. Our goal is to add a [.type]#NimNode# to this tree, that prints the [.proc]#{proc}# name of the passed AST.
 To do that, we have to know two important points: For the [.proc]#{proc}# that is passed as an [.type]#untyped# data type to our
@@ -17088,7 +17092,7 @@ for l in ox.items:
   stdout.write l, ' '
 ----
 
-When we run this #macro or the one before, we get
+When we run this [.mac]#macro# or the one before, we get
 
 ----
 1 2 5 7 11 13
@@ -18391,9 +18395,9 @@ coroutine, and is often implemented using similar techniques, and is primarily
 intended to provide opportunities for the program to execute other code while waiting
 for a long-running, asynchronous task to complete, usually represented by promises or
 similar data structures.footnote:[https://en.wikipedia.org/wiki/Async/await] The
-programming language F# (pronounced F sharp) introduced asynchronous workflows with
+programming language F{hashtag} (pronounced F sharp) introduced asynchronous workflows with
 await points already in 2007 for the version 2.0 of the language. And in 2012
-Microsoft released C# in version 5 with async/await support. Later languages like
+Microsoft released C{hashtag} in version 5 with async/await support. Later languages like
 Haskell, Python, JavaScript and TypeScript, Kotlin, Dart, Julia, Zig, Swift, and Rust
 used the async/await pattern, and since 2020 it is also available for {cpp}.
 
@@ -19556,7 +19560,7 @@ git push origin --tags
 Now, other users will get this new version by default, but they can still
 install older versions. For testing purposes, you can always push modified
 module files to GitHub, without creating a new tag. These changes will be invisible
-to most users, only users that explicitly request the latest changes with the tag [.lit]#\#head#
+to most users, only users that explicitly request the latest changes with the tag [.lit]#{hashtag}head#
 will get these latest changes:
 
 ----
