@@ -6178,8 +6178,8 @@ echo ro1 == ro3 # true
 Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are used to
 structure the program source code. Functions are a subtype of procedures, that do return a value but
 do not modify global variables or otherwise change the state of the program. When we talk about procedures in this book, then what
-we say applies to functions as well, unless stated otherwise. Usually, procedures and functions are used
-to group sequences of statements that perform a specific task. We can pass parameters to procedures,
+we say applies to functions as well, unless stated otherwise. Usually, _procedures_ and _functions_, are used
+to group sequences of statements, that then perform a specific task. We can pass parameters to procedures,
 e.g. data that the procedure should process, and the procedure can return a result.
 Related sets of procedures can be grouped into library modules, e.g. procedures that
 perform various [.str]#string# operations. We will discuss the use and creation of modules later in the book.
@@ -6197,14 +6197,14 @@ method and command calling conventions.
 
 === Introduction
 
-We call or invoke a [.proc]#{proc}# by just writing its name followed by a parameter list
+We call, or invoke a [.proc]#{proc}# by just writing its name, followed by a parameter list
 enclosed in parentheses. The parameter list can be empty. When we call a [.proc]#{proc}#, then
 the program execution continues with that procedure, and when the execution of the
 procedure terminates, then the next statement after that [.proc]#{proc}# call is executed.
 Sometimes we say that we jump into a procedure and jump back when that procedure
 terminates.
 
-In Nim, functions are a special form of procedures that return a result and do not
+In Nim, _functions_ are a special form of procedures, that return a result and do not
 modify the current state of the program. Modifying a global variable or performing an input/output
 operation would be examples of modifying the state. We have already used some
 predefined procedures like [.func]#echo()# for output operations, [.func]#add()# for appending single
@@ -6231,10 +6231,10 @@ func sqr(i: int): int =
 A procedure declaration consists of the keyword [.proc]#{proc}#, a user-selected name, an
 optional parameter list enclosed in parentheses, and an optional colon followed by the result
 data type. For a function declaration, we use the keyword [.key]#func# instead of [.proc]#{proc}#, and
-as functions do always return a result, we have always to specify the result
+as functions do always return a result, we do always have to specify the resulting
 data type.
 
-Note that this is only a declaration so far -- the compiler could recognize the
+Note, that this is only a declaration so far -- the compiler could recognize the
 construct, its parameters, and its result type. Sometimes we call this construct a
 procedure header.
 
@@ -6262,7 +6262,7 @@ echo sqr(j)
 Earlier in this book, we said that the compiler processes our source code from top to
 bottom and that the final program is executed from top to bottom too. The first
 statement is indeed true, for that reason, it can be necessary to declare a function
-at the top, and define it below, as we can not call a [.proc]#{proc}# before it is declared or
+at the top, and define it below, as we cannot call a [.proc]#{proc}# before it is declared or
 defined.
 
 For the program execution, we have to know that [.proc]#{procs}# are only executed when we call
@@ -19845,4 +19845,3 @@ proc main =
 
 main()
 ////
-
