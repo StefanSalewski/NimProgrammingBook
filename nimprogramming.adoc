@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
-//v0.1, 2022-MAY-19
+//v0.1, 2022-JUN-28
 :doctype: book
 :toc: left
 :icons: font
@@ -220,7 +220,9 @@ some video tutorials, for the case that you have problems reading, but in that c
 this book will not be of much use to you at all.
 When you know already some computer science and have already experience
 with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim compiler manual
-may be fully sufficient for you, and you may not need this book at all.
+may be fully sufficient for you, and you may not need this book at all. Or you may prefer the
+recently published book of Mr. Rumpf, called "Mastering Nim: A complete guide to the programming language"
+available at Amazon.com.
 
 This book is based on the Nim reference implementation of the team around
 Mr. A. Rumpf.
@@ -236,8 +238,8 @@ in typos or grammar issues. Before the book will be officially published or a pr
 version will be created, we will run it through some correction software or hire a professional
 proofreader.
 
-[.new]#New sections and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
-not that new stuff is still marked with a light yellow.# For details, you may see the change log in the appendix.
+//[.new]#New sections and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
+//not that new stuff is still marked with a light yellow.# For details, you may see the change log in the appendix.
 ****
 
 .About the Author
@@ -6178,8 +6180,14 @@ echo ro1 == ro3 # true
 Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are used to
 structure the program source code. Functions are a subtype of procedures, that do return a value but
 do not modify global variables or otherwise change the state of the program. When we talk about procedures in this book, then what
-we say applies to functions as well, unless stated otherwise. Usually, procedures and functions are used
-to group sequences of statements that perform a specific task. We can pass parameters to procedures,
+we say applies to functions as well, unless stated otherwise.
+
+//Usually, procedures and functions are used
+//to group sequences of statements that perform a specific task.
+Procedures and functions are typically used
+to group sequences of statements that perform a specific task.
+
+We can pass parameters to procedures,
 e.g. data that the procedure should process, and the procedure can return a result.
 Related sets of procedures can be grouped into library modules, e.g. procedures that
 perform various [.str]#string# operations. We will discuss the use and creation of modules later in the book.
@@ -6197,14 +6205,14 @@ method and command calling conventions.
 
 === Introduction
 
-We call or invoke a [.proc]#{proc}# by just writing its name followed by a parameter list
+We call, or invoke a [.proc]#{proc}# by just writing its name, followed by a parameter list
 enclosed in parentheses. The parameter list can be empty. When we call a [.proc]#{proc}#, then
 the program execution continues with that procedure, and when the execution of the
 procedure terminates, then the next statement after that [.proc]#{proc}# call is executed.
 Sometimes we say that we jump into a procedure and jump back when that procedure
 terminates.
 
-In Nim, functions are a special form of procedures that return a result and do not
+In Nim, functions are a special form of procedures that return a result, and do not
 modify the current state of the program. Modifying a global variable or performing an input/output
 operation would be examples of modifying the state. We have already used some
 predefined procedures like [.func]#echo()# for output operations, [.func]#add()# for appending single
@@ -6231,7 +6239,8 @@ func sqr(i: int): int =
 A procedure declaration consists of the keyword [.proc]#{proc}#, a user-selected name, an
 optional parameter list enclosed in parentheses, and an optional colon followed by the result
 data type. For a function declaration, we use the keyword [.key]#func# instead of [.proc]#{proc}#, and
-as functions do always return a result, we have always to specify the result
+//as functions do always return a result, we have always to specify the result data type.
+as functions return a result, we have to specify the [.key]#result#
 data type.
 
 Note that this is only a declaration so far -- the compiler could recognize the
@@ -9886,7 +9895,7 @@ of [.func]#write()# operations may remain invisible until we write a [.type]#str
 a newline character or until we call the [.func]#flushfile()# function to enforce
 the writing of the buffer.
 
-== [.recent]#Option types#
+== Option types
 
 Option types can be used to encapsulate values in a way that allows marking the value as undefined.
 This can be especially useful for the return types of functions, which may or may not return a meaningful value.
@@ -10850,6 +10859,8 @@ C library does not copy the [.str]#string# but uses it directly for a longer tim
 the Nim code frees the [.str]#string#, as the only Nim variable referring to the [.str]#string# goes
 out of scope, but the C library still uses the [.str]#string#. For that rare case, we may call
 [.func]#GC_ref()# on the [.str]#string# to prevent garbage collection, but that may generate memory leaks then.
+And when we compile our program with options[.term]#--mm:arc# or [.term]#--mm:orc#,
+applying [.func]#GC_ref()# on [.str]#strings# does not work any more! 
 In the case that C libraries create [.type]#strings#, they provide generally also a function to deallocate the
 [.str]#string#. When we use such a C function, it is typically the best solution, that we copy
 the [.str]#string# from the C library to a Nim [.str]#string# and immediately deallocate the C [.str]#string# by a
@@ -13117,7 +13128,7 @@ a time period specified in milliseconds, and [.func]#parseCmdLine()#, which spli
 into several components. But in the next section, we will present the [.mod]#parseopt# module, which is an advanced command-line parser,
 and in part V of the book, we will present the external [.var]#cligen# package, which is even more powerful.
 
-==  [.recent]#Command-line parsing#
+== Command-line parsing
 
 For Linux users, it is not uncommon to use a [.italic]#terminal window# or [.italic]#shell# to launch programs by
 typing in textual commands, instead of clicking on icons or pictograms. In the introducing
@@ -13360,7 +13371,7 @@ should be processed similarly to the long ones. You see, that the actual use of 
 of options and arguments. In part V of the book, we will present the external
 Cligen package, which further simplifies the command line parsing.
 
-== [.recent]#Regular Expressions#
+== Regular Expressions
 
 A [.ndef]#regular expression#, shortened as [.ndef]#regex# or [.ndef]#regexp#, is a
 sequence of characters that specifies a search pattern, which is used to find or
@@ -14848,7 +14859,7 @@ References:
 
 //== something
 
-== [.recent]#Some small exercises#
+== Some small exercises
 
 === Removing adjacent duplicates
 
@@ -15642,7 +15653,7 @@ own game engine based on OpenGL or Vulkan, is a very demanding task.
 So maybe, we will add a section about game programming at the end, when the rest of the book
 is done, or maybe when the next edition of the book is published.
 
-= [.recent]#Part V: External Packages#
+= Part V: External Packages
 
 In this part of the book, we will present you with some external packages, which
 can easily be installed with Nim's package manager(s).
@@ -15973,7 +15984,7 @@ References:
 * https://github.com/zevv/npeg
 * https://en.wikipedia.org/wiki/Parsing_expression_grammar
 
-== [.recent]#Cligen, a Command-Line Interface generator#
+== Cligen, a Command-Line Interface generator
 
 In part III of the book, we presented the module [.mod]#parseopt# of Nim's standard library, which can help
 us to parse the command line [.str]#string# -- for programs launched from within a terminal
@@ -17739,7 +17750,7 @@ message is displayed in the terminal window. This applies not only to the thread
 the [.mod]#threads# module but also when the [.func]#spawn()# function is applied to
 run functions by one of the threads in the pool.
 
-=== [.new]#Parsing data files in parallel#
+=== Parsing data files in parallel
 
 As a practical application for parallel code execution, we will finally present an example of
 the process of parsing textual data files to extract some information.
@@ -19169,7 +19180,7 @@ https://www.grammarly.com/.
 
 //=== Is there a way I could get a `ref` from a non-ref object?
 
-== [.recent]#Nimble -- a package manager#
+== Nimble -- a package manager
 
 ****
 Note: As its position in the appendix already indicates, this section had a hard time making
