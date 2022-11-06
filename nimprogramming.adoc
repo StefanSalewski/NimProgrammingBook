@@ -1,5 +1,5 @@
 = Computer Programming with the Nim Programming Language
-A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022
+A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 //v0.1, 2022-JUN-28
 :doctype: book
 :toc: left
@@ -17108,6 +17108,137 @@ When we run this [.mac]#macro# or the one before, we get
 ----
 1 2 5 7 11 13
 ----
+
+=== Macros for generating data types
+
+As one more exercise for the use of macros, we will create some data types in this section.
+In the previous section, we had a data type like
+
+[source, nim]
+----
+type
+  Group = ref object of Element
+    lines: seq[Line]
+    circs: seq[Circ]
+    texts: seq[Text]
+    rects: seq[Rect]
+    pads: seq[Pad]
+    holes: seq[Hole]
+    paths: seq[Path]
+    pins: seq[Pin]
+    traces: seq[Trace]
+----
+
+Here, the individual fields have a well-defined shape -- all members are
+sequences of other data types, and the field names are derived from the type names.
+So we may wonder if creating the fields with some form of a macro would make some sense.
+So let us investigate it.footnote:[You may wonder, why we have separate sequences for
+the geometric shapes at all here, as we could put all the shapes in a single seq
+when the shape types are reference types. Well, the shapes types could be value types,
+so that we can not store them all in a single seq. Or, even when the base types are all references,
+we may intent to draw and print them in a well defined order, and that may be easier and faster
+when they are ordered by shape in different sequences.]
+Let us assume that we need a reference [.obj]#object# with some fields that are sequences of
+the base types [.type]#int#, [.type]#float#, and [.type]#string#. Again, we start by use of the [.func]#dumpAstGen()# macro.
+We don't have to understand its output in detail. It is enough to recognize that
+the three actual fields of our [.obj]#ref object# were created by [.func]#nnkIdentDefs.newTree()# statements each, and
+that these three statements are surrounded by a [.func]#nnkRecList.newTree()# call.
+So we start by producing an empty RecList with a call of [.func]#nnkRecList.newTree()#, and
+then iterate over an [.type]#array# with the three type names, create the IdentDefs with [.func]#nnkIdentDefs.newTree()#
+and add them to the RecList. Finally, we call [.func]#nnkStmtList.newTree()# passing our RecList as a parameter.
+Mostly this is just copy and paste, with the only exception that we have to remember that our
+[.var]#rfn# variable, which we use to iterate over the type names, is not a [.type]#string#, but a [.type]#NimNode#
+inside the macro, so we have to apply the stringify operator [.op]#$# on it when we pass it as an argument to
+[.func]#newIdentNode()#:
+
+[source, nim]
+----
+type
+  O = ref object of RootRef
+    ints: seq[int]
+    floats: seq[float]
+    strings: seq[string]
+
+import std/macros
+#[
+dumpAstGen:
+  type
+    O1 = ref object of RootRef
+      ints: seq[int]
+      floats: seq[float]
+      strings: seq[string]
+]#
+
+#[
+nnkStmtList.newTree(
+  nnkTypeSection.newTree(
+    nnkTypeDef.newTree(
+      newIdentNode("O1"),
+      newEmptyNode(),
+      nnkRefTy.newTree(
+        nnkObjectTy.newTree(
+          newEmptyNode(),
+          nnkOfInherit.newTree(
+            newIdentNode("RootRef")
+          ),
+          nnkRecList.newTree(
+            nnkIdentDefs.newTree(
+              newIdentNode("ints"),
+              nnkBracketExpr.newTree(
+                newIdentNode("seq"),
+                newIdentNode("int")
+              ),
+              newEmptyNode()
+            ),
+            nnkIdentDefs.newTree(
+              newIdentNode("floats"),
+              nnkBracketExpr.newTree(
+                newIdentNode("seq"),
+                newIdentNode("float")
+              ),
+              newEmptyNode()
+            ),
+            nnkIdentDefs.newTree(
+              newIdentNode("strings"),
+              nnkBracketExpr.newTree(
+                newIdentNode("seq"),
+                newIdentNode("string")
+              ),
+              newEmptyNode()
+            )
+          )
+        )
+      )
+    )
+  )
+)
+]#
+
+const RecFieldNames = ["int", "float", "string"]
+macro genO1(): untyped =
+  var recList = nnkRecList.newTree()
+  for rfn in RecFieldNames:
+
+    recList.add(nnkIdentDefs.newTree(newIdentNode($rfn & 's'),
+      nnkBracketExpr.newTree(newIdentNode("seq"),
+      newIdentNode($rfn)), newEmptyNode()))
+
+  result = nnkStmtList.newTree(nnkTypeSection.newTree(nnkTypeDef.newTree(newIdentNode("O1"),
+    newEmptyNode(), nnkRefTy.newTree(nnkObjectTy.newTree(newEmptyNode(),
+    nnkOfInherit.newTree(newIdentNode("RootRef")), nnkRecList.newTree(recList))))))
+
+genO1()
+
+var o1 = O1(ints: @[1, 2, 3], floats: @[0.1, 0.2, 0.3], strings: @["seems", "to", "work"])
+echo o1.ints
+echo o1.floats
+echo o1.strings
+----
+
+When we compile and run the above code, we get an output that seems to make some sense.
+But can we really trust our macro? Well, we can replace [.code]#var o1 = O1# with [.code]#var o1 = O#
+and compile and run again: At least we get the same file size, and the same output, so our
+macro should be fine.
 
 === Macros to generate new operator symbols
 
