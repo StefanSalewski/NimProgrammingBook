@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2022-JUN-28
+//v0.1, 2022-OCT-27
 :doctype: book
 :toc: left
 :icons: font
@@ -10859,7 +10859,7 @@ C library does not copy the [.str]#string# but uses it directly for a longer tim
 the Nim code frees the [.str]#string#, as the only Nim variable referring to the [.str]#string# goes
 out of scope, but the C library still uses the [.str]#string#. For that rare case, we may call
 [.func]#GC_ref()# on the [.str]#string# to prevent garbage collection, but that may generate memory leaks then.
-And when we compile our program with options[.term]#--mm:arc# or [.term]#--mm:orc#,
+And when we compile our program with options [.term]#--mm:arc# or [.term]#--mm:orc#,
 applying [.func]#GC_ref()# on [.str]#strings# does not work any more! 
 In the case that C libraries create [.type]#strings#, they provide generally also a function to deallocate the
 [.str]#string#. When we use such a C function, it is typically the best solution, that we copy
@@ -13128,7 +13128,8 @@ a time period specified in milliseconds, and [.func]#parseCmdLine()#, which spli
 into several components. But in the next section, we will present the [.mod]#parseopt# module, which is an advanced command-line parser,
 and in part V of the book, we will present the external [.var]#cligen# package, which is even more powerful.
 
-== Command-line parsing
+//== Command-line parsing # asciidoc bug for changelog
+== Command line parsing
 
 For Linux users, it is not uncommon to use a [.italic]#terminal window# or [.italic]#shell# to launch programs by
 typing in textual commands, instead of clicking on icons or pictograms. In the introducing
@@ -15984,7 +15985,7 @@ References:
 * https://github.com/zevv/npeg
 * https://en.wikipedia.org/wiki/Parsing_expression_grammar
 
-== Cligen, a Command-Line Interface generator
+== Cligen Command Line Interface generator
 
 In part III of the book, we presented the module [.mod]#parseopt# of Nim's standard library, which can help
 us to parse the command line [.str]#string# -- for programs launched from within a terminal
@@ -19297,7 +19298,7 @@ and spelling. Thanks go also to Mr. Marek Ľach (https://github.com/marek-lach),
 errors. Finally, a lot of missing commas and some more grammar errors have been detected by use of the
 languagetool.org software, used from the command line with the pyLanguagetool application.
 Some longer prose sections have been also checked by use of the free Firefox grammar check browser extension of
-https://www.grammarly.com/.
+https://www.grammarly.com/ and the online grammar checker from https://quillbot.com.
 
 //== Strange Questions
 
@@ -19311,7 +19312,8 @@ https://www.grammarly.com/.
 
 //=== Is there a way I could get a `ref` from a non-ref object?
 
-== Nimble -- a package manager
+== Nimble package manager
+//== Nimble package manager # asciidoc issue for changelog
 
 ****
 Note: As its position in the appendix already indicates, this section had a hard time making
@@ -19717,6 +19719,349 @@ References:
 * https://github.com/nim-lang/nimble
 * https://github.com/nim-lang/packages
 
+== Performance of multiplication vs. division
+
+In various places in the book, we said that for
+arithmetic operations, division is typically slower than
+multiplication. And we said that on modern hardware,
+floating-point operations are nearly as fast as integer operations.
+To prove this, we provide the following
+small test program. Compile it with option -d:danger for meaningful results.
+
+Float division can often be replaced by
+multiplication with the inverse, so instead of [.code]#x / 2# we can always
+write [.code]#x * 0.5#. An expression like [.code]#x / 2# looks cleaner, so we may wonder
+if it pays off to write [.code]#x * 0.5#, or if the compiler will rewrite
+the expression for us automatically. So our test program tests the performance of
+direct division and reciprocal multiplication, and also the performance of
+integer data types for a similar operation. As for integers, there are no
+reciprocal value, we have used a plain multiplication instead. We have tested
+for constant divisors 2, 3, and 97 (prime), and the division by a variable with unknown
+content. Obviously, the compiler has some freedom for optimizations when one operand
+is a constant. As a simple example, [.code]#x * 2# can always be evaluated as [.code]#x + x#, and
+for integers, [.code]#i div 2# can be replaced by a shift operation. But the compiler
+knows many more optimizations. An important class of optimizations for 32-bit numbers
+on a 64-bit CPU is, that division can be replaced by a multiplication and a bit shift.
+
+[source, nim]
+----
+# compile with option -d:danger
+import std/[random, times, strformat]
+
+proc rand(i: uint32): uint32 = rand(i.int).uint32
+
+proc main1(T: typedesc; mul: static[bool]; val: static[int]) =
+  var sum: float # always float to avoid overflow
+  var minDelta = float.high
+  var s: seq[T] = newSeq[T](1e5.int)
+  randomize(0)
+  for j in 0 .. 100:
+    for i in s.low .. s.high:
+      s[i] = T(rand(T(100)))
+    let start = cpuTime()
+    for i in s.low .. s.high:
+      when mul:
+        when T is float or T is float32:
+          s[i] *= (T(1) / T(val))
+        else:
+          s[i] *= T(val) # *= (1 div x) makes no sense here
+      else:
+        when T is float or T is float32:
+          s[i] /= T(val)
+        else:
+          s[i] = s[i] div T(val) # we have no div= operator
+    let delta = cpuTime() - start
+    minDelta = min(minDelta, delta)
+    for i in s.low .. s.high:
+      sum += float(s[i])
+  echo "sum: ", sum # ensure that final sum is really calculated and not optimized out
+  var str = when mul: "* (1 / " & $val & ")" else: " / " & $val
+  when mul and not (T is float or T is float32):
+    str = " * " & $val # plain multiplication
+  let time = fmt": {minDelta * 1e6:>4.2f} us"
+  echo typeof(T), ", ", str, time#": ", minDelta * 1e6, " us"
+
+# main2 differs only in proc header from main1 
+proc main2(T: typedesc; mul: static[bool]; val: int) =
+  var sum: float # always float to avoid overflow
+  var minDelta = float.high
+  var s: seq[T] = newSeq[T](1e5.int)
+  randomize(0)
+  for j in 0 .. 100:
+    for i in s.low .. s.high:
+      s[i] = T(rand(T(100)))
+    let start = cpuTime()
+    for i in s.low .. s.high:
+      when mul:
+        when T is float or T is float32:
+          s[i] *= (T(1) / T(val))
+        else:
+          s[i] *= T(val) # *= (1 div x) makes no sense here
+      else:
+        when T is float or T is float32:
+          s[i] /= T(val)
+        else:
+          s[i] = s[i] div T(val) # we have no div= operator
+    let delta = cpuTime() - start
+    minDelta = min(minDelta, delta)
+    for i in s.low .. s.high:
+      sum += float(s[i])
+  echo "sum: ", sum # ensure that final sum is really calculated and not optimized out
+  var str = when mul: "* (1 / " & $val & ")" else: " / " & $val
+  when mul and not (T is float or T is float32):
+    str = " * " & $val # plain multiplication
+  let time = fmt": {minDelta * 1e6:>4.2f} us"
+  echo typeof(T), ", ", str, time#": ", minDelta * 1e6, " us"
+
+template doTheStaticTestWith(x: typed) =
+  main1(float, false, x)
+  main1(float, true, x)
+  main1(float32, false, x)
+  main1(float32, true, x)
+  main1(int, false, x)
+  main1(int, true, x)
+  main1(int32, false, x)
+  main1(int32, true, x)
+  main1(uint32, false, x)
+  main1(uint32, true, x)
+
+template doTheTestWith(x: typed) =
+  main2(float, false, x)
+  main2(float, true, x)
+  main2(float32, false, x)
+  main2(float32, true, x)
+  main2(int, false, x)
+  main2(int, true, x)
+  main2(int32, false, x)
+  main2(int32, true, x)
+  main2(uint32, false, x)
+  main2(uint32, true, x)
+
+doTheStaticTestWith(2)
+doTheStaticTestWith(3)
+doTheStaticTestWith(97) # prime
+echo ""
+doTheTestWith(2)
+doTheTestWith(3)
+doTheTestWith(97) # prime
+
+----
+.Division and Multiplication with compile time constants
+[cols=3*,options="header"]
+[%autowidth]
+|===
+|type
+|operation
+|time in us
+
+|float
+|/ 2
+|44.30
+
+|float
+|* (1 / 2)
+|26.89
+
+|float
+| / 3
+|97.37
+
+|float
+|* (1 / 3)
+|26.78
+
+|float
+|/ 97
+|97.40
+
+|float
+|* (1 / 97)
+|26.89
+
+|float32
+|/ 2
+|24.94
+
+|float32
+|* (1 / 2)
+|24.92
+
+|float32
+| / 3
+|65.92
+
+|float32
+|* (1 / 3)
+|24.90
+
+|float32
+|/ 97
+|65.80
+
+|float32
+|* (1 / 97)
+|24.90
+
+|int
+|div 2
+|44.35
+
+|int
+|* 2
+|29.40
+
+|int
+|div 3
+|51.02
+
+|int
+|* 3
+|32.13
+
+|int
+|div 97
+|69.08
+
+|int
+|* 97
+|43.87
+
+|int32
+|div 2
+|43.76
+
+|int32
+|* 2
+|28.07
+
+|int32
+|div 3
+|51.73
+
+|int32
+|* 3
+|31.55
+
+|int32
+|div 97
+|51.74
+
+|int32
+|* 97
+|30.87
+
+|uint32
+|div 2
+|28.18
+
+|uint32
+|* 2
+|28.15
+
+|uint32
+|div 3
+|43.68
+
+|uint32
+|* 3
+|31.57
+
+|uint32
+|div 97
+|61.23
+
+|uint32
+|* 97
+|30.86
+
+|===
+
+We did the test on a modern AMD x86 CPU (AMD Ryzen 9 5900HX) with Nim version 1.7.3 and
+GCC version 12.2.1 on a Gentoo Linux OS.
+The results from the table above confirm our prior statements.
+Multiplication is typically faster, and float and integer operations
+do not differ much in performance. The operand size, 64- or 32-bit, makes no
+significant difference, and the same applies to signed and unsigned integers.
+Of course, the actual performance differences of the tested operations are a bit larger, as
+the loop execution and index updates generate a constant offset.
+We see, that timings for [.code]#/ 2# vs. [.code]#* 0.5# differ, so the compiler does not do
+an automatic replacement. The reason why the compiler does not make automatic replacements is that
+such an replacements may have a tiny impact on the accuracy of the operation.
+With the Nim compiler option [.code]#--passC:-ffast-math# we can tell the compiler that we do not
+care for utmost accuracy, so the compiler can use reciprocal multiplication.
+To only allow reciprocal multiplication but not all the other math optimizations enabled by [.code]#-ffast-math#, we can use
+[.code]#-freciprocal-math# instead.
+
+.Division and Multiplication with unknown runtime variables
+[cols=3*,options="header"]
+[%autowidth]
+|===
+|type
+|operation
+|time in us
+
+|float
+|/ x
+|97.37
+
+|float
+|* (1/x)
+|26.68
+
+|float32
+|/ x
+|69.86
+
+|float32
+|* (1/x)
+|25.03
+
+|int
+|div x
+|151.16
+
+|int
+|* x
+|44.04
+
+|int32
+|div x
+|129.61
+
+|int32
+|* x
+|33.46
+
+|uint32
+|div x
+|129.65
+
+|uint32
+|* x
+|43.72
+|===
+
+The above table is the result of operations with a variable, and
+we assume that the compiler does not manage to know the actual
+content of the variable. So the compiler has no freedom for
+optimizations, in  all cases a [.code]#/, div or {asterisk}# is executed.
+You may wonder, why the [.code]#{asterisk} (1/x)# reciprocal multiplication
+is fast here, while it should be very slow: First calculation of [.code]#(1 / x)#,
+and then the multiplication. Well, the compiler is smart and recognizes that
+the [.var]#x# does not change in our timed loop, so the [.code]#(1 / x)# operation
+is performed already before the loop. The above table shows us that integer
+division is indeed a bit slow compared to multiplication.
+
+Note that addition and subtraction is typically very fast -- as fast or faster
+than multiply. Note also that prediction of the actual performance is difficult:
+SIMD instructions can greatly improve performance when the compiler is able to
+use it. Or cache misses can greatly reduce performance, when we work with large data,
+that does not completely fit into the caches.
+
+References:
+
+* https://cppbenchmarks.wordpress.com/2020/11/10/float-division-vs-multiplication-speed/
+
 == ASCII Table
 
 [source, nim]
@@ -19794,6 +20139,8 @@ for d in 0 .. 1:
     echo ""
 ----
 
+
+
 == Text styles
 
 We use semantic markup with these text styles:
@@ -19845,8 +20192,8 @@ We have added a few more simple examples and exercises:
 
 * <<Option types>>
 * <<Command line parsing>>
-* <<Cligen, a Command-Line Interface generator>>
-* <<Nimble>>
+* <<Cligen Command Line Interface generator>>
+* <<Nimble package manager>>
 * <<Parsing data files in parallel>>
 
 ////
