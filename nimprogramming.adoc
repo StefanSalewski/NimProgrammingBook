@@ -1,11 +1,12 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2022-OCT-27
+//v0.1, 2022-DEC-10
 :doctype: book
 :toc: left
 :icons: font
 //:experimental:
 :imagesdir: http://ssalewski.de/tmp
+//:imagesdir: http://ssalewski.de/gtkimages
 //:source-highlighter: pygments
 //:pygments-style: monokai
 :source-highlighter: rouge
@@ -15593,6 +15594,1047 @@ with its correct power of ten, matching its position in the [.str]#string#. The 
 is more difficult, in one weekend you may get some working code, but perfect solutions
 like the [.ndef]#ryu# or [.ndef]#dragonbox# algorithm are very complicated.
 
+== Minimum Spanning Tree
+
+image::mst1.png[]
+
+As one more example, we will present a few different ways to find
+a minimum spanning tree (MST) of a set of points in the plane.
+A MST is a graph that connects a set of points (in 2D) by minimizing the total
+path length. Instead of the euclidean distance of the points to each other, other
+cost functions can be used as well.
+Typical applications for the use of MSTs are all sorts of connection problems, e.g., connecting
+electrical signals on a printed circuit board (PCB) or a schematic, or connecting
+the electric power supply, water supply, or Internet cable, between a set of buildings.
+Related but different from the MST problem is the traveling salesman problem, which is visiting a
+number of cities with the shortest possible path, which is typically solved by the famous Dijkstra algorithm
+(https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm).
+The MST problem may look a bit exotic.
+At first, you may get the feeling that studying this section of the book may not have that much benefit for you.
+Well, if this section is too boring for you, just skip it; you will not miss any important foundations.
+We decided to present the MST problem here for various reasons: The problem is easy, but not
+too simple, so you should be able to understand it quickly in full detail. By use of two
+popular strategies for solving the problem, the Prim and the Kruscal algorithm, you learn
+how problems can be solved by different strategies, each with its own drawbacks and benefits, including
+the behaviour of performance for large data sets. And both the presented algorithms allow
+begin with a simple solution and then improve and refine it through the use of advanced data structures
+(Delaunay triangulation, heap-queue, and the disjoint set data structure) to improve the performance
+or to simplify the code.
+
+To allow a visual inspection of the generated trees, we will use the GTK GUI and the
+Cairo library to draw the final path to the computer screen. If you have already
+some experience with other GUI toolkits, it should be easily possible for you to replace
+GTK and Cairo with other libraries that you may prefer.
+
+For the initial set of points in the 2D plane, which we have to connect by a
+MST, we have to consider two cases. A case from real life is the connection of cities
+by streets, where each city has only a small set of direct neighbors. The other case is
+a set of points where we can, in principle, connect each point to every other point, like points
+drawn on a sheet of paper or the electric signal and power supply paths on a PCB.
+The later case is in principle of O(n^2), because we have for a set of n points (n-1) other points
+for possible direct connections. For our examples, we actually use this last case. The reason is that we
+can use as input data a plain set of random points, and that it is more demanding due to the large
+number of possible connections. Reducing this general case to input data with only a limited
+set of direct connections is not hard.
+
+For minimizing the connection graph of n points, we need a cost function
+for each possible connection. In our simple case of n points in the plane, this
+is just the distance between the points, and the solution to this special case is called
+Euclidean minimum spanning tree, see https://en.wikipedia.org/wiki/Euclidean_minimum_spanning_tree.
+For real-world problems like street construction, the cost function can be much more
+complex, as it may be necessary to avoid passing rivers, hills, and other barriers.
+ 
+=== The Prim algorithm
+
+The Prim algorithm is a simple greedy algorithm that just connects the closest
+one from the still unconnected point set to the existing tree. The process starts
+by selecting an arbitrary point of the input data set as the first point of the tree, and then
+successively connects the nearest one from the other points, until all the points are
+connected. You can find the formal description of the Prim algorithm at
+https://en.wikipedia.org/wiki/Prim%27s_algorithm.
+
+[source, nim]
+----
+import std/[random, times]
+from std/math import `^`, Tau
+
+const
+  WindowWidth = 1000
+  WindowHeight = 1000
+  BorderDist = 50
+  DataRange = float(1000 - 2 * BorderDist)
+  Points = 50
+
+type
+  Vertex = ref object
+    x, y: float
+    friend: Vertex
+    dist: float = Inf
+
+var
+  vertices: seq[Vertex]
+  forest: seq[Vertex]
+
+proc init =
+  randomize()
+  for i in 0 ..< Points:
+    vertices.add(Vertex(x: rand(DataRange) + BorderDist, y: rand(DataRange) + BorderDist))
+
+proc createForest =
+  var last = vertices.pop() # arbitrary start point, assume that we have at least one available
+  while vertices.len > 0: # while there are more, still  unconnected points available
+    var nearest = Inf
+    var pos = -1
+    for p, v in vertices: # all vertices that are not yet part of the tree
+      let d = (v.x - last.x) ^ 2 + (v.y - last.y) ^ 2 # squared distance
+      if d < v.dist: # update distances, as last is a new point in tree
+        v.dist = d
+        v.friend = last
+      if v.dist < nearest: # remember nearest point
+        nearest = v.dist
+        pos = p
+    last = vertices[pos] # and pick nearest,
+    forest.add(last) # add it to forest and
+    vertices.del(pos) # delete it from still unconnected vertex set
+
+init()
+
+let start = cpuTime()
+createForest()
+echo "elapsed: ", (cpuTime() - start) * 1e3, "  ms"
+
+import gintro/[gtk4, gobject, gio, cairo]
+
+proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
+  cr.setSource(1, 1, 1)
+  cr.paint # white
+  cr.setSource(0, 0, 0)
+  for i, el in forest:
+    cr.setSource(0, 0, 0.7) # rgb
+    cr.newPath
+    cr.arc(el.x, el.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.setSource(0, 0, 0, 1.2 - i.float / Points.float)
+    cr.moveTo(el.x, el.y)
+    cr.lineTo(el.friend.x, el.friend.y)
+    cr.stroke
+
+proc activate(app: gtk4.Application) =
+  let window = newApplicationWindow(app)
+  let d = newDrawingArea()
+  d.setSizeRequest(WindowWidth, WindowHeight)
+  d.setDrawFunc(draw)
+  window.setChild(d)
+  window.show
+
+proc main =
+  let app = newApplication("org.gtk.example")
+  app.connect("activate", activate)
+  let status = app.run
+  quit(status)
+
+main()
+----
+
+In the above program, we first define a Vertex data type, which is a point with
+x, y coordinates in the plane, which has additional a friend, and a dist field.
+Friend denotes a direct neighbor, and dist is the squared distance to this neighbor point.
+In all of our examples, we use squared distances, as this avoids the square root calculations and
+gives the same results.
+We made Vertex a reference type, as our graph uses references to neighbors. Note that
+defining a value Vertex type like above in this way would not work, as value types
+can not contain its own type as fields -- that would generate an infinite recursive type,
+like a box that contains itself, again and again. But we could have actually used value types,
+if we used for the friend field not a pointer, but an integer index to the position in
+the sequence of input data. For some applications, using indices may have advantages, but
+for our current task, the use of references seems to be OK.
+Note that we used in our type definition a new feature introduced with Nim 2.0:
+Default values for object fields. With dist: float = Inf we initialize that field
+to math.Inf, instead of the default zero value.
+In the init() procedure, we create a sequence of random input vertices.
+Then, in the createforest() procedure, we pick an arbitrary starting vertex from the input data set and assign that
+value to a variable called last. This value is the starting point of our MST for now, and
+later variable last is always the point that we just added to the tree.
+Whenever we add one more point to the tree, the tree grows, and the distance to all the still
+unconnected points may shrink. So we have to update all the distances when they have decreased.
+As point last is the one which actually grows the tree, we have to check only the distances of all
+the still unconnected points to this last point, as the rest of the tree has not changed.
+
+While we still have
+points available, we iterate over them, check distances to last, and update the dist and friend
+field in the case that the distance has become shorter. If the currently evaluated distance is
+a minimum, we store that minimum value and the position of the vertex with the minimum distance in the sequence.
+When we have processed all the vertices this way, the integer variable pos is the index of the
+closest vertex. We add this vertex to the forest, remove it from the seq of still
+unconnected vertices, and also store it in variable last for the next iteration.
+Note that we use the del() procedure to delete values from the sequence. Del() performs the
+deletion by actually moving the last value from the seq to the position to remove.
+This avoids expensive shifts of elements but does not preserve the order of elements
+in the seq. For our seq of input data, this is OK, as the data has no special order.
+//You may wonder why we call the container instance for the collected points forest and not tree.
+You might be wondering why we named the container instance for the collected points forest rather than tree.
+Well, in principle, the MST algorithm may generate a set of distinct trees instead of only one,
+i.e. when there are barriers, like the famous Chinese wall. The Kruskal algorithm, which we will discuss next,
+always starts with many distinct trees, which may finally get connected if there are no barriers.
+
+To display the result graphically, we have used the GTK toolkit together with the Cairo
+graphics library. To actually run the program, you would need a computer with properly
+installed GTK and Cairo. For Linux boxes, this should be typically no problem, for
+Windows or Mac, you may have to install them, or you may use other toolkits or just
+delete the graphical output routines from the above program. Additionally, you would need
+the gintro Nim GTK bindings, which you may install with the command "nimble install gintro@#head"
+if not already available. Then you can run our program with the command "nim r prim.nim"
+and should get a GUI window displaying the constructed path. Our program contains a main() and an activate()
+proc, which are typically used in modern GTK to launch an app. The activate proc
+creates a window with a drawingarea widget in which we can use Cairo functions to
+draw lines, circles, and much more. To do that, we need a draw() function, which we
+set for our drawingarea widget, so it is called automatically when needed, e.g. for
+program startup or when we resize or uncover the main window. In the draw function,
+we iterate over the vertices of our forest, draw small circles to indicate the vertex positions,
+and connect each vertex in the forest with its friend. In case that you are interested
+in more details about the use of the GTK GUI and the Cairo library with Nim, you may consult
+the Nim GTK companion book. Or, just use one of the more than 20 other GUI toolkits available for
+Nim, and modify the above program accordingly.
+
+When you compile the program with option -d:release and run it, the
+displayed execution time for the createForest() should be
+around 15 microseconds for an input set of 50 points on modern hardware.
+That may look reasonable fast, but when you modify the program constant
+Points = 50 to value 500, the execution time rises to 1 ms already.
+So the execution time increases nearly quadratically with the size 
+of the input data set. This was expected, as for each point that we added to
+the existing tree, we iterate over the whole set of still unconnected
+points to update the distances and select the closest one.
+For small point sets, this algorithm is indeed a good solution, but
+for really large input data sets, we may hope for the existence of better solutions.
+At the end of this section, we will present one. But first, we will present
+a different algorithm, which works on edges instead off points.
+
+=== Kruskal algorithm
+
+The Kruskal algorithm works on edges. The strategy is to repeatedly find the shortest
+edges and add them to the forest, when they do not create cycles. Here, cycles mean
+connecting two vertices that are already connected by a path. If A is already connected
+to B, and B is connected to C, then we would skip the connection A-C. This algorithm is again simple,
+but managing the information about already existing connections is not that easy.
+Note that the construction process typically generates many subtrees consisting of short edges first, which then later gets
+connected my longer edges.
+A disadvantage of the Kruskal algorithm is that the number of edges
+is n^2 when there are no restrictions for possible connections, as in our Euclidean example
+with plain points in a plane. You can find a formal description of this algorithm in
+https://en.wikipedia.org/wiki/Kruskal%27s_algorithm. We will start our explanation with
+a simple and stupid variant, where we store the information if a vertex is already part
+of a subtree in an ordinary Nim bitset.
+
+[source, nim]
+----
+import std/[random, times, sets]
+from std/math import `^`, Tau
+from algorithm import sort, SortOrder
+
+const
+  WindowWidth = 1000
+  WindowHeight = 1000
+  BorderDist = 50
+  DataRange = float(1000 - 2 * BorderDist)
+  Points = 50
+
+type
+  Vertex = ref object
+    x, y: float
+    id: int16
+    fs: ref set[int16]
+
+type
+  Edge = object
+    v1, v2: Vertex
+
+proc cmp(a, b: Edge): int =
+  let d1 = (a.v1.x - a.v2.x) ^ 2 + (a.v1.y - a.v2.y) ^ 2
+  let d2 = (b.v1.x - b.v2.x) ^ 2 + (b.v1.y - b.v2.y) ^ 2
+  return -(d1 < d2).int + (d1 > d2).int
+
+var
+  vertices: seq[Vertex]
+  edges: seq[Edge]
+  forest: seq[Edge]
+
+proc init =
+  randomize()
+  for i in 0 ..< Points:
+    vertices.add(Vertex(x: rand(DataRange) + BorderDist, y: rand(DataRange) + BorderDist, id: i.int16))
+
+proc createForest =
+  assert(vertices.len > 1)
+  for v1 in vertices:
+    for v2 in vertices:
+      if cast[int](v1.addr) < cast[int](v2.addr):
+        edges.add(Edge(v1: v1, v2: v2))
+  edges.sort(cmp, SortOrder.Descending)
+  while edges.len > 0:
+    let e = edges.pop
+    if e.v1.fs == nil and e.v2.fs == nil:
+        let s = new set[int16]
+        s[].incl(e.v1.id)
+        s[].incl(e.v2.id)
+        e.v1.fs = s
+        e.v2.fs = s
+        forest.add(e)
+    elif e.v1.fs == nil or e.v2.fs == nil:
+      if e.v1.fs == nil:
+        e.v1.fs = e.v2.fs
+        incl(e.v1.fs[], e.v1.id)
+      else:
+        e.v2.fs = e.v1.fs
+        incl(e.v2.fs[], e.v2.id)
+      forest.add(e)
+    else:
+      if e.v1.fs != e.v2.fs:
+        e.v1.fs[] = e.v1.fs[] + e.v2.fs[]
+        for v in vertices:
+          if v.id in e.v1.fs[]:
+            v.fs = e.v1.fs
+        forest.add(e)
+
+init()
+
+let start = cpuTime()
+createForest()
+echo "elapsed: ", (cpuTime() - start) * 1e3, "  ms"
+
+import gintro/[gtk4, gobject, gio, cairo]
+
+proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
+  cr.setSource(1, 1, 1)
+  cr.paint # white
+  for i, e in forest:
+    cr.setSource(0, 0, 0.7) # rgb
+    cr.newPath
+    cr.arc(e.v1.x, e.v1.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.newPath
+    cr.arc(e.v2.x, e.v2.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.setSource(0, 0, 0, 1.2 - i.float / Points.float)
+    cr.moveTo(e.v1.x, e.v1.y)
+    cr.lineTo(e.v2.x, e.v2.y)
+    cr.stroke
+
+proc activate(app: gtk4.Application) =
+  let window = newApplicationWindow(app)
+  let d = newDrawingArea()
+  d.setSizeRequest(WindowWidth, WindowHeight)
+  d.setDrawFunc(draw)
+  window.setChild(d)
+  window.present
+
+proc main =
+  let app = newApplication("org.gtk.example")
+  app.connect("activate", activate)
+  let status = app.run
+  quit(status)
+
+main()
+----
+
+We will not discuss the above code in much detail, as it is really ugly, and because we will present
+a better implementation soon. We have attached to the Vertex data type a 16-bit integer id and
+a set for these ids. Our Edge data type has two fields of Vertex type each.
+The seq[Edge] variable stores all the initial edges, and is filled in a nested loop iterating
+over the vertices. The test cast[int](v1.addr) < cast[int](v2.addr) is necessary
+to avoid including each edge twice into the seq of input edges.
+Actually, as our vertices have unique ids, we could use the same test on the id fields instead
+on the memory address in this case.
+As we intend to sort all our edges by length, we have to define
+a cmp() proc for two edges, which we pass to the sort() proc.
+After we have sorted all the edges in descending order, we remove
+the shortest one with pop() from the container and investigate, in which sets
+the two vertices of that edge are contained. If at least one vertex of
+the edge has still a set reference with value nil, then we join both vertices into
+one set. If both edges are contained in different sets, then we join the two sets, and
+set for all the vertices that have an id indicating membership in the joined set, the fs
+ref pointing to the joined set. All this is really slow, as we have to iterate over all the edges,
+and have to copy the sets. And the sets are large entities, consuming a lot of storage.
+When we study the Wikipedia article about the Kruskal algorithm, we learn that a much better
+implementation for our needed set membership test exist. We will discuss that data type in the next section.
+
+=== Disjoint-set data structure
+
+For the Kruskal algorithm, we have to test if edges are already part of other
+edge sets. So we need a data structure, which is some form of a container of
+many sets, with functions to join sets (build the union) and to test if
+elements are included in the same subset. As elements of the subsets, we can use plain integers, which is
+no restriction, as we can assign to each edge an integer id to identify it, and as we can use
+the integer ids as array indices to access edges in containers.
+
+The disjoint-set data structure offers a surprisingly simple
+and efficient way to present disjoint sets of integer numbers.
+This data structure provides only three basic operations:
+Creating a set of n disjoint subsets, where subset n contains
+initially only the value n. Testing, if two numbers i and j belong to
+the same subset, and finally joining the subsets of two elements i and j.
+The data structure for initially n subsets is actually only a plain array or seq of
+n integer number with indices 0 .. n-1. When we create the data structure,
+the index position i is initialized with value i for all positions, that is
+s[i] == i for each i in the range 0 .. n-1. For the Disjoint-set data structure
+each subset is represented by a single integer, and it is said that two
+elements are in the same subset, when they have the same representing number.
+Initially, for each element i, s[i] == i. Whenever for an element the value stored
+at position i is i, that indicates that element i is in subset i. So initially
+the container holds n disjoint subsets, and each subset i contains the value i only.
+Joining the subsets of the numbers i and j is very easy, we just can set s[i] = j
+or s[j] = i. Now s[i] and s[j] are identical, indicating that i and j belong to the same subset.
+When we now want to join the subsets of elements i and k, we just set s[i] = k or s[k] = i.
+This can continue until all the n subsets are joined. For testing, if the subsets
+of numbers i and j are joined, we test the content at array positions i and j in a recursive manner:
+If the value stored at index position i is identical with i, than this is already the result.
+But if s[i] is k!=i, then we have to investigate s[k] and so on, until at some index position
+finally the content is identical with the index position. Then this is the final representing value,
+and when this final value is the same for two initial numbers, then the two numbers belong to the
+same subset. Explaining this data structure is much more complicated than the actual implementation.
+You can find a formal description at https://en.wikipedia.org/wiki/Disjoint-set_data_structure, and
+we will sketch the very simple Nim implementation here:
+
+[source, nim]
+----
+import sequtils
+
+type
+  Subsets = object
+    parent: seq[int]
+    rank: seq[int]
+
+proc init(s: var Subsets; n: int) =
+  s.parent = toSeq(0 ..< n)
+  s.rank = newSeq[int](n)
+
+proc find(s: var Subsets; i: int): int =
+  if s.parent[i] != i:
+    s.parent[i] = find(s, s.parent[i])
+  return s.parent[i]
+
+proc union(s: var Subsets; i, j: int) =
+  let i = find(s, i)
+  let j = find(s, j)
+  if i != j:
+    if s.rank[i] < s.rank[j]:
+      s.parent[i] = j
+    elif s.rank[i] > s.rank[j]:
+      s.parent[j] = i
+    else:
+      s.parent[i] = j
+      inc(s.rank[j])
+
+var s: Subsets
+s.init(8)
+
+s.union(3, 5)
+echo s.find(3)
+echo s.find(5)
+----
+
+The Subset data structure uses the parent field to store the n initial disjoint subsets.
+Additional, a rank field with also n positions is used, which controls the union()
+joining operation and improves the performance. The recursive find() proc does a path
+compression operation, which replaces a longer recursive path with the direct result.
+
+=== Kruskal with Disjoint-set
+
+Using the disjoint-set data structure drastically beautifies the Kruskal algorithm.
+
+[source, nim]
+----
+import std/[random, times, sequtils]
+from std/math import `^`
+from algorithm import sort, SortOrder
+
+### Subsets implementation
+
+type
+  Subsets = object
+    parent: seq[int]
+    rank: seq[int]
+
+proc init(s: var Subsets; n: int) =
+  s.parent = toSeq(0 ..< n)
+  s.rank = newSeq[int](n)
+
+proc find(s: var Subsets; i: int): int =
+  if s.parent[i] != i:
+    s.parent[i] = find(s, s.parent[i])
+  return s.parent[i]
+
+proc union(s: var Subsets; i, j: int) =
+  let i = find(s, i)
+  let j = find(s, j)
+  if i != j:
+    if s.rank[i] < s.rank[j]:
+      s.parent[i] = j
+    elif s.rank[i] > s.rank[j]:
+      s.parent[j] = i
+    else:
+      s.parent[i] = j
+      inc(s.rank[j])
+
+###
+
+const
+  WindowWidth = 1000
+  WindowHeight = 1000
+  BorderDist = 50
+  DataRange = float(1000 - 2 * BorderDist)
+  Points = 50
+
+type
+  Vertex = ref object
+    x, y: float
+    id: int
+
+type
+  Edge = object
+    v1, v2: Vertex
+
+proc cmp(a, b: Edge): int =
+  let d1 = (a.v1.x - a.v2.x) ^ 2 + (a.v1.y - a.v2.y) ^ 2
+  let d2 = (b.v1.x - b.v2.x) ^ 2 + (b.v1.y - b.v2.y) ^ 2
+  return -(d1 < d2).int + (d1 > d2).int
+
+var
+  vertices: seq[Vertex]
+  edges: seq[Edge]
+  forest: seq[Edge]
+  s: Subsets
+
+proc init =
+  randomize()
+  s.init(Points)
+  for i in 0 ..< Points:
+    vertices.add(Vertex(x: rand(DataRange) + BorderDist, y: rand(DataRange) + BorderDist, id: i))
+
+proc createForest =
+  assert(vertices.len > 1)
+  for v1 in vertices:
+    for v2 in vertices:
+      if cast[int](v1.addr) < cast[int](v2.addr):
+        edges.add(Edge(v1: v1, v2: v2))
+  edges.sort(cmp, SortOrder.Descending)
+  while edges.len > 0:
+    let e = edges.pop
+    if s.find(e.v1.id) != s.find(e.v2.id):
+      s.union(e.v1.id, e.v2.id)
+      forest.add(e)
+
+init()
+
+let start = cpuTime()
+createForest()
+echo "elapsed: ", (cpuTime() - start) * 1e3, "  ms"
+
+import gintro/[gtk4, gobject, gio, cairo]
+
+proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
+  cr.setSource(1, 1, 1)
+  cr.paint # white background
+  for i, e in forest:
+    cr.setSource(0, 0, 0.7) # rgb
+    cr.newPath
+    cr.arc(e.v1.x, e.v1.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.newPath
+    cr.arc(e.v2.x, e.v2.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.setSource(0, 0, 0, 1.2 - i.float / Points.float)
+    cr.moveTo(e.v1.x, e.v1.y)
+    cr.lineTo(e.v2.x, e.v2.y)
+    cr.stroke
+
+proc activate(app: gtk4.Application) =
+  let window = newApplicationWindow(app)
+  let d = newDrawingArea()
+  d.setSizeRequest(WindowWidth, WindowHeight)
+  d.setDrawFunc(draw)
+  window.setChild(d)
+  window.show
+
+proc main =
+  let app = newApplication("org.gtk.example")
+  app.connect("activate", activate)
+  let status = app.run
+  quit(status)
+
+main()
+----
+
+But when we compile and run it, we notice that it is still slow.
+The obvious reason for that is that we work all the time with n^2
+edges, which we first have to create, then to sort, and finally we iterate
+over all of them. In the next section, we will use a Delaunay
+triangulation, to attach to each vertex a small set of direct neighbors, and
+we will then use a set of edges that connect only direct neighboring vertices.
+
+=== Kruskal with Disjoint-set and Delaunay triangulation
+
+To create the Delaunay triangulation, we use the cdt2 module, which is a variant of the initial, textbook-based
+cdt module, but with an API that is a bit more OOP-like, with support for subclassing of vertices.
+For the following code, the cdt modules would work as well, but for our last two examples, Prim
+algorithm based on Delaunay data, the cdt2 module is easier to use. So we use cdt2 here as well.
+You may install it with the command "nimble install https://github.com/stefansalewski/sdt2.git".
+The cdt and cdt2 modules support very advanced operations, including fully dynamic
+insertions and deletions, not only for data points but also for constraining edges.
+For our current use case, a simpler variant would work as well, but as we have these modules freely
+available, we should use them. For the program below, we need from the cdt2 module only the function
+initDelaunayTriangulation() to create an outer rectangle for all of our data points,
+the insertPoint() function to add points, and finally the iterator unconstrainedEdges()
+to iterate over the edges of the triangulation. With e.org and e.dest, we can access the
+endpoints of an edge, where org is short for origin, and dest for destination.
+
+[source, nim]
+----
+import std/[random, times, sequtils]
+from std/math import `^`
+from algorithm import sort, SortOrder
+import cdt2/[dt, vectors, edges, types]
+
+### Subsets implementation
+
+type
+  Subsets = object
+    parent: seq[int]
+    rank: seq[int]
+
+proc init(s: var Subsets; n: int) =
+  s.parent = toSeq(0 ..< n)
+  s.rank = newSeq[int](n)
+
+proc find(s: var Subsets; i: int): int =
+  if s.parent[i] != i:
+    s.parent[i] = find(s, s.parent[i])
+  return s.parent[i]
+
+proc union(s: var Subsets; i, j: int) =
+  let i = find(s, i)
+  let j = find(s, j)
+  if i != j:
+    if s.rank[i] < s.rank[j]:
+      s.parent[i] = j
+    elif s.rank[i] > s.rank[j]:
+      s.parent[j] = i
+    else:
+      s.parent[i] = j
+      inc(s.rank[j])
+
+###
+
+const
+  WindowWidth = 1000
+  WindowHeight = 1000
+  BorderDist = 50
+  DataRange = float(1000 - 2 * BorderDist)
+  Points = 50
+
+type
+  Vec = object
+    x, y: float
+    id: int
+
+type
+  E = object
+    v1, v2: Vec
+    id: int
+
+type
+  forest = seq[E]
+
+proc cmp(a, b: E): int =
+  let d1 = (a.v1.x - a.v2.x) ^ 2 + (a.v1.y - a.v2.y) ^ 2
+  let d2 = (b.v1.x - b.v2.x) ^ 2 + (b.v1.y - b.v2.y) ^ 2
+  return -(d1 < d2).int + (d1 > d2).int
+
+var
+  forest: forest
+  s: Subsets
+  cdt = initDelaunayTriangulation(Vector2(x: 0, y: 0), Vector2(x: WindowWidth.float, y: WindowHeight.float))
+  candidates: seq[E]
+
+proc init =
+  randomize()
+  s.init(Points + 4) # we get four additional points from the outer rectangle of the delaunay triangulation
+  for i in 0 ..< Points:
+    discard cdt.insertPoint(Vector(x: rand(900.0) + 50.0, y: rand(900.0) + 50.0))
+
+proc createForest =
+  for e in unconstrainedEdges(cdt):
+    #if e.org.id.int > 3 and e.dest.id.int > 3: # ignore first 4 points of the delaunay rectangle, use this or
+    if e.org.point[0] > 0.0 and e.org.point[0] < 1000.0 and e.dest.point[0] > 0.0 and e.dest.point[0] < 1000.0:
+      candidates.add(E(v1: Vec(x: e.org.point[0], y: e.org.point[1], id: e.org.id.int), v2: Vec(x: e.dest.point[0], y: e.dest.point[1], id: e.dest.id.int)))
+  candidates.sort(cmp, SortOrder.Descending)
+  while candidates.len > 0:
+    let e = candidates.pop
+    if s.find(e.v1.id) != s.find(e.v2.id):
+      s.union(e.v1.id, e.v2.id)
+      forest.add(e)
+
+init()
+
+let start = cpuTime()
+createForest()
+echo "elapsed: ", (cpuTime() - start) * 1e3, " ms"
+
+import gintro/[gtk4, gobject, gio, cairo]
+
+proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
+  cr.setSource(1, 1, 1)
+  cr.paint # white background
+  cr.setSource(1, 0.7, 0.7)
+  cr.setLineWidth(1)
+  for e in unconstrainedEdges(cdt): # first draw the whole delaunay triangulation
+    cr.moveTo(e.org.point[0], e.org.point[1])
+    cr.lineTo(e.dest.point[0], e.dest.point[1])
+  cr.stroke
+  cr.setLineWidth(2)
+  for i, e in forest:
+    cr.setSource(0, 0, 0.7) # rgb
+    cr.newPath
+    cr.arc(e.v1.x, e.v1.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.newPath
+    cr.arc(e.v2.x, e.v2.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.setSource(0, 0, 0, 1.2 - i.float / Points.float)
+    cr.moveTo(e.v1.x, e.v1.y)
+    cr.lineTo(e.v2.x, e.v2.y)
+    cr.stroke
+
+proc activate(app: gtk4.Application) =
+  let window = newApplicationWindow(app)
+  let d = newDrawingArea()
+  d.setSizeRequest(WindowWidth, WindowHeight)
+  d.setDrawFunc(draw)
+  window.setChild(d)
+  window.show
+
+proc main =
+  let app = newApplication("org.gtk.example")
+  app.connect("activate", activate)
+  let status = app.run
+  quit(status)
+
+main()
+----
+
+Applying the Kruskal algorithm to the small set of edges in the triangulation
+improves the performance drastically. In the next section, we will see how much
+the Delaunay triangulation can improve the Prim algorithm.
+
+=== Prim with Delaunay triangulation
+
+We can combine the Prim algorithm with a Delaunay triangulation to
+get neighbor relations for our initial point set. For this variant, it
+is important that we use the cdt2 module, not the cdt one.
+The cdt2 module supports a more OOP-style API, so we can subclass
+the vertices of the triangulation. This way, we can add fields like
+dist, friend, and done, directly to the vertex instances. Without
+subclassing, we had to attach this information in other ways, maybe by
+storing that infomation in a separate seq and accessing it by the id field of the
+CDT vertex instances.
+
+We are using a pool sequence, which holds copies of our vertices. This is
+necessary, as we have to remove elements from the pool, without
+touching the cdt itself. For this variant, we have to update only the direct
+neighbors of the point that we add to the forest last. But still, we have to iterate
+over the whole pool each, to select the next nearest point. In the next section, we will
+finally learn how we may avoid this iteration by using a priority queue.
+
+[source, nim]
+----
+import std/[random, times, tables]
+from std/math import `^`
+import cdt2/[dt, vectors, edges, types]
+
+type
+  DVertex = ref object of Vertex
+    dist: float = Inf
+    friend: DVertex
+    done: bool
+
+proc allocV(): Vertex =
+  DVertex(dist: Inf)
+
+const
+  WindowWidth = 1000
+  WindowHeight = 1000
+  BorderDist = 50
+  DataRange = float(1000 - 2 * BorderDist)
+  Points = 50
+
+var
+  cdt: DelaunayTriangulation
+  forest: seq[DVertex]
+  pool: seq[DVertex]
+
+proc init =
+  randomize()
+  cdt = initDelaunayTriangulation(Vector2(x: 0, y: 0), Vector2(x: WindowWidth.float, y: WindowHeight.float),
+    vertexAllocProc = allocV)
+
+  for i in 0 ..< Points:
+    let v = DVertex(dist: Inf)
+    discard cdt.insertPoint(Vector(x: rand(DataRange) + BorderDist, y: rand(DataRange) + BorderDist), v = v)
+    pool.add(v)
+
+proc createForest =
+  var last: DVertex = pool.pop
+  last.done = true
+  while pool.len > 0:
+    for v in last.neightbors:
+      if not DVertex(v).done:
+        let v = DVertex(v)
+        let d = (v.point.x - last.point.x) ^ 2 + (v.point.y - last.point.y) ^ 2
+        if d < v.dist:
+          v.dist = d
+          v.friend = last
+    var nearest = Inf
+    var pos = -1
+    for p, v in pool:
+      if v.dist < nearest:
+        nearest = v.dist
+        pos = p
+    last = pool[pos]
+    last.done = true
+    forest.add(last)
+    pool.del(pos)
+
+init()
+
+let start = cpuTime()
+createForest()
+echo "elapsed: ", (cpuTime() - start) * 1e3, "  ms"
+
+import gintro/[gtk4, gobject, gio, cairo]
+
+proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
+  cr.setSource(1, 1, 1)
+  cr.paint # white background
+  cr.setSource(1, 0.7, 0.7)
+  cr.setLineWidth(1)
+  for e in unconstrainedEdges(cdt): # first draw the whole delaunay triangulation
+    cr.moveTo(e.org.point[0], e.org.point[1])
+    cr.lineTo(e.dest.point[0], e.dest.point[1])
+  cr.stroke
+  cr.setLineWidth(2)
+  for i, el in forest:
+    cr.setSource(0, 0, 0.7) # rgb
+    cr.newPath
+    cr.arc(el.point.x, el.point.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.setSource(0, 0, 0, 1.2 - i.float / Points.float)
+    cr.moveTo(el.point.x, el.point.y)
+    cr.lineTo(el.friend.point.x, el.friend.point.y)
+    cr.stroke
+
+proc activate(app: gtk4.Application) =
+  let window = newApplicationWindow(app)
+  let d = newDrawingArea()
+  d.setSizeRequest(WindowWidth, WindowHeight)
+  d.setDrawFunc(draw)
+  window.setChild(d)
+  window.present
+
+proc main =
+  let app = newApplication("org.gtk.example")
+  app.connect("activate", activate)
+  let status = app.run
+  quit(status)
+
+main()
+----
+
+=== Prim with Delaunay triangulation and priority queue
+
+A priority queue is a data structure that allowsm us to extract the
+smallest element fast (O(1)), and to insert more elements while preserving the
+order. Textbooks sometimes advertise the famous Fibonacci heap, which is a
+form of priority queue, for which not only extraction of the smallest value, and insertion of
+more elements is of O(1), but which allows also very fast updating the value of
+already contained values. But the Fibonacci heap is a complicated thing, and it is often not that
+fast in practice as in theory. And for Nim, we have currently no Fibonachi heap implementation available.
+What is available for Nim is the simple heap-queue module of Nim's standard library. But as we need
+distance updates for our Prim algorithm, while the heap-queue does not support them, we may get the feeling
+that the Nim's heap-queue can not be used in our use case. But there is a trick available, with which we can
+circumvent this restriction -- the trick is sometimes mentioned in text books when Dijkstra's algorithm for
+shortest path search is discussed, see
+https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm.
+
+The trick is that instead of updating the priority field of elements already stored in the queue,
+we just add a copy with an updated priority field, and ignore the old elements for the
+extraction process. This results typically in good performance, as the updating
+is not that often needed at all, and as we always extract the updated copies before the
+old, invalid elements, which we just ignore. To use this strategy, we need a way to
+detect the old, invalid elements.  Actually, ref object instances do not work for
+this use case. We need value types for this, which we can copy and modify without
+modifying the original. As the Delaunay triangulation works internally with ref objects, we create
+a wrapper object for our vertices:
+
+[source, nim]
+----
+type
+  DVertex = ref object of Vertex
+    dist: float = Inf
+    friend: DVertex
+    done: bool
+
+  Container = object
+    dv: DVertex
+    pri: float
+----
+
+We subclass the Vertex data type of the cdt2 Delaunay triangulation module by
+adding a distance field and a friend field, which stores the other endpoint
+of a vertex in the tree, and a boolean done field, which is used to remember if a
+vertex instance is already part of the tree or is still unprocessed.
+
+Our value data type called Container has two fields: a reference to a Vertex instance, and a pri
+field, which is initially identical with dist of the Vertex. When distances change,
+we update the dist field of our vertex and add a new Container instance to
+the priority queue. Then for the old Container instance, dist and pri differ, which
+is an indication that the container instance is invalid and has to be ignored.
+
+[source, nim]
+----
+import std/[random, times, heapqueue, tables]
+from std/math import `^`
+import cdt2/[dt, vectors, edges, types]
+
+const
+  WindowWidth = 1000
+  WindowHeight = 1000
+  BorderDist = 50
+  DataRange = float(1000 - 2 * BorderDist)
+  Points = 50
+
+type
+  DVertex = ref object of Vertex
+    dist: float = Inf
+    friend: DVertex
+    done: bool
+
+type
+  Container = object
+    dv: DVertex
+    pri: float
+
+proc `<`(a, b: Container): bool = a.pri < b.pri
+
+proc allocV(): Vertex =
+  DVertex(dist: Inf)
+
+var
+  cdt: DelaunayTriangulation
+  hq: HeapQueue[Container]
+  forest: seq[DVertex]
+
+proc init =
+  randomize()
+  cdt = initDelaunayTriangulation(Vector2(x: 0, y: 0), Vector2(x: WindowWidth.float, y: WindowHeight.float),
+    vertexAllocProc = allocV)
+  for i in 0 ..< Points:
+    let v = DVertex(dist: Inf)
+    discard cdt.insertPoint(Vector(x: rand(DataRange) + BorderDist.float, y: rand(DataRange) + BorderDist.float), v = v)
+
+proc createForest =
+  var last: DVertex = DVertex(cdt.subdivision.vertices[4]) # arbitrary start point, but not the first four!
+  last.done = true
+  while true:
+    for v in last.neightbors:
+      if not DVertex(v).done:
+        let v = DVertex(v)
+        let d = (v.point.x - last.point.x) ^ 2 + (v.point.y - last.point.y) ^ 2
+        if d < v.dist:
+          v.dist = d
+          v.friend = last
+          hq.push(Container(dv: v, pri: d))
+    if hq.len == 0:
+      break
+    let h = hq.pop
+    if h.pri == h.dv.dist and h.dv.id.int > 3: # h.dv.point.x != 1000 and h.dv.point.x != 0: # let us
+      last = h.dv # ignore the  corners of outer cdt rectangle
+      last.done = true
+      forest.add(last)
+
+init()
+
+let start = cpuTime()
+createForest()
+echo "elapsed: ", (cpuTime() - start) * 1e3, " ms"
+
+import gintro/[gtk4, gobject, gio, cairo]
+
+proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
+  cr.setSource(1, 1, 1)
+  cr.paint # white background
+  cr.setSource(1, 0.7, 0.7)
+  cr.setLineWidth(1)
+  for e in unconstrainedEdges(cdt): # first draw the whole delaunay triangulation
+    cr.moveTo(e.org.point[0], e.org.point[1])
+    cr.lineTo(e.dest.point[0], e.dest.point[1])
+  cr.stroke
+  cr.setLineWidth(2)
+  for i, el in forest:
+    cr.setSource(0, 0, 0.7) # rgb
+    cr.newPath
+    cr.arc(el.point.x, el.point.y, 5, 0, math.Tau)
+    cr.stroke
+    cr.setSource(0, 0, 0, 1.2 - i.float / Points.float)
+    cr.moveTo(el.point.x, el.point.y)
+    cr.lineTo(el.friend.point.x, el.friend.point.y)
+    cr.stroke
+
+proc activate(app: gtk4.Application) =
+  let window = newApplicationWindow(app)
+  let d = newDrawingArea()
+  d.setSizeRequest(WindowWidth, WindowHeight)
+  d.setDrawFunc(draw)
+  window.setChild(d)
+  window.present
+
+proc main =
+  let app = newApplication("org.gtk.example")
+  app.connect("activate", activate)
+  let status = app.run
+  quit(status)
+
+main()
+----
+
+Before we can use the heap-queue, we have to define a < relation 
+for our Container data type. We populate the Delaunay instance with our random points.
+At the beginning of our createForest() proc, we pick a random start point from the cdt
+instance -- actually not one of the first four, as that are points of the outer rectangle, which we intend to ignore.
+Then we use the iterator last.neighbors() to iterate over the neighbors of the point that we added last
+to our forest. After the distances have been updated, we can use hq.pop
+to extract an element with the lowest priority from the heap-queue, and add that vertex to
+our forest. You may wonder why we need the done field in the Vertex object. Well, without
+it, we would modify the existing forest, destroying the existing neighborship relations!
+You may compile the above code with option -d:release for the default 50, and for 500 points.
+The runtime should be approximately 30 and 300 microseconds on modern hardware, which is not bad, and
+shows that the runtime increases linearly with the number of points, so the algorithm is
+nearly O(n) in big O notation. Note also that for all of the presented MST algorithms, we may modify
+the cost- or distance-function, to tune the resulting graph shape. For instance, instead of the (squared) euclidean 
+distance, we may use an expression like
+let d = (v.point.x - last.point.x) ^ 2 + (v.point.y - last.point.y) ^ 2 + max((500 - v.point.x).abs, (500 - v.point.y).abs) ^ 2.
+Here, we add to the euclidean distance the distance of the new point from the center of the graph (500), so that
+points close to the center are preferred, resulting in a star-shaped graph. For some applications, like
+power supply traces (on a PCB) such a layout may be preferred.
+
+References:
+
+* https://en.wikipedia.org/wiki/Minimum_spanning_tree
+* https://en.wikipedia.org/wiki/Euclidean_minimum_spanning_tree
+* https://en.wikipedia.org/wiki/Prim%27s_algorithm
+* https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
+* https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+* https://en.wikipedia.org/wiki/Delaunay_triangulation
+
 === No Game Programming?
 
 No, not yet. We know that for many people, game programming
@@ -20195,6 +21237,10 @@ We have added a few more simple examples and exercises:
 * <<Cligen Command Line Interface generator>>
 * <<Nimble package manager>>
 * <<Parsing data files in parallel>>
+
+=== December 2022
+
+* <<Minimum Spanning Tree>>
 
 ////
 Part I: Introduction
