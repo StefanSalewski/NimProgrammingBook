@@ -1,11 +1,11 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2022-DEC-10
+//v0.1, 2022-DEC-30
 :doctype: book
 :toc: left
 :icons: font
 //:experimental:
-:imagesdir: http://ssalewski.de/tmp
+:imagesdir: https://ssalewski.de/tmp
 //:imagesdir: http://ssalewski.de/gtkimages
 //:source-highlighter: pygments
 //:pygments-style: monokai
@@ -228,8 +228,23 @@ available at Amazon.com.
 This book is based on the Nim reference implementation of the team around
 Mr. A. Rumpf.
 While the first pages of this book were written already in the spring of 2020, it should be mostly up-to-date
-with the current stable version {curnim}. We will try to keep the book up to date with further Nim
-releases, like a 1.8 or maybe already a 2.0 release with planned support for incremental compilation.
+with the latest stable version 1.6 of the Nim 1.x series. Most explanations and examples should
+be valid also for other implementations like the  https://github.com/nim-works/nimskull variant.
+Mr. Rumpf has announced the Nim 2.0 release for early 2023. The v2.0 release brings a lot of improvements,
+but has no serious breaking changes that would invalidate old code -- only a few small modifications may be
+needed for old code to make it compile and run again. In this book, we may use and discuss a few Nim 2.0
+features, but all code should be compilable with the 1.x series of the compiler or with nimskull (cyo) with no
+or only tiny changes. The most important change for Nim 2.0 is that ORC memory management is now the default,
+indicating that it is considered ready for use in production. ORC gives us GC-like, fully deterministic memory management
+with minimal overhead compared to fully manual memory handling. It reduces the maximal memory consumption of apps,
+avoids GC-generated delays, and may increase the performance of our programs. Additional, ARC and ORC memory management
+should bring serious advantages for the creation and performance of threaded and parallel code.
+We have summarized the most important new features of Nim 2.0 in the appendix: <<Changes for Nim 2.0>>
+
+Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
+by Nim v2.0 yet. And for parallel and threaded code execution, it may be useful to consider high-quality external
+libraries rather than the ones in Nim's standard library.footnote[https://forum.nim-lang.org/t/9768#64336]. The same may apply to
+modules for asynchronous code execution and a few other libraries.#footnote[https://github.com/status-im/nim-chronos]
 
 ****
 The source code for the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
@@ -248,7 +263,8 @@ proofreader.
 Dr. S. Salewski studied Physics, Mathematics, and Computer Science at Hamburg
 University (Germany), where he got his PhD in 2005 in the area of laser physics. He has worked
 in the field of fiber laser physics, electronics, and software development, using languages like
-Pascal, Modula-2, Oberon, C, Ruby, and Nim. Some of his software projects, including the
+Pascal, Modula-2, Oberon, C, Ruby, and Nim.
+Some of his software projects, including the
 Nim GTK GUI bindings and Nim implementations of an N-dimensional RTree and a fully
 dynamic, constrained Delaunay triangulation, are freely available as open-source
 projects at https://github.com/StefanSalewski.
@@ -20354,6 +20370,281 @@ https://www.grammarly.com/ and the online grammar checker from https://quillbot.
 
 //=== Is there a way I could get a `ref` from a non-ref object?
 
+
+== Changes for Nim 2.0
+
+After Nim v1.0 was released in 2019 and Nim v1.6.10 in November 2022, Mr. Rumpf
+is going to release Nim 2.0 in early 2023. While Nim 2.0 brings some important
+changes and improvements, there should be no serious incompatibility issues between
+Nim 1.6 and Nim 2.0, and adapting older programs for Nim 2.0 should be not difficult,
+at least not as long as the old programs use no ugly hacks. Unfortunately, with Nim 2.0
+some incompatibility issues with other implementations like the https://github.com/nim-works/nimskull
+may arise. The future will show if alternative implementations will try to be as compatible as possible with
+the implementation of Rumpf, or if they will create language dialects or even new languages with new names like Cyo
+for nimskull. We had a similar case already for modules of Nim's standard library, which have been partly
+replaced by incompatible, improved variants created by Status corporation
+(e.g. https://github.com/status-im/nim-taskpools and https://github.com/status-im/nim-chronos) and other Nim  contributors.
+
+The most important improvement for Nim 2.0 is that the ORC memory management system is now the default.
+We have mentioned some new features of Nim 2.0 already in the book, and we
+will summarize the most important changes of Nim 2.0 in the next few sections:
+
+=== ARC/ORC Memory management
+
+Initially, Nim used a traditional garbage collector for automatic memory management, similar to how most other
+high-level programming languages do. For time-critical or resource-limited systems, traditional garbage collectors
+have some serious disadvantages like fully blocking the system for a few milliseconds, or releasing resources late
+and needing a lot of memory. Early Java implementations suffered from this, and for this reason
+some modern high-performance languages like Rust, Zig, or Jai do not use automatic memory management at all.
+Languages like Nim and VLang tried to find automatic memory strategies that avoided the disadvantages
+of traditional garbage collectors. And Nim was successful already, while Vlang seems to have some miles to go still.
+ARC is a deterministic, destructor-based memory management system: As soon as referenced, heap-allocated objects go
+out of scope, so that they can no longer be accessed by any reference, the heap-object is immediately freed.
+This works very well, as long as the referenced objects build no cyclic structures, e.g. in graphs like the triangulation of
+a surface, where all the vertices and edges may have neighbor references. To handle cycles, the ORC memory handler
+was created, and is now the default. For many applications, it is not really important if the traditional refc
+GC system or ARC/ORC is used. REFC may still have small performance benefits, but ARC/ORC works very well for critical
+applications. With ARC/ORC a Nim program should behave like one with only manual memory management, without all
+the disadvantages of pure memory management like double-frees, dangling pointers, or memory leaks. When your program uses no
+cyclic data structures, you can now use arc. When you know that you use cycles, like for a Delaunay triangulation, you
+should use orc to ensure that all unreferenced objects are really released immediately. Programs compiled with option
+--mm:orc are typically 10 kB larger as compiled with --mm:arc. Both options generate significantly smaller executables
+than --mm:refc. For performance-critical programs, it is always a good idea to do some testing, as refc or maybe
+even one of the other GC options like boehm may give a larger throughput. Currently, Nim cannot report if ARC is
+sufficient, or ORC is needed due to cyclic references. So you may have to do some tests if you are not sure, like
+setting all the references at the end of a proc to nil, and then calling GC_fullCollect() and GC_getStatitics()
+to monitor the still occupied memory resources.  
+
+=== Default values for object fields
+
+Nim initializes variables to binary zero by default, and this applies to object fields as well.
+Before v2.0, it was not possible to specify other default values for object fields in the type definition.
+Nim 2.0 allows this now finally in the same way as we can do it for plain variables.
+We used this feature already in section <<The Prim algorithm>> where we set
+the dist field of our Vertex to math.Inf, indicating that we have not yet found a neighbor.
+
+[source, nim]
+----
+type
+  Vertex = ref object
+    x, y: float
+    friend: Vertex
+    dist: float = Inf
+----
+
+Default values for object fields are useful whenever the default zero makes no sense or may
+even cause a runtime exception, like the denominator of a fraction, or a scaling parameter, which
+generally has the default value 1 or 100 percent, but not the value zero.
+
+=== Overloadable enums
+
+Before Nim 2.0, using enumerations in larger programs could be very verbose, as different
+enum types could have members with the same name, so that we had to use the pure pragma
+and to prefix the enum value with the type name. To avoid this, some modules used
+values with a prefix, like nkProc. In section <<Enumeration types>> we had two enums with a few common values:
+
+[source, nim]
+----
+type
+  TrafficLigth {.pure.} = enum
+    red = "Stop"
+    yellow = (2, "Caution")
+    green = ("Go")
+
+type
+  BaseColor {.pure.} = enum
+    red, green, blue
+
+var caution: set[TrafficLigth] = {TrafficLigth.yellow, red}
+
+echo caution # {Stop, Caution}
+----
+
+For Nim 2.0, the compiler is smart now and knows that in {TrafficLigth.yellow, red}
+the red value is also from the TrafficLigth data type, so we do not have
+to use the type name prefix. The {.pure.} pragma is not needed any more, and the compiler
+is really smart: Only a statement like "var caution = {red, blue}" would obviously not
+compile without type prefixes for one of the values.
+
+
+=== CString limitations
+
+Nim's strings are mutable value objects with length and capacity properties and have copy semantics. As the actual Nim string data buffer
+is heap-allocated and NULL-terminated, it is compatible with the string data type in the C language,
+which is basically a pointer to a character (*char). In early Nimrod, we often used the Nim cstring
+data type as an alias for a string in the C language. In modern Nim, cstring stands for compatible string,
+that is a string that is compatible with the C and JavaScript backends. In Nim 2.0, cstrings have become
+second-class citizens. We can use cstrings as parameters of C  library functions without problems, but
+when we pass a variable of cstring data type to an ordinary Nim proc, we get a serious warning:
+
+[source, nim]
+----
+proc callCLib(s: cstring) =
+  discard # call a C library
+
+proc indirectCallCLib(s: cstring) =
+  callCLib(s)
+
+var a = "Test" 
+indirectCallCLib(a)
+----
+
+----
+Warning: implicit conversion to 'cstring' from a non-const location: a; this will become a compile time error in the future [CStringConv]
+----
+
+This may be justified, e.g., because cstrings cannot grow and because modifying
+a cstring may invalidate the initial Nim string. But at the same time, this behaviour
+is a problem, when we call C libs indirectly by use of trampoline procs. We get the above
+warning, and the program may no longer compile in the future. A possible fix is, that we pass
+ordinary Nim strings to the trampoline proc. But that may be some overhead, as we pass then an object
+instead of a plain pointer, and most importantly, we can not pass nil/NULL any longer to the C library.
+But for some C libraries, nil/NULL is very different from an empty string.
+
+=== StrictDefs
+
+In Nim, variables are generally initialized with binary zero, that is, zero for numerical values,
+nil for references and pointers, and "" for strings. With Nim 2.0, we can use the strictDefs pragma,
+which seems to be currently only available in the form {.experimental: "strictDefs".},
+to enforce the explicit initialization of variables:
+
+[source, nim]
+----
+{.experimental: "strictDefs".}
+
+proc main =
+  var a: int
+  echo a
+  let b: int
+  if a == 0:
+    b = 1
+  else:
+    b = 2
+  echo b
+
+main()
+----
+
+Compiling the above code would now give the warning:
+
+----
+Warning: use explicit initialization of 'a' for clarity [Uninit]
+----
+
+This may later be even the default. Again, the compiler is smart
+and does a detailed code analysis: When we assign in each possible code path
+an value to a variable, then there is no warning. This works now even for the let
+statement as in the above example.
+
+=== Out parameters
+
+In Nim versions before 2.0, we could pass uninitialized var parameters to
+procs, which then initialized that variable. While this was generally
+avoided for pure Nim functions, and we use function return values to pass values back to the caller, this program
+shape is sometimes used in C libraries.footnote:[Note that in the C language, a function can only return
+one result parameter, but not tuples of multiple parameters as in Nim.]
+To enforce the initialization of parameters passed uninitialized to a procedure, Nim 2.0
+has introduced out parameters:
+
+[source, nim]
+----
+proc p(i: out int) =
+  discard # i = 0
+
+proc main =
+  var n = 1
+  p(n)
+  echo n
+
+main()
+----
+
+Compiling the above code results in this warning:
+
+----
+Warning: Cannot prove that 'i' is initialized. This will become a compile time error in the future. [ProveInit]
+----
+
+The reason is obviously that proc p does not assign a value to the out parameter i.
+
+=== StrictFuncs
+
+When we pass parameters to procs and functions that should be modified
+in the proc body, we have to use the var keyword to make the parameter mutable.
+For beginners, it was sometimes surprising that when we passed reference parameters
+to a proc, it was allowed to modify fields of ref objects, also when the ref object was not passed as
+as var parameter. So the var keyword was only needed to change the ref itself, e.g., to exchange
+or initialize a ref to an object. With the new definition of the StrictFuncs pragma in Nim 2.0,
+we can ensure for functions that fields of ref objects cannot be mutated in a function.
+
+[source, nim]
+----
+{.experimental: "strictFuncs".}
+
+type
+  R = ref object
+    i: int
+
+func p(arg: R): bool =
+  arg.i = 0
+
+var r = R()
+discard p(r)
+----
+
+Compiling this example give now the message:
+
+----
+Error: cannot mutate location arg.i within a strict func
+----
+
+=== Unicode Operators
+
+In Nim 2.0, we can use a few Unicode operators; see https://nim-lang.github.io/Nim/manual.html#lexical-analysis-unicode-operators
+for details. When we create mathematical libraries, that may result in cleaner code, e.g., we
+may use Unicode symbols for the cross-product of vectors. Entering these Unicode symbols can be difficult.
+In section <<Entering Unicode Characters>> we learned how to type in Unicode symbols. You may also find the Linux (Gnome) tool
+gucharmap useful: Launch the tool, select View/By Unicode Block from menu, and then select Mathematical Operators.
+
+[source, nim]
+----
+proc `∘`(a, b: int): int =
+  a * b + 1
+  
+echo `∘`(1, 2) # 3
+echo 2 ∘ 3 # 7
+----
+
+=== Unnamed break in a block
+
+Using a plain break statement in a block gives
+a warning in Nim 2.0.
+This warning may become an error in future Nim versions. We may use a named block with a named break
+statement to overcome this issue:
+
+[source, nim]
+----
+block:
+  echo 1
+  break # warning, later an error
+  echo 2
+
+block t:
+  echo 3
+  break t # OK
+  echo 4
+----
+
+== Changes for Nim > 2.0
+
+//We may finally see incremental compilation in Nim 2.2.
+
+For Nim 2.2, we may get finally the incremental compilation.
+
+References:
+
+* https://github.com/nim-lang/RFCs/issues/503
+
 == Nimble package manager
 //== Nimble package manager # asciidoc issue for changelog
 
@@ -21241,6 +21532,8 @@ We have added a few more simple examples and exercises:
 === December 2022
 
 * <<Minimum Spanning Tree>>
+* <<Changes for Nim 2.0>>
+
 
 ////
 Part I: Introduction
