@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2022-DEC-30
+//v0.1, 2023-JAN-10
 :doctype: book
 :toc: left
 :icons: font
@@ -243,8 +243,8 @@ We have summarized the most important new features of Nim 2.0 in the appendix: <
 
 Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
 by Nim v2.0 yet. And for parallel and threaded code execution, it may be useful to consider high-quality external
-libraries rather than the ones in Nim's standard library.footnote[https://forum.nim-lang.org/t/9768#64336]. The same may apply to
-modules for asynchronous code execution and a few other libraries.#footnote[https://github.com/status-im/nim-chronos]
+libraries rather than the ones in Nim's standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. The same may apply to
+modules for asynchronous code execution and a few other libraries.#footnote:[https://github.com/status-im/nim-chronos]
 
 ****
 The source code for the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
@@ -1778,7 +1778,7 @@ someone for help with this basic step, and maybe for some more help for other ba
 tasks.
 
 Detailed installation instructions are available on the Nim internet homepage at
-https://nim-lang.org/install.html.footnote:[To visit and read that page, you have to
+https://nim-lang.org/install.html. footnote:[To visit and read that page, you have to
 enter this [.str]#string# in the address input field of your internet browser.] Try to follow
 those instructions, and when they are not sufficient, then please ask at the Nim
 forum for help: https://forum.nim-lang.org/
@@ -12008,6 +12008,35 @@ an initial sequence with continuous integers from the slice.
 The [.func]#apply()# function performs a transformation operation on all the items,
 and [.func]#keepIf()# preserves only the items for which a boolean predicate evaluates to [.lit]#true#.
 
+The function [.func]#keepItIf()# is useful to delete selected items from a seq. Remember,
+that applying the ordinary delete operations [.func]#del()# or [.func]#delete()# while iterating
+with a [.key]#for# loop over a seq does not work. You can loop over the seq as in the example below instead,
+or just use [.func]#keepItIf()#:
+
+[source, nim]
+----
+var s = @[0, 1, 2, 3]
+
+#[
+for i, el in pairs(s):
+  if (el and 1) == 0: # delete the even numbers
+    s.delete(i) # results in a runtime error
+]#
+
+var i  = 0
+while i < s.len:
+  if (s[i] and 1) == 0: # delete the even numbers
+    s.delete(i) # use faster del() if order of seq does not matter
+  else:
+    i += 1
+echo s
+
+s = @[0, 1, 2, 3]
+import std/sequtils
+s.keepItIf((it and 1) != 0)
+echo s
+----
+
 Two useful predicate functions are [.func]#any()# and [.func]#all()# to check if at least one item fulfills
 a condition or if all items fulfill a condition:
 
@@ -16194,7 +16223,7 @@ To create the Delaunay triangulation, we use the cdt2 module, which is a variant
 cdt module, but with an API that is a bit more OOP-like, with support for subclassing of vertices.
 For the following code, the cdt modules would work as well, but for our last two examples, Prim
 algorithm based on Delaunay data, the cdt2 module is easier to use. So we use cdt2 here as well.
-You may install it with the command "nimble install https://github.com/stefansalewski/sdt2.git".
+You may install it with the command "nimble install https://github.com/stefansalewski/cdt2.git".
 The cdt and cdt2 modules support very advanced operations, including fully dynamic
 insertions and deletions, not only for data points but also for constraining edges.
 For our current use case, a simpler variant would work as well, but as we have these modules freely
@@ -16697,7 +16726,7 @@ for game programming available, see for example
 
 * https://github.com/ftsf/nico
 
-* https://github.com/StefanSalewski/nim-chess4
+* https://github.com/StefanSalewski/salewski-chess
 
 * https://github.com/planetis-m/goodluck/
 
@@ -18667,6 +18696,12 @@ use. You may try to modify it to work on sequences with arbitrary runtime sizes
 instead of a fixed-sized [.type]#array# and to use more than two threads. For all the details
 of the [.mod]#threadpool# module, you should consult is documentation.
 
+As a direct replacement for the [.mod]#threadpool# module, you may also try the external [.mod]#taskpools#
+package. Or you may try the much more advanced [.mod]#weave# package:
+
+* https://github.com/status-im/nim-taskpools
+* https://github.com/mratsim/weave
+
 === Using the threads module to create new threads
 
 When for some reason, we can not use the [.mod]#threadpool# module, or we need more
@@ -19973,6 +20008,54 @@ echo f2.read
 The combination [.code]#f1 and f2# actually creates a new future of [.type]#void# type. We use
 two variables [.var]#f1# and [.var]#f2# of [.str]#string# type, and read the content with the
 [.func]#read()# [.proc]#{proc}#, when both futures are completed.
+
+We can extend this program shape to asynchronously download multiple HTML pages:
+
+[source, nim]
+----
+# nim r -d:ssl -d:release t.nim
+import std/[asyncdispatch, httpclient, strutils, strformat, times]
+
+const
+  #Urls = "google.com duckduckgo.com wikipedia.com".split
+  Urls = "ssalewski.de heise.de wikipedia.de".split
+
+proc getHttpResp(client: AsyncHttpClient, url: string): Future[string] {.async.} =
+  let start = epochTime()
+  try:
+    result = await client.getContent(url)
+    stdout.write &"{url} - response length: {len(result)}"
+  except Exception as e:
+    stdout.write &"Error: {url} - {e.name}"
+  echo fmt" --- Request took {epochTime() - start:.2f} seconds."
+
+proc main =
+  var transferred: int = 0
+  let start = epochTime()
+  echo "Starting requests..."
+  var f: seq[Future[string]]
+  for url in Urls:
+    let client = newAsyncHttpClient()
+    f.add(client.getHttpResp(fmt"http://www.{url}"))
+  let res: seq[string] = waitFor all(f)
+  for x in res:
+    transferred += x.len
+  let elapsed = epochTime() - start
+  echo fmt("Sum of transferred data: {transferred} bytes. " &
+    "({transferred.float / (1024 * 1024).float / elapsed:.2f} MBytes/s)")
+  echo fmt"Requested {len(Urls)} websites in {elapsed:.2f} seconds."
+
+main()
+----
+
+Here we used the construct [.term]#waitFor all(f)# to wait for finishing all the downloads.
+For our tests, we typically got only transfer rates of a few MB/s max. We don't know the reason
+for this currently, maybe we should compare that to the chronos framework.
+
+References:
+
+* https://stackoverflow.com/questions/75024325/nim-how-can-i-improve-concurrent-async-response-time-and-quota-to-match-cpython
+* https://github.com/status-im/nim-chronos
 
 === A chat server application
 
