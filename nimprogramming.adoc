@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JAN-10
+//v0.1, 2023-FEB-01
 :doctype: book
 :toc: left
 :icons: font
@@ -8639,7 +8639,26 @@ As Nim [.key]#templates# are hygienic, the instance of the file variable created
 of our [.key]#template# can be used by the passed code block, but it actually
 exists only in the [.key]#template# and pollutes not the global namespace of our program.
 
-We can use [.key]#templates# to create new [.proc]#procs#. An example is lifting [.proc]#procs# like [.func]#math.sqrt()#
+When we pass an integer and a code block to a [.key]#template#, we can easily create a function
+like the [.func]#times()# construct known from Ruby, to execute a code block [.var]#n# times:
+
+[source, nim]
+----
+template times(n: int; actions: untyped) =
+  var i = n
+  while i > 0:
+    dec(i)
+    actions
+
+var x = 0.0
+3.times:
+  x += 2.0
+  echo x, " ", x * x
+----
+
+Of course, insted of [.code]#3.times:# we could have used [.code]#for _ in 1 .. 3:# instead.  
+
+We can also use [.key]#templates# to create new [.proc]#procs#. An example is lifting [.proc]#procs# like [.func]#math.sqrt()#
 that accepts a scalar parameter and returns a scalar value, to work with [.type]#arrays#
 and sequences. The following example is taken from the official [.italic]#tut2# tutorial:
 
@@ -9695,6 +9714,14 @@ currently not supported by Nim. Indeed, we should generally try to avoid cyclic 
 make the software design difficult. But sometimes we can not really avoid these cycles. In that case, currently, the best solution is,
 to put all the concerned data types in a separate low-level module, which is then imported from both other modules.
 The planned Nim version 2.0 may allow cyclic imports, so this restriction may vanish in the future.
+
+NOTE: We have already mentioned, that the compiler imports only functions, data types, and other symbols from imported
+modules, that are really needed. So a plain [.code]#import std/math# is fine, there is no need to write
+[.code]#from std/math import sin, cos, sqrt# to optimize the final executable size. The same is true, when
+whole modules or single symbols from a module are imported multiple times: When module a and b each import module c, and
+our top level main module imports modules a and b, then module c is still imported only one, there is no unneeded code duplication.
+The import statement is not a stupid command to insert some code, but more a hint to the compiler which symbols may be needed. 
+But remember, that the use of templates, inline iterators, generics and inline procs may indeed lead to code duplication, but that is by intent.
 
 == Include
 
