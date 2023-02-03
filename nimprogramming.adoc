@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-01
+//v0.1, 2023-FEB-03
 :doctype: book
 :toc: left
 :icons: font
@@ -17439,6 +17439,11 @@ And when we run it, we get:
 Well, not a really great result for this concrete use case: We have replaced three [.func]#echo()# commands with a five lines [.mac]#macro#.
 But at least, you got a feeling of what [.mac]#macros# can do for use.
 
+The [.func]#parseStmt()# function is actually not used that often, as the string construction is inconvenient and avoiding some
+issues like name space collisions can be difficult. In the following sections, we will introduce the [.code]#quote do:# construct and
+the [.func]#genast()# macro, which allows easier AST generation from textual code blocks. And later, we will learn how we can create
+macros directly by manually AST manipulation.
+
 === Types of macro parameters
 
 As Nim is a statically typed programming language, all variables and [.proc]#{proc}# parameters have a well-defined
@@ -17680,9 +17685,46 @@ at compile-time and the quoted [.type]#NimNodes# in the block are interpolated a
 actual [.func]#echo()# statement in the block is then finally executed at program runtime. To prove how this final [.func]#echo()# statement looks, we may
 add as the last line of our [.mac]#macro# the statement [.code]#"echo result.repr"# and we would then get the [.str]#string# "echo "a {asterisk} sqrt(b)", ": ", a {asterisk} sqrt(b)", when we compile our program again.
 
+=== The genast() macro as a replacement for quote do:
+
+The [.mod]#genasts# module provides with the [.func]#genAstOpt()# macro and the [.func]#genAst()# template
+a drop in replacement for the "quote do:" construct.
+Like [.code]#quote do:#, [.func]#genAst()# accepts an expression or a code block and returns the AST that represents it.
+Within the quoted AST, we are able to interpolate NimNode expressions from the surrounding scope.
+While for [.code]#quote do:# quoting is done using backticks (or other user defined operators), we pass to [.func]#genAst()# a list of the variable to capture,
+and can then use these variables in the body of [.func]#genAst()# without explicit quoting. Our [.func]#show()#
+macro from above becomes with [.func]#genAst()#:
+
+[source, nim]
+----
+import std/[macros, genasts]
+
+macro show(x: untyped): untyped =
+  let n = x.toStrLit
+  genAst(x, n):
+    echo n, ": ", x
+
+import math
+var a = 7.0
+var b = 9.0
+show(a * sqrt(b))
+----
+
+GenAst() captures (interpolates) parameters of the surrounding macro and local macro variables, when we
+specify them as parameters to genAst(). A macro local proc is automatically captured and does not have
+to be included in the capture list explicitly. This behavior can be modified, when
+instead of the plain genAst(), the genAstOpt() macro is used, which has a set of options
+as a first parameter. You can find some more details about the [.mod]#genasts# module and
+two larger examples for its use in the API documentation of that module.
+
+References:
+
+* https://nim-lang.github.io/Nim/genasts.html
+* https://github.com/nim-lang/Nim/pull/17426
+
 === Building the AST manually
 
-In the two sections before, we used the functions [.func]#parseStmt()# and [.func]#quote()# to build the AST from a
+In the three sections before, we used the functions [.func]#parseStmt()#, [.func]#quote()# and [.func]#genAst()# to build the AST from a
 textual representation of Nim code. That can be convenient but is not very flexible.
 In this section, we will learn how we can build a valid AST from scratch by calling
 functions of the [.mod]#macros# module. That is not that easy, but this way we have the full power of
