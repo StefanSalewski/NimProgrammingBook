@@ -35,7 +35,6 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :pp: ++
 :behav: behavior
 :cdefine: #define
-:btic: `
 
 ////
 
@@ -245,7 +244,7 @@ We have summarized the most important new features of Nim 2.0 in the appendix: <
 Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
 by Nim v2.0 yet. And for parallel and threaded code execution, it may be useful to consider high-quality external
 libraries rather than the ones in Nim's standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. The same may apply to
-modules for asynchronous code execution and a few other libraries.#footnote:[https://github.com/status-im/nim-chronos]
+modules for asynchronous code execution and a few other libraries.footnote:[https://github.com/status-im/nim-chronos]
 
 ****
 The source code for the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
@@ -1248,7 +1247,7 @@ Nim is also supported by Reddit.com and Stackoverflow.com:
 
 === Nim is evolving
 
-Started more than 12 years ago as a small community project of some bright CS
+Started more than 15 years ago as a small community project of some bright CS
 students led by [.ndef]#Mr. A. Rumpf#, it is now considered as one of the most
 interesting and promising programming languages, supported by countless individuals
 and leading companies of the computer industry, for instance, it's actively used in the areas of application, game, web,
@@ -1268,6 +1267,23 @@ well-trained users. And finally, there are many competing languages, some with a
 longer history, and some possibly better suited for special purposes, like JavaScript,
 Dart or Kotlin for web development, Julia or R for numeric applications, or Zig, C and
 Assembly for the tiny 8-bit {uc}s with a small amount of RAM.
+
+For some "professional" programmers, Nim's use of significant white space instead
+of curly brackets for identifying blocks and scopes may be a reason to avoid Nim.
+The use of significant white space, also called the Off-side rule,footnote:[https://en.wikipedia.org/wiki/Off-side_rule]
+has some tradition in computer textbooks and is used in some other languages, like
+Python, Haskell, and Scala 3. With Python being the most popular programming language in these
+days, it is hard to believe that programmers really prefer the use of curly brackets.
+But actually, most professionals started their education with languages like C, {cpp}, or
+Java, and just feel more professional when they have their curly brackets.
+Scala introduced significant white space in version 3 of the language, and it's
+designer Martin Odersky said that this improves productivity overall by 10%.footnote:[https://en.wikipedia.org/wiki/Off-side_rule#Productivity]
+
+A similar
+point is the style-insensitivity of Nim: With the exception of the first letter of a symbol,
+Nim does not distinguish between lower- and upper-case letters and ignores underscores.
+This has some pros and cons and is not that bad in practice. We will discuss it later
+in this book in more detail.
 
 Nim is already supported by more than 1000 external packages which cover many
 application areas, but that number is still small compared to really popular
