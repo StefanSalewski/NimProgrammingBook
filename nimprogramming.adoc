@@ -284,7 +284,7 @@ can provide very valuable information about some topics. We were really surprise
 already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
 languages. To use ChatGPT, you would have to register with your real name and phone number.
 We think that is OK to prevent misuse. The basic service is still free. A professional
-version with a monthly payment may appear soon, but the free basic version still works still.
+version with a monthly payment may appear soon, but the free basic version still works.
 When you log in to the OpenAI homepage ( https://chat.openai.com/auth/login?next=/chat) you can
 ask the bot questions, ask it to create a simple Nim program for you, fix errors in your program, or
 add comments. The bot may even be able to convert source code from other languages to Nim.
@@ -5437,6 +5437,110 @@ are constant while we add the first 4 elements. Then the capacity of the allocat
 buffer is exhausted. A new buffer with a different address and doubled capacity is
 allocated, the already contained elements are silently copied to the start of the new
 buffer, and so on.
+
+=== Multidimensional arrays and sequences
+
+Nim does not support multidimensional arrays and sequences, also called matrices or tensors, as a
+default built-in data type. But of course we can create ordinary one-dimensional arrays and sequences,
+and make each container element again an array or sequence. For a two-dimensional matrix, we would access
+an element then with two indices like [.code]#m[i][j]#. To simplify the element access, we can define us a template
+to just write [.code]#m[i, j]# instead. We can extend that to more than two dimensions.
+When you really need matrices and tensors, you should also consider the use of external libraries,
+like Arraymancer.  Arraymancer is optimized for performance and also supports parallel operations like
+parallel matrix multiplication. In this section we will present a few simple use cases for the creation
+of two dimensional matrices and access to its elements. That should be enough to get you started.
+
+First, let's create a chess board:
+
+[source, nim]
+----
+const
+  Rows = 8
+  Cols = 8
+
+type
+  Fig = int8
+  Row = array[Cols, Fig]
+  Board = array[Cols, Row]
+  
+var b: Board
+
+const
+  a = 0
+  rook = 5 # whatever makes sense
+
+b[a][0] = rook
+echo b[a][0] # 5
+
+# with user defined templates we can simplify the index notation
+template `[]`(b: Board; i, j: int): int8 =
+  b[i][j]
+
+template `[]=`(b: var Board; i, j: int; v: int8) =
+  b[i][j] = v
+
+b[a, 0] = rook
+echo b[a, 0] # 5
+----
+
+Now let us investigate the case that one or both dimensions of the matrix
+can grow during program runtime, so we make that dimension a [.type]#seq# instead of an [.type]#array#.
+
+
+[source, nim]
+----
+type
+  T1 = array[4, seq[int]]
+  T2 = seq[array[2, int]]
+  T3 = seq[seq[int]]
+
+var t1: T1
+t1[0] = @[1, 2, 3]
+t1[1].add(7)
+echo t1[0][0] # 1
+echo t1[1][0] # 7
+
+var t2: T2
+t2.add([1, 2])
+echo t2[0] # [1, 2]
+
+var t2x = newSeq[array[2, int]](10) # pre-allocate 10 rows
+t2x[7] = [5, 6]
+echo t2x[7] # [5, 6]
+
+var t3: T3
+t3.add(@[1, 2, 3])
+t3.add(newSeq[int](1))
+t3[1][0] = 19
+for row in t3:
+  echo row # @[1, 2, 3], @[19]
+----
+
+If both dimensions are dynamic, you can also use the [.func]#newSeqWith()#
+template from the [.mod]#sequtils# module. We will cite the example of that module:
+
+[source, nim]
+----
+## Creates a seq containing 5 bool seqs, each of length of 3.
+var seq2D = newSeqWith(5, newSeq[bool](3))
+assert seq2D.len == 5
+assert seq2D[0].len == 3
+assert seq2D[4][2] == false
+
+## Creates a seq with random numbers
+import std/random
+var seqRand = newSeqWith(20, rand(1.0))
+assert seqRand[0] != seqRand[1]
+----
+
+Using seq/array types to create a matrix makes a lot of sense when the matrix is densely populated.
+For sparse matrices, using a hash table instead may save memory.
+
+When iterating over matrices, keep in mind that for memory accesses such as [.code]#m[i, j]#, [.code]#m[i, j + 1]#, the RAM
+is accessed in sequential order with good cache support. Instead, when the first index changes,
+then we access memory regions that are far apart, implying that cache support may be inadequate. We should
+remember this fact, as it can have a strong impact on performance. Sometimes we can optimize
+loops for matrix access by changing the way in which we iterate -- by rows or by columns.
 
 == Slices
 
