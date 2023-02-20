@@ -35,6 +35,7 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :pp: ++
 :behav: behavior
 :cdefine: #define
+:btic: `
 
 ////
 
@@ -293,12 +294,12 @@ to rewrite with better grammar or maybe extend the content. Some possible tasks 
 ChatGPT to do:
 
 * Do you know the Nim programming language?
-* What does the Nim statement `echo 1 + 2` print to the screen?
-* And can you guess what the Nim statement `echo 1, 2` would print?
+* What does the Nim statement 'echo 1 + 2' print to the screen?
+* And can you guess what the Nim statement 'echo 1, 2' would print?
 * Are you sure that the two arguments provided to the echo statement are
 separated with a space?
-* I just tested it. I run the Nim program `echo 1, 2` called t.nim with the
-command `nim r t.nim` and it prints "12", so there is no space involved!
+* I just tested it. I run the Nim program 'echo 1, 2' called t.nim with the
+command 'nim r t.nim' and it prints "12", so there is no space involved!
 * Please create a Nim program, that prints the numbers
 one to 10 each on its own line.
 * I will insert a small Nim program with issues in the prompt; please fix it.
