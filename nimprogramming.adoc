@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-03
+//v0.1, 2023-FEB-20
 :doctype: book
 :toc: left
 :icons: font
@@ -270,6 +270,49 @@ dynamic, constrained Delaunay triangulation, are freely available as open-source
 projects at https://github.com/StefanSalewski.
 ****
 
+.ChatGPT
+****
+You may have already heard about ChatGPT, an AI (artificial intelligence) chatbot developed by OpenAI.
+ChatGPT was launched as a prototype on November 30, 2022, and quickly garnered attention for its detailed
+responses and articulate answers across many domains of knowledge.footnote:[https://en.wikipedia.org/wiki/ChatGPT]
+While this book was still written by a real human, parts of it could have been created
+by ChatGPT, perhaps with a more fluent sound and with fewer spelling errors
+and grammar issues. So this book, or at least parts of it, may be considered
+obsolete now :-(. While ChatGPT has some serious issues still (better not ask it about
+the author of this book, the creator of the Nim language, or other Nim core devs) it
+can provide very valuable information about some topics. We were really surprised at how much it
+already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
+languages. To use ChatGPT, you would have to register with your real name and phone number.
+We think that is OK to prevent misuse. The basic service is still free. A professional
+version with a monthly payment may appear soon, but the free basic version still works still.
+When you log in to the OpenAI homepage ( https://chat.openai.com/auth/login?next=/chat) you can
+ask the bot questions, ask it to create a simple Nim program for you, fix errors in your program, or
+add comments. The bot may even be able to convert source code from other languages to Nim.
+Or it can rephrase text, so you may provide it with a section of this book and then ask it
+to rewrite with better grammar or maybe extend the content. Some possible tasks you can ask
+ChatGPT to do:
+
+* Do you know the Nim programming language?
+* What does the Nim statement `echo 1 + 2` print to the screen?
+* And can you guess what the Nim statement `echo 1, 2` would print?
+* Are you sure that the two arguments provided to the echo statement are
+separated with a space?
+* I just tested it. I run the Nim program `echo 1, 2` called t.nim with the
+command `nim r t.nim` and it prints "12", so there is no space involved!
+* Please create a Nim program, that prints the numbers
+one to 10 each on its own line.
+* I will insert a small Nim program with issues in the prompt; please fix it.
+* [insert code here]
+* Can you please add some comments to the source code?
+
+Of course, you should not really trust the advice of ChatGPT. Currently (early 2023)
+it thinks that the echo command automatically adds spaces between the printed values.
+Of course that is wrong, and we can convince ChatGPT of that. But ChatGPT
+can currently not remember what it has learned in a user dialog, so next time
+it makes the same errors again. Note that ChatGPT was trained with data only up to 2021,
+so it may not know about Nim 2.0 and other recent changes.
+****
+
 = Part I: Introduction
 
 [.normal]
@@ -407,10 +450,10 @@ be some sort of arbitrary approximation.
 
 But [.ndef]#quantum mechanics# has taught us that many quantities in our world really
 have a granularity. Physically, quantities like energy or momentum are indeed
-multiplies of the tiny [.ndef]#Planck constant#. Or consider electric charge, which
+multiple of the tiny [.ndef]#Planck constant#. Or consider electric charge, which
 is always a multiple of the [.ndef]#elementary charge unit# of one electron. Whenever
 an electrical current is flowing through an electrically conducting wire, an ionized
-gas, or an electrolyte like saltwater, there are flowing multiplies of the elementary
+gas, or an electrolyte like saltwater, there are flowing multiple of the elementary
 charge only, never fractions of it. And of course, light and electromagnetic radiation
 also have some form of granularity, which the photoelectric effect, as well as Compton
 scattering, proves.
@@ -4788,7 +4831,7 @@ characters of a [.type]#string# in this way:
 ----
 var
   s = "Nim is not always that easy?"
-pos = 0
+  pos = 0
 while s[pos] != '?':
   echo "-->", s[pos]
   inc(pos)
@@ -16315,7 +16358,7 @@ type
     id: int
 
 type
-  forest = seq[E]
+  Forest = seq[E]
 
 proc cmp(a, b: E): int =
   let d1 = (a.v1.x - a.v2.x) ^ 2 + (a.v1.y - a.v2.y) ^ 2
@@ -16323,7 +16366,7 @@ proc cmp(a, b: E): int =
   return -(d1 < d2).int + (d1 > d2).int
 
 var
-  forest: forest
+  forest: Forest
   s: Subsets
   cdt = initDelaunayTriangulation(Vector2(x: 0, y: 0), Vector2(x: WindowWidth.float, y: WindowHeight.float))
   candidates: seq[E]
