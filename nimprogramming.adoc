@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-20
+//v0.1, 2023-FEB-22
 :doctype: book
 :toc: left
 :icons: font
@@ -1284,6 +1284,21 @@ point is the style-insensitivity of Nim: With the exception of the first letter 
 Nim does not distinguish between lower- and upper-case letters and ignores underscores.
 This has some pros and cons and is not that bad in practice. We will discuss it later
 in this book in more detail.
+
+Not directly related to the Nim language itself, but to the user experience, is the programming environment
+or tooling: editor, IDE, REPL (read–eval–print loop), and debugging and profiling support. All this may not be as perfect as
+for other  popular major languages yet. Nim's language server support (based on nimsuggest) works indeed
+not very reliable and is slow. But that may soon improve when Nim may finally gets incremental compilation support (IC) in Nim 2.0.
+Providing good language server support is generally hard for languages with templates, macros, and type inference --
+the Crystal language has similar issues. But all this tooling is more an implementation detail and not
+a direct issue of the language. And as Nim is a high-level language with very clear syntax, tooling should
+be not that important. Successfully compiled programs generally just work, so there shouldn't be that much demand for
+good debugger support. And actually, Nim has all this tooling already; it just doesn't work as well as it could.
+footnote:[Actually, source code debuggers are not as useful as one may think: They can be used as a toy tool
+for people who prefer a form of coding without thinking first, just to see what the program actually does. And they can
+be used to find obvious bugs, which can be found easily with some print statements temporarily included in the source code as well. But
+for really hard bugs -- random crashes, or misbehavior of really complicated, deeply recursive code, debuggers are often
+not that helpful and cannot replace carefully thinking about the problem to solve and the applied algorithm.]
 
 Nim is already supported by more than 1000 external packages which cover many
 application areas, but that number is still small compared to really popular
