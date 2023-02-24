@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-22
+//v0.1, 2023-FEB-24
 :doctype: book
 :toc: left
 :icons: font
@@ -311,7 +311,32 @@ Of course that is wrong, and we can convince ChatGPT of that. But ChatGPT
 can currently not remember what it has learned in a user dialog, so next time
 it makes the same errors again. Note that ChatGPT was trained with data only up to 2021,
 so it may not know about Nim 2.0 and other recent changes.
+
+Below is a complete dialog with ChatGPT from early 2023:
 ****
+
+----
+One more question to the Nim programming language. The following code to convert a string to an integer number does not compile. Can you fix it?
+`var s: string = "123"; var i: int = int(s)`
+
+Yes, the code you provided is not valid Nim syntax. In order to convert a string to an integer in Nim, you can use the parseInt procedure from the strutils module.
+
+Here's an example of how to use it:
+----
+
+[source, nim]
+----
+import strutils
+
+var s: string = "123"
+var i: int = parseInt(s)
+echo i  # Output: 123
+----
+
+----
+In this example, we import the strutils module, which provides the parseInt procedure for parsing integers from strings. Then, we define a string s 
+with the value "123", and use parseInt to convert it to an integer, which we store in the variable i. Finally, we use echo to print the value of i.
+----
 
 = Part I: Introduction
 
@@ -5049,7 +5074,7 @@ To initialize the variable [.var]#computer1# we used the constructor syntax.
 In line five, we use the assignment operator to copy the content
 of variable [.var]#computer1# into variable [.var]#comp2#, and finally, we overwrite
 the [.var]#price# field of [.var]#comp2#. As both variables are distinct instances,
-the fields of variable [.var]#computer1# are not modified this way. 
+the fields of variable [.var]#computer1# are not modified this way.
 
 Typically, a computer store would offer many different types of computers, so it would
 make sense to store all the different devices in a container like a sequence, called
@@ -6364,6 +6389,15 @@ echo ro1 == ro2 # false
 echo ro1[] == ro2[] # true
 echo ro1 == ro3 # true
 ----
+
+NOTE: In modern Nim, we generally use the constructor syntax like [.code]#var ro1 = RO(i: 1)# or [.code]#var computer1: Computer(price: 799.99; quantity: 2)#
+to allocate and initialize ref objects, and avoid explicit new() calls for the allocation, followed by explicit field initialization.   
+The constructor syntax is more compact,
+and the combined construction with initialization may allow the compiler to reason about the code more effectively and to produce better code.
+As the constructor
+syntax looks the same for value and ref objects, this may also simplify later changes of the program.
+So the use of explicit new() calls is a legacy and everybody is highly encouraged to use object constructors instead.
+In the rare case, that a very complicated constructor call fails to compile, we may fall back to use of new().footnote:[https://forum.nim-lang.org/t/9929]
 
 //== Arithmetic -- Integers and Floats
 
