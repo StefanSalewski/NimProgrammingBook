@@ -6901,7 +6901,14 @@ For the performance of our code, it may have a tiny benefit to only use the
 result variable and fully avoid return statements, as in this case for
 a function call like [.code]#var i = sqr(j)# the result variable may be just an alias for the
 actual result i here, so that the compiler can optimize the code and avoid temporary copies.
-But that are rumors and may depend on the actual compiler version.
+This is a well known optimization in languages like {cpp} and is called NRVO (Named Return Value Optimization).footnote:[https://forum.nim-lang.org/t/4041]
+//But that are rumors and may depend on the actual compiler version.
+
+Programmers often like to do some early checks at the beginning of a proc, to verify that all parameters have 
+valid values, and terminate proc execution immediately in case of invalid data by use of a return statement.
+This avoids deeply nested code in the proc body for these checks. In contrast, compiler designers like Mr. Rumpf
+prefer to avoid these return statements and to use nested if clauses instead, as this allows better control flow
+analyses and optimization for the compiler.
 
 ==== Var Return Type
 
