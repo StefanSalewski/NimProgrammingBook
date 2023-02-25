@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-24
+//v0.1, 2023-FEB-26
 :doctype: book
 :toc: left
 :icons: font
@@ -1293,6 +1293,14 @@ longer history, and some possibly better suited for special purposes, like JavaS
 Dart or Kotlin for web development, Julia or R for numeric applications, or Zig, C and
 Assembly for the tiny 8-bit {uc}s with a small amount of RAM.
 
+We said that Nim can be used universally, from tiny {uc}s to large desktop and web applications.
+But we have to admit that the use of Nim for mobile devices with Android or IOS operating
+systems may be not that easy and well supported (documented). But this applies for many other languages including the popular
+ones like Python, Go, or Rust as well. The reason is just, that Android and IOS devices are not really open systems,
+e.g. Android is strongly coupled to Java or its new variant Kotlin.
+But using Nim on Android and IOS devices is possible, Games and Apps have been already created for these devices, see
+https://github.com/treeform/glfm as an example.
+
 For some "professional" programmers, Nim's use of significant white space instead
 of curly brackets for identifying blocks and scopes may be a reason to avoid Nim.
 The use of significant white space, also called the Off-side rule,footnote:[https://en.wikipedia.org/wiki/Off-side_rule]
@@ -1313,9 +1321,17 @@ in this book in more detail.
 Not directly related to the Nim language itself, but to the user experience, is the programming environment
 or tooling: editors, IDEs, REPL (read–eval–print loop), package managers, and debugging and profiling support. All this may not be as perfect as
 for other  popular major languages yet. Nim's language server support (based on nimsuggest) works indeed
-not very reliable and is slow. But that may soon improve when Nim may finally gets incremental compilation support (IC) in Nim 2.0.
+not very reliable and is slow.
+The language server support depends on compile times, as nimsuggest is some form of a Nim compiler variant.
+So this may improve when Nim may finally gets incremental compilation support (IC) in Nim 2.0 or later.
 Providing good language server support is generally hard for languages with templates, generics, macros, and type inference --
-the Crystal language has similar issues. But all this tooling is more an implementation detail and not
+the Crystal language has similar issues.footnote:[See https://github.com/elbywan/crystalline, "Due to Crystal having
+a wide type inference system (which is incredibly convenient and practical), compilation times can
+unfortunately be relatively long for big projects and depending on the hardware.
+This means that the LSP will be stuck waiting for the compiler to finish before being able to provide a response."
+Also see https://dev.to/asterite/incremental-compilation-for-crystal-part-1-414k]
+
+But all this tooling is more an implementation detail and not
 a direct issue of the language. And as Nim is a high-level language with very clear syntax, tooling should
 be not that important. Successfully compiled programs generally just work, so there shouldn't be that much demand for
 good debugger support. And actually, Nim has all this tooling already; it just doesn't work as well as it could.
@@ -9761,7 +9777,10 @@ modules are Nim's classes.
 
 In Nim, each module directly corresponds to one text file. Submodules as known from
 Ruby, that divide a single text file into multiple modules, are not supported by Nim
-currently.
+currently. For module names similar restrictions as for other Nim symbols exists, e.g.
+e.g. the hyphen '-' is not allowed in module names. Typically we use only lower case
+and the extension ".nim" for the names of modules. It is strongly recommended to
+avoid to use module names, that are identical with symbol (type) names of that module.
 
 Every text file with Nim source code is basically a module, and that module can be
 imported and used by other modules. But all symbols like data types or procedures
