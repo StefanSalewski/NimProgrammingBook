@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-26
+//v0.1, 2023-FEB-28
 :doctype: book
 :toc: left
 :icons: font
@@ -1280,6 +1280,22 @@ and cryptocurrency development. Nim has made a large amount of progress in the l
 it reached version {curnim} with some stability guarantees and a new deterministic memory
 management system was introduced, which will improve support of parallel processing
 and the use of Nim in the area of embedded systems development.
+
+=== Nim is not a virus
+
+As Nim is a powerful but simple systems programming language, in the last years a few
+people wrote some malware in it, and now a bunch of Nim programs, including the compiler and other official tools, often get falsely flagged as viruses
+on Windows OS. This is a serious issue for unexperienced people who want to try out Nim, and
+unfortunately, there is no easy solution. Nim developers have already reported this issue to Microsoft and
+other related companies, but they seem not to care that much about it. Experienced Windows users
+can switch off virus tests and maybe firewall protection manually, but of course that can be considered dangerous
+in case that there ever should exists a real Nim related virus.
+
+References:
+
+* https://www.reddit.com/r/nim/comments/11cteg6/is_nims_site_hacked/
+* https://forum.nim-lang.org/t/9850
+* https://github.com/nim-lang/Nim/issues/17820
 
 === Why is Nim not a popular mainstream language yet?
 
