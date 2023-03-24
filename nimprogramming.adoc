@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-FEB-28
+//v0.1, 2023-MAR-24
 :doctype: book
 :toc: left
 :icons: font
@@ -339,6 +339,11 @@ with the value "123", and use parseInt to convert it to an integer, which we sto
 ----
 
 = Part I: Introduction
+
+[quote]
+____
+Give me a video, I get headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
+____
 
 [.normal]
 
@@ -1317,6 +1322,11 @@ e.g. Android is strongly coupled to Java or its new variant Kotlin.
 But using Nim on Android and IOS devices is possible, Games and Apps have been already created for these devices, see
 https://github.com/treeform/glfm as an example.
 
+Some people just prefer languages with full OOP support and true classes. While Nim does support
+OPP design with heap-allocated reference objects, inheritance, and methods with dynamic runtime dispatch,
+it does not strongly enforce its use. People educated in the 1990s of the last century may still suffer
+from all the OOP Java hype and argue that classes make structuring larger programs easier.
+
 For some "professional" programmers, Nim's use of significant white space instead
 of curly brackets for identifying blocks and scopes may be a reason to avoid Nim.
 The use of significant white space, also called the Off-side rule,footnote:[https://en.wikipedia.org/wiki/Off-side_rule]
@@ -1327,6 +1337,18 @@ But actually, most professionals started their education with languages like C, 
 Java, and just feel more professional when they have their curly brackets.
 Scala introduced significant white space in version 3 of the language, and it's
 designer Martin Odersky said that this improves productivity overall by 10%.footnote:[https://en.wikipedia.org/wiki/Off-side_rule#Productivity]
+
+Nim programmers usually import symbols from other modules unqualified ("import strutils" instead of "from strutils import ...").
+Fully qualified symbol import is possible (from strutils import nil), but as Nim uses no classes, that
+may make it hard to use imported operators, and Nim's method call syntax may then not work properly (strutils.toUpperAscii(myStr) vs myStr.toUpperAscii).
+People coming from dynamically typed languages like Python may be scared about name space pollution and symbol conflicts
+due to unqualified imports. Practice has proven that unqualified import is no actual problem in Nim, as
+proc overload resolution typically works reliably when the proc parameter types are not all identical.
+Only for constants or enumeration data types name conflicts may occur in rare situations. These are reported by the compiler
+and can easily resolved by use of module name prefixes when necessary. But still some people worry,
+and argue that fully qualified names make it easier to see the origin of symbols.footnote:[Of course,
+this is not really an issue in real life, as most editors and IDEs can give hints about symbols and
+support tooling like "goto definition".]
 
 A similar
 point is the style-insensitivity of Nim: With the exception of the first letter of a symbol,
@@ -20751,7 +20773,274 @@ References:
 
 == Concepts
 
-to be done...
+Nim's [.key]#concepts# are a form of constrained generics. They have some similarities to what may be called
+traits or interfaces in other programming languages.
+
+For the {cpp} programming language, concepts have been introduced for {cpp}11 and have been revised multiple times before
+formally being a required part of {cpp}20.
+
+These are the first two sentences in Wikipedia's introduction to the {cpp} concepts:
+
+[.italic]#Concepts are an extension to the templates feature provided by the {cpp} programming language.
+Concepts are named Boolean predicates on template parameters, evaluated at compile time.footnote:[https://en.wikipedia.org/wiki/Concepts_(C%2B%2B)]#
+
+Note that {cpp}'s templates are Nim's generics, so you may replace the term "templates" in the above statement with
+"generics" for Nim.
+
+The Rust programming language uses the term traits instead:
+
+[.italic]#Traits: Defining Shared Behavior#
+
+[.italic]#A trait defines functionality a particular type has and can share with other types. We can use traits to define shared behavior in an abstract way.
+We can use trait bounds to specify that a generic type can be any type that has certain behavior.footnote:[https://doc.rust-lang.org/book/ch10-02-traits.html]#
+
+Nim's [.key]#concepts# have been redefined in 2019 and are now sometimes referred to as "new concepts".
+They are described in the "experimental" part of the compiler manual, and may still have some issues.
+Maybe syntax and semantic may change in future a bit, but it is expected that they remain part of the language.
+
+In this section, we will try to give an easy understandable introduction to Nim's [.key]#concepts#. If you have already some
+experience with concepts, interfaces or traits in other programming languages, you may read the section in the
+Nim compiler manual instead. And of course, you should consult that section later, when you really intend to use [.key]#concepts#,
+to learn about all the details and possible future changes.
+
+=== Purpose of concepts
+
+Modern programming languages care a lot for abstractions and code reuse. Functions like [.func]#sort()#, [.func]#max()#, or iterator variants should
+work on as many data types as possible. So [.func]#sort()# or [.func]#max()# may work on all data for which a [.func]#cmp()# or a [.op]#<# predicate is defined, and
+iterators like [.func]#items# should work on all container types. People sometimes say that they try to write [.italic]#DRY# code:
+"Don't repeat yourself" (DRY) is a principle of software development aimed at reducing repetition of software patterns,
+replacing it with abstractions or using data normalization to avoid redundancy.footnote:[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself]
+Some dynamic languages like Python or Ruby use the term [.italic]#Duck Typing#
+for these kinds of abstractions: [.italic]#Duck typing in computer programming is an application of the duck test—"If it walks like a duck
+and it quacks like a duck, then it must be a duck"—to determine whether an object can be used for a particular
+purpose.footnote:[https://en.wikipedia.org/wiki/Duck_typing]# Interpreted,
+dynamic languages may do all these type tests at runtime, while statically typed, compiled languages like {cpp}, Rust, D or Nim
+do the test already at compile-time, advertised by the term [.italic]#"Abstraction without overhead"#.
+
+Nim's [.key]#concepts# are also called [.italic]#"user-defined type classes"# and specify a set of requirements that a data type must have.
+Only when all of the requirements are met ("match"), can that specific data type be used as a parameter of
+//Only when all the requirements are fulfilled ("match"), then that particular data type may be used as parameter of
+a specific function or for other purposes.
+
+//Actually, Nim's generic data types allows already most abstractions:
+Actually, Nim's generic data types already allow most abstractions:
+ 
+[source, nim]
+----
+proc max[T](a, b: T): T =
+  if a < b:
+    return b
+  else:
+    return a
+----
+
+The proc above works for all data types that have a [.op]#<# predicate defined. We could restrict that proc
+to numeric parameters using a proc header like [.code]#proc max(a, b: float or int): auto#. But this way it is not
+possible to allow just all data types as parameters that have a [.op]#<# predicate defined. And when we use the
+fully generic proc from above, the user may pass invalid parameters, like an [.type]#array# or an [.type]#object# type
+with unspecified [.op]#<# predicate, and then may get a not very helpful compiler error message:
+
+[source, nim]
+----
+proc mx[T](a, b: T): T =
+  if a < b:
+    return b
+  else:
+    return a
+
+type
+  O = object
+    i: int
+
+var o1, o2: O
+
+let o = mx(o1, o2)
+----
+
+----
+nim c t.nim
+
+/tmp/hhh/t.nim(13, 11) template/generic instantiation of `mx` from here
+/tmp/hhh/t.nim(2, 8) Error: type mismatch
+Expression: a < b
+  [1] a: O
+  [2] b: O
+
+Expected one of (first mismatch at position [#]):
+[1] proc `<`(x, y: bool): bool
+...
+----
+
+Actually the compiler error messages are very clear in this case already. And the
+[.op]#<# predicate may be not a really good example for the use of concepts, as [.op]#<# is typically defined for most of Nim's data
+types, even for sets and tables. But [.key]#concepts#
+allow us to express the constraints more clearly, already visible in the proc definition
+and resulting in even more clear compiler error messages.
+
+So let us define a [.type]#Comparable# data type, which we then can use for our [.func]#mx()# proc.footnote:[We
+called the proc mx() instead of max, to ensure that there is no name space conflict with the system module.
+Just to be absolutely sure for this test...] 
+
+The fundamental idea of Nim's [.key]#concepts# is that we define a set of expressions for variables or types:
+//A data type then matches the concept, when all the expressions compile, and when all boolean expressions evaluate to true.
+A data type then matches the [.key]#concept# when all the expressions compile and all boolean expressions evaluate to [.const]#true#.
+So we can
+define a [.type]#Comparable# [.key]#concept# this way:
+
+
+[source, nim]
+----
+type
+  Comparable = concept x, y
+    (x < y) is bool
+----
+
+[.type]#Comparable# is a [.key]#concept# data type.
+The identifiers that follow the [.key]#concept# keyword represent instances
+of data types that may or may not match this concept type.
+For the match test we employ two instance variables x and y,
+on which we try to apply an infix [.op]#<# operator. When that expression compiles, and has a result of boolean type, then
+we say that a candidate data type matches this concept. We can use this [.type]#Comparable# [.key]#concept# data type
+for the parameter types of our [.func]#mx()# proc and see what happens when we try to pass matching or non-matching parameter types:
+
+[source, nim]
+----
+type
+  Comparable = concept x, y
+    (x < y) is bool
+
+proc mx(a, b: Comparable): Comparable =
+  if a < b:
+    return b
+  else:
+    return a
+
+type
+  O = object
+    i: int
+
+var o1, o2: O
+
+let h = mx(1, 2) # integer types match, as they have an < infix operator defined
+echo h
+let o = mx(o1, o2) # no match, as we have not defined a < for O
+----
+
+The last line would not compile, as the object data type [.type]#O# has no
+[.op]#<# predicate defined. From the [.type]#Comparable# type definition or from
+the error message, it may now be easier to understand the concrete issue.
+
+We can also define more complicated [.key]#concepts#. The compiler manual has an
+example of a [.type]#Stack# [.key]#concept#:
+ 
+[source, nim]
+----
+
+Stack[T] = concept s, var v
+  s.pop() is T
+  v.push(T)
+    
+  s.len is Ordinal
+    
+  for value in s:
+    value is T
+----
+
+A generic [.type]#Stack# for data of type [.type]#T# needs a [.func]#pop()# and a [.func]#push()#
+function, both working on the [.type]#T# data type, and a [.func]#len()# function
+that returns an ordinal result. Additionally, it has to define
+an [.func]#items()# [.key]#iterator#, which [.key]#yields# the [.type]#T# data type.
+
+The [.key]#concept# matches if:
+
+* all expressions within the body can be compiled for the tested type
+* all statically evaluable [.type]#boolean# expressions in the body are [.const]#true#
+
+The identifiers following the [.key]#concept# keyword represent instances of the currently matched type.
+We can apply any of the standard type modifiers such as [.key]#var#, [.key]#ref#, [.key]#ptr# and [.key]#static# to denote a more specific type of instance.
+We can also apply the [.key]#type# modifier to create a named instance of the type itself:
+
+[source, nim]
+----
+type
+  MyConcept = concept x, var v, ref r, ptr p, static s, type T
+    ...
+----
+
+Within the [.key]#concept# body, types can appear in positions where ordinary values and parameters are expected.
+This provides a convenient way to check for the presence of callable symbols with specific signatures:
+
+[source, nim]
+----
+type
+  OutputStream = concept var s
+    s.write(string) # test if the matched type has a write() proc with string parameter
+----
+
+In a [.key]#concept# body, we can also use and test for types.
+We can use directly the named type instances following the [.key]#concept# keyword [.code]#(concept x, y, type T)#
+and we can explicitly prefix data types with the [.key]#type# modifier. The following example is from
+the experimental section of the compiler manual:
+
+[source, nim]
+----
+type
+  # Let's imagine a user-defined casting framework with operators
+  # such as `val.to(string)` and `val.to(JSonValue)`. We can test
+  # for these with the following concept:
+  MyCastables = concept x
+    x.to(type string)
+    x.to(type JSonValue)
+  
+  # Let's define a couple of concepts, known from Algebra:
+  AdditiveMonoid* = concept x, y, type T
+    x + y is T
+    T.zero is T # require a proc such as `int.zero` or 'Position.zero'
+  
+  AdditiveGroup* = concept x, y, type T
+    x is AdditiveMonoid
+    -x is T
+    x - y is T
+----
+
+Please note that the [.op]#is# operator allows one to easily verify the precise type signatures of the required operations,
+but since type inference and default parameters are still applied in the [.key]#concept# body, it's also possible to describe usage protocols that do not reveal implementation details.
+
+Much like generics, [.key]#concepts# are instantiated exactly once for each tested type, and any static code included within the body is executed only once.
+
+Note, that in the same way, as generic procs are instantiated for each used type, this also holds for [.key]#concept# data types.
+So the use of [.key]#concepts# with many matching types may produce many proc instances and a large executable.
+
+With the old [.key]#concepts# implementation, it was possible to test directly for the existence of
+object fields.
+//It is not fully clear, if the new concepts may support these tests directly.
+It is unclear whether the new [.key]#concepts# will directly support these tests.
+Perhaps we will have to declare setter or getter procs or templates for these field tests.
+
+=== Concept diagnostics
+
+It is not always easy to understand Nim's proc overload resolution, and using [.key]#concepts# may make
+it not really easier. It may occur in rare conditions that instead of a proc with [.key]#concept# parameter types
+a different proc with an equal name may be selected by the compiler. To get more detailed compiler messages, Nim provides the explain pragma, which
+may be attached to [.key]#concept# data types or to procs with [.key]#concept# parameters.footnote:[We have not been able to see an
+effect of that pragma.]
+
+=== Generic concepts
+
+Concept data types can be parametric just like regular generic types. The compiler manual
+presents a generic concept for a 2D matrix type that may be used with arbitrary
+numeric base types.
+
+=== Concept-derived values and concept refinement
+
+The compiler manual also explains how existing [.key]#concepts# can be refined and
+how we can even define constants and types inside a [.key]#concept# body.
+
+References:
+
+* https://nim-lang.github.io/Nim/manual_experimental.html#concepts
+* https://github.com/nim-lang/RFCs/issues/168
+* https://www.jasonbeetham.com/codereuse.html
 
 = Appendix
 
@@ -21941,6 +22230,9 @@ We have added a few more simple examples and exercises:
 * <<Minimum Spanning Tree>>
 * <<Changes for Nim 2.0>>
 
+=== Mar 2023
+
+* <<Concepts>>
 
 ////
 Part I: Introduction
