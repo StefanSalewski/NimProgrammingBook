@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAR-24
+//v0.1, 2023-MAR-25
 :doctype: book
 :toc: left
 :icons: font
@@ -20801,7 +20801,10 @@ Maybe syntax and semantic may change in future a bit, but it is expected that th
 In this section, we will try to give an easy understandable introduction to Nim's [.key]#concepts#. If you have already some
 experience with concepts, interfaces or traits in other programming languages, you may read the section in the
 Nim compiler manual instead. And of course, you should consult that section later, when you really intend to use [.key]#concepts#,
-to learn about all the details and possible future changes.
+to learn about all the details and possible future changes. The following explanations are based on the experimental section of
+the Nim compiler manual for Nim 1.9.1, which does not explicitly refers to the term "new concepts" and does not already use
+the new [.type]#Self# data type introduced for the "new concepts". At the end of this section, we will cite the actual RFC (Request for Comments)
+for the "new concept" implementation.  
 
 === Purpose of concepts
 
@@ -20819,10 +20822,8 @@ do the test already at compile-time, advertised by the term [.italic]#"Abstracti
 
 Nim's [.key]#concepts# are also called [.italic]#"user-defined type classes"# and specify a set of requirements that a data type must have.
 Only when all of the requirements are met ("match"), can that specific data type be used as a parameter of
-//Only when all the requirements are fulfilled ("match"), then that particular data type may be used as parameter of
 a specific function or for other purposes.
 
-//Actually, Nim's generic data types allows already most abstractions:
 Actually, Nim's generic data types already allow most abstractions:
  
 [source, nim]
@@ -20878,12 +20879,11 @@ allow us to express the constraints more clearly, already visible in the proc de
 and resulting in even more clear compiler error messages.
 
 So let us define a [.type]#Comparable# data type, which we then can use for our [.func]#mx()# proc.footnote:[We
-called the proc mx() instead of max, to ensure that there is no name space conflict with the system module.
+called the proc mx() instead of max(), to ensure that there is no name space conflict with the system module.
 Just to be absolutely sure for this test...] 
 
 The fundamental idea of Nim's [.key]#concepts# is that we define a set of expressions for variables or types:
-//A data type then matches the concept, when all the expressions compile, and when all boolean expressions evaluate to true.
-A data type then matches the [.key]#concept# when all the expressions compile and all boolean expressions evaluate to [.const]#true#.
+A data type then matches the [.key]#concept# when all the expressions compile and all boolean expressions evaluate to [.lit]#true#.
 So we can
 define a [.type]#Comparable# [.key]#concept# this way:
 
@@ -20935,13 +20935,10 @@ example of a [.type]#Stack# [.key]#concept#:
  
 [source, nim]
 ----
-
 Stack[T] = concept s, var v
   s.pop() is T
   v.push(T)
-    
   s.len is Ordinal
-    
   for value in s:
     value is T
 ----
@@ -20949,12 +20946,12 @@ Stack[T] = concept s, var v
 A generic [.type]#Stack# for data of type [.type]#T# needs a [.func]#pop()# and a [.func]#push()#
 function, both working on the [.type]#T# data type, and a [.func]#len()# function
 that returns an ordinal result. Additionally, it has to define
-an [.func]#items()# [.key]#iterator#, which [.key]#yields# the [.type]#T# data type.
+an [.func]#items()# [.key]#iterator#, which [.key]#yields# instances of the [.type]#T# data type.
 
-The [.key]#concept# matches if:
+A [.key]#concept# matches if:
 
 * all expressions within the body can be compiled for the tested type
-* all statically evaluable [.type]#boolean# expressions in the body are [.const]#true#
+* all statically evaluable [.type]#boolean# expressions in the body are [.lit]#true#
 
 The identifiers following the [.key]#concept# keyword represent instances of the currently matched type.
 We can apply any of the standard type modifiers such as [.key]#var#, [.key]#ref#, [.key]#ptr# and [.key]#static# to denote a more specific type of instance.
@@ -21003,17 +21000,17 @@ type
     x - y is T
 ----
 
+We suppose, that actually [.code]#x.to(type string)# and [.code]#x.to(type JSonValue)# should be [.code]#x.to(string)# and [.code]#x.to(JSonValue)# instead.
 Please note that the [.op]#is# operator allows one to easily verify the precise type signatures of the required operations,
 but since type inference and default parameters are still applied in the [.key]#concept# body, it's also possible to describe usage protocols that do not reveal implementation details.
 
 Much like generics, [.key]#concepts# are instantiated exactly once for each tested type, and any static code included within the body is executed only once.
 
 Note, that in the same way, as generic procs are instantiated for each used type, this also holds for [.key]#concept# data types.
-So the use of [.key]#concepts# with many matching types may produce many proc instances and a large executable.
+So the use of [.key]#concepts# with many different matching types may produce many proc instances and a large executable.
 
 With the old [.key]#concepts# implementation, it was possible to test directly for the existence of
 object fields.
-//It is not fully clear, if the new concepts may support these tests directly.
 It is unclear whether the new [.key]#concepts# will directly support these tests.
 Perhaps we will have to declare setter or getter procs or templates for these field tests.
 
@@ -21035,6 +21032,242 @@ numeric base types.
 
 The compiler manual also explains how existing [.key]#concepts# can be refined and
 how we can even define constants and types inside a [.key]#concept# body.
+
+=== Concept redesign 2019
+
+The above descriptions are based on the experimental section of the Nim compiler
+manual for Nim 1.9.1 (RC 2.0) as available in early 2023. An RFC (Request for Comments) from 2019 suggested a
+[.key]#concept# redesign, which is not explicitly mentioned in the compiler manual, but
+seems to be partly implemented already. The most noticeable change for these "new concepts" is,
+that now a [.type]#Self# data type can be used to refer to the [.key]#concept# type instance.
+The [.key]#concept# body consists now mostly of a set of procs, which may use the [.type]#Self# data type.
+So we can
+now define a [.type]#Comparable# type this way:
+
+[source, nim]
+----
+type
+  Comparable = concept
+    proc `<`(a, b: Self): bool
+----
+
+We will cite the full RFC verbatim here for reference, including the
+suggested [.code]#each T# and [.code]#either orelse# constructs, which are still unimplemented:
+
+==== Atoms and containers
+
+[.key]#Concepts# come in two forms: Atoms and containers. A container is a generic
+[.key]#concept# like [.type]#Iterable[T]#, while an atom always lacks any kind of generic
+parameter (as in [.type]#Comparable#).
+
+Syntactically a [.key]#concept# consists of a list of proc and [.key]#iterator#
+declarations. There are 3 syntactic additions:
+
+* [.type]#Self# is a builtin type within the concept's body and stands for the
+current [.key]#concept#. (Or the data type that is matched?)
+
+* [.key]#each# is used to introduce a generic parameter [.type]#T# within the
+concept's body that is not listed within the concept's generic
+parameter list.
+
+* [.key]#either orelse# is used to provide basic support for optional
+procs within a concept.
+
+We will see how these are used in the examples:
+
+==== Atoms
+
+[source, nim]
+----
+type
+  Comparable = concept # no T, an atom
+    proc cmp(a, b: Self): int
+
+  ToStringable = concept
+    proc `$`(a: Self): string
+
+  Hashable = concept
+    proc hash(x: Self): int
+    proc `==`(x, y: Self): bool
+
+  Swapable = concept
+    proc swap(x, y: var Self)
+----
+
+Self stands for the currently defined [.key]#concept# itself. It is used to avoid
+a recursion, [.code]#proc cmp(a, b: Comparable): int# is invalid.
+
+==== Containers
+
+A container has at least one generic parameter (most often called [.type]#T#). The
+first syntactic usage of the generic parameter specifies how to infer and bind [.type]#T#.
+Other usages of [.type]#T# are then checked to match what it was bound to.
+
+[source, nim]
+----
+type
+  Indexable[T] = concept # has a T, a collection
+    proc `[]`(a: Self; index: int): T # we need to describe how to infer 'T'
+    # and then we can use the 'T' and it must match:
+    proc `[]=`(a: var Self; index: int; value: T)
+    proc len(a: Self): int
+----
+
+Nothing interesting happens when we use multiple generic parameters:
+
+[source, nim]
+----
+type
+  Dictionary[K, V] = concept
+    proc `[]`(a: Self; key: K): V
+    proc `[]=`(a: var Self; key: K; value: V)
+----
+
+The usual ": Constraint" syntax can be used to add generic constraints to
+the involved generic parameters:
+
+[source, nim]
+----
+type
+  Dictionary[K: Hashable; V] = concept
+    proc `[]`(a: Self; key: K): V
+    proc `[]=`(a: var Self; key: K; value: V)
+----
+
+==== each T
+
+Note: [.code]#each T# is currently not implemented.
+
+[.code]#each T# allows to introduce generic parameters that are not part of a
+concept's generic parameter list. It is furthermore a special case to
+allow for the common "every field has to fulfill property P" scenario:
+
+[source, nim]
+----
+type
+  Serializable = concept
+    iterator fieldPairs(x: Self): (string, each T)
+    proc write(x: T)
+
+
+proc writeStuff[T: Serializable](x: T) =
+  for name, field in fieldPairs(x):
+    write name
+    write field
+----
+
+==== either orelse
+
+Note: [.code]#either orelse# is currently not implemented.
+
+In generic code it's often desirable to specialize the code in an ad-hoc manner.
+[.func]#system.addQuoted# is an example of this:
+
+[source, nim]
+----
+proc addQuoted[T](dest: var string; x: T) =
+  when compiles(dest.add(x)):
+    dest.add(x)
+  else:
+    dest.add($x)
+----
+
+If we want to describe [.type]#T# with a [.key]#concept# we need some way to describe optional
+aspects. [.code]#either orelse# can be used:
+
+[source, nim]
+----
+type
+  Quotable = concept
+    either:
+      proc `$`(x: Self): string
+    orelse:
+      proc add(s: var string; elem: self)
+
+proc addQuoted[T: Quotable](s: var string; x: T) =
+  when compiles(s.add(x)):
+    s.add(x)
+  else:
+    s.add($x)
+----
+
+==== More examples
+
+[source, nim]
+----
+  # system.find
+  type
+    Findable[T] = concept
+      iterator items(x: Self): T
+      proc `==`(a, b: T): bool
+
+  proc find(x: Findable[T]; elem: T): int =
+    var i = 0
+    for a in x:
+      if a == elem: return i
+      inc i
+    return -1
+----
+
+==== Sortable
+
+Note that a declaration like
+
+[source, nim]
+----
+type
+  Sortable[T] = Indexable[T] and T is Comparable and T is Swapable
+----
+
+is possible but unwise. The reason is that [.type]#Indexable# either contains
+too many procs we don't need or accessors that are slightly off as they don't
+offer the right kind of mutability access.
+
+Here is the proper definition:
+
+[source, nim]
+----
+type
+  Sortable[T] = concept
+    proc `[]`(a: var Self; b: int): var T
+    proc len(a: Self): int
+    proc swap(x, y: var T)
+    proc cmp(a, b: T): int
+----
+
+==== Concept matching
+
+A type [.type]#T# matches a [.key]#concept# [.type]#C# if every proc and [.key]#iterator# header
+[.type]#H# of [.type]#C# matches an entity [.type]#E# in the current scope.
+
+The matching process is forgiving:
+
+* If H is a proc, E can be a proc, a func, a method, a template,
+a converter or a macro. E can have more parameters than H as long
+as these parameters have default values. The parameter names do not have
+to match.
+
+* If H has the form proc p(x: Self): T then E can be a public
+object field of name p and of type T.
+
+* If H is an iterator, E must be an iterator too, but E's parameter
+names do not have to match and it can have additional default parameters.
+
+==== Escape hatch
+
+Generic routines that have at least one [.key]#concept# parameter are type-checked at declaration time.
+To disable type-checking in certain code sections an untyped block can be used:
+
+[source, nim]
+----
+proc sort(x: var Sortable) = 
+  ... 
+  # damn this sort doesn't work, let's find out why:
+  untyped:
+    # no need to change 'Sortable' so that it mentions '$' for the involved
+    # element type!
+    echo x[i], " ", x[j]
+----
 
 References:
 
