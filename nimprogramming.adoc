@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAR-25
+//v0.1, 2023-APR-10
 :doctype: book
 :toc: left
 :icons: font
@@ -25,7 +25,7 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :proc: proc
 :procs: procs
 :profus: procedures and functions
-:curnim: Nim v1.6
+:curnim: Nim v2.0
 :twocom: two's complement
 :cpp: C++
 //:plus: +
@@ -920,7 +920,8 @@ JavaScript backend, so it supports web development well.
 |Syntax
 ////
 
-.Overview of popular programming languages:footnote:[xxx]
+.Overview of popular programming languages:footnote:[Here we list only languages similar to Nim, and ignore languages with dynamic
+typing like Python, Ruby, JavaScript, and also Java with its rigid OOP design.]
 [cols=9*,options="header"]
 |===
 |Language
@@ -934,7 +935,7 @@ JavaScript backend, so it supports web development well.
 |Modules
 
 |C
-|Imperative (procedural), structured
+|Imperative, procedural, structured
 |Static, weak
 |Braces, semicolons
 |Native
@@ -943,15 +944,66 @@ JavaScript backend, so it supports web development well.
 |Text preprocessor
 |No
 
+|{cpp}
+|Imperative, procedural, structured,  object-oriented
+|Static, weak
+|Braces, semicolons
+|Native
+|Destructors, RAII, manual, optional GC
+|Yes, Templates
+|Text preprocessor
+|{cpp}20
+
 |Nim
-|Imperative (procedural), structured, functional, object-oriented
+|Imperative, procedural, structured, functional, object-oriented
 |Static, strong, inferred
-|Python-like
+|Python-like (off-side rule)
 |Native, web browser (JavaScript)
 |GC, refcount, destructors
 |Yes
 |AST based, hygenic
 |Yes
+
+|Rust
+|Imperative, procedural, structured, functional, object-oriented
+|Static, strong, inferred
+|Braces, semicolons
+|Native
+|Destructors, borrow-checker
+|Yes
+|AST based, hygenic
+|Yes
+
+|D
+|Imperative, procedural, structured, functional, object-oriented
+|Static, strong, inferred, generic
+|Braces, semicolons
+|Native
+|GC, destructors, manual
+|Yes
+|Yes
+|Yes
+
+|Go
+|Imperative, procedural, structured, functional, composition
+|Static, strong, inferred
+|Braces, semicolons
+|Native
+|GC
+|No
+|No
+|Yes
+
+|Zig
+|Imperative, procedural, structured, functional, (object-oriented)
+|Static, strong, inferred, generic
+|Braces, semicolons
+|Native
+|Manual, option types
+|(Yes)
+|No
+|Yes
+
 |===
 
 ****
@@ -1326,6 +1378,11 @@ Some people just prefer languages with full OOP support and true classes. While 
 OPP design with heap-allocated reference objects, inheritance, and methods with dynamic runtime dispatch,
 it does not strongly enforce its use. People educated in the 1990s of the last century may still suffer
 from all the OOP Java hype and argue that classes make structuring larger programs easier.
+
+Other people just hate all forms of automatic memory management, and may think that Rust's borrow checker
+or Zig's C-like memory management is sufficient for them. Actually, Nim may not always fully reach Rust's performance,
+and as Zig is basically an improved C, it provides really no overhead to C libraries and may generate executables that 
+are even smaller than the ones of Nim, which are already small. 
 
 For some "professional" programmers, Nim's use of significant white space instead
 of curly brackets for identifying blocks and scopes may be a reason to avoid Nim.
@@ -15210,6 +15267,15 @@ References:
 
 //== something
 
+== Reading CSV files and other data
+
+We discuss the reading of CSV-files (comma-separated values) and other data files in part VI of the book,
+labeled "Advanced Nim". Not because it is difficult, but because we compare the performance of
+various processing techniques, including RegEx and PEG matching, and finally show how we can
+distribute the parsing work across multiple CPU cores. The PEG (Parsing-Expression-Grammar) is
+introduced in Part V of the book, which discusses some interesting external packages. If you are interested in CSV reading and parsing, you may already
+read section <<Parsing data files (in parallel)>> now; just skip the sections about PEGs and parallel parsing.
+
 == Some small exercises
 
 === Removing adjacent duplicates
@@ -16984,6 +17050,78 @@ References:
 * https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 * https://en.wikipedia.org/wiki/Delaunay_triangulation
 
+=== GUI toolkits
+
+Explained only one of the more than 20 available GUI toolkits in some detail
+would be by far too much for this book. So we can give only a list of
+some of the available toolkits with a short description and a link to
+it. For the gintro GTK bindings, you may also consult the GTK-Programming
+companion book by the same author, which is still in an early stage (maybe 25 % done).
+But note that GTK is not that popular in these days, and the gintro package has currently very few
+users. The reasons are obvious: GTK is coded in C, which makes oit further development a pain, bindings to
+other languages always imply some overhead, a high maintanace effort, and never work perfectly. But even Rust, with it
+much larger community and many bright developers, has similar problems: Native Rust GUI toolkits
+like Droid, Iced or Xilem are in early development states, and people often use still GTK-rs instead.footnote:[https://raphlinus.github.io/rust/gui/2022/07/15/next-dozen-guis.html]
+
+Winim:: Nim's Windows API and COM Library (https://github.com/khchen/winim)
+
+nimqt:: Qt bindings for nim (https://github.com/jerous86/nimqt)
+
+wNim:: Nim's Microsoft Windows GUI Framework (https://github.com/khchen/wNim)
+
+wxnim:: Nim wrapper for wxWidgets (https://github.com/PMunch/wxnim)
+
+Fidget:: Fidget - A cross-platform UI library for nim (https://github.com/treeform/fidget)
+
+Fidgetty:: Widget library built using a fork of Fidget written in pure Nim and OpenGL rendered. (https://github.com/elcritch/fidgetty)
+
+Owlkettle:: A declarative user interface framework based on GTK 4 (https://github.com/can-lehmann/owlkettle)
+
+NiGui:: Cross-platform desktop GUI toolkit written in Nim (https://github.com/simonkrauter/NiGui)
+
+GenUI:: This is what might become a really kick-ass cross-platform native UI toolkit (https://github.com/PMunch/genui)
+
+nimx:: Cross-platform GUI framework in Nim (https://github.com/yglukhov/nimx)
+
+WebGui:: Web Technologies based Crossplatform GUI Framework with Dark theme (https://github.com/juancarlospaco/webgui)
+
+nimgui:: cimgui bindings for Nim (https://github.com/zacharycarter/nimgui)
+
+nfltk:: Nimized Fast Light Toolkit  (https://github.com/Skrylar/nfltk)
+
+IUP:: iup wrapper for Nim. Used to be part of the stdlib, now a Nimble package. (https://github.com/nim-lang/iup)
+
+NimQML:: Qt Qml bindings for the Nim programming language (https://github.com/filcuc/nimqml)
+
+ui:: Beginnings of what might become Nim's official UI library (https://github.com/nim-lang/ui)
+
+uing:: A fork of ui that wraps libui-ng instead of libui (https://github.com/neroist/uing)
+
+uibuilder:: UI prototyping with Glade (https://github.com/ba0f3/uibuilder.nim)
+
+sciter:: Nim bindings are work in progress (https://sciter.com/forums/topic/nim-bindings-for-sciter/)
+
+nim-nanovg:: Nim wrapper for the NanoVG vector graphics library for OpenGL (https://github.com/johnnovak/nim-nanovg)
+
+rdgui:: A modular GUI toolkit for rapid (https://github.com/liquidev/rdgui)
+
+nodesnim:: The Nim GUI/2D framework, based on OpenGL and SDL2 (https://github.com/Ethosa/nodesnim)
+
+neel:: A Nim library for making Electron-like HTML/JS GUI apps (https://github.com/Niminem/Neel)
+
+mui:: microui, a tiny immediate-mode ui library (https://github.com/Angluca/mui)
+
+Some of these bindings may currently not compile with the latest Nim compiler or may
+not support the new [.ndef]#ARC# memory management. 
+Most of the above bindings are hosted at GitHub, you can use GitHub, Google or Nimble
+search to locate the packages.
+
+There exist also two interesting other GUI related packages:
+
+* NimForUE:: Nim plugin for UE5 with native performance (https://github.com/jmgomez/NimForUE)
+
+* godot-nim:: Nim bindings for Godot Engine (https://github.com/pragmagic/godot-nim)
+
 === No Game Programming?
 
 No, not yet. We know that for many people, game programming
@@ -17001,6 +17139,8 @@ of which one we should use, and which Nim bindings set, is not a simple decision
 we should try to ensure that the bindings are actively developed and so should
 work in a few years with Nim 2.0 still. And finally, there are already some nice tutorials
 for game programming available, see for example
+
+* https://github.com/jmgomez/NimForUE (Nim plugin for UE5 with native performance)
 
 * https://hookrace.net/blog/writing-a-2d-platform-game-in-nim-with-sdl2/
 
@@ -19321,7 +19461,7 @@ message is displayed in the terminal window. This applies not only to the thread
 the [.mod]#threads# module but also when the [.func]#spawn()# function is applied to
 run functions by one of the threads in the pool.
 
-=== Parsing data files in parallel
+=== Parsing data files (in parallel)
 
 As a practical application for parallel code execution, we will finally present an example of
 the process of parsing textual data files to extract some information.
@@ -19341,6 +19481,8 @@ Berlin,Germany,Berlin,B,891.7,3769495
 
 Perhaps we want to find the district with the highest or lowest area or population
 or the one with the lowest population density?
+
+==== Generate the input file
 
 As we have no real data files for this task available, and we should avoid generating unnecessary
 Internet traffic by downloading some test files just for our experiments, 
@@ -19396,7 +19538,11 @@ main()
 
 There is no reason to further explain the above code here, as all that was explained already
 in previous sections of the book. The usual strategy for parsing CSV files is, that
-we read the file line by line, and process the data fields of each line. The first choice of
+we read the file line by line, and process the data fields of each line.
+
+==== Using regular expressions
+
+The first choice of
 people coming from other languages may be to use regexes for separating
 the components of each line. Regexes allow a very flexible parsing of [.str]#strings#,
 but regex parsing is not very fast, and as our file has a very simple format, where the
@@ -19446,6 +19592,8 @@ In the [.key]#for# loop, we skip all lines starting with a hash character, and w
 out the printout of the actual captures so that we can later measure the time for
 the pure regex parsing.
 
+==== Using PEGs
+
 As one more possible solution, we may try PEG parsing:
 
 [source, nim]
@@ -19479,11 +19627,13 @@ is one or more repetitions of any character that is not a comma. The [.code]#[5]
 repetitions -- it may be a bit surprising, that we have to put this expression after the pattern
 expression, while operators like [.op]#{asterisk}#, [.op]#{plus}# and [.op]#?# have to be put in front for the [.mod]#npegs# module.
 
+==== Using split()
+
 The third, and maybe most obvious solution, is to just use [.func]#split()# of the [.mod]#strutils# module:
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 const
   FileName = "csvdata.txt"
 
@@ -19500,11 +19650,14 @@ main()
 For this use case, [.func]#split()# is the simplest solution, and it should be faster than the
 regex and PEG solutions. But for each call, [.func]#split()# returns a seq with six [.str]#strings#,
 which have to be newly allocated for each call. So even faster solutions may be possible.
+
+==== Using parseutils
+
 So let us try the [.mod]#parseutils# module now:
 
 [source, nim]
 ----
-import parseutils
+import std/parseutils
 const
   FileName = "csvdata.txt"
 
@@ -19538,13 +19691,17 @@ the performance of the four solutions before we continue.
 
 The following
 table lists the runtimes for the four different ways of
-parsing the CSV data into [.str]#strings#. We used a CSV file
-with one million lines. Additionally, in the last row of
+parsing the CSV data into [.str]#strings#.
+//We used the CSV file
+//with one million lines, that we generated earlier.
+Additionally, in the last row of
 the table, we have used [.mod]#parseutils# to parse the area
 and population directly into numeric variables.
 The CSV data have been generated with our program from the start of this section,
-and we compiled our parsers with [.term]#-d:release#, and with default GC and with [.term]#--gc:arc#.
-The [.func]#time# shell command was used to measure the program runtimes. 
+and we compiled our parsers with [.term]#-d:release#, and with [.term]#--mm:arc# and [.term]#--mm:refc# each.
+The [.func]#time# shell command was used to measure the program runtimes.
+All programs are run on a modern AMD Ryzen 9 5900HX (8 cores) machine, and
+have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64-bit Linux box. 
 
 [cols=3*,options="header"]
 [%autowidth]
@@ -19554,29 +19711,30 @@ The [.func]#time# shell command was used to measure the program runtimes.
 |Runtime arc
 
 |regex
-|3209 ms
-|8206 ms
+|1881 ms
+|4905 ms
 
 |npeg
-|2013 ms
-|1854 ms
+|1315 ms
+|1176 ms
 
 |split()
-|717 ms
-|797 ms
+|408 ms
+|429 ms
 
 |parseutils
-|514 ms
-|544 ms
+|263 ms
+|302 ms
 
 |parseutils float/int
-|492 ms
-|522 ms
+|245 ms
+|282 ms
 
 |===
 
 As expected, regex parsing is the slowest, and with [.term]#--gc:arc# it is even slower.
 The use of [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
+The performance with option --mm:orc is typically close to --mm:arc.
 
 Can we further improve the performance? Indeed, for the concrete data format,
 and when we are only interested to find numeric extreme values, then
@@ -19584,7 +19742,7 @@ actually parsing the first four [.str]#strings# is not really necessary:
 
 [source, nim]
 ----
-import parseutils
+import std/parseutils
 const
   FileName = "csvdata.txt"
 
@@ -19610,15 +19768,181 @@ proc main =
 main()
 ----
 
-This reduced the runtime with [.term]#--gc:arc# to 232 ms. Parsing the two numeric
+This reduced the runtime with [.term]#--gc:arc# to 128 ms. Parsing the two numeric
 values is enough to find the line with the extreme value -- we can then just
 return the whole line [.str]#string#, from which the other fields can then be extracted.
 But this optimization is a bit dangerous, for corrupted data, our backward scanning
 loops may run before the start of the line [.str]#string#, generating a runtime error.
 
+==== Using parsecsv
+
+The above program versions that use the [.mod]#parseutils# module are already fast.
+But as the processing of CSV files is a very common operation, the Nim standard library does provide
+a specialized module for exactly this purpose, which is called [.mod]#parsecsv#. It is very fast, at least as long as we
+consider only the reading of the file, and ignore stuff like parsing numbers, which is typically part of real-world
+data processing. This module is also very easy to use, so it should be the first choice whenever we have to read
+CSV files:  
+
+[source, nim]
+----
+import std/parsecsv
+
+const
+  Debug = false
+
+proc main =
+  var parser: CsvParser
+  parser.open("csvdata.txt")
+  while readRow(parser):
+    for val in items(parser.row):
+      when Debug:
+        stdout.write val, ", "
+      else:
+        discard
+    when Debug:
+      stdout.write('\n')
+  parser.close()
+
+main()
+----
+
+The [.mod]#parsecsv# modules provide a [.type]#CsvParser# data type. We use a variable called [.var]#parser# for this data type,
+call [.func]#open()# on it with a specified file name, and then iterate over the lines of the CSV file with [.func]#readRow()#.
+Then we can access the fields of that row with the ordinary [.func]#items()# [.key]#iterator#.
+The API documentation has some more examples for the use of the module, including an example,
+in which a CSV header is read first and then
+used as a reference for item access. The API documents also describe how we can use different field separators
+or how we can apply custom quoting characters. Quoting is needed when the fields may contain the separator character,
+or newlines. Note that currently only single separator characters are allowed, so separator [.str]#strings# like [.code]#"; "# are not supported.
+One reason why the reading performance of this module is very high is that it avoids [.str]#string# allocations.
+Each row of the CSV file is read into a pre-allocated row field of the [.str]#string# data type.
+For our test of the pure file read performance, we set the constant [.var]#Debug# to [.lit]#false# to avoid
+the slow output operations. To test if our program actually does what we expect, we can set [.var]#Debug# to [.lit]#true#
+and run the program with terminal output.
+
+Before we actually investigate how we can make file parsing parallel, we will introduce another interesting
+and very fast method of file access: memory-mapped files.
+
+==== Memory-mapped files
+
+A [.ndef]#memory-mapped file# is a technique where a file on disk is mapped directly into a program's memory space, allowing the file to be accessed
+and manipulated as if it were an array in memory. This enables faster and more efficient file operations, as it reduces the need for separate
+read/write calls and allows the operating system to manage file access and caching more effectively.footnote:[GPT-4 reply for prompt:
+Please give me a simple and short explanation for the term "memory-mapped file".]
+
+Using memory-mapped files can increase the I/O performance for large files, may allow to access
+very large files by using small amounts of RAM using a technique called "lazy loading", and
+may avoid unnecessary copying of data.
+Typically, the memory mapping process is handled by the virtual memory manager of the {os}.
+
+The following code uses module [.mod]#memfiles# to read our CSV data file:
+
+[source, nim]
+----
+import std/[memfiles, parseutils]
+from std/strutils import startsWith
+
+const
+  Debug = false
+
+template toOpenArrayChar(s: MemSlice): untyped =
+  toOpenArray(cast[ptr UncheckedArray[char]](s.data), 0, s.size - 1)
+
+proc main = 
+  var f = memfiles.open("csvdata.txt")
+  var r: MemFile
+  var dummy: int
+  for line in memSlices(f):
+    r.mem  = line.data
+    r.size = line.size
+    var index = 0
+    for val in r.memSlices(','): # iterator memSlices() has no pairs() variant, so we use index variable
+      when Debug: # this whole debug construct is a bit ugly :-)
+        stdout.write val, ", "
+        if ($val).startsWith('#'): # val is not a string, but a MemSlice. Maybe better use the lines() iterator?
+          break # skip pure comment lines with str[0] == '#'
+        inc(index)
+        if index == 6: # the population field
+          var j: int
+          assert(parseInt(val.toOpenArrayChar, j) == val.size) # test the template
+          echo "::: ", j
+      else:
+        inc(dummy) # ensure the loop body is not optimized out
+  echo dummy
+  close(f)
+
+main()
+----
+
+The pure I/O performance of this code is very high, but drops significantly, as expected, when real data processing
+like parsing of numbers is involved. To be sure that the inner [.loop]#loop# body is not completely removed by the compiler,
+we have added the [.var]#dummy# variable. And still, we get running times of only 32 nanoseconds!
+The example is based on a code snippet provided by Mr. C. Blake in the Nim forum.footnote:[https://forum.nim-lang.org/t/9688#63737]
+The [.func]#toOpenArrayChar()# template uses the experimental [.func]#toOpenArray()# function to convert the memslice to an
+[.type]#open array# with [.type]#char# base type, which the [.type]#string# processing functions of Nim's standard library can process.
+In the example, actually two memSlices are used: First we read the lines of a file into a slice, and then we copy that
+slice into a locale slice variable called [.var]#r# to iterate over the comma-separated fields.
+We will not try to explain the details of the above code. When you should really need extreme I/O performance, and the task is not
+already restricted by actual data processing operations like parsing of numeric data, you should study the [.mod]#memfiles#
+module carefully. Maybe you have to consult additional resources or ask, as the module documentation is still short
+and has not many examples.
+
+
+The table below summarizes our results. All programs are run on a modern AMD Ryzen 9 5900HX (8 cores) machine, and
+have been compiled with Nim v1.9.3 with option [.code]#-d:release# and gcc 12.2.1 on a 64-bit Linux box.
+
+[cols=3*,options="header"]
+[%autowidth]
+|===
+|Method
+|Runtime refc
+|Runtime arc
+
+|regex
+|1881 ms
+|4905 ms
+
+|npeg
+|1315 ms
+|1176 ms
+
+|split()
+|408 ms
+|429 ms
+
+|parseutils
+|263 ms
+|302 ms
+
+|parseutils float/int
+|245 ms
+|282 ms
+
+|parsecsv
+|275 ms
+|157 ms
+
+|memfiles
+|31 ms
+|31 ms
+
+|===
+
+References:
+
+* https://en.wikipedia.org/wiki/Memory-mapped_file
+* https://forum.nim-lang.org/t/9688#63670
+
 ==== Making it parallel
 
-The next task is to somehow distribute all the work to a set of threads. The number of
+The next task is to somehow distribute all the work to a set of threads.
+In this section, we do not focus on optimum I/O performance but on actual parsing
+of all the data fields, which is a CPU-intensive task and should benefit from the use of all
+available CPU cores. So we do not use the [.mod]#memfiles# or the dedicated [.mod]#parsecsv# module in this section, but
+ordinary file operations like [.func]#readChars(buf)# provided by the [.mod]#system# module and parsing functions from the
+[.mod]#parseutils# module.
+
+The number of
 threads should be at least as large as the number of physical cores of our computer so
 that we can really distribute all the work on all available cores. Our first idea may be
 to use a thread for each line of the file, but obviously really creating millions of threads make not much sense,
@@ -19630,7 +19954,8 @@ So our first task is to split the whole file into chunks or fragments, where eac
 should contain a number of lines. Seems to be easy, but this splitting of the whole CSV file
 into chunks should be really fast, so using the [.func]#lines()# [.key]#iterator# is not a good idea.
 But the [.mod]#io# module provides the functions [.func]#readBytes()# or [.func]#readChars()#, which we can use to read
-the CSV file fast in larger blocks. Here is a first sketch of the code:
+the CSV file fast in larger blocks.
+Here is a first sketch of the code:
 
 [source, nim]
 ----
@@ -19761,7 +20086,7 @@ proc main =
 main()
 ----
 
-Note that we have to compile the program always with [.term]#--threads:on#.
+Note that we have to compile the program always with [.term]#--threads:on#.footnote:[--threads:on is the default option for Nim 2.0.]
 When we compile the code above with option [.term]#-d:release#, it takes 120 ms to run, on a four-core Intel box.
 That is indeed a performance improvement of a factor of four, which is not bad.
 Unfortunately, when we compile the code with [.term]#-d:release --gc:arc#, we get runtimes of about 500 ms,
@@ -22456,7 +22781,7 @@ We have added a few more simple examples and exercises:
 * <<Command line parsing>>
 * <<Cligen Command Line Interface generator>>
 * <<Nimble package manager>>
-* <<Parsing data files in parallel>>
+* <<Parsing data files (in parallel)>>
 
 === December 2022
 
@@ -22466,6 +22791,11 @@ We have added a few more simple examples and exercises:
 === Mar 2023
 
 * <<Concepts>>
+
+=== APR 2023
+
+* <<Using parsecsv>>
+* <<Memory-mapped files>>
 
 ////
 Part I: Introduction
