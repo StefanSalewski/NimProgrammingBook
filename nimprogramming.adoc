@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-10
+//v0.1, 2023-APR-15
 :doctype: book
 :toc: left
 :icons: font
@@ -5790,6 +5790,8 @@ proc main =
   var sum = 0
   for x in s[1 .. ^1]:
     sum += x.i
+    
+main()
 ----
 
 Here, we use the slice construction operator [.op]#..# to exclude the first element from our summing
@@ -19479,7 +19481,7 @@ Cuxhaven,Germany,Lower Saxony,CUX,161.91,48326
 Berlin,Germany,Berlin,B,891.7,3769495
 ----
 
-Perhaps we want to find the district with the highest or lowest area or population
+Perhaps we want to find the district with the highest or lowest area or population,
 or the one with the lowest population density?
 
 ==== Generate the input file
@@ -19538,8 +19540,12 @@ main()
 
 There is no reason to further explain the above code here, as all that was explained already
 in previous sections of the book. The usual strategy for parsing CSV files is, that
-we read the file line by line, and process the data fields of each line.
-
+we read the file line by line, and process the data fields of each line. We will start by processing the CSV data
+with various single-threaded programs, using different functions and modules from Nim's standard library
+([.mod]#strutils# split(), [.mod]#parseutils#, [.mod]#parsecsv#, [.mod]#memfiles#) or the external packages [.mod]#regex# and [.mod]#ngegs#. After we have compared
+the performance of all these solutions, we will use a fast one with code executed in parallel on all available CPU core
+to optimize the processing speed.
+ 
 ==== Using regular expressions
 
 The first choice of
@@ -19648,7 +19654,7 @@ main()
 ----
 
 For this use case, [.func]#split()# is the simplest solution, and it should be faster than the
-regex and PEG solutions. But for each call, [.func]#split()# returns a seq with six [.str]#strings#,
+regex and PEG solutions. But for each call, [.func]#split()# returns a [.type]#seq# with six [.str]#strings#,
 which have to be newly allocated for each call. So even faster solutions may be possible.
 
 ==== Using parseutils
@@ -19690,7 +19696,7 @@ the also available [.func]#parseFloat()# and [.func]#parseInt()# functions, as w
 the performance of the four solutions before we continue.
 
 The following
-table lists the runtimes for the four different ways of
+table lists the run-times for the four different ways of
 parsing the CSV data into [.str]#strings#.
 //We used the CSV file
 //with one million lines, that we generated earlier.
@@ -19699,7 +19705,7 @@ the table, we have used [.mod]#parseutils# to parse the area
 and population directly into numeric variables.
 The CSV data have been generated with our program from the start of this section,
 and we compiled our parsers with [.term]#-d:release#, and with [.term]#--mm:arc# and [.term]#--mm:refc# each.
-The [.func]#time# shell command was used to measure the program runtimes.
+The [.func]#time# shell command was used to measure the program run-times.
 All programs are run on a modern AMD Ryzen 9 5900HX (8 cores) machine, and
 have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64-bit Linux box. 
 
@@ -19734,7 +19740,7 @@ have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64
 
 As expected, regex parsing is the slowest, and with [.term]#--gc:arc# it is even slower.
 The use of [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
-The performance with option --mm:orc is typically close to --mm:arc.
+The performance with option [.term]#--mm:orc# is typically close to [.term]#--mm:arc#.
 
 Can we further improve the performance? Indeed, for the concrete data format,
 and when we are only interested to find numeric extreme values, then
@@ -19884,9 +19890,8 @@ In the example, actually two memSlices are used: First we read the lines of a fi
 slice into a locale slice variable called [.var]#r# to iterate over the comma-separated fields.
 We will not try to explain the details of the above code. When you should really need extreme I/O performance, and the task is not
 already restricted by actual data processing operations like parsing of numeric data, you should study the [.mod]#memfiles#
-module carefully. Maybe you have to consult additional resources or ask, as the module documentation is still short
+module carefully. Maybe you have to consult additional resources or to ask, as the module documentation is still short
 and has not many examples.
-
 
 The table below summarizes our results. All programs are run on a modern AMD Ryzen 9 5900HX (8 cores) machine, and
 have been compiled with Nim v1.9.3 with option [.code]#-d:release# and gcc 12.2.1 on a 64-bit Linux box.
@@ -19946,7 +19951,7 @@ The number of
 threads should be at least as large as the number of physical cores of our computer so
 that we can really distribute all the work on all available cores. Our first idea may be
 to use a thread for each line of the file, but obviously really creating millions of threads make not much sense,
-and even feeding millions of [.proc]#procs# to spawn of the [.mod]#threadpool# should generate a lot of overhead.
+and even feeding millions of [.proc]#procs# to [.func]#spawn# of the [.mod]#threadpool# should generate a lot of overhead.
 Processing only one line is just too less work for a thread, so that the switching process generates too
 much overhead. A better idea seems to be, to use a thread for maybe a few thousand lines.
 
@@ -19974,7 +19979,7 @@ proc main =
 main()
 ----
 
-This first attempt takes only 12 ms to read the file in. But the obvious issue is, that
+This first attempt takes only 8 ms to read the file in. But the obvious issue is, that
 the chunks of [.lit]#1024# bytes contain fractional lines. To fix that, we can just do a backward
 search for the line end marker [.lit]#'\n'# in the buffer:
 
@@ -20015,7 +20020,7 @@ to the actual position, or to the file end. As we want to move back, we used the
 to indicate the actual position.
 We have added an [.func]#echo()# statement that prints "---" after each chunk, which
 helps us to verify, that the chunk boundaries are really the line endings.
-Without the output operations, this code runs in 25 ms, which is still not that bad.
+Without the output operations, this code runs in 14 ms, which is still not that bad.
 Now, we can just pass each chunk to its own thread, which then can select and return a
 candidate line from this chunk. So we finally have only to select the best of all candidates.
 
@@ -20087,13 +20092,19 @@ main()
 ----
 
 Note that we have to compile the program always with [.term]#--threads:on#.footnote:[--threads:on is the default option for Nim 2.0.]
-When we compile the code above with option [.term]#-d:release#, it takes 120 ms to run, on a four-core Intel box.
-That is indeed a performance improvement of a factor of four, which is not bad.
+When we compile the code above with option [.term]#-d:release#, it takes approx 38 ms to run, on our AMD Ryzen 9 5900HX (8 cores) machine.
+That is indeed a performance improvement of a factor of eight, which is not bad.
+++++
+<s>
 Unfortunately, when we compile the code with [.term]#-d:release --gc:arc#, we get runtimes of about 500 ms,
 which is no improvement compared to the single-threaded code. And with [.term]#-d:release --gc:orc#
 the runtime is even in the range of 700 ms.
 At the end of this section we will present a solution, which works fine also for [.term]#--gc:arc# -- for
 [.term]#--gc:orc# the runtime is decreased to 300 ms at least.
+</s>.
+++++
+(Has been fixed for Nim V 2.0, --mm:arc, --mm:orc and --mm:refc is all below 40 ms now.)
+
 //We can currently not say what the reason for this difference is --
 //but of course the default GC works fine and gives us very good results.
 When you think about the code for a few minutes, its basic idea should become clear: We read a block from
@@ -20140,6 +20151,8 @@ solution to the above code, we could try the [.mod]#threads# module, using [.typ
 the [.key]#parallel# construct. Or we may experiment with so-called [.ndef]#memory-mapped files#, see https://nim-lang.org/docs/memfiles.html.
 
 ==== Fixes for ARC and ORC
+
+NOTE: These fixes are not any longer necessary for Nim V 2.0!
 
 As we found out, the performance is currently disappointing, when we compile with [.term]#--gc: arc# or [.term]#--gc:orc#.
 One easy way to fix that is when we use additional the compiler option [.term]#-d:useMalloc#. This avoids
@@ -20218,8 +20231,8 @@ main()
 ----
 
 This code, compiled with [.term]#nim c --threads:on -d:release --gc:arc t.nim#, runs in less than
-100 ms. With [.term]#-d:useMalloc#, we can save a few more ms. With [.term]#--gc:orc#, we get a runtime
-of 300 ms, which is not that great. As you may have noticed, we have used only [.type]#Res#
+36 ms. With [.term]#-d:useMalloc#, we can save a few more ms. With [.term]#--gc:orc#, we get a runtime
+of 37 ms, which is +++<s>not that</s>+++ great. As you may have noticed, we have used only [.type]#Res#
 value [.key]#objects# in the code above, we do not need references. This is possible, when we only compile
 with [.term]#--gc:arc# or [.term]#--gc:orc#, for [.term]#--gc:refc# we would get the compile Error: [.italic]#cannot create a flowVar of type: Res#.
 We have done one additional modification -- we allocate the buffer [.var]#buf# inside of the [.key]#while# loop. This may
@@ -21016,6 +21029,8 @@ proc main =
       asyncCheck socket.send(^messageFlowVar & "\c\l")
       messageFlowVar = spawn stdin.readLine()
     asyncdispatch.poll()
+    
+main()
 ----
 
 The structure of this client implementation is a bit different from the server one.
@@ -22754,6 +22769,19 @@ We use semantic markup with these text styles:
 For the term "proc", which is a Nim keyword, we use no keyword markup, as
 it occurs so often. Maybe we will later write just procedure instead.
 And we do the same for the "macro" keyword.
+
+//https://stackoverflow.com/questions/38804306/how-do-i-do-strikethrough-line-through-in-asciidoc
+
+++++
+Example <s>text</s>.
+++++
+
+++++
+<s>
+long text 
+block
+</s>.
+++++
 
 == ChangeLog
 
