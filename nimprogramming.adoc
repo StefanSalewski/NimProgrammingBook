@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-15
+//v0.1, 2023-APR-18
 :doctype: book
 :toc: left
 :icons: font
@@ -247,6 +247,16 @@ libraries rather than the ones in Nim's standard library.footnote:[https://forum
 modules for asynchronous code execution and a few other libraries.footnote:[https://github.com/status-im/nim-chronos]
 
 ****
+For a short overview of the Nim Programming language, you may also consult the page
+https://nimprogramming.com/.
+
+For latest news about the language, installation instructions and many more useful information, visit
+the official homepage at
+https://nim-lang.org/
+
+An alternative Nim implementation, which may later develop into another language, is available at
+https://github.com/nim-works/nimskull
+
 The source code for the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
 You may use the GitHub issue tracker to point us to mistakes or unclear explanations; we will try to
 fix that. Please note that we are more interested in comments on the content of the book currently, not that much
