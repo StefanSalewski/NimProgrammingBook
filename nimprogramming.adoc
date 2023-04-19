@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-18
+//v0.1, 2023-APR-19
 :doctype: book
 :toc: left
 :icons: font
@@ -347,6 +347,8 @@ echo i  # Output: 123
 In this example, we import the strutils module, which provides the parseInt procedure for parsing integers from strings. Then, we define a string s 
 with the value "123", and use parseInt to convert it to an integer, which we store in the variable i. Finally, we use echo to print the value of i.
 ----
+
+Meanwhile, in spring 2023, GPT-4 is available for subscribed users, and provides more helpful info and less nonsense.
 
 = Part I: Introduction
 
@@ -19552,7 +19554,7 @@ There is no reason to further explain the above code here, as all that was expla
 in previous sections of the book. The usual strategy for parsing CSV files is, that
 we read the file line by line, and process the data fields of each line. We will start by processing the CSV data
 with various single-threaded programs, using different functions and modules from Nim's standard library
-([.mod]#strutils# split(), [.mod]#parseutils#, [.mod]#parsecsv#, [.mod]#memfiles#) or the external packages [.mod]#regex# and [.mod]#ngegs#. After we have compared
+([.mod]#strutils# split(), [.mod]#parseutils#, [.mod]#strscans#, [.mod]#parsecsv#, [.mod]#memfiles#) or the external packages [.mod]#regex# and [.mod]#ngegs#. After we have compared
 the performance of all these solutions, we will use a fast one with code executed in parallel on all available CPU core
 to optimize the processing speed.
  
@@ -19705,12 +19707,66 @@ and population data, we will use [.str]#string# parsing only for now and avoid
 the also available [.func]#parseFloat()# and [.func]#parseInt()# functions, as we want to compare
 the performance of the four solutions before we continue.
 
+==== Using strscans
+
+In part III of the book, in the section about <<String Processing>>, we introduced the module
+[.mod]#strscans#, which can be convenient when we have to parse data with a strict, well defined format.
+But that module has some restrictions, which can make it's use difficult or impossible for
+some parsing task. The provided [.func]#scan()# [.key]#macro# supports with the parameter types [.var]#$i#, [.var]#$f#, and [.var]#$w#
+the processing of integers, floats, and ASCII identifiers. Here ASCII identifier stands for
+valid Nim symbols, indicating that the [.var]#$w# identifier is not allowed to start with a digit or to contain
+spaces. But actually we intentionally designed our generator program that generated our test CSV file so, that
+it may insert spaces in the name [.str]#strings# in rare cases, to make the data more realistic. To allow us to experiment with
+the [.mod]#strscans# module, we can patch our generator program from <<Generate the input file>> to use an expression like [.code]#if false:# instead of [.code]#if rand(7) == 7:#.
+After doing that, and compiling and running that generator program to get a test data set without spaces, we can test
+the following program:
+
+[source, nim]
+----
+# our input file format
+#[
+#District,Country,State,Vehicle registration,Area,Population
+#
+Ghhgkedmqua,Gircc,J,Ylmd,517582.67,3113635
+]#
+
+import std/strscans
+
+const
+  FileName = "csvdata.txt"
+  Debug = false
+
+proc main =
+  var
+    district, country, state, vehiclereg: string
+    area: float
+    pop: int
+
+  for l in Filename.lines:
+    if l[0] != '#':
+      if scanf(l, "$w,$w,$w,$w,$f,$i", district, country, state, vehiclereg, area, pop):
+        when Debug:
+          echo district, ' ', country, ' ', state, ' ', vehiclereg, ' ', area, ' ', pop
+      else:
+        assert(false)
+
+main()
+----
+
+As described in part 3 of the book (<<Module strscans>>), we use the [.func]#scanf()# [.key]#macro# to process each line.
+The [.var]#$w# parameters parse an identifier each, the [.lit]#','# character in the format [.str]#string#
+stands for itself, and [.var]#$f# and [.var]#$i# parses a floating point number and an integer number each.
+Compiling the program with option [.term]#-d:release#, and executing it, results in running times of
+260 ms when compiled with [.term]#--mm:orc# and 240 ms for [.term]#--mm:refc#.
+That is really fast, and comparable to the times for the [.mod]#parseutils# module. Note, that
+[.mod]#strscans# gives us for [.var]#area# and [.var]#pop# not only the unprocessed [.str]#string#, but already the numeric value!
+
 The following
-table lists the run-times for the four different ways of
+table lists the run-times for the five different ways of
 parsing the CSV data into [.str]#strings#.
 //We used the CSV file
 //with one million lines, that we generated earlier.
-Additionally, in the last row of
+Additionally, in row 6 of
 the table, we have used [.mod]#parseutils# to parse the area
 and population directly into numeric variables.
 The CSV data have been generated with our program from the start of this section,
@@ -19746,10 +19802,14 @@ have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64
 |245 ms
 |282 ms
 
+|strscans
+|240 ms
+|260 ms
+
 |===
 
 As expected, regex parsing is the slowest, and with [.term]#--gc:arc# it is even slower.
-The use of [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
+The use of [.mod]#strscans# or [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
 The performance with option [.term]#--mm:orc# is typically close to [.term]#--mm:arc#.
 
 Can we further improve the performance? Indeed, for the concrete data format,
@@ -19932,6 +19992,10 @@ have been compiled with Nim v1.9.3 with option [.code]#-d:release# and gcc 12.2.
 |parseutils float/int
 |245 ms
 |282 ms
+
+|strscans
+|240 ms
+|260 ms
 
 |parsecsv
 |275 ms
