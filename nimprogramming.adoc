@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-20
+//v0.1, 2023-APR-21
 :doctype: book
 :toc: left
 :icons: font
@@ -3200,19 +3200,18 @@ References:
 * https://forum.nim-lang.org/t/5983
 
 === Distinct types
-//puh
 
 Before we continue with subrange types, we should introduce the distinct types. In the
 real world, we have a lot of quantities for which the set of meaningful math
 operations is restricted and which should not be mixed with quantities of other
-types. For example, we may have the quantities time and distance measured in seconds
+types. For example, we may have the quantities of time and distance measured in seconds
 and meters and mapped to the [.type]#float# or [.int]#int# data type. While adding seconds and adding
 meters is a valid operation, adding seconds to meters makes no sense and would be a
 program bug if it should occur in the program code. But again, dividing a distance by
 a time period resulting in the average speed would be a valid operation. Nim provides
 the [.key]#distinct# keyword, which allows us to define new data types that are based on
 existing types, but that are not compatible with them or with other [.key]#distinct# types.
-And the new defined [.key]#distinct# types have no predefined operations, we have to define
+And the newly defined [.key]#distinct# types have no predefined operations, we have to define
 all desired operations ourselves.
 
 [source, nim]
@@ -3265,7 +3264,7 @@ then we get a compile-time or run-time range error. This can help us to prevent 
 discover errors in our programs.
 Note that whenever we use range types, the compiler may have to add additional
 checks to ensure that variables are always restricted to the specified range.
-This check is active in debug mode and also when we compile with option [.term]#-d:release#,
+This check is active in debug mode and also when we compile with the option [.term]#-d:release#,
 and is only ignored when we compile with [.term]#-d:danger# or explicitly disable range checks.
 So using a lot of range types may increase code size and decrease performance. For the example
 above, the line with the assignment [.code]#d = a# generates a runtime check. An important and often used
@@ -3485,7 +3484,7 @@ decimal value less than 32 can not be printed and are called [.ndef]#control cha
 linefeed, carriage return, backspace, audible beep, and such. Character 127 is also
 not printable and is called DEL. An important property of this table is the fact
 that decimal digits and upper- and lower-case letters form contiguous blocks. So to
-test for example, if a character is an uppercase letter, we can use this simple
+test, for example, if a character is an uppercase letter, we can use this simple
 condition: [.code]#+c >= 'A' and c <= 'Z'+#.
 
 Characters with [.code]#ord() > 127# are so-called umlauts, exotic characters of other
@@ -3506,7 +3505,7 @@ letter, which is interpreted in a special way. We mentioned already that the cha
 instead of 'A', we could use the escape sequence '\65' for this character. Or, as
 decimal 65 is 41 in hexadecimal notation [.term]#(4 {asterisk} 16^1 {plus} 1 {asterisk} 16^0)# we can use
 '\x41' where the x indicates that the following digits are hexadecimal. For common,
-often used control characters it is not easy to remember their numeric value, so
+often-used control characters it is not easy to remember their numeric value, so
 another notation with a letter following the backslash can be used. For the important
 newline character, we can use the decimal numeric value '\10', the hexadecimal value
 '\xA', or the symbolic form '\n'. Here, the letter n stands for newline.
@@ -3543,7 +3542,7 @@ table lists a few important control characters:
 |10
 |xA
 |\n, \l
-|newline or linefeed -- move cursor one position down
+|newline or linefeed -- move the cursor one position down
 
 |12
 |xC
@@ -3592,7 +3591,7 @@ table lists a few important control characters:
 
 |===
 
-The hexadecimal numbers after the [.term]#\x# character can be upper or lower case
+The hexadecimal numbers after the [.term]#\x# character can be in upper or lower case
 and can have one or two hexadecimal digits. For symbolic control characters like '\a'
 for alert, the upper case variant '\A' seems to be identical currently. The single
 quote entered as [.lit]#'''# does give an error message, so you have to escape it as [.lit]#'\''#.
@@ -3618,7 +3617,7 @@ symbol, and at the same time, the above table has an entry [.lit]#'\e'#, which i
 [ESC]. These [.lit]#'\e'# control character with decimal value [.lit]#27# is fully unrelated to the
 backslash character that we use to type in control characters. [ESC] is a different special
 character to start control sequences, it was used in the past to send special
-commands to printers or modems, and can be used to control font style or colors in
+commands to printers or modems and can be used to control font style or colors in
 terminal windows.
 
 Nim's control characters should, with few exceptions, be identical to  the control
@@ -3630,8 +3629,8 @@ In Nim integers, enumerations, characters, and the boolean types are ordinal typ
 Ordinal types are countable and ordered, and for each of these types, a lowest and
 largest member exists. The integer ordinal types support the [.func]#inc()# and [.func]#dec()#
 operations to get the next larger or next smaller value, and the other ordinal types
-use [.func]#succ()# and [.func]#pred()# for this operation. These operations can produce overflow or
-underflow like errors if applied to the largest or smallest value. The function [.func]#ord()# can
+use [.func]#succ()# and [.func]#pred()# for this operation. These operations can produce overflow- or
+underflow-like errors if applied to the largest or smallest value. The function [.func]#ord()# can
 be used on ordinal types to get the corresponding integer value. Note that unsigned
 integers are currently not called ordinal types in Nim and that these unsigned types
 wrap around instead of generating overflow and underflow errors.
@@ -3639,12 +3638,12 @@ wrap around instead of generating overflow and underflow errors.
 === Sets
 
 From mathematics, we know that sets are some form of unordered collection for which we
-can test membership (x is included in mySet) and we can perform general set
+can test membership (x is included in mySet) and we can perform set
 operations like building the union of multiple sets. In Nim, we can have sets of all the ordinal
 types and the unsigned integer types, but due to memory restrictions, integer
 types larger than two bytes can not be used as set base types.
 All elements in a set must have the same base type. A set can be empty, or it
-can contain one or multiple elements. For a specific element, it can be contained in a
+can contain one or multiple elements. A specific element can be contained in a
 given set, or it can be not contained, but it can be never contained multiple times.
 One very basic set operation is to test if an element is contained in a set or is
 not contained in it. Sets are unordered data types, that is sets containing the same
@@ -3656,9 +3655,9 @@ that are contained in [.type]#set# [.var]#a# or in [.type]#set# [.var]#b# (or in
 is a [.type]#set# that contains only elements that are contained in [.type]#set# [.var]#a# and in [.type]#set# [.var]#b#.
 
 The mathematical concept of [.type]#sets# maps well to words and bits of computers, as most
-CPU's have instructions to set and clear single bits and to test if a bit is set or
+CPUs have instructions to set and clear single bits and to test if a bit is set or
 unset. And CPUs can do [.op]#and#, [.op]#or# and [.op]#xor# operations which
-corresponds to the union and intersection operation in mathematical sets.
+correspond to the union and intersection operation in mathematical sets.
 
 Nim supports sets with base type [.type]#bool#, [.type]#enum#, [.type]#char#, [.type]#int8#, [.type]#uint8#, [.type]#int16#, and [.type]#uint16#.
 Note that we need a bit in the computer memory for each member of the base type. The
@@ -3666,7 +3665,7 @@ types [.type]#char#, [.type]#int8#, and [.type]#uint8# are 8-bit types and can h
 we require 256 bits in the computer memory to represent such a set. That would be 32
 bytes or four 64-bit words. To represent a set of the base type [.type]#uint16# or [.type]#int16#, we
 need already 2^16 bits, that is 2^13 bytes or 2^10 words on a 64-bit CPU. So it
-becomes clear that supporting base types with more than 16 bit makes not much sense.
+becomes clear that supporting base types with more than 16 bits makes not much sense.
 
 While testing, if an element is included or is not included in a [.type]#set# with the [.op]#in# or
 [.op]#notin# operators, is always a very fast operation, other
@@ -3775,7 +3774,7 @@ var y: CharRange = {'b', 'd'}
 echo 'c' in y
 ----
 
-In the code above, the compiler detects the first assignment to variable [.var]#y# as invalid.
+In the code above, the compiler detects the first assignment to the variable [.var]#y# as invalid.
 
 [.type]#Sets# of numbers work in principle in the same way as [.type]#sets# of characters. One problem
 is that in Nim integer numbers are generally 4 or 8 bytes large, but [.type]#sets# can contain
@@ -3837,7 +3836,7 @@ const NimProp:  CompLangProp = {compiled, hasGC, isOpenSource, isSelfHosted}
 ----
 
 [.type]#Enum# [.type]#sets# can be used to interact with functions of C libraries, where for flag
-variables often or'ed [.type]#ints# are used. For example, for the gintro C bindings there is
+variables often or'ed [.type]#ints# are used. For example, for the gintro C bindings, there is
 this definition:
 
 [source, nim]
@@ -3877,7 +3876,7 @@ type
 ----
 
 The first [.type]#enum# with ordinal value zero was automatically added by the bindings
-generator script to ensure type matching. Nim's devs sometimes recommend to use plain
+generator script to ensure type matching. Nim's devs sometimes recommend using plain
 (distinct) integer constants for C enums. That may be easier, but integer constants
 provide no namespaces, so names may be aFlagWheel instead of AxisFlag.wheel or plain
 wheel when there is no name conflict for pure [.type]#enums#. And with integer constants, we
@@ -3902,7 +3901,7 @@ echo ' '
 ! d e f
 ----
 
-We will learn how the for loop work soon. Note that the sequence in which the [.type]#set#
+We will learn how the for loop works soon. Note that the sequence in which the [.type]#set#
 members are printed is determined by our query loop, not by the [.type]#set# content itself,
 as [.type]#sets# are unordered types.
 
@@ -3915,14 +3914,14 @@ characters, that allow displaying nearly unlimited symbols as long as all the ne
 fonts are installed on your computer, and you manage to enter them -- Unicode
 characters may not be accessible by a simple keystroke. For now, we will only use
 ASCII characters, as they are simpler and work everywhere. [.type]#String# literals must be
-enclosed in double-quotes. Nim's [.type]#strings# are similar to the Nim [.type]#seq# data types: both
+enclosed in double quotes. Nim's [.type]#strings# are similar to the Nim [.type]#seq# data types: both
 are homogeneous variable-size containers. That means that a [.type]#string# or a [.type]#seq# expands
 automatically when you append or insert characters or other [.type]#strings#.
 Nim's [.type]#seq# data type is discussed later in the book in some detail.
 Don't confuse
 short [.type]#strings# with only one character with single characters: A [.type]#string# is a non-trivial
 entity with an internal state like data buffer (the actually contained
-characters), length and storage capacity, while a variable of [.type]#char# type is nothing more than a
+characters), length, and storage capacity, while a variable of [.type]#char# type is nothing more than a
 single byte interpreted in a special way. So a [.type]#string# like [.lit]#"x"# is fully different
 from [.lit]#'x'#.
 
@@ -3939,13 +3938,13 @@ echo str, name
 
 In the above example code, we declare a variable called [.var]#str# and assign it the initial
 literal value [.lit]#"Hello"#. We use the [.func]#echo()# procedure to ask the user
-for his name, and use the [.func]#readLine()# procedure to read the user input from
+for his name and use the [.func]#readLine()# procedure to read the user input from
 the terminal. To show how we can add characters to existing [.type]#string# variables, we call
 the [.func]#add()# procedure to append a space character to our [.var]#str# variable, and
 finally, call the [.func]#echo()# procedure to print the hello message and the name to
 the screen. Note that the [.func]#echo()# procedure automatically terminates each
 output operation with a jump to the next line. If you want an output operation
-without a newline, you can use the similar [.func]#write()# procedure. But [.func]#write()#
+without a new line, you can use the similar [.func]#write()# procedure. But [.func]#write()#
 needs an additional first parameter, for which we use the special variable
 [.var]#stdout# when we want to write to the terminal window.
 
@@ -3988,7 +3987,7 @@ s[s.high] = '!'
 In the example above, we define the [.type]#string# variable [.var]#s# by the use of two literal [.type]#strings# to show the
 use of the concatenation operator. In line two we use the slice operator to replace
 the sub-string [.lit]#"hate"#, that is, the characters with index position 3 up to 6, with the [.str]#string# literal [.lit]#"like"#. In
-this case, the replacement has exactly that many characters as the text to replace,
+this case, the replacement has exactly as many characters as the text to replace,
 but that is not necessary: We can replace sub-strings with longer or shorter [.type]#strings#,
 which includes the empty [.str]#string# [.lit]#""# to delete a text area. In the last line of the above
 example, we use the subscript operator [.op]#[]# to replace the single character [.lit]#'?'#
@@ -3999,7 +3998,7 @@ Nim supports also a special notation that indicates indexing from the end of the
 the last. So we could have written [.code]#s[^1] = '!'# for the last line of our code
 fragment above. The reason that Nim does not use negative integers for this purpose
 is that Nim [.type]#arrays# don't have to start at index zero, but can start with an arbitrary
-index including negative indices, so for negative indices it may not always be clear
+index including negative indices, so for negative indices, it may not always be clear
 if a regular index or a position from the end of the [.str]#string# is desired. The term
 [.code]#s[^x]# is equivalent to [.code]#s[s.len - x]#. We will learn some more
 details about the slice operator in a later section when we have introduced [.type]#arrays#
@@ -4008,10 +4007,10 @@ and sequences.
 Another important operator for [.type]#strings# is the "toString" or [.ndef]#stringify# operator
 [.op]#$#. It can be applied to variables of nearly all data types
 and returns its [.str]#string# representation,
-which can then be printed. Some procedures like [.func]#echo()# apply this operator on its
+which can then be printed. Some procedures like [.func]#echo()# apply this operator to its
 arguments automatically. When we define our own data types, then it can make some
 sense to define the [.op]#$# for them, in case we need a textual representation of
-our data -- maybe only for debugging purposes. Note that applying the [.op]#$#
+our data -- perhaps only for debugging purposes. Note that applying the [.op]#$#
 operator on a [.type]#string# directly has no effect and is ignored, as the result would not
 change.
 
@@ -4065,7 +4064,7 @@ when we introduce the [.key]#object# data type.
 
 ==== Entering Unicode Characters
 
-UTF-8 is a variable-width character encoding. To cite the introducing section from
+UTF-8 is a variable-width character encoding. To cite the introduction section from
 https://en.wikipedia.org/wiki/UTF-8:
 
 ****
@@ -4099,8 +4098,8 @@ chess game. In the first line, we typed the Unicode sequence directly as hexadec
 digits, this method is rarely used today. In the second line, we used "\u" to enter
 the code point directly, we get the code from
 https://en.wikipedia.org/wiki/List_of_Unicode_characters. And finally, we entered the
-glyph directly in an editor. For some Linux editors like gedit we can hold down shift
-and control key and then type u, release all keys and type the Unicode digits like
+glyph directly in an editor. For some Linux editors like Gedit we can hold down the shift
+and control keys and then type u, release all keys, and type the Unicode digits like
 265a and a space. See https://en.wikipedia.org/wiki/Unicode_input for details and
 other {os}s.
 
@@ -4119,7 +4118,7 @@ strings. Nim has also the data type [.type]#cstring#, called "compatible [.str]#
 Nim, which matches the [.type]#strings# in C language if we compile as usual with the C backend.
 [.type]#Cstrings# are used in bindings definitions for C libraries, but as [.type]#cstrings# can not
 grow and do support only a few [.type]#string# operations, they are only used in rare cases in
-ordinary Nim source code. The Nim compiler passes automatically the zero terminated
+ordinary Nim source code. The Nim compiler passes automatically the zero-terminated
 data buffer of Nim [.type]#strings# to C libraries whenever we call a C library, so there is
 no expensive type conversion involved. But the other way is much more expensive: When
 you have an existing [.type]#cstring# and need a Nim [.type]#string# with the same content, then a simple
@@ -4150,7 +4149,7 @@ Another operation you should avoid is inserting the [.lit]#'\x0'# null byte char
 somewhere in an existing Nim [.type]#string#. Nim stores the actual length of [.type]#strings#
 explicitly and additional terminates the end of the actual data with a [.lit]#'\x0'# to
 make the [.code]#string# compatible with C [.str]#strings# and allow passing the data buffer
-directly to C library functions. A [.lit]#'\x0'# character somewhere in the middle of a
+directly to the C library functions. A [.lit]#'\x0'# character somewhere in the middle of a
 Nim [.type]#string# would generate an inconsistency, as C library functions like [.func]#printf()#
 would regard [.lit]#'\x0'# as the [.type]#string# end marker, while pure Nim functions
 may assume still a longer [.type]#string#. Intermediate [.lit]#'\x0'# bytes in [.type]#strings# can in very rare cases
@@ -4181,7 +4180,7 @@ keyboard, but generally it does not insert a backspace character but deletes the
 character to the left of the cursor when we are editing text. And the return key,
 well, it indeed inserts a newline character, but at the same time in our editor, the
 cursor moves to the next line. Most of the time, we desire a character that generates
-a newline when we run our program, but not when we enter our source code.] To solve
+a new line when we run our program, but not when we enter our source code.] To solve
 that problem, escape sequences were introduced for most programming languages. An
 escape sequence is a special sequence of characters, that the compiler can discover
 in [.str]#strings# and then replace with a single special character. Whenever we want a
@@ -4206,7 +4205,7 @@ new line, one [.lit]#'\r'# (carriage-return) to move to the start of the line, a
 files at the end of each line. Old printers used this combination too, so it was
 possible to send that text files to old printers directly. Nim also has the special
 escape sequence [.lit]#"\p"#, which is called platform-dependent newline and maps to [.lit]#"\c\l"# on
-Windows. That is, when we compile our program on Windows, then the compiler replaces
+Windows. That is when we compile our program on Windows, then the compiler replaces
 [.lit]#"\p"# in our [.type]#strings# with a carriage-return and a linefeed character, and when we
 compile on Linux, then the compiler replaces [.lit]#"\p"# only with a newline character. But
 modern Windows supports [.lit]#'\n'#, so we generally can use that.
@@ -4228,7 +4227,7 @@ echo "\\n"
 
 Multi-line [.type]#strings# are also raw [.type]#strings#, that is, contained escape sequences are not
 interpreted by the compiler, and additional multi-line [.str]#strings#, as the name implies,
-can extend over multiple lines of the source text. Multi-line text starts and ends
+can extend over multiple lines of the source text. A multi-line text starts and ends
 with three quotes like in
 
 [source, nim]
@@ -4280,7 +4279,7 @@ proc even(i: int): bool =
 
 You can also use the +#[+ comment +]#+ notation to insert comments everywhere in the
 source code at places where a white-space character is allowed, but this form of
-in-source comments is rarely used.
+in-source comments are rarely used.
 
 === Other data types
 
@@ -4342,7 +4341,7 @@ if they prefer [.var]#camelCase#. But still, you may think that all this generat
 In practice, it does not, it prevents confusion. Imagine a conventional programming
 language, fully case-sensitive and not ignoring underscores: In a larger program, we
 may then have names like [.var]#nextIteration# and [.var]#next_Iteration# or [.var]#keymap# and [.var]#keyMap#. What
-when both names are visible in the current scope, and we type the wrong one. The compiler
+when both names are visible in the current scope, and we type the wrong one? The compiler
 may not detect it when types match, but the program may do strange things. Nim would
 not allow that similar-looking names, as the compiler would regard them as identical
 and would complain about a name redefinition.
@@ -4352,10 +4351,10 @@ types to use capital type names and then write something like [.code]#var window
 Window#. So we can declare a variable named [.var]#window# of a user-defined data type named
 [.type]#Window#. That is a common practice.
 
-The case-insensitivity and the ignoring of underscores may not be the greatest
+The case insensitivity and the ignoring of underscores may not be the greatest
 invention of Nim, but it does not really hurt. The only exception is when we make
 bindings to C libraries, where leading or trailing underscores are used, which can
-make some renamings necessary.
+make some renaming necessary.
 
 The only minor disadvantage of Nim's fuzzy names is when you use tools like grep or
 your editor search functionality: You could not be sure if a search for "KdTree"
@@ -4396,7 +4395,7 @@ some time just prefer it.
 ****
 
 NOTE: Whenever you convert source code from other programming languages to Nim, you
-should first ensure that the original code is fully correct indented. Some editors can ensure
+should first ensure that the original code is fully correctly indented. Some editors can ensure
 or fix this, or you may use external tools. If you do not care for this fact, and you convert maybe
 from C to Nim and remove the braces of blocks, you may get it wrong when the initial indentation was wrong.
 
@@ -4415,7 +4414,7 @@ ordinary stack-allocated value variables, for references and [.type]#pointer#
 variables, things are a bit more complicated, we will discuss that in more
 detail when we introduce references.
 Here we have used the term code block, to clearly separate them from the [.key]#const#, [.key]#var#,
-[.key]#type#, and [.key]#import# sections, which are a different form of indented blocks.
+[.key]#type#, and [.key]#import# sections, which are different forms of indented blocks.
 Remember that the compiler processes our program code from the top to the bottom, so
 we have always to define symbols before we can actually use them.
 When we define an entity
@@ -4557,12 +4556,12 @@ priority than [.op]#{plus}# and [.op]#-#. In most cases, the priority is just as
 expect, maybe with a few exceptions. If we are unsure, we can group terms with
 brackets, or consult the compiler manual for details.
 
-Since version 1.6 Nim also allows to define and use a few Unicode operators, but these
+Since version 1.6 Nim also allows to define and use of a few Unicode operators, but these
 are still considered experimental. For details, you should consult the compiler manual.
 
 === Order of Execution
 
-Global program code or code in called [.proc]#{procs}# is generally executed from top to the
+Global program code or code in [.proc]#{procs}# is generally executed from top to the
 bottom and from left to the right, as long as control structures do not enforce a different order.
 To demonstrate this, we use here a set of four different [.proc]#{procs}#, which contain an echo() statement each, and
 return a numeric expression. Well, we have not yet formally introduced procedures, so if you should
@@ -4614,7 +4613,7 @@ The last two lines demonstrate the so-called short-cut-evaluation for expression
 with the boolean [.op]#and# or [.op]#or# operators. As the expression [.code]#a() and b()# is always [.lit]#false#
 when [.func]#a()# is [.lit]#false#, in this case, [.func]#b()# has not to be evaluated at all. In a similar way, as
 the expression [.code]#a() or b()# is always [.lit]#true# when [.func]#a()# is [.lit]#true#, in that case, [.func]#b()# has not to be evaluated at all.
-So in the last two lines of the above code [.func]#b()# is never called at all, and the output is just
+So in the last two lines of the above code, [.func]#b()# is never called at all, and the output is just
 
 ----
 a
@@ -4625,7 +4624,7 @@ true
 
 Note that in Nim as in most other programming languages, the assignment operator [.op]#=# behaves
 differently compared to ordinary operators like [.op]#{plus}# or [.op]#{asterisk}#, as in assignments like [code]#let a = b {plus} c()#
-obviously the right side has to be evaluated before the result can be actually assigned to variable [.var]#a#.
+obviously, the right side has to be evaluated before the result can be actually assigned to the variable [.var]#a#.
 
 == Control Structures
 
@@ -4697,7 +4696,7 @@ can use multiple in each branch, all on their own line and all indented in the s
 ****
 No, the terminating colon is not really necessary for the compiler, the compiler
 could determine the end of the condition without it, as the following statement is
-indented. But it looks better with colon, the colon makes it for humans easier to
+indented. But it looks better with a colon, the colon makes it for humans easier to
 understand the structure of the complete if statement. So the compiler expects the
 colons and complains otherwise currently.
 ****
@@ -4707,7 +4706,7 @@ code directly after the colon, like
 
 [source, nim]
 ----
-if age > 17: echo "you may drink and smoke, but better avoid it!"
+if age > 17: echo "You may drink and smoke, but better avoid it!"
 ----
 
 With an [.key]#elif# and an [.key]#else# branch, the example from above may look like
@@ -4802,9 +4801,9 @@ when isMainModule:
 ----
 
 The value [.lit]#isMainModule# is only true for a source code file when that file is compiled
-directly as the main module, that is, when it is not indirectly compiled because it is imported by other modules.
-This way we can include easily test code to our library modules -- that test code is ignored when
-the module is used as  a library, but active when we compile the module direct for testing.
+directly as the main module, that is when it is not indirectly compiled because it is imported by other modules.
+This way we can include easily test code in our library modules -- that test code is ignored when
+the module is used as a library, but active when we compile the module direct for testing.
 
 A [.code]#when defined()# construct can be used to test for predefined or our own custom options, e.g. we may
 give the optional option [-term]#-d:gintroDebug# to the compiler and test in the code of that module
@@ -4817,7 +4816,7 @@ variables which we define there are still visible after the construct has been p
 ----
 when sizeof(int) == 2:
   var intSize = 2
-  echo "running on a 16 bit system!"
+  echo "running on a 16-bit system!"
 elif sizeof(int) == 4:
   var intSize = 4
   echo "running on a 32-bit system!"
@@ -4860,7 +4859,7 @@ the variable after the [.key]#case# keyword. A [.key]#case# statement must cover
 so most of the time an [.key]#else# branch is necessary.
 
 For Nim version 1.6 the case statement can contain also optional [.key]#elif# branches
-with arbitrary boolean conditions. This was not the case in the wirthian languages
+with arbitrary boolean conditions. This was not the case in the Wirthian languages
 Pascal, Modula, and Oberon, and makes Nim's case construct now very similar
 to the ordinary if/elif/else.
 
@@ -4915,8 +4914,8 @@ execution of the loop, otherwise, when the condition is [.lit]#true# for the fir
 it would remain [.lit]#true# and the loop would never terminate. We decrease the loop counter
 [.var]#repetitions# in the loop, so at some point, the condition will become [.lit]#false#, the
 loop will terminate, and program execution will continue with the first statement
-after the loop body. Note how we decrement the loop counter: The right site of the
-assignment operator is evaluated, after that is done, the new value is assigned to
+after the loop body. Note how we decrement the loop counter: The right side of the
+assignment operator is evaluated, and after that is done, the new value is assigned to
 the counter.
 
 There exist two rarely used variants of a while loop: the loop body can contain a
@@ -4965,7 +4964,7 @@ creates a new scope, in the same way as an [.code]#if true:# statement would do:
 ----
 block: # create a new scope
   var i = 7
-echo i # would not compile, as variable i is undefined
+echo i # would not compile, as the variable i is undefined
 ----
 
 Blocks can be useful to structure large code segments, when there are no better ways, such as
@@ -5039,7 +5038,7 @@ uses something like s.each{|ch| ...} instead.
 [.key]#For# loops can be used to iterate over containers or collections, and pic each element in
 sequence in this process. The variable after the [.key]#for# keyword is used to access or
 reference the single elements. That variable has automatically the right type, which
-is the type of the elements in the container, and gets in each iteration the value of
+is the type of the elements in the container and gets in each iteration the value of
 the next element in the container, starting with the first element in the container and
 stopping when there is no element left. [.func]#Items()# is here the actual [.key]#iterator#,
 which allows us to access the individual characters in sequence. It exists the
@@ -5113,9 +5112,9 @@ a new custom type. Writing the [.key]#type# keyword on its own line begins a [.k
 where we can declare one or more custom data types. All type declarations in a [.key]#type#
 section must be indented. In the next line, we write our type name, an equal sign, and
 the keyword [.key]#object#. That indicates that we want to declare a new [.key]#object# [.key]#type#
-named Computer. Here Computer is a type name, in Nim we use the convention that user
-defined type names start with a capital letter. In the following indented block we
-specify the desired fields of this [.key]#object#, each line contains the name of a field, and a colon
+named Computer. Here Computer is a type name, in Nim, we use the convention that user-defined
+type names start with a capital letter. In the following indented block we
+specify the desired fields of this [.key]#object#, each line contains the name of a field and a colon
 followed by the needed data type. That is similar to a plain variable declaration.
 
 [.key]#Objects# in Nim are similar to structs in C. Unlike classes in Java, Nim [.key]#objects#
@@ -5146,7 +5145,7 @@ maybe read the data from a file, from a terminal, or maybe from a graphical user
 interface.
 
 It may look a bit ugly that we have to write [.var]#computer.# before each field
-when we access the fields. Indeed, in recent Nim versions that is not necessary, you
+when we access the fields. Indeed, in recent Nim versions, that is not necessary, you
 may use the [.code]#with# construct now instead.
 
 [source, nim]
@@ -5287,7 +5286,7 @@ for square in s:
   echo square
 ----
 
-We start with an empty [.type]#seq# here, and use the [.func]#add()# procedure to append
+We start with an empty [.type]#seq# here and use the [.func]#add()# procedure to append
 elements. After that, we can iterate over the [.type]#seq# as we did for the [.type]#array#.
 
 In the same way, as we access single characters of a [.type]#string# with the subscript
@@ -5307,7 +5306,7 @@ positions. You might think that an assignment for a [.type]#seq# like [.code]#s[
 same as [.code]#s.add(9)#, but only the [.func]#add()# operation works in this case.
 
 Note that in some languages like [.ndef]#Julia# [.type]#arrays# start at position [.lit]#1#.footnote:[
-A start index of 1 may appear to be more natural, some textbooks use start indices 1, and indeed
+A start index of 1 may appear to be more natural, some textbooks use start indices of 1, and indeed
 one advantage of start index 1 is, that in his case, the length and the highest position index of the
 container are identical. But for systems programming languages like C, it is a common practice to start
 at zero.]
@@ -5335,9 +5334,9 @@ on your CPU.
 
 It should be not surprising that the internal structure of sequences is a bit more
 involved than [.type]#arrays#. [.type]#Arrays# are indeed nothing more than a block of memory,
-generally allocated on the stack for local data, or allocated in the BSS segment for
-global data. Don't worry when you have not yet an idea what the stack, the heap, and a
-BSS segment are, we will learn that soon. The Nim [.type]#seq# data type has a variable size,
+generally allocated on the stack for local data or allocated in the BSS segment for
+global data. Don't worry when you do have not yet an idea what the stack, the heap, and a
+BSS segment is, we will learn that soon. The Nim [.type]#seq# data type has a variable size,
 so it is clear that it needs not only a storage location for its elements, but also a
 counter to store how many elements it currently contains, and another counter for how
 many it could contain at most. The element counter must be updated when we add or
@@ -5351,7 +5350,7 @@ size, so we can avoid the copying of the contained data.] Due to this additional
 effort appending elements to a [.type]#seq# by using the [.func]#add()# procedure is not extremely
 fast. You may wonder why we have not to save a size information for [.type]#arrays#. Well
 [.type]#arrays# have fixed sizes, so it is obvious that we never have to adjust something like
-a size counter, simple because the size would never change. But would we have to save the
+a size counter, simply because the size would never change. But would we have to save the
 desired initial size of the [.type]#array#? Well, in some way yes. But it is a constant value.
 During the compile process, the compiler can catch some errors already for us -- when
 we have an [.type]#array# as above with size 8, then the compiler would be able already at
@@ -5362,7 +5361,7 @@ not existing index position may occur, for example, by constructs like [.code]#v
 error, the compiler has to store the fixed [.type]#array# size somewhere and check against
 that value when an [.type]#array# access by using the subscript operator with a non-constant
 argument occurs, as the [.var]#a[i]# above. One related remark: Accessing [.type]#array# elements is
-as fast as ordinary variable access when we use a constant value as index, that is a
+as fast as ordinary variable access when we use a constant value as an index, that is a
 constant literal or a named constant. The reason for this is, that when the index is
 a constant, then the compiler just knows the exact position of that [.type]#array# element in
 memory, just as it knows the address of plain variables, so there is no need for
@@ -5405,12 +5404,12 @@ of course, we can just ignore elements at the end of the [.type]#array#.]
 It is slow
 when we use the naive approach and move all the elements located after the element that should be removed
 one position forward. This would obtain the order in the container, so sometimes this
-is the only solution, but of course moving all the entries is expensive for large containers.
+is the only solution, but of course, moving all the entries is expensive for large containers.
 Nim's standard library provides the [.func]#delete()# function for this order maintaining delete
 operation. A much faster way to delete an entry in a [.type]#seq# or [type]#array# is to remove the last entry
 and replace the one that should be deleted with that last entry. This operation moves the last entry
 to the front, so the order of elements is not maintained. Nim's standard library provides the [.func]#del()# function
-for this faster, but order changing delete operation. Of course, whenever the order is not important,
+for this faster, but order-changing delete operation. Of course, whenever the order is not important,
 we should use [.func]#del()#. The [.func]#delete()# and [.func]#del()# functions are actually only available for sequences, as
 [.type]#arrays# have a fixed size -- but in principle, we could do similar operations with [.type]#arrays# as well, we have just to store
 the actual used size somewhere.
@@ -5421,16 +5420,16 @@ a good solution in special cases, maybe just using a different container type li
 is a preferable solution.]
 
 ****
-In the section about [.str]#strings#, we said that [.str]#strings# have value semantic, that is, that
+In the section about [.str]#strings#, we said that [.str]#strings# have value semantics, that is, that
 an assignment like [.code]#str1 = str2# creates a copy of [.var]#str2# and that after that assignment
 [.var]#str1# and [.var]#str2# are fully independent entities -- modifying one does not change the
 content of the other one. [.type]#Array# and sequences behave in the same way, both have value
 semantics too. Indeed, [.type]#arrays# are true value types in Nim, as they live on the stack in
-the same way as plain variables like integers, [.type]#floats# or characters. Sequences have
+the same way as plain variables like integers, [.type]#floats#, or characters. Sequences have
 a dynamic data buffer, which is allocated on the heap, so it would be possible that an
 assignment like [.code]#seq1 = seq2# would not copy the data buffer but reuse the old one. In
 that case, both sequences would be not independent, [.var]#seq2# would be an alias for [.var]#seq1#.
-This is called reference semantic, some languages like Ruby behave in this way. But
+This is called reference semantics, some languages like Ruby behave in this way. But
 in Nim [.type]#arrays#, [.str]#strings# and sequences have value semantic, an assignment creates an
 independent copy. We will learn more details about reference semantics and the use of
 the stack or heap to store data soon when we discuss references to [.obj]#objects#.
@@ -5478,7 +5477,7 @@ Remember that the actual address values will be different for each run of our
 program, and they may be totally different on different computers, as it is some
 random choice of the OS which free memory area is used to run our program. This
 result is expected as the [.type]#array# is a plain block of memory stored on the stack. And
-indeed the [.type]#array# has copy semantic, when we create a copy called [.var]#a2# and later modify
+indeed the [.type]#array# has copy semantics, when we create a copy called [.var]#a2# and later modify
 [.var]#a#, then the content of [.var]#a2# is unchanged. That was not really surprising, so let us
 investigate a sequence:
 
@@ -5546,7 +5545,7 @@ its data type should be [.type]#int#. We said that both fields should be adjacen
 buffer of the seq elements, which means at the start or at the end. Obviously, we can
 not access the end as long as we do not know the capacity, so the capacity field should
 be at the start, and then the length field also. We may find out which one is which by
-observing the content when seq grows. So let us write some code:
+observing the content when the seq grows. So let us write some code:
 
 [source, nim]
 ----
@@ -5653,7 +5652,7 @@ const
 b[a][0] = rook
 echo b[a][0] # 5
 
-# with user defined templates we can simplify the index notation
+# with user-defined templates we can simplify the index notation
 template `[]`(b: Board; i, j: int): int8 =
   b[i][j]
 
@@ -5727,7 +5726,7 @@ loops for matrix access by changing the way in which we iterate -- by rows or by
 
 Nim [.plain]#slices# are [.key]#objects# of type [.type]#Slice# with two fields, a lower bound [.ndef]#a# and an
 upper bound [.ndef]#b#. The [.mod]#system# module also defines the [.type]#HSlice# [.key]#object#, called
-heterogeneous slice, for which the lower and upper bound can have different data types:
+a heterogeneous slice, for which the lower and upper bound can have different data types:
 
 [source, nim]
 ----
@@ -5879,7 +5878,7 @@ echo i, j
 ----
 
 Here we have 3 assignments, first, we assign the integer literal [.lit]#7# to the variable [.var]#i#, then
-we assign the content of variable [.var]#i# to variable [.var]#j#, and finally, we overwrite the old
+we assign the content of variable [.var]#i# to the variable [.var]#j#, and finally, we overwrite the old
 content of variable [.var]#i# with the new literal value [.lit]#3#. The output of the [.func]#echo()# statement
 should be [.term]#3# and [.term]#7#, because in line 3 we copy the content of variable [.var]#i#, which is
 currently the value [.lit]#7#, into variable [.var]#j#. The new assignment in line 4 in no way
@@ -5888,7 +5887,7 @@ touches the content of variable [.var]#j#.
 In section <<Objects>> we saw that the fields of [.key]#object# types like our [.type]#Computer# data type
 behave in the same way -- assignments copy the content. The [.tup]#tuple# data type, which has some
 similarities to [.op]#objects#, and which we will introduce later in the book, behaves the same.
-All these data types are stack-allocated, and we say that the data types have value or copy semantic.
+All these data types are stack-allocated, and we say that the data types have value or copy semantics.
 Even [.str]#strings# and sequences, which use actually a heap-allocated data buffer, behave in the same way in Nim.
 
 Whenever possible, we should use this simple form of variables, as they are fast and
@@ -5897,7 +5896,7 @@ easy to use.
 Maybe that is not too surprising for you, but when we would have references instead of plain
 variables, then the situation would be different, as we will see soon. Actually, some other
 programming languages use reference semantics for entities like [.str]#strings# by default, for example
-in Ruby an assignment of a [.str]#string# variable to another variable does not copy the content, so
+in Ruby, an assignment of a [.str]#string# variable to another variable does not copy the content, so
 that both variables still use the same data buffer -- when we then modify one variable, the content of the other changes too.  
 
 But there exist situations where we need some sort of indirection, and then
@@ -5912,13 +5911,13 @@ Imagine you have baked a cake for your family, and you know that your friendly
 neighbor loves cakes too. As you have still a lot of all the necessary ingredients and
 because the oven is still hot, you make one more identical cake to give it later to
 your neighbor. We can think of the cake as a value type, and your second cake can be
-considered as a copy. When you give the copy to your neighbor, then you have still
+considered a copy. When you give the copy to your neighbor, then you have still
 your own, and when you or the neighbor eats the cake, then the other one still exists.
 
 Now imagine that you know a good car repair shop. You can give the telephone number
 or location of that car repair shop to your neighbor, so he can use that shop too. So
 you gave him a reference to the shop, but you gave him not a copy. You can also give
-some of your other friends each a reference to that shop, which is nearly no effort
+some of your other friends a reference to that shop, which is nearly no effort
 for you. While backing a cake for all of them would be some effort. But there is some
 danger with references: When one of your friends gets angry and burns down the
 car repair shop, then you and all your other friends have a serious problem.
@@ -5928,10 +5927,10 @@ list with the names of all the people you intend to invite to your birthday part
 and another list with the names of people who owe you money. Some names may be on both
 lists, this is it refers to the same person.
 
-In computers, the dynamic storage, called RAM, consists of consecutive, numbered
+In computers, dynamic storage, called RAM, consists of consecutive, numbered
 storage locations, called words. Each individual word has its address, which is a
 number typically starting at zero and extending to a value, which is defined by the
-amount of memory available in your computer. These addresses can be used to access
+amount of memory available on your computer. These addresses can be used to access
 the storage locations, that is, to store a value at that address, or to read the
 content again. Reading generally does not modify the content, you can read it many
 times and will always get the same value. When you write another value to that
@@ -5957,9 +5956,9 @@ the RAM with a different bit pattern we could say for sure that it can not be ou
 variable, but whenever we find the expected bit pattern then it can be just a
 coincidence, there can be many more words in RAM with that content. In some way, it is
 as if you would search for a person, and you know that that person lives on a long road with
-numbered houses. If you only know that the person wears brown shoes, but you know not
+numbered houses. If you only know that the person wears brown shoes, but you do know not
 the number of the house nor the name of the person and no other unique property of
-that person, then you have not much luck.
+that person, then you do have not much luck.
 
 == References and Pointers
 
@@ -5967,7 +5966,7 @@ that person, then you have not much luck.
 
 In Nim references are some form of smart or managed [.type]#pointers#, we will learn more
 about references later. The plain [.type]#pointer# data type is nothing more than a memory
-address, it is similar to a (unsigned) integer number. We say that a [.type]#pointer# points
+address, it is similar to an (unsigned) integer number. We say that a [.type]#pointer# points
 to an entity when the [.type]#pointer# contains the memory address of that entity.
 
 Besides the [.type]#pointer# data type, which is only some RAM address, we have also the [.type]#ptr#
@@ -6030,7 +6029,7 @@ sense to print addresses, [.func]#echo()# would refuse to print it, so we have u
 construct [.code]#cast[int](someValue)# to tell that [.func]#echo()# should regard our [.type]#pointers# as
 plain integer and print it. That operation is called casting, we mostly should
 avoid it, as it destroys type safety, but for learning purposes, it is OK to use it.
-We will learn more about casts and related type conversion later.
+We will learn more about casts and related type conversions later.
 
 The first two [.func]#echo# statements should print the decimal value [.lit]#0#, as the [.type]#pointers# have
 the initial default value [.lit]#nil#.
@@ -6088,7 +6087,7 @@ echo number
 
 What do you expect for the output of the last [.func]#echo()# statement? Well, remember, [.var]#ip#
 points to the location where the variable [.var]#number# is stored in RAM. So echo [.var]#ip[]# gave us
-the content of the [.var]#number#. Now [.code]#ip[] = 3# is an assignment, the right side of the
+the content of the [.var]#number#. Now [.code]#ip[] = 3# is an assignment, and the right side of the
 assignment operator is the literal number [.lit]#3#, which is a value type. Earlier we said
 that for value types an assignment is a copy operation, the right side of the
 assignment operator is copied into the variable on the left side. Now [.var]#ip[]# stands
@@ -6102,7 +6101,7 @@ C code often iterates with [.type]#pointer# arithmetic over [.type]#arrays# by u
 [.code]#sum {plus}= {asterisk}(myIntPtr{pp})#. This was done to maximize performance. Modern C
 compiler generally understands statements like [.code]#sum {plus}= el[i]; i{pp}# well and
 generates very good assembly instructions for it. So [.type]#pointer# arithmetic is not
-necessary in C that often today.
+necessary for C that often today.
 
 Nim does not provide math operations for [.type]#pointers# directly, but we can always cast
 [.type]#pointers# to integers and do arbitrary math. And of course, we could define our own
@@ -6198,7 +6197,7 @@ higher-level programming languages to this problem is a [.ndef]#Garbage-Collecto
 GC does the dangerous and inconvenient task of deallocating unused memory blocks for
 us automatically.
 
-To distinguish the GC managed "pointers" cleanly from the manually managed ones, we call
+To distinguish the GC-managed "pointers" cleanly from the manually managed ones, we call
 them in Nim [.ndef]#references#, in some other languages they are called traced
 [.type]#pointers#. References are always typed like [.type]#ptr#, there is no equivalent to the untyped
 [.type]#pointer# type for references.
@@ -6244,7 +6243,7 @@ use one more reference [.var]#ip2#, and assign that [.key]#ref# the value of the
 the same memory block. The advantage here is that we don't have to care about
 freeing that block, the GC will do that when appropriate.
 
-To verify that in the example code above, both references really reference the same
+To verify that in the example code above, both reference really reference the same
 [.obj]#object# in memory, we could add two more lines of code:
 
 [source, nim]
@@ -6319,9 +6318,9 @@ When the nodes have only a successor field, then we call the list a [.ndef]#sing
 linked list#, and when it also has a predecessor field, then we call it a
 [.ndef]#double linked list#. Contrary to [.type]#arrays# and Nim's sequences, lists do not
 allow access to arbitrary elements, we can only traverse the list starting from its
-first element for single linked lists, or also from its last elements, for double
-linked lists. The first element of a list is also called its [.ndef]#head#, and the
-last element is called it's [.ndef]#tail#. Often, the head and the tail elements are
+first element for single-linked lists, or also from its last elements, for double-linked
+lists. The first element of a list is also called its [.ndef]#head#, and the
+last element is called its [.ndef]#tail#. Often, the head and the tail elements are
 just plain nodes, but the head can be also an extended node [.key]#object# with additional
 fields, carrying information for the whole list, maybe an additional [.type]#string# field for
 the list name. In this section, we use the simplest form of a list, which is a single-linked
@@ -6379,7 +6378,7 @@ named [.type]#Friend#, which is a reference to an [.key]#object#, that object ty
 type [.type]#string#, and a field [.var]#next#, which is again a reference to the same data type.
 
 We are using two variables, one called [.var]#n# of type [.type]#string# to read in a name or the [.italic]#quit#
-command from terminal, and a variable called [.var]#f# of type [.type]#Friend#. The variable [.var]#f# seems
+command from the terminal and a variable called [.var]#f# of type [.type]#Friend#. The variable [.var]#f# seems
 to match only to one single friend, but as the type of [.var]#f# has a [.var]#next# field, it can be a
 whole list of friends, with [.var]#f# being the start or head of that list.
 
@@ -6387,7 +6386,7 @@ In the code above, we are using a special [.key]#while# loop -- special because 
 [.code]#while true:# and because the loop contains a [.key]#break# statement. Earlier, we said
 that we should avoid the [.key]#break# statement in loops because it interrupts the control
 flow and can make it more difficult to understand and prove the flow. But in this
-case that form makes some sense: For the first loop, we have to first read in a name
+case, that form makes some sense: For the first loop, we have to first read in a name
 from the terminal, and then we can decide what to do, so we can not really evaluate a
 condition after the [.key]#while# statement at the top. So we use the simple constant
 condition [.lit]#true#, which would never terminate the loop. We need a [.key]#break# inside the loop
@@ -6395,7 +6394,7 @@ body to terminate the loop.
 
 Let us investigate the second loop first, as it is really easy: In the [.key]#while# condition,
 we check if the current value of [.var]#f# is [.lit]#nil#, that is if there are no more entries in our
-list. For that case, we terminate the loop, as we are done. If [.var]#f# has not the value
+list. In that case, we terminate the loop, as we are done. If [.var]#f# has not the value
 [.lit]#nil#, then [.var]#f# points to a valid content, that is, there is at least a valid name, which
 we access by the field access operator and print it with [.code]#echo f.name#. Note that in
 Nim the field access operator [.op]#.# works in the same way for value [.obj]#object# types
@@ -6410,7 +6409,7 @@ valid reference to one more [.type]#Friend# [.obj]#object#, or it could be [.lit
 loop should terminate.
 
 The input loop is also not that complicated: To make the process of adding more
-friends to the list easy, we always add the new names at the beginning. First, we ask
+friends to the list easy, we always add new names at the beginning. First, we ask
 the user to enter a name. We use [.func]#write(stdout)# for this, as [.func]#echo()# always generates a
 new line, but we want to read in the name on the same line. If the name is empty or
 has the special value "quit", then we terminate the input loop. In the loop we are
@@ -6465,7 +6464,7 @@ Here we are using again an outer [.key]#while# loop to read in the names which w
 delete. That loop uses the condition [.code]#while f != nil:# because when the list is empty
 we should stop, of course.
 
-In the loop body we have an [.key]#if# statement, and in the [.key]#else# branch of the [.key]#if# statement
+In the loop body, we have an [.key]#if# statement, and in the [.key]#else# branch of the [.key]#if# statement
 we have one more loop. The reason why we need the [.key]#if# statement is, that the case
 that our name to delete is the first in the list is some sort of special. Let us
 investigate the inner loop first. That loop assumes that there are at least 2
@@ -6523,11 +6522,12 @@ and the combined construction with initialization may allow the compiler to reas
 As the constructor
 syntax looks the same for value and ref objects, this may also simplify later changes of the program.
 So the use of explicit new() calls is a legacy and everybody is highly encouraged to use object constructors instead.
-In the rare case, that a very complicated constructor call fails to compile, we may fall back to use of new().footnote:[https://forum.nim-lang.org/t/9929]
+In the rare case, that a very complicated constructor call fails to compile, we may fall back to the use of new().footnote:[https://forum.nim-lang.org/t/9929]
 
 //== Arithmetic -- Integers and Floats
 
 == Procedures and Functions
+//puh
 
 //(Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are the most common way to
 //structure larger programs in smaller parts each with a dedicated task.
@@ -18122,7 +18122,7 @@ The [.mod]#genasts# module provides with the [.func]#genAstOpt()# macro and the 
 a drop in replacement for the "quote do:" construct.
 Like [.code]#quote do:#, [.func]#genAst()# accepts an expression or a code block and returns the AST that represents it.
 Within the quoted AST, we are able to interpolate NimNode expressions from the surrounding scope.
-While for [.code]#quote do:# quoting is done using backticks (or other user defined operators), we pass to [.func]#genAst()# a list of the variable to capture,
+While for [.code]#quote do:# quoting is done using backticks (or other user-defined operators), we pass to [.func]#genAst()# a list of the variable to capture,
 and can then use these variables in the body of [.func]#genAst()# without explicit quoting. Our [.func]#show()#
 macro from above becomes with [.func]#genAst()#:
 
