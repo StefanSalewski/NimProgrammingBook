@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-21
+//v0.1, 2023-APR-23
 :doctype: book
 :toc: left
 :icons: font
@@ -12682,7 +12682,7 @@ References:
 * https://prng.di.unimi.it/
 
 == Timers
-// puh
+
 Sometimes, we may want to measure the execution time of a code segment of
 our program. For this, the Nim standard library provides various modules,
 including the larger [.mod]#times# module, and the [.mod]#monotimes# module.
@@ -12690,7 +12690,7 @@ The [.mod]#times# module provides many functions and data types for handling
 dates and times, while the small [.mod]#monotimes# module is more specialized for measuring
 time intervals. For our first test, we will use the [.func]#times.cpuTime()# function and
 the [.func]#monotimes.getMonoTime()# function. The former gives us time values as seconds
-in [.type]#float# format, while the latter returns an [.type]#int64# nanosecond value. To measure execution
+in [.type]#float# format, while the latter returns an [.type]#int64# nanosecond value. To measure the execution
 times of code segments, we ask for the current time at the start and at the end of that segment and
 build the difference. Actually, we will try to measure the time needed for a [.type]#float# square root calculation.
 In the past, calculating square roots was considered a relatively slow operation, slow compared to
@@ -12733,13 +12733,13 @@ main2()
 ----
 
 To get meaningful results, we have to take some care: Most important is, that
-the code segment that we want to measure is really executed. This may sound odd, but
+the code segment that we want to measure is really executed. This may sound odd but
 assume that the code produces no noticeable result at all. In that case, the compiler may just remove
 that code fragment from the generated executable, as it is not needed for correct program execution. Or assume
 that the code fragment uses only data, which is already known at compile time. Then
 the compiler may do all the calculations already at compile-time, and the whole
 code fragment is removed again and replaced by the pre-calculated values. And finally, we
-have to remember that our computer may execute other tasks at the same time or may be in
+have to remember that our computer may execute other tasks at the same time or could be in
 various power-saving states, with reduced CPU clock frequency, from which it takes some time to wake up. To take care of this, we
 try to execute some warm-up code before our actual timing task, and we do use the [.func]#rand()# function
 from the
@@ -12759,8 +12759,8 @@ $ ./t1
 8.527354349689125
 ----
 
-Lines three and five are the results of our timing attempt. Both values are obvious too large and do
-not match. The reason for the wrong results is the overhead by the function calls itself. That overhead seems
+Lines three and five are the results of our timing attempt. Both values are obviously too large and do
+not match. The reason for the wrong results is overhead by the function calls itself. That overhead seems
 to be much larger for the [.func]#cpuTime()# call, as we get a result of about [.lit]#500# nanoseconds. Maybe the reason for this is,
 that [.func]#cpuTime()# works with [.type]#floats# internally. At least, we see that [.func]#getMonoTime()# can measure time intervals
 in the range of a few hundred nanoseconds. When we run the program a few times, the printed time intervals
@@ -12830,7 +12830,7 @@ from line two. When you run this program multiple times, you may notice that you
 get sometimes much larger results for both or for only one of the two values. That is not
 surprising, as the computer is processing not only our program, but many more, and due to task
 switching, our program may be suspended for some time. When we divide that 114 microseconds
-by the number of loop iterations (64 {asterisk} 1024) we get 1.7 nanoseconds, which is really surprising fast
+by the number of loop iterations (64 {asterisk} 1024) we get 1.7 nanoseconds, which is really surprisingly fast
 for a square root calculation. The concrete value is for a modern Intel I7 CPU. Of course, these 1.7
 nanoseconds are not only the time needed for the square root calculation, but it includes
 the operations with the loop counter and the time needed to fetch and access the actual [.type]#array# elements.
@@ -12911,7 +12911,7 @@ log2(N) costs for retrieving operations. We will learn more about sorting sequen
 doing a binary search in a sorted sequence, and tree structures later in the book.
 
 Hash tables permit fast access to data records by the use of arbitrary keys.
-A hash table, called only table in Nim, is a homogeneous resizable container, that behaves similar
+A hash table, called only table in Nim, is a homogeneous resizable container, that behaves similarly
 to the Nim sequences, but releases the restriction, that for direct accessing an element, its position in
 the sequence has to be known.
 
@@ -12973,7 +12973,7 @@ Storing data records works similarly: When the position given by the hash key is
 new entry is stored at that position. If the index position is already occupied, then the following
 positions are examined until a void one is found and the data is stored there.
 
-Hash tables work well generally when they are not too dense populated. Typically,
+Hash tables work well generally when they are not too densely populated. Typically,
 we make the number of available index positions double the size of the number
 of expected entries. Then the chance of collisions is not too large, and when a collision
 occurs, then the chances are high that one of the next positions is still unpopulated.
@@ -13055,7 +13055,7 @@ else:
   process(query)
 ----
 
-A useful variant of the [.type]#Table# data type is the [.type]#CountTable#, which we can use to count data [.obj]#objects#, maybe words in a text:
+A useful variant of the [.type]#Table# data type is the [.type]#CountTable#, which we can use to count data [.obj]#objects#, e.g. words in a text:
 
 [source, nim]
 ----
@@ -13075,7 +13075,7 @@ We will give an extended example of the use of a CountTable for counting words i
 A [.type]#Table# instance stores entries not in the order of insertion. When we iterate over the [.var]#table#,
 we get the results not back in the order of insertion. If we really should need to preserve
 the insertion order, we may use the [.type]#OrderedTable# variant. Note that an [.type]#OrderedTable#
-does not sort its entries, it remembers insertion order. Ordered [.type]#Tables# have some internal
+does not sort its entries, it remembers the insertion order. Ordered [.type]#Tables# have some internal
 overhead, so we should use them only when necessary.
 
 For all the various table variants, we can use [.proc]#{procs}# like [.func]#clear()#, [.func]#len()#, or [.func]#del()# to remove all entries
@@ -13093,7 +13093,7 @@ The [.mod]#tables# module uses the [.mod]#hashes# module to calculate the hash v
 we use to access table content. For many data types, the [.mod]#hashes# module already defines
 a hash function. When we would like to use [.type]#tuples# or [.key]#object# data types as keys for table access, then we would have to
 define a hash function for that key [.obj]#object# first. The API documentation of the [.mod]#tables# module
-contains an example for this, where as key an [.obj]#object# data type with firstName and lastName fields is used
+contains an example for this, where an [.obj]#object# data type with firstName and lastName fields is used as the key
 to store salary entries in the table. While firstName and lastName are [.str]#strings#, and for single [.str]#strings# a predefined
 hash function is available, we have to declare another hash function for [.obj]#objects# with two [.str]#strings#:
 
@@ -13128,10 +13128,10 @@ Hash tables can be seen as a way to attach arbitrary data to other data. The abo
 a person [.obj]#object#. In most cases, we would just create one more [.obj]#object# field, when we have to store more data, but sometimes
 that is not easily possible. One example is when we use a low-level C library, which gives us some C [.obj]#objects# back. Maybe
 we use an advanced C or {cpp} math library like CGAL, and we get some abstract low-level [.obj]#objects# from it, maybe circles
-with center coordinate and diameter. As that [.obj]#objects# are not Nim [.obj]#objects#, but C or {cpp} entities, we can not easily subclass
+with center coordinates and diameter. As that [.obj]#objects# are not Nim [.obj]#objects#, but C or {cpp} entities, we can not easily subclass
 them to attach more properties like a color attribute. But as each entity has a unique address, we can just use a
 table with key type address and all the needed values, like color, as data. That would be some overhead of course, as
-each color lookup would mean a table access, but it is a simple solution.
+each color lookup would imply table access, but it is a simple solution.
 
 We can even attach properties to plain data types this way:
 
@@ -13212,7 +13212,7 @@ Because of this, it makes sense to define hash functions for [.key]#object# type
 in a compatible way: We use the hash value of the single integer field of our value [.obj]#object# as the hash result
 for the entire [.obj]#object#, and we use the address of the instance for the hash value of the reference [.obj]#object#.
 As different instances of [.key]#ref# [.obj]#objects# have always different addresses, the hasKey() does return false
-when we use as argument a different instance variable, independent of the content of its fields.
+when we use as the argument a different instance variable, independent of the content of its fields.
 
 For special use cases, we may redefine the [.op]#==# operator, but we have to ensure that the defined hash function
 matches the [.op]#==# operator: When [.var]#a == b# is true, then [.func]#hash(a)# has to be identical to [.func]#hash(b)#! The reason is,
@@ -13236,10 +13236,10 @@ And hash table lookup is slower than an [.type]#array# or [.type]#seq# access. T
 we have only to multiply the index value with the byte size of the stored elements type and potentially
 add an offset when the [.type]#array# does not start at index [.lit]#0#. For tables, we have to calculate the hash value,
 do the modulo operation, access some elements at the calculated position, and most importantly, compare
-the content at that positions with the actual key data. If the key is a [.str]#string#, a few [.str]#string# comparisons (at least one) are necessary
+the content at that position with the actual key data. If the key is a [.str]#string#, a few [.str]#string# comparisons (at least one) are necessary
 to determine if the query element is available in the table. So while [.type]#array# access may take less than a nanosecond on modern hardware,
-table lookup may take a few dozens of nanoseconds. Lookup with [.str]#string# keys is generally slower than for
-other key types like integer, as for [.str]#string# comparison it may be necessary to compare many characters to get a result
+table lookup may take a few dozen of nanoseconds. Lookup with [.str]#string# keys is generally slower than for
+other key types like integer, as for [.str]#string# comparison it may be necessary to compare many characters to get a result,
 and because [.str]#strings# generate some memory indirection by the fact that [.str]#string# content is stored somewhere in the heap
 outside any cache.
 
@@ -13249,7 +13249,7 @@ At the end of our introduction to hash tables, we will present a very useful, bu
 that obvious property of hash tables: The keys used for table access don't have to be simple data types,
 but can be container types like [.type]#tuples# or [.type]#arrays#. Imagine you have a map in 2D, with a set of points on that
 map each presented by an [.var]#x#, [.var]#y# coordinate pair. That points could be cities, and some cities may have a direct connection
-by a road. So how can we test, if two cities are directly connected, and get the distance between the two cities?
+by road. So how can we test, if two cities are directly connected, and get the distance between the two cities?
 With a hash table using a [.tup]#tuple# of two city coordinates as key, it is easy:
 
 [source, nim]
@@ -13410,7 +13410,7 @@ References:
 == Hash Sets
 
 The [.mod]#sets# module provides the generic [.type]#HashSet[T]# data type and the related procedures and functions.
-[.type]#HashSets# behave similar to Nim's built-in [.type]#set# type,
+[.type]#HashSets# behave similarly to Nim's built-in [.type]#set# type,
 but while the base types of the built-in [.type]#set# type are restricted to ordinal data types of 8 or 16-bit size, there is no such restriction
 for [.type]#HashSets#.
 That is, [.type]#HashSets# can be used like hash [.type]#Tables# for most of Nim's data types, including
@@ -13431,7 +13431,7 @@ if v in s:
   echo v, " is a Nim keyword"
 ----
 
-The functions and procedures provided by the [.mod]#sets# module are used similar to
+The functions and procedures provided by the [.mod]#sets# module are used similarly to
 the ones of the [.mod]#tables# module -- we have [.func]#excl()# and [.func]#incl()# to remove or add elements
 to a set instance, and operations to create the union, intersection or difference of
 two [.type]#HashSets#. As the basic {behav} of [.type]#HashSets# is so similar to hash [.type]#Tables#, we will
@@ -13446,13 +13446,13 @@ For other base types, we have to use
 the [.type]#HashSet#. So, why do we not always use [.type]#HashSets# only? The reason is, that the implementation
 is different. The built-in [.type]#set# type is internally a [.italic]#bit vector#. To store a [.type]#set# with an 8-bit base type,
 256 bits are needed, that is 10 bytes. For this data type, operations like union, intersection, or difference
-map well to basic CPU instructions like [.func]#bitor# and [.func]#bitand#, and are very efficient. The same is true
+map well to basic CPU instructions like [.func]#bitor# and [.func]#bitand# and are very efficient. The same is true
 for the [.func]#incl()# and [.func]#excl()# operations, which map well to fast CPU instructions. So whenever 
 we can use the built-in [.type]#set# type with an 8-bit base type, then we should use that, and not a [.type]#HashSet#.
-For a 16-bit base type, the set requires already 8192 bytes -- for a union, intersection or difference
+For a 16-bit base type, the set requires already 8192 bytes -- for a union, intersection, or difference
 all these bytes have to be combined in some way. The [.func]#incl()# and [.func]#excl()# operations should be still really fast --
 a few math operations (div 8) give the byte location, and then a CPU instruction tests if a bit is set or sets
-a bit. So the built-in [.type]#set# type should work still fine with a 16-bit base type, and for densely populated
+a bit. So the built-in [.type]#set# type should work still fine with a 16-bit base type and for densely populated
 [.type]#sets# the built-in type should be the best option in most cases. Here, densely populated means, that
 most of the provided bits are really needed and used. For sparsely populated [.type]#sets#, the situation
 is different. Imagine you have a few numbers, all smaller than [.lit]#int16.high+1#, but some larger than
@@ -13540,8 +13540,8 @@ else:
   echo output
 ----
 
-Here we used [.code]#when defined(windows):# to test if the code has been compiled for windows or for Linux/macOS, so that we can use
-the correct command [.str]#string#. For windows, flashing of the console window may be an issue, see
+Here we used [.code]#when defined(windows):# to test if the code has been compiled for Windows or for Linux/macOS so that we can use
+the correct command [.str]#string#. For Windows, flashing the console window may be an issue, see
 https://forum.nim-lang.org/t/7320#46431.
 
 Other functions of the [.mod]#os# module that can sometimes be useful are [.func]#sleep()# to delay the program execution for
@@ -13571,14 +13571,14 @@ e.g. the command [.term]#ls -l /tmp#  would list the directory entries of the [.
 Here [.term]#ls# is the command or program name, [.lit]#-l# is an option, indicating that we desire an output format
 with only one entry per line, and [.var]#/tmp# is the actual argument, which is the [.var]#/tmp# folder. Don't get confused by
 the slash character in front of the [.var]#tmp# directory name -- the slash has no special relevance for the argument parsing,
-it is just that on Linux systems [.lit]#/# is the name of the upmost level of the file system, called the file system [.italic]#root#,
+it is just that on Linux systems [.lit]#/# is the name of the uppermost level of the file system, called the file system [.italic]#root#,
 so [.var]#/tmp# is the folder named [.var]#tmp# at the file system root.
 
 We said, that in the [.term]#ls# command above,  [.term]#-l# was an option. That option indicates for the [.term]#ls# command, that we want the output
 with only one entry per line. For the [.term]#ls# command, some other options can be specified in a short and in a long form:
 The notations [.term]#-s# and [.term]#--size# can both be used to tell [.term]#ls# to print the file size.
 Short options are always introduced by a single [.italic]#minus# character,
-and each following single character then stands for a distinct option, e.g. [.term]#-lt# ask for a single
+and each following single character then stands for a distinct option, e.g. [.term]#-lt# asks for a single
 entry per line output, which included the modification time for the entry. For the long options, which
 start with two [.italic]#minus# signs, only a single option name like "size" can be specified.
 
@@ -13592,7 +13592,7 @@ In principle, it is possible to mix short and long options with and without valu
 freely, which can make the evaluation of command-line [.str]#strings# difficult. Usually, options have to be specified
 in front of arguments, but some programs relax this, e.g. [.term]#ls /tmp -l# works also. And some (older)
 programs recognize options without a leading minus sign, e.g. [.term]#tar cf hhh.tar hhh/#
-specifies, that the archiving tool  should create (c) a file (f) named [.term]#hhh.tar# with the content
+specifies, that the archiving tool should create (c) a file (f) named [.term]#hhh.tar# with the content
 of folder [.term]#hhh#. Here the single letter [.term]#c# without a leading minus sign is interpreted as some form of a command,
 [.term]#c# stands for [.italic]#create#. In a similar way, the Nim compiler interprets the first single letter as a command -- [.term]#c#  for compiling
 with the C backend.
@@ -13734,7 +13734,7 @@ to integers or other data types when required.
 
 At the end of this section, we will sketch how an actual program may use the [.mod]#parseopt# module.
 We assume, that we want to create a tool that can print a single PDF file -- the complete content
-or just a specified page, with a selectable print quality. So the base structure of our program may look like
+or just a specified page, with selectable print quality. So the base structure of our program may look like
 
 [source, nim]
 ----
@@ -13788,7 +13788,7 @@ print()
 ----
 
 In this example, we left out the interpretation for the short options, which
-should be processed similarly to the long ones. You see, that the actual use of the
+should be processed similarly to the long ones. You can see, that the actual use of the
 [.mod]#parseopt# module still requires a lot of code for validation and interpretation
 of options and arguments. In part V of the book, we will present the external
 Cligen package, which further simplifies the command line parsing.
@@ -13824,7 +13824,7 @@ window. The pattern [.code]#s/a/b# tells it to substitute pattern [.var]#a# by
 expression [.var]#b#, and the final [.code]#/g# stands for [.ndef]#global# and tells
 [.var]#sed# to do substitutions in the whole file. The actual interesting part is
 the search pattern [.code]#_[a-z]#, which specifies the actual underscore character
-followed by a single lower case letter. Whenever such a pattern is found, it is
+followed by a single lowercase letter. Whenever such a pattern is found, it is
 replaced with a capitalized version of the found letter. The [.code]#/U# tells
 [.var]#sed# to convert to upper case, and [.code]#\1# refers to the captured text
 segment. You may still wonder why [.var]#[a-z]# is enclosed in braces -- well matches
@@ -13836,14 +13836,14 @@ As you see, regular expressions are useful but difficult to understand and
 remember.
 
 Some programming languages, like Perl or Ruby, have built-in support for regular
-expressions, and others use external libraries. For interpreted languages like Perl,
+expressions and others use external libraries. For interpreted languages like Perl,
 Python, or Ruby, it makes a lot of sense to use regular expressions for parsing [.str]#strings#,
 as the regex engines of these languages are generally written in C language, which
 leads to the fact that even for very basic [.str]#string# operations like spitting [.str]#strings#
 into single tokens or doing simple character replacements, the use of regexes can be
 faster than doing it with multiple statements in the interpreted program code. For
 compiled languages like Nim, the situation is very different -- using regexes is fast,
-but doing simple things directly in the compiled languages, is still much faster. And
+but doing simple things directly in the compiled languages is still much faster. And
 Nim provides many other libraries like [.var]#strscans#, or [.var]#parseutils#, which
 can do even advanced [.str]#string# operations much faster than by use of regular
 expressions.
@@ -13852,18 +13852,18 @@ So actually, the use of regular expressions in Nim is very limited, in most case
 there exist other, simpler, and faster solutions. As learning the use of regexes is
 not that easy, and it is hard to remember all the details, we may hesitate to try it
 at all. But actually, for text processing tools like [.ndef]#sed# and [.ndef]#grep#,
-and for the use in text editors and word processors, regexes are very useful, so it
+and for use in text editors and word processors, regexes are very useful, so it
 makes some sense to learn at least the basic use of regular expressions. And when we
 learn to use regexes at all, then we can use them in Nim as well.
 
 Each character in a regular expression (that is, each character in the [.str]#string#
 describing its pattern) is either a
 metacharacter,footnote:[https://en.wikipedia.org/wiki/Metacharacter] having a special
-meaning, or a regular character that has a literal meaning. For example, in the
+meaning or a regular character that has a literal meaning. For example, in the
 regex [.code]#b.#, [.var]#b# is a literal character that matches just 'b', while
 [.code]#.# is a metacharacter, that matches every character except a newline.
 Therefore, this regex matches, for example, [.var]#b%#, or [.var]#bx#, or [.var]#b5#.
-Together, metacharacters and literal characters can be used to identify text of a
+Together, metacharacters and literal characters can be used to identify the text of a
 given pattern or process a number of instances of it. Pattern matches may vary from a
 precise equality to a very general similarity, as controlled by the metacharacters.
 For example, [.code]#.# is a very general pattern, [.code]#[a-z]# (match all lower
@@ -13877,7 +13877,7 @@ In this section, we will not try to explain all the details of the syntax and se
 of regular expressions, but only show you how the [.mod]#regex# module is used in principle,
 and give a few examples of its use. For details, you should consult the API
 documentation of the [.mod]#regex# module, and for concrete use cases, you may
-additionally consult the Wikipedia article and the various internet resources.
+additionally consult the Wikipedia article and various internet resources.
 
 The Nim standard library provides two modules for the use of regular expressions,
 called [.mod]#re# and [.mod]#nre#, which are both wrappers for the [.ndef]#PCRE#
@@ -13921,7 +13921,7 @@ to match a textual [.str]#string# against this regex. The last argument of the m
 is a variable of [ .type]#RegexMatch# type, which captures the matched terms so that
 we can use them later.
 
-In our pattern [.var]#"\w\d"#, the [.var]#\w# stand for a word character which
+In our pattern [.var]#"\w\d"#, the [.var]#\w# stands for a word character that
 includes upper and lower case ASCII letters, and the [.var]#\d# stands for a decimal
 digit. So the [.str]#string# [.var]#t1# matches that pattern, but the [.str]#string# [.var]#t2# does
 not, as there is no decimal digit following the first letter. In the example from
@@ -13986,7 +13986,7 @@ both digits are left for [.var]#\d{plus}#, and we get again @["77"] as output.
 
 The use of escape sequences in regex patterns is another difficulty for beginners.
 The first problem can be, that the Nim compiler may process the escape sequences
-already itself, while we intend to leave them for the regex engine. We can avoid that,
+already itself, while we intend to leave them for the regex engine. We can avoid that
 when we use Nim's raw [.str]#strings#, e.g. we can use triple quotes when we construct the
 pattern from individual [.str]#strings#, as done in our next example. In a regex, we can use
 escape sequences to specify special literal characters, we may use [.var]#\t# for a
@@ -13994,11 +13994,11 @@ literal tabulator for example. And finally, we may have to escape some punctuati
 characters like [.var]#{asterisk}#, [.var]#{plus}# or [.var]#?#, that have a special meaning for the
 regex engine when we intend to use that character as an ordinary literal. For
 example, to match a letter followed by a question mark, we have to use a pattern like
-[.code]#"[a-z]\?"# or [.code]#"[a-z][?]"#. Inside of a square bracket, we can use the
+[.code]#"[a-z]\?"# or [.code]#"[a-z][?]"#. Inside a square bracket, we can use the
 punctuation characters without the need to escape them.
 
 As the next example, let us assume that we have to process a text file in which all
-lines start with a name consisting of lower case letters, followed by three decimal numbers.
+lines start with a name consisting of lowercase letters, followed by three decimal numbers.
 The name and the three numbers can be separated by spaces, or by commas or
 semicolons:
 
@@ -14048,13 +14048,13 @@ starting at one. The second [.func]#replace()# function uses a function as the t
 argument, that function gets an instance of the [.type]#RegexMatch# type as the first
 parameter and returns the [.str]#string# replacement. We will use both variants of the
 [.func]#replace()# function to create a tiny app that we can use to fix typos in
-program and text files: Text files can contain typing errors, which includes two or
-more spaces between adjacent words, unneeded trailing white-space at the end of
+program and text files: Text files can contain typing errors, which include two or
+more spaces between adjacent words, unneeded trailing white space at the end of
 lines, and the use of [.lit]#a# instead of [.lit]#an# in front of words starting with
 a vocal. And program source code may use snake case for names instead of camelCase,
 e.g. [.var]#line_counter# instead of [.var]#lineCounter#. We will create a tool that
 can fix these four issues -- ignoring the fact that an actual [.lit]#a/an#
-replacement may corrupt program source code. To demonstrate the four issues, we have
+replacement may corrupt the program's source code. To demonstrate the four issues, we have
 created this small test file -- line three contains two unneeded spaces, and the last
 line has some unwanted trailing white space:
 
@@ -14065,8 +14065,8 @@ var   line_width:  int
 echo        line_width
 ----
 
-We will fix these four issues independent of each other, so we will try to find a
-regex that matches for each issue, and then use the [.func]#replace()# function to
+We will fix these four issues independently of each other, so we will try to find a
+regex that matches each issue, and then use the [.func]#replace()# function to
 fix it.
 
 [source, nim]
@@ -14102,12 +14102,12 @@ pattern for this issue is obviously [.code]#"\s{plus}$"#, which is at least one 
 at the line end, which we have to replace with an empty [.str]#string#. So we pass this regex
 pattern called [.var]#trail# and an empty [.str]#string# literal to the [.func]#replace()#
 function. Replacing [.lit]#a# by [.lit]#an# is also easy -- we search for an
-[.lit]#a# followed by white-space and a vocal, for which the regex pattern is the
+[.lit]#a# followed by white space and a vocal, for which the regex pattern is the
 [.var]#aan# variable in the above code. In this case, we have to preserve the actual
 white space and the vocal, so we enclose these in brackets to capture it. The
 replacing [.str]#string# is [.code]#"an$1"#, where [.var]#$1# stands for the captured
 white space and the captured vocal. Replacing too much inter-word space is a bit
-more difficult. The actual issue is one white-space followed by one or more
+more difficult. The actual issue is one white space followed by one or more
 white-space, for which a possible match pattern is "\s\s{plus}". But actually, we do not
 want to remove all white space consisting of more than one character, but only
 white space between words. So multiple white-space at the beginning of a line should
@@ -14118,7 +14118,7 @@ followed by a white-space, then at least one more white-space character, and fin
 a none white-space character. We capture the two first characters, and the last one.
 This way, we can replace the whole match with the two captures, and we are done.
 Finally, we have to replace underscore characters followed by a lowercase letter with
-the capitalized letter. Some tools like [.ndef]#sed# provide the [.var]#\U# to
+a capitalized letter. Some tools like [.ndef]#sed# provide the [.var]#\U# to
 capitalize a capture, but this is not available for the [.mod]#regex# module. So we
 use the [.func]#replace()# variant, which uses a [.proc]#{proc}# as the last parameter -- to that
 [.proc]#{proc}# the capture and the original [.str]#string# is passed, and that function should return
@@ -14172,10 +14172,10 @@ other people. And it is difficult to modify that patterns later. Maybe you shoul
 play a bit with regexes yourself now, and come back to this topic when you think that
 you need them. In this book, we were only able to give a tiny introduction to the
 stuff -- you will have to carefully study the API docs of the [.mod]#regex# module
-and a lot of other resources on the Internet when you should intend to seriously use
+and a lot of other resources on the Internet when you should intend seriously to use
 them. We should also mention, that while regexes are very powerful, for some tasks
-they work not that well, e.g. parsing math expressions with nested braces, or just
-skipping nested comments in some source code, can be very difficult or even
+they do work not that well, e.g. parsing math expressions with nested braces, or just
+skipping nested comments in some source code, which can be very difficult or even
 impossible.
 
 References:
@@ -14195,11 +14195,11 @@ Sorting a sequence or an [.type]#array# of numbers is typically a component of
 each computer programming course. While we would not really
 code some sorting algorithm for the actual software that we write, but use
 the generic sorting algorithm from the standard library, sorting
-algorithm can teach us some basic programming skills. When we
+algorithms can teach us some basic programming skills. When we
 sort a small number of items manually, we would typically use selection or
 insertion sort intuitively: For selection sort, we pick the smallest element and
-move it at position one, then pick the next smallest item and move it at position two.
-This strategy is easy to implement and works not bad for small quantities. For larger
+move it to position one, then pick the next smallest item and move it to position two.
+This strategy is easy to implement and works not badly for small quantities. For larger
 containers, an algorithm like QuickSort or MergeSort gives better performance.
 
 === Selection Sort
@@ -14283,7 +14283,7 @@ in the above code, which is not that bad, as [.func]#len()# is a field in the [.
 and replace [.func]#s.len# with just a field access without [.proc]#{proc}# call overhead.
 
 ****
-We started this section with thinking about how we would sort a small quantity of items
+We started this section by thinking about how we would sort a small number of items
 lying on the table manually. This strategy is often a good one. Sometimes,
 it can even help to ask how a child would solve a problem, to find a way how to
 do it with the computer.
@@ -14353,9 +14353,9 @@ use an expensive shift of many elements.
 When you look at the example code, you may immediately find two possible improvements:
 We do not really need the variable [.var]#x#, as we can just use [.var]#s[k]# instead. The compiler should optimize the
 code so that the subscript operator is not executed multiple times for the same index [.var]#k#, so the use of [.var]#s[k]# or [.var]#x#
-should make no difference for performance. And we call [.func]#setLen()# in the outer loop to increase the
+should make no difference to the performance. And we call [.func]#setLen()# in the outer loop to increase the
 capacity of the result sequence by one each. Of course, setting capacity only one time to the value
-of [.var]#s# would suffer, as obviously the result has the same length as our input data. Another possible optimization would be to
+of [.var]#s# would suffer, as obviously, the result has the same length as our input data. Another possible optimization would be to
 take advantage of the fact that the destination sequence is sorted so that we would not have to do a linear search to find
 the insertion position, but we could use a binary search. But that would be more complicated and the benefit would be
 not large.
@@ -14404,18 +14404,18 @@ we can just exchange the values at [.var]#s[i]# and [.var]#s[j]# and continue. W
 is to handle this terminating condition exactly, that is, to stop exactly at the right position so
 that the first half really contains all entries with values less or equal to median [.var]#x#, and that the second half contains only
 entries with values equal or greater than median [.var]#x#. To make it more clear: Such a partition decouples the two
-ranges. Sorting the whole range would result in the same state as sorting the first and second range on its own.
+ranges. Sorting the whole range would result in the same state as sorting the first and second ranges on their own.
 
 For writing our actual sorting function, we use the fact that Nim like most modern programming languages supports
 recursion, that is, a function can call itself again. We saw at the beginning of the book a few examples of that.
-So we can pass our function the initial full container, then the function can partition the container in
+So we can pass to our function the initial full container, then the function can partition the container in
 the first and second half and call itself again on the two parts. This way, the actual size of the ranges to sort
 decreases, and finally recursion stops when the range contains only one or two elements. For size one
 we have to do nothing at all, but for size two we may have to exchange the two elements if the order is wrong.
 
 A naive implementation may create for each function call two new sequences for the two parts, partition
 the initial sequence by inserting the values in one of the new shorter sequences, call itself
-on both parts, and finally join the parts and return it -- as result or as var parameter.
+on both parts and finally, join the parts and return it -- as result or as var parameter.
 But that would be really slow. A much simpler and faster solution is when we work all the
 time on the same container, and just tell the function, which ranges the function has to work on.
 So we pass to the function the whole sequence and two integers [.var]#a# and [.var]#b# which tell it the range to process:
@@ -14516,7 +14516,7 @@ We test our [.func]#quicksort()# [.proc]#{proc}# by calling it from another [.pr
 In that [.func]#main()# function, we fill a [.type]#seq# with random integer values, and [.func]#shuffle()#
 and [.func]#sort()# it a few times. [.func]#Shuffle()# reorders the entries by random. After our call
 of [.func]#quicksort()#, we call [.func]#isSorted()# from Nim's standard library to check the success
-of our sorting. After these tests, which do some warm up of the CPU for us, we
+of our sorting. After these tests, which do some warm-up of the CPU for us, we
 add more random entries, and again sort and test it, while we record the needed time
 with module [.mod]#monotimes#, as we did before in the Timers section. To get a feeling
 about the performance of our sorting [.proc]#{proc}#, we [.func]#shuffle()# again and sort this time
@@ -14528,7 +14528,7 @@ our plain, non-generic [.proc]#{proc}#, compares entries directly with the [.op]
 surprising that our [.proc]#{proc}# is a bit faster.
 
 You may wonder if it is really necessary to pass the sequence [.var]#s# for each call of [.func]#qsort()#, as
-for all time the same [.type]#seq# is used. Indeed, Nim support nested [.proc]#{procs}#, so we could just make
+for all times the same [.type]#seq# is used. Indeed, Nim support nested [.proc]#{procs}#, so we could just make
 the [.func]#qsort()# [.proc]#{proc}# local to the [.func]#quicksort()# [.proc]#{proc}#, and let [.func]#qsort()# work (as a closure) on the [.var]#s# variable
 of [.proc]#{proc}# [.func]#quicksort()#. But this does not compile currently, sequences can not be used by
 closure [.proc]#{procs}#. But actually passing the sequence to [.proc]#{proc}# [.func]#qsort()# should be only a minimal overhead.
@@ -14538,10 +14538,10 @@ sequence again, entries with the same value may move. For plain numbers, that is
 we do not really notice it, as we can't mark a number in some way, plain numbers are
 indistinguishable just as elementary particles like electrons and protons are. But when we sort a container
 with [.obj]#objects# by some field, then we notice that [.obj]#objects# with the same value for sorting may move.
-The other concern of QuickSort is a general problem of recursive algorithm: Each new call of a
+The other concern of QuickSort is a general problem of a recursive algorithm: Each new call of a
 [.proc]#{proc}# generates some stack usage, as [.proc]#{proc}# parameters may be passed on the stack and because
 the [.proc]#{proc}# may allocate its local data variables on the stack. So many nested calls may need a very
-large stack, the program may fail with a stack overflow error. Typically, we have no real troubles with
+large stack, and the program may fail with a stack overflow error. Typically, we have no real troubles with
 stack overflow, as for each partition, the size of the two new partitions is nearly halved, so
 that process stops soon. But imagine someone prepares a special data set for our sort [.proc]#{proc}#. That
 data may be prepared in such a fashion, that at the center of each range, where we pick the estimated median value from,
@@ -14551,10 +14551,10 @@ be very bad also. Preparing such a data set would be difficult, but possible in 
 us from that attack would be to select the median by random. But unfortunately, all strategies different from
 picking the leftmost, the center, or the rightmost entry as median are not very fast and
 make the whole sorting significantly slower. Note, that the strategy of not picking a single element
-as median, but calculating a median value, works generally, but has some shortcomings:
+as the median, but calculating a median value, works generally, but has some shortcomings:
 [.code]#s[a] div 2 {plus} s[b] div 2# would not work when both values are odd, as we then would get a value
 that can be smaller than all of our entries and our function would fail. We would have to add
-one to the average value when both summands are odd, and that fix cost performance again.
+one to the average value when both summands are odd, and that fix does cost performance again.
 And calculating the average by [.code]#(s[a] {plus} s[b]) div 2# could generate an overflow when both summands are large.
 
 Because of the stack size restrictions, we have a good motivation to show how we can
@@ -14639,7 +14639,7 @@ main()
 
 We added a variable called [.var]#stack#, which is a [.type]#seq# that stores integer [.type]#tuples#.
 The [.func]#qsort()# [.proc]#{proc}# first stores the borders of the whole [.type]#seq# on the [.var]#stack#
-and then executes a loop which takes in each iteration a set of two
+and then executes a loop that takes in each iteration a set of two
 borders from the [.var]#stack# and processes that range. It may sound a bit strange that we
 start by putting the entire range onto the stack and then took it from the [.var]#stack#
 immediately at the start of the loop. But that makes more sense when we look at the
@@ -14655,7 +14655,7 @@ But how can we prepare for worst-case attacks? Indeed, there exists a simple
 solution: The worst case occurs, when first we put a tiny one-element range on the [.var]#stack#, and then
 the large one, as we would continue with the large one in the same way in the next loop
 iteration. The other way round would be fine. If we put the tiny range on the stack last, the next iteration would pick that
-one, and the iteration would stop immediately or at least very soon, as the ranges drop to two or one entry.
+one, and the iteration would stop immediately, or at least very soon, as the ranges drop to two or one entry.
 When an iteration for a range stops, all ranges pushed to the [.var]#stack# are removed already again, so
 the total [.var]#stack# size will never become large. So the trick is to just sort the partitions in a way that we
 put the larger partition first on the stack and the smaller partition second. So the next
@@ -14849,7 +14849,7 @@ main()
 ----
 
 The modifications to the code are again tiny. We use an outer [.code]#while true:# loop, which
-continues with interval [.code]#a .. b#, until its size is less than three entries. Then it
+continues with the interval [.code]#a .. b# until its size is less than three entries. Then it
 [.func]#pops()# a new interval from the stack.
 At the end of that outer loop, we put only one interval on the stack and directly
 continue with the other interval. But which interval should we push on the stack, and which
@@ -14860,7 +14860,7 @@ onto the [.var]#stack#, but we come to interval sizes of less than three soon, a
 intervals from the [.var]#stack#. And when we are done with that, we pop
 the larger interval again from the [.var]#stack#. This way, the worst case, where we pick each time a
 min or max value as median, has the smallest [.var]#stack# consumption, that is one entry.
-We push the large interval with size [.var]#n - 1# on the stack and continue with the tiny one entry
+We push the large interval with size [.var]#n - 1# on the stack and continue with the tiny one-entry
 range, which signals that we are done with that interval in the next loop iteration, and
 so the just pushed [.var]#n - 1# interval is popped from the stack again. This continues in this way. Slow, but
 minimal stack consumption.
@@ -14871,7 +14871,7 @@ we continue the recursion until all is processed. There is no intermediate [.fun
 involved.
 
 Perhaps you still wonder why the tiny inner loops use the conditions
-[.code]#while s[i] < x:# and not [.code]#while s[i] \<= x:# as we said that both partitions
+[.code]#while s[i] < x:# and not [.code]#while s[i] \<= x:#, as we said that both partitions
 are allowed to contain the median element. Well, with +<=+, there would be no guaranteed
 stop condition for the interval, so indices could run out of the interval. Using
 an additional condition like [.code]#and i \<= b# would make it slower. Another possible modification
@@ -14915,12 +14915,12 @@ That improves performance, as sorting is basically an O(n^2) process, and [.code
 For QuickSort, we partitioned the initial range into two ranges [.var]#a# and [.var]#b#, where all elements of range [.var]#a# are
 less or equal to a median element [.var]#x#, and all elements of range [.var]#b# are greater or equal to the median [.var]#x#.
 That way, we decoupled the two ranges, we can sort [.var]#a# and [.var]#b# independently, and get a fully sorted range.
-MergeSort starts also with splitting the full range into two parts, but it really only splits, without
+MergeSort starts also by splitting the full range into two parts, but it really only splits, without
 any form of rearrangement. Then it continues with sorting each part independently.
 That sounds strange at first, as we get two sorted parts [.var]#a# and [.var]#b#, but of course, we can not
 simply append one to the other. The idea of the whole algorithm becomes clear immediately
 when we think about how we can find the smallest elements of the joined content from [.var]#a# and [.var]#b#.
-That one is obviously the smallest value of [.var]#a#, or the smallest value of [.var]#b#, [.code]#min(a, b) = min(min(a), min(b))#.
+That one is obviously the smallest value of [.var]#a# or the smallest value of [.var]#b#, [.code]#min(a, b) = min(min(a), min(b))#.
 But when [.var]#a# and [.var]#b# are already sorted, then the minimum value of each is the first element, and so
 one of these elements at index position zero is the smallest one for [.var]#a# and [.var]#b# joined. And this condition
 holds even when we pick and remove the smallest element from [.var]#a# or [.var]#b#.
@@ -14929,8 +14929,8 @@ So the basic algorithm is this: Split the entire container into parts [.var]#a# 
 container by iterative picking the first elements from [.var]#a# or [.var]#b#, whichever is actually the smaller one.
 
 Unfortunately, it seems to be impossible to sort the initial container in place in this way, as
-we would always take elements from the front of both and put them at the front of the destination so
-that newly inserted elements could overwrite still unprocessed elements. So we will
+we would always take elements from the front of both and put them at the front of the destination, so
+those newly inserted elements could overwrite still unprocessed elements. So we will
 try to give a sketch of a very slow unoptimized algorithm, which creates and returns a new sorted container first,
 to learn the fundamental idea of the algorithm:
 
@@ -14999,7 +14999,7 @@ main()
 
 The example above is indeed not very complicated, the most daunting task is
 to get all the indices right. Due to the involved recursion, and the fact that we
-have to do the sorting of the two parts first, before we can join them, debugging
+have to do the sorting of the two parts first before we can join them, debugging
 would be not easy. So we added many asserts to early find stupid errors.
 
 The function [.func]#mSort()# starts by checking if the range to sort has only one or two
@@ -15023,7 +15023,7 @@ that in-place sorting allows us to partly reuse the passed container, and we hav
 only to allocate one additional [.type]#seq# with half the size of the passed container.
 We copy the second half of the passed container into a newly allocated [.type]#seq# and then can merge
 values from the new [.type]#seq# and from the first half of the passed [.type]#seq# to positions starting at the end
-of the passed [.type]#seq#, without overwriting values that we still have to process.
+of the passed [.type]#seq#, without overwriting values we still have to process.
 
 This way our code becomes even shorter and basically simpler -- we have only to
 care very exactly to use the right index positions.
@@ -15097,7 +15097,7 @@ from the newly allocated [.type]#seq# [.var]#sh# are consumed, then we can just 
 continuing would only copy elements of the passed container with
 equal index positions. And if all elements from the first half of the passed container are
 consumed, we can just copy the elements from [.var]#sh# into the passed [.key]#var# container.
-Only if both sources have elements to process left, we have to do the actual
+Only if both sources have elements to process left, then we have to do the actual
 merging.
 
 When we run the program above, we may find that it is about 50% slower
@@ -15105,7 +15105,7 @@ than our QuickSort functions. The reason for that may be, that we have to
 allocate the temporary [.type]#seq# [.var]#sh#, fill it with values, and merge it back.
 And the total memory consumption is high, our recursive function calls consume
 for the buffers [.var]#sh# totally the same amount as the initial container. The advantage of MergeSort is, that
-there is no worst-case as for QuickSort, as we have not to select a median, but
+there is no worst-case as for QuickSort, as we do not have to select a median, but
 can split the range just at the center, and that the sort is stable, that is
 merging does not exchange the position of elements with the same value.footnote:[
 Well to ensure this, we may have to check the actual merge condition, do we have
@@ -15121,7 +15121,7 @@ are merged to a larger section, and these larger sections are again merged ...)
 one single buffer could be used. So we have modified our example again.
 Now the [.func]#mergesort()# [.proc]#{proc}# allocates the buffer [.type]#seq# with half the size of the actual
 data container, and we pass that buffer recursively to the [.func]#qsort()# [.proc]#{proc}# and
-use it for the merging only. We call recursively [.func]#msort()# on the first and second half
+use it for merging only. We call recursively [.func]#msort()# on the first and second half
 of the full range that we have to sort, then copy the sorted second half into
 the buffer, and merge the first half and the buffer into the final
 location.
@@ -15219,10 +15219,10 @@ to present in this book an iterative [.func]#msort()#, which you may find in tex
 as that would be a bit too much for an introducing course.
 
 We did the QuickSort and the MergeSort in a top-down fashion, that is we split
-the initial container into two subpartitions, and continue in this way, until
+the initial container into two subpartitions, and continue in this way until
 we have only ranges with one or two entries, and then do the merging from bottom
 to top. For MergeSort, we could just start from the bottom, joining single adjacent elements
-to sorted [.tup]#tuples# of two entries, when done with that, merging the [.tup]#tuples# of two to sorted [.tup]#tuples# of [.lit]#4#, and
+to sorted [.tup]#tuples# of two entries, and when done with that, merging the [.tup]#tuples# of two to sorted [.tup]#tuples# of [.lit]#4#, and
 so on. This would work really well when the initial number of elements in our container is
 a power of two, and it would work well iterative without recursion. Unfortunately, in most
 cases, the container size is not a power of two, so such a bottom-up merge sort needs
@@ -15232,12 +15232,12 @@ repeatedly over all the container entries in sequential order, so the CPU cache 
 not support our element access operation that well.
 
 Other known sorting algorithms are
-the easy, funny and slow BubbleSort, or Shell- and Shaker-Sort. But these are not used
+the easy, funny, and slow BubbleSort, or Shell- and Shaker-Sort. But these are not used
 in practice. As an exercise, you can try to make our QuickSort or MergeSort generic and pass a [.func]#cmp()#
 proc, and make it work for sorting in ascending and descending order. Or, you may
 try to fall back to selection sort, when the partitions become small. In theory,
 SelectionSort is faster for ranges of only a few dozen elements, but when we
-have to do a decision which one to use inside the [.func]#qsort()# or [.func]#msort()# [.proc]#{proc}#, then this decision
+have to do a decision about which one to use inside the [.func]#qsort()# or [.func]#msort()# [.proc]#{proc}#, then this decision
 compensates generally for the advantages again so that the net benefit is tiny.
 Of course, we would have to test all of our sorting [.proc]#{procs}# for special cases, that is
 for [.type]#seqs# of length [.lit]#0#, [.lit]#1# or two, and for sequences with all entries equal, all inversely sorted,
@@ -15245,10 +15245,10 @@ or presorted. And we would have to check how performance is when we sort not con
 like numbers, but containers whose elements are [.key]#objects#, [.str]#strings#, or again [.type]#arrays#, or sequences.
 [.str]#String# sorting is special for various reasons: [.str]#strings# in Nim
 are opaque [.key]#objects#, with a [.type]#pointer# to the actual data. This is some indirection, and the actual data
-can be located somewhere in the RAM in a cache unfriendly manner, so the actual comparison process
+can be located somewhere in the RAM in a cache-unfriendly manner, so the actual comparison process
 can be slow. Swapping of [.str]#strings# is also special, as [.func]#swap()# generally just does a [.type]#pointer# exchange for
 the data areas, and does not have to copy the actual data. For sorting containers, where each entry is
-an [.type]#array# (of characters), swap would have to copy the data content.
+an [.type]#array# (of characters), the swap would have to copy the data content.
 
 Finally, we should mention that the Python language uses a complicated sorting algorithm
 called TimSort, which is a smart mix of various sorting algorithms.
@@ -15283,7 +15283,7 @@ References:
 
 == Reading CSV files and other data
 
-We discuss the reading of CSV-files (comma-separated values) and other data files in part VI of the book,
+We discuss the reading of CSV files (comma-separated values) and other data files in part VI of the book,
 labeled "Advanced Nim". Not because it is difficult, but because we compare the performance of
 various processing techniques, including RegEx and PEG matching, and finally show how we can
 distribute the parsing work across multiple CPU cores. The PEG (Parsing-Expression-Grammar) is
@@ -15298,7 +15298,7 @@ Removing duplicates from containers is a common programming task.
 When we know in advance, that we do not want to store the same data value
 more than once, and that the order of the stored values does not matter, then
 we may consider using some form of [.type]#sets# or hash [.type]#sets#. If insertion order matters, then
-the standard library may provide some form of ordered or sorted [.type]#sets# for us. But for this exercise, we  will assume
+the standard library may provide some form of ordered or sorted [.type]#sets# for us. But for this exercise, we will assume
 that we have values stored in a sequence, and we want to remove the adjacent duplicates.
 A typical use case for that is when we have stored a path of 2D or 3D positions. When we insert, move or
 delete a position value, it may occur that we get duplicates, with zero spatial distance between the two
@@ -15316,7 +15316,7 @@ perhaps take a piece of paper and a pencil and sketch the algorithm. It is reall
 easy for you, when you have carefully studied the preceding sections of the book, or when you have already
 some programming experience. When we create a [.proc]#{proc}# for this task, we have to decide first if the [.proc]#{proc}# should work on the
 passed in [.type]#seq# in-place or if it should return the processed result and leave the original data unchanged.
-Often returning a copy is easier, but for our task, the common use case seems to be more an algorithm that works in place.
+Often returning a copy is easier, but for our task, the common use case seems to be more of an algorithm that works in place.
 So we will provide the in-place algorithm here and leave the version returning a processed result as an optional
 exercise for the reader. Note that returning a processed copy needs to allocate the [.type]#seq# for the result, and potentially later the memory management system has to free
 the result data again, which is some additional effort. So we may guess that the in-place [.proc]#{proc}# is faster, as long as we do not really need
@@ -15383,10 +15383,10 @@ of values that are contained in [.var]#A# but not in [.var]#B#.
 [1, 2, 5, 2, 9, 7, 0] - [7, 4, 1, 10, 7] == [2, 5, 2, 9, 0]
 ----
 
-Actually, such a difference of [.type]#array# or [.type]#seq# containers is not needed that often, that is why that function may not be provided by the
+Actually, such a difference of [.type]#array# or [.type]#seq# containers is not needed that often, which is why that function may not be provided by the
 Nim standard library.footnote:[Ruby provides such an operator: https://ruby-doc.org/core-3.0.0/Array.html#method-i-2D]
 Building such kinds of differences is much easier and faster with [.type]#sets# or hash [.type]#sets#, so whenever possible, we should
-use these containers from the beginning, when we know in advance that we have to build differences.
+use these containers from the beginning when we know in advance that we have to build differences.
 But sometimes we just have [.type]#arrays# or sequences, and then we may notice that we require the difference. When the order of the elements does not matter,
 we may just convert both containers to [.type]#sets# or hash [.type]#sets#, build the [.type]#set# difference, and then possibly convert that difference back to a
 [.type]#seq#. But there are use cases, where we really want to work with [.type]#array# or [.type]#seq# containers, maybe because we want to iterate over the container,
@@ -15446,7 +15446,7 @@ We use the subscript operator [.op]#[]# to copy the picked elements at position 
 starting with an empty [.var]#result# [.type]#seq# and appending the picked elements. As we initialize the [.var]#result# [.type]#seq# with the size
 of container [.var]#a#, we have finally to call [.code]#result.setLen(i)# to shrink the size to the number of actually picked elements.
 The presented [.op]#\`-=`# [.proc]#{proc}# is a bit more complicated, as we process [.type]#seq# [.var]#a# in place. We use an approach similar
-to what we did in the [.func]#deTwin()# [.proc]#{proc}# in the previous section, that is, we use two index positions [.var]#i# and [.var]#j#, and copy elements from current position [.var]#i#
+to what we did in the [.func]#deTwin()# [.proc]#{proc}# in the previous section, that is, we use two index positions [.var]#i# and [.var]#j#, and copy elements from the current position [.var]#i#
 to position [.var]#j# if the value is not contained in the lookup set. Again, finally, we have to set the size of [.type]#seq# [.var]#a# to the
 number of picked elements.
 
@@ -15473,7 +15473,7 @@ References:
 
 Maybe you can remember, that some decades ago, your parents have used phone books
 and dictionaries built of paper sheets, filled with printed text sorted alphabetically?
-Well, that alphabetically ordering was done with a purpose: When searching for a name or
+Well, that alphabetical ordering was done with a purpose: When searching for a name or
 a word, we could just open the book somewhere in the middle. If the name or word that we searched for
 was ordered alphabetically before the content of the current page, then we continued searching
 for that term in the lower half, otherwise in the upper half. That procedure was continued
@@ -15520,13 +15520,13 @@ The first three lines of the example program show some example data consisting o
 [.var]#1 .. 8#. Here we use a consecutive sequence of numbers, but the actual numbers are fully arbitrary, as long as
 the sequence is ordered by the value of the numbers in ascending order. Let [.var]#a# be the index of the lowest number in the [.type]#seq#, and
 [.var]#b# be the index of the largest number. If the number we search for is contained in the [.type]#seq#, then that number must
-be located at an index position greater or equal to [.var]#a# and an index position less or equal to index position [.var]#b#. For the index position [.var]#p# near the
+be located at an index position greater or equal to [.var]#a# and an index position less or equal to the index position [.var]#b#. For the index position [.var]#p# near the
 center, the obvious choice is [.code]#(a {plus} b) mod 2#. For our example, we assume that we search for a value of [.var]#7#. The first
 index position of [.var]#p# is [.code]#(0 {plus} 7) div 2#, which is [.var]#3# containing value [.var]#4#, which is lower than the searched value [.var]#7#.
 So we would have to continue our search in the upper half, setting the new lower bound of the range to
 search to [.var]#p# or [.var]#p{plus}1#. The upper boundary remains unchanged for this case, and we continue with a new value [.code]#p = (a {plus} b) mod 2#.
 
-The program code follows this strategy straightway.
+The program code follows this strategy straightaway.
 We start with [.var]#a == s.low# and [.var]#b == s.high#, and the loop continues as long as
 [.code]#a +<=+ b#. Note, that we use as new boundaries not the value of [.var]#p#, but [.var]#p {plus} 1#, if we continue
 with the upper half, and [.var]#p - 1# when we continue with the lower half of our data. We can do
@@ -15535,7 +15535,7 @@ things, as the new interval is smaller by one this way but actually guarantees t
 interval size permanently shrinks and the algorithm terminates always. Without that offset, for the
 case [.var]#b == (a{plus}1)#, we would get a value [.var]#p == (a {plus} a {plus} 1) mod 2#, which is again [.var]#a#, and we might set the new [.var]#a# then to [.var]#p#,
 which is again the previous [.var]#a#. So the range would not always shrink, and our algorithm would not really terminate
-for some data values. You may test that yourself, when you remove the offset -- the algorithm would not terminate
+for some data values. You may test that yourself when you remove the offset -- the algorithm would not terminate
 for some data. And finally, you should try to make that [.proc]#{proc}# generic, and then maybe search for a word
 in an ordered list of words.
 
@@ -15591,7 +15591,7 @@ generic and will investigate, which problems may occur on restricted hardware li
 As there is no magic available, let us recall how we can print the characters [.lit]#0 .. 9#: Well, 
 first, we have to remember that the 256 ASCII characters map directly to the integers [.lit]#0 .. 255#, e.g. the character [.lit]#A# is mapped
 to the integer value [.lit]#65#. We can use the conversion functions [.func]#int()# or [.func]#ord()#, and [.func]#char()# to convert between the two data types,
-where these conversion functions does no real work at all, the content of the variable is just interpreted as a different type.
+where these conversion functions do no real work at all, the content of the variable is just interpreted as a different type.
 That is, a plain cast would do the same for us:
 
 [source, nim]
@@ -15626,7 +15626,7 @@ while i < 10:
 stdout.write('\n')
 ----
 
-This works, because the 10 decimal digits follow each other in the ASCII table. As we can not
+This works because the 10 decimal digits follow each other in the ASCII table. As we can not
 remember the position of the digit '0' in that table, we get the position by int('0').
 Note that int('0') and ord('0') are basically the same here, we have no real preference and use both alternately.
 The [.func]#ord()# function is generic, always returns an [.type]#int#, and works for ordinal types, [.type]#enums# with holes, and distinct ordinal types,
@@ -15645,7 +15645,7 @@ the compiler reinterprets the bit pattern as a character. So we are mostly done.
 we just divide the initial integer value by ten to move all one position to the right, and then we
 continue with the initial step. We use integer division, ignoring the remainder.
 We repeat that until the division by ten gives zero, then we are done.
-That division by ten may be still confusing for you -- we know that in the decimal notation a division by ten
+That division by ten may be still confusing for you -- we know that in the decimal notation, a division by ten
 is a shift right, but why does that work for a number, which is stored in binary form in the computer memory?
 Indeed, it is a bit confusing. The division by ten works, because it is a purely mathematical, abstract division operation,
 fully independent of the actual representation of the number.
@@ -15731,11 +15731,11 @@ echo intToStr(int.low)
 We use an [.type]#array# of characters for temporarily storing the decimal places, and finally,
 copy the digits into the [.var]#result# [.str]#string#. We pre-allocate the [.str]#string# with the correct size and
 use the subscript operator [.op]#[]# instead of [.func]#add()# to insert the digits for performance reasons.
-Initially, we create a copy [.var]#v# with positive sign of the passed integer argument [.var]#a#, and when the
+Initially, we create a copy [.var]#v# with a positive sign of the passed integer argument [.var]#a#, and when the
 argument was initially negative, then we add an additional minus sign to the temporary [.type]#array#,
 which is finally also copied to the result [.str]#string#. All this is not difficult, we have only to care that we get all
 the indices right. A tiny problem is, that when the passed integer argument has the value [.func]#low(int)#, then applying
-[.func]#abs()# would generate an overflow error, see section <<Binary Numbers>> in part II of the book, if you forgot it. We fix that
+[.func]#abs()# would generate an overflow error, see section <<Binary Numbers>> in part II of the book if you forgot it. We fix that
 by returning just the correct [.str]#string# for that unique negative value for now.
 
 The above [.proc]#{proc}# looks not that bad, but maybe we can improve it, maybe we can avoid the
@@ -15778,7 +15778,7 @@ have to generate a minus sign, we increase [.var]#i# by one. We pre-allocate a [
 with [.var]#i {plus} 1# positions and put a minus sign at position zero, which is overwritten in the while
 loop when the argument was not negative. As we know the total number of digits of our number,
 we can use the variable [.var]#i# to put the digits at the correct positions in the while loop.
-The careful reader may wonder, if [.code]#log10(v.float).int# will really work for sure
+The careful reader may wonder if [.code]#log10(v.float).int# will really work for sure
 for all integer arguments of [.var]#v#, or if we better should round the argument like
 [.code]#log10(v.float {plus} 0.5).int#. Indeed, with that rounding, we should be safe.
 
@@ -15906,7 +15906,7 @@ with no native 8-byte integers, that [.proc]#{proc}# should work fine.
 
 ****
 Remember that whenever we use generic [.proc]#{procs}# for the first time with a new argument type, then
-a new instance of the [.proc]#{proc}# customized for that data type is instantiated. That is, when we call
+a new instance of the [.proc]#{proc}# customized for that data type is instantiated. That is when we call
 [.func]#strToInt()# at least two times with an [.var]#int32# and an [.var]#int8# data type like [.func]#intToStr(myInt32)# and
 [.func]#intToStr(myInt8)#, then we get already two different instances. So, the use of generic [.proc]#{procs}# can increase
 the code size of our final executable. To avoid that, we may use [.func]#intToStr(myInt8.int32)# instead,
@@ -15918,7 +15918,7 @@ for the passed argument value. On {uc}s, [.func]#log10()# may not be available a
 very slow. So let us investigate at the end of this section, how we can replace it.
 The basic idea is, that we repeatedly divide the argument by ten, until we get the result of
 zero, counting the number of needed divisions. An equal approach is to start with a variable
-with a start value of one and multiply with ten until the result is larger than our function argument.
+with a start value of one and multiply by ten until the result is larger than our function argument.
 As a division is generally slower than multiplication, and on {uc}s, a native [.op]#div# operation may be
 not available at all, we will try to use multiply operations.
 So we may start with a [.proc]#{proc}# like
@@ -16029,8 +16029,8 @@ image::mst1.png[]
 
 As one more example, we will present a few different ways to find
 a minimum spanning tree (MST) of a set of points in the plane.
-A MST is a graph that connects a set of points (in 2D) by minimizing the total
-path length. Instead of the euclidean distance of the points to each other, other
+An MST is a graph that connects a set of points (in 2D) by minimizing the total
+path length. Instead of the Euclidean distance of the points to each other, other
 cost functions can be used as well.
 Typical applications for the use of MSTs are all sorts of connection problems, e.g., connecting
 electrical signals on a printed circuit board (PCB) or a schematic, or connecting
@@ -16060,9 +16060,9 @@ MST, we have to consider two cases. A case from real life is the connection of c
 by streets, where each city has only a small set of direct neighbors. The other case is
 a set of points where we can, in principle, connect each point to every other point, like points
 drawn on a sheet of paper or the electric signal and power supply paths on a PCB.
-The later case is in principle of O(n^2), because we have for a set of n points (n-1) other points
+The latter case is in the principle of O(n^2) because we have for a set of n points (n-1) other points
 for possible direct connections. For our examples, we actually use this last case. The reason is that we
-can use as input data a plain set of random points, and that it is more demanding due to the large
+can use as input data a plain set of random points and that it is more demanding due to a large
 number of possible connections. Reducing this general case to input data with only a limited
 set of direct connections is not hard.
 
@@ -16124,7 +16124,7 @@ proc createForest =
         pos = p
     last = vertices[pos] # and pick nearest,
     forest.add(last) # add it to forest and
-    vertices.del(pos) # delete it from still unconnected vertex set
+    vertices.del(pos) # delete it from the still unconnected vertex set
 
 init()
 
@@ -16166,14 +16166,14 @@ main()
 ----
 
 In the above program, we first define a Vertex data type, which is a point with
-x, y coordinates in the plane, which has additional a friend, and a dist field.
+x, and y coordinates in the plane, which has additionally a friend, and a dist field.
 Friend denotes a direct neighbor, and dist is the squared distance to this neighbor point.
 In all of our examples, we use squared distances, as this avoids the square root calculations and
 gives the same results.
 We made Vertex a reference type, as our graph uses references to neighbors. Note that
 defining a value Vertex type like above in this way would not work, as value types
-can not contain its own type as fields -- that would generate an infinite recursive type,
-like a box that contains itself, again and again. But we could have actually used value types,
+can not contain their own type as fields -- that would generate an infinite recursive type,
+like a box that contains itself, again and again. But we could have actually used value types
 if we used for the friend field not a pointer, but an integer index to the position in
 the sequence of input data. For some applications, using indices may have advantages, but
 for our current task, the use of references seems to be OK.
@@ -16183,7 +16183,7 @@ to math.Inf, instead of the default zero value.
 In the init() procedure, we create a sequence of random input vertices.
 Then, in the createforest() procedure, we pick an arbitrary starting vertex from the input data set and assign that
 value to a variable called last. This value is the starting point of our MST for now, and
-later variable last is always the point that we just added to the tree.
+later, variable last is always the point that we just added to the tree.
 Whenever we add one more point to the tree, the tree grows, and the distance to all the still
 unconnected points may shrink. So we have to update all the distances when they have decreased.
 As point last is the one which actually grows the tree, we have to check only the distances of all
@@ -16191,9 +16191,9 @@ the still unconnected points to this last point, as the rest of the tree has not
 
 While we still have
 points available, we iterate over them, check distances to last, and update the dist and friend
-field in the case that the distance has become shorter. If the currently evaluated distance is
+field, in the case that the distance has become shorter. If the currently evaluated distance is
 a minimum, we store that minimum value and the position of the vertex with the minimum distance in the sequence.
-When we have processed all the vertices this way, the integer variable pos is the index of the
+When we have processed all vertices this way, the integer variable pos is the index of the
 closest vertex. We add this vertex to the forest, remove it from the seq of still
 unconnected vertices, and also store it in variable last for the next iteration.
 Note that we use the del() procedure to delete values from the sequence. Del() performs the
@@ -16214,21 +16214,21 @@ delete the graphical output routines from the above program. Additionally, you w
 the gintro Nim GTK bindings, which you may install with the command "nimble install gintro@#head"
 if not already available. Then you can run our program with the command "nim r prim.nim"
 and should get a GUI window displaying the constructed path. Our program contains a main() and an activate()
-proc, which are typically used in modern GTK to launch an app. The activate proc
+proc, which are typically used in modern GTK to launch an app. The activate() proc
 creates a window with a drawingarea widget in which we can use Cairo functions to
 draw lines, circles, and much more. To do that, we need a draw() function, which we
 set for our drawingarea widget, so it is called automatically when needed, e.g. for
 program startup or when we resize or uncover the main window. In the draw function,
 we iterate over the vertices of our forest, draw small circles to indicate the vertex positions,
-and connect each vertex in the forest with its friend. In case that you are interested
+and connect each vertex in the forest with its friend. In case you are interested
 in more details about the use of the GTK GUI and the Cairo library with Nim, you may consult
 the Nim GTK companion book. Or, just use one of the more than 20 other GUI toolkits available for
 Nim, and modify the above program accordingly.
 
-When you compile the program with option -d:release and run it, the
+When you compile the program with the option -d:release and run it, the
 displayed execution time for the createForest() should be
 around 15 microseconds for an input set of 50 points on modern hardware.
-That may look reasonable fast, but when you modify the program constant
+That may look reasonably fast, but when you modify the program constant
 Points = 50 to value 500, the execution time rises to 1 ms already.
 So the execution time increases nearly quadratically with the size 
 of the input data set. This was expected, as for each point that we added to
@@ -16237,20 +16237,20 @@ points to update the distances and select the closest one.
 For small point sets, this algorithm is indeed a good solution, but
 for really large input data sets, we may hope for the existence of better solutions.
 At the end of this section, we will present one. But first, we will present
-a different algorithm, which works on edges instead off points.
+a different algorithm, which works on edges instead of points.
 
 === Kruskal algorithm
 
 The Kruskal algorithm works on edges. The strategy is to repeatedly find the shortest
-edges and add them to the forest, when they do not create cycles. Here, cycles mean
+edges and add them to the forest when they do not create cycles. Here, cycles mean
 connecting two vertices that are already connected by a path. If A is already connected
-to B, and B is connected to C, then we would skip the connection A-C. This algorithm is again simple,
+to B, and B is connected to C, then we would skip connection A-C. This algorithm is again simple,
 but managing the information about already existing connections is not that easy.
 Note that the construction process typically generates many subtrees consisting of short edges first, which then later gets
 connected my longer edges.
 A disadvantage of the Kruskal algorithm is that the number of edges
 is n^2 when there are no restrictions for possible connections, as in our Euclidean example
-with plain points in a plane. You can find a formal description of this algorithm in
+with plain points in a plane. You can find a formal description of this algorithm at
 https://en.wikipedia.org/wiki/Kruskal%27s_algorithm. We will start our explanation with
 a simple and stupid variant, where we store the information if a vertex is already part
 of a subtree in an ordinary Nim bitset.
@@ -16366,12 +16366,12 @@ proc main =
 main()
 ----
 
-We will not discuss the above code in much detail, as it is really ugly, and because we will present
+We will not discuss the above code in much detail, as it is really ugly, and we will present
 a better implementation soon. We have attached to the Vertex data type a 16-bit integer id and
 a set for these ids. Our Edge data type has two fields of Vertex type each.
 The seq[Edge] variable stores all the initial edges, and is filled in a nested loop iterating
 over the vertices. The test cast[int](v1.addr) < cast[int](v2.addr) is necessary
-to avoid including each edge twice into the seq of input edges.
+to avoid including each edge twice in the seq of input edges.
 Actually, as our vertices have unique ids, we could use the same test on the id fields instead
 on the memory address in this case.
 As we intend to sort all our edges by length, we have to define
@@ -16379,13 +16379,13 @@ a cmp() proc for two edges, which we pass to the sort() proc.
 After we have sorted all the edges in descending order, we remove
 the shortest one with pop() from the container and investigate, in which sets
 the two vertices of that edge are contained. If at least one vertex of
-the edge has still a set reference with value nil, then we join both vertices into
-one set. If both edges are contained in different sets, then we join the two sets, and
+the edge has still a set reference with a value nil, then we join both vertices into
+one set. If both edges are contained in different sets, then we join the two sets and
 set for all the vertices that have an id indicating membership in the joined set, the fs
-ref pointing to the joined set. All this is really slow, as we have to iterate over all the edges,
+ref pointing to the joined set. All this is really slow, as we have to iterate over all the edges
 and have to copy the sets. And the sets are large entities, consuming a lot of storage.
 When we study the Wikipedia article about the Kruskal algorithm, we learn that a much better
-implementation for our needed set membership test exist. We will discuss that data type in the next section.
+implementation for our needed set membership test exists. We will discuss that data type in the next section.
 
 === Disjoint-set data structure
 
@@ -16393,7 +16393,7 @@ For the Kruskal algorithm, we have to test if edges are already part of other
 edge sets. So we need a data structure, which is some form of a container of
 many sets, with functions to join sets (build the union) and to test if
 elements are included in the same subset. As elements of the subsets, we can use plain integers, which is
-no restriction, as we can assign to each edge an integer id to identify it, and as we can use
+no restriction, as we can assign to each edge an integer id to identify it, and we can use
 the integer ids as array indices to access edges in containers.
 
 The disjoint-set data structure offers a surprisingly simple
@@ -16403,22 +16403,22 @@ Creating a set of n disjoint subsets, where subset n contains
 initially only the value n. Testing, if two numbers i and j belong to
 the same subset, and finally joining the subsets of two elements i and j.
 The data structure for initially n subsets is actually only a plain array or seq of
-n integer number with indices 0 .. n-1. When we create the data structure,
-the index position i is initialized with value i for all positions, that is
+n integer numbers with indices 0 .. n-1. When we create the data structure,
+the index position i is initialized with the value i for all positions, that is
 s[i] == i for each i in the range 0 .. n-1. For the Disjoint-set data structure
 each subset is represented by a single integer, and it is said that two
 elements are in the same subset, when they have the same representing number.
 Initially, for each element i, s[i] == i. Whenever for an element the value stored
 at position i is i, that indicates that element i is in subset i. So initially
-the container holds n disjoint subsets, and each subset i contains the value i only.
+the container holds n disjoint subsets and each subset i contains the value i only.
 Joining the subsets of the numbers i and j is very easy, we just can set s[i] = j
 or s[j] = i. Now s[i] and s[j] are identical, indicating that i and j belong to the same subset.
 When we now want to join the subsets of elements i and k, we just set s[i] = k or s[k] = i.
 This can continue until all the n subsets are joined. For testing, if the subsets
 of numbers i and j are joined, we test the content at array positions i and j in a recursive manner:
-If the value stored at index position i is identical with i, than this is already the result.
+If the value stored at index position i is identical to i, then this is already the result.
 But if s[i] is k!=i, then we have to investigate s[k] and so on, until at some index position
-finally the content is identical with the index position. Then this is the final representing value,
+finally, the content is identical with the index position. Then this is the final representing value,
 and when this final value is the same for two initial numbers, then the two numbers belong to the
 same subset. Explaining this data structure is much more complicated than the actual implementation.
 You can find a formal description at https://en.wikipedia.org/wiki/Disjoint-set_data_structure, and
@@ -16463,8 +16463,8 @@ echo s.find(5)
 ----
 
 The Subset data structure uses the parent field to store the n initial disjoint subsets.
-Additional, a rank field with also n positions is used, which controls the union()
-joining operation and improves the performance. The recursive find() proc does a path
+Additionally, a rank field with also n positions is used, which controls the union()
+joining operations and improves performance. The recursive find() proc does a path
 compression operation, which replaces a longer recursive path with the direct result.
 
 === Kruskal with Disjoint-set
@@ -16596,7 +16596,7 @@ main()
 
 But when we compile and run it, we notice that it is still slow.
 The obvious reason for that is that we work all the time with n^2
-edges, which we first have to create, then to sort, and finally we iterate
+edges, which we first have to create, then sort, and finally, we iterate
 over all of them. In the next section, we will use a Delaunay
 triangulation, to attach to each vertex a small set of direct neighbors, and
 we will then use a set of edges that connect only direct neighboring vertices.
@@ -16605,7 +16605,7 @@ we will then use a set of edges that connect only direct neighboring vertices.
 
 To create the Delaunay triangulation, we use the cdt2 module, which is a variant of the initial, textbook-based
 cdt module, but with an API that is a bit more OOP-like, with support for subclassing of vertices.
-For the following code, the cdt modules would work as well, but for our last two examples, Prim
+For the following code, the cdt modules would work as well, but for our last two examples, the Prim
 algorithm based on Delaunay data, the cdt2 module is easier to use. So we use cdt2 here as well.
 You may install it with the command "nimble install https://github.com/stefansalewski/cdt2.git".
 The cdt and cdt2 modules support very advanced operations, including fully dynamic
@@ -16615,7 +16615,7 @@ available, we should use them. For the program below, we need from the cdt2 modu
 initDelaunayTriangulation() to create an outer rectangle for all of our data points,
 the insertPoint() function to add points, and finally the iterator unconstrainedEdges()
 to iterate over the edges of the triangulation. With e.org and e.dest, we can access the
-endpoints of an edge, where org is short for origin, and dest for destination.
+endpoints of an edge, where org is short for the origin, and dest for the destination.
 
 [source, nim]
 ----
@@ -16693,7 +16693,7 @@ proc init =
 
 proc createForest =
   for e in unconstrainedEdges(cdt):
-    #if e.org.id.int > 3 and e.dest.id.int > 3: # ignore first 4 points of the delaunay rectangle, use this or
+    #if e.org.id.int > 3 and e.dest.id.int > 3: # ignore the first 4 points of the Delaunay rectangle, use this or
     if e.org.point[0] > 0.0 and e.org.point[0] < 1000.0 and e.dest.point[0] > 0.0 and e.dest.point[0] < 1000.0:
       candidates.add(E(v1: Vec(x: e.org.point[0], y: e.org.point[1], id: e.org.id.int), v2: Vec(x: e.dest.point[0], y: e.dest.point[1], id: e.dest.id.int)))
   candidates.sort(cmp, SortOrder.Descending)
@@ -16716,7 +16716,7 @@ proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
   cr.paint # white background
   cr.setSource(1, 0.7, 0.7)
   cr.setLineWidth(1)
-  for e in unconstrainedEdges(cdt): # first draw the whole delaunay triangulation
+  for e in unconstrainedEdges(cdt): # first draw the whole Delaunay triangulation
     cr.moveTo(e.org.point[0], e.org.point[1])
     cr.lineTo(e.dest.point[0], e.dest.point[1])
   cr.stroke
@@ -16764,14 +16764,14 @@ The cdt2 module supports a more OOP-style API, so we can subclass
 the vertices of the triangulation. This way, we can add fields like
 dist, friend, and done, directly to the vertex instances. Without
 subclassing, we had to attach this information in other ways, maybe by
-storing that infomation in a separate seq and accessing it by the id field of the
+storing that information in a separate seq and accessing it by the id field of the
 CDT vertex instances.
 
 We are using a pool sequence, which holds copies of our vertices. This is
 necessary, as we have to remove elements from the pool, without
 touching the cdt itself. For this variant, we have to update only the direct
 neighbors of the point that we add to the forest last. But still, we have to iterate
-over the whole pool each, to select the next nearest point. In the next section, we will
+over the whole pool, to select the next nearest point. In the next section, we will
 finally learn how we may avoid this iteration by using a priority queue.
 
 [source, nim]
@@ -16846,7 +16846,7 @@ proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
   cr.paint # white background
   cr.setSource(1, 0.7, 0.7)
   cr.setLineWidth(1)
-  for e in unconstrainedEdges(cdt): # first draw the whole delaunay triangulation
+  for e in unconstrainedEdges(cdt): # first draw the whole Delaunay triangulation
     cr.moveTo(e.org.point[0], e.org.point[1])
     cr.lineTo(e.dest.point[0], e.dest.point[1])
   cr.stroke
@@ -16880,26 +16880,26 @@ main()
 
 === Prim with Delaunay triangulation and priority queue
 
-A priority queue is a data structure that allowsm us to extract the
+A priority queue is a data structure that allows us to extract the
 smallest element fast (O(1)), and to insert more elements while preserving the
 order. Textbooks sometimes advertise the famous Fibonacci heap, which is a
-form of priority queue, for which not only extraction of the smallest value, and insertion of
-more elements is of O(1), but which allows also very fast updating the value of
-already contained values. But the Fibonacci heap is a complicated thing, and it is often not that
-fast in practice as in theory. And for Nim, we have currently no Fibonachi heap implementation available.
+form of a priority queue, for which not only extraction of the smallest value, and insertion of
+more elements is of O(1), but which allows also very fast updating of the value of
+already contained elements. But the Fibonacci heap is a complicated thing, and it is often not that
+fast in practice as in theory. And for Nim, we have currently no Fibonacci heap implementation available.
 What is available for Nim is the simple heap-queue module of Nim's standard library. But as we need
 distance updates for our Prim algorithm, while the heap-queue does not support them, we may get the feeling
 that the Nim's heap-queue can not be used in our use case. But there is a trick available, with which we can
-circumvent this restriction -- the trick is sometimes mentioned in text books when Dijkstra's algorithm for
+circumvent this restriction -- the trick is sometimes mentioned in textbooks when Dijkstra's algorithm for
 shortest path search is discussed, see
 https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm.
 
 The trick is that instead of updating the priority field of elements already stored in the queue,
 we just add a copy with an updated priority field, and ignore the old elements for the
-extraction process. This results typically in good performance, as the updating
-is not that often needed at all, and as we always extract the updated copies before the
+extraction process. This results typically in a good performance, as the updating
+is not that often needed at all, and we always extract the updated copies before the
 old, invalid elements, which we just ignore. To use this strategy, we need a way to
-detect the old, invalid elements.  Actually, ref object instances do not work for
+detect old, invalid elements.  Actually, ref object instances do not work for
 this use case. We need value types for this, which we can copy and modify without
 modifying the original. As the Delaunay triangulation works internally with ref objects, we create
 a wrapper object for our vertices:
@@ -16923,7 +16923,7 @@ of a vertex in the tree, and a boolean done field, which is used to remember if 
 vertex instance is already part of the tree or is still unprocessed.
 
 Our value data type called Container has two fields: a reference to a Vertex instance, and a pri
-field, which is initially identical with dist of the Vertex. When distances change,
+field, which is initially identical to dist of the Vertex. When distances change,
 we update the dist field of our vertex and add a new Container instance to
 the priority queue. Then for the old Container instance, dist and pri differ, which
 is an indication that the container instance is invalid and has to be ignored.
@@ -17003,7 +17003,7 @@ proc draw(d: DrawingArea; cr: cairo.Context; w, h: int) =
   cr.paint # white background
   cr.setSource(1, 0.7, 0.7)
   cr.setLineWidth(1)
-  for e in unconstrainedEdges(cdt): # first draw the whole delaunay triangulation
+  for e in unconstrainedEdges(cdt): # first draw the whole Delaunay triangulation
     cr.moveTo(e.org.point[0], e.org.point[1])
     cr.lineTo(e.dest.point[0], e.dest.point[1])
   cr.stroke
@@ -17044,14 +17044,14 @@ to our forest. After the distances have been updated, we can use hq.pop
 to extract an element with the lowest priority from the heap-queue, and add that vertex to
 our forest. You may wonder why we need the done field in the Vertex object. Well, without
 it, we would modify the existing forest, destroying the existing neighborship relations!
-You may compile the above code with option -d:release for the default 50, and for 500 points.
+You may compile the above code with the option -d:release for the default 50, and for 500 points.
 The runtime should be approximately 30 and 300 microseconds on modern hardware, which is not bad, and
 shows that the runtime increases linearly with the number of points, so the algorithm is
 nearly O(n) in big O notation. Note also that for all of the presented MST algorithms, we may modify
-the cost- or distance-function, to tune the resulting graph shape. For instance, instead of the (squared) euclidean 
+the cost- or distance-function, to tune the resulting graph shape. For instance, instead of the (squared) Euclidean 
 distance, we may use an expression like
 let d = (v.point.x - last.point.x) ^ 2 + (v.point.y - last.point.y) ^ 2 + max((500 - v.point.x).abs, (500 - v.point.y).abs) ^ 2.
-Here, we add to the euclidean distance the distance of the new point from the center of the graph (500), so that
+Here, we add to the Euclidean distance the distance of the new point from the center of the graph (500), so that
 points close to the center are preferred, resulting in a star-shaped graph. For some applications, like
 power supply traces (on a PCB) such a layout may be preferred.
 
@@ -17066,14 +17066,14 @@ References:
 
 === GUI toolkits
 
-Explained only one of the more than 20 available GUI toolkits in some detail
-would be by far too much for this book. So we can give only a list of
+Explaining only one of the more than 20 available GUI toolkits in some detail
+would be far too much for this book. So we can give only a list of
 some of the available toolkits with a short description and a link to
 it. For the gintro GTK bindings, you may also consult the GTK-Programming
 companion book by the same author, which is still in an early stage (maybe 25 % done).
-But note that GTK is not that popular in these days, and the gintro package has currently very few
-users. The reasons are obvious: GTK is coded in C, which makes oit further development a pain, bindings to
-other languages always imply some overhead, a high maintanace effort, and never work perfectly. But even Rust, with it
+But note that GTK is not that popular these days, and the gintro package has currently very few
+users. The reasons are obvious: GTK is coded in C, which makes its further development a pain, bindings to
+other languages always imply some overhead, a high maintenance effort, and never work perfectly. But even Rust, with its
 much larger community and many bright developers, has similar problems: Native Rust GUI toolkits
 like Droid, Iced or Xilem are in early development states, and people often use still GTK-rs instead.footnote:[https://raphlinus.github.io/rust/gui/2022/07/15/next-dozen-guis.html]
 
@@ -17097,7 +17097,7 @@ GenUI:: This is what might become a really kick-ass cross-platform native UI too
 
 nimx:: Cross-platform GUI framework in Nim (https://github.com/yglukhov/nimx)
 
-WebGui:: Web Technologies based Crossplatform GUI Framework with Dark theme (https://github.com/juancarlospaco/webgui)
+WebGui:: Web Technologies based Cross-platform GUI Framework with Dark theme (https://github.com/juancarlospaco/webgui)
 
 nimgui:: cimgui bindings for Nim (https://github.com/zacharycarter/nimgui)
 
@@ -17113,7 +17113,7 @@ uing:: A fork of ui that wraps libui-ng instead of libui (https://github.com/ner
 
 uibuilder:: UI prototyping with Glade (https://github.com/ba0f3/uibuilder.nim)
 
-sciter:: Nim bindings are work in progress (https://sciter.com/forums/topic/nim-bindings-for-sciter/)
+sciter:: Nim bindings are a work in progress (https://sciter.com/forums/topic/nim-bindings-for-sciter/)
 
 nim-nanovg:: Nim wrapper for the NanoVG vector graphics library for OpenGL (https://github.com/johnnovak/nim-nanovg)
 
@@ -17127,10 +17127,10 @@ mui:: microui, a tiny immediate-mode ui library (https://github.com/Angluca/mui)
 
 Some of these bindings may currently not compile with the latest Nim compiler or may
 not support the new [.ndef]#ARC# memory management. 
-Most of the above bindings are hosted at GitHub, you can use GitHub, Google or Nimble
-search to locate the packages.
+Most of the above bindings are hosted at GitHub, you can use GitHub, Google, or Nimble
+search, to locate the packages.
 
-There exist also two interesting other GUI related packages:
+There exist also two interesting other GUI-related packages:
 
 * NimForUE:: Nim plugin for UE5 with native performance (https://github.com/jmgomez/NimForUE)
 
@@ -17139,8 +17139,8 @@ There exist also two interesting other GUI related packages:
 === No Game Programming?
 
 No, not yet. We know that for many people, game programming
-is the initial motivation to start with computer programming at all,
-and so a larger section about this topic would make indeed some sense.
+is the initial motivation to start with computer programming,
+so a larger section about this topic would make indeed some sense.
 But there are some reasons why we do not have this section currently.
 The most important reason is, that we try to present in this book that stuff,
 that is very fundamental and that is not presented in other freely accessible
@@ -17224,7 +17224,7 @@ use of [.var]#nimble# in this book, at least not for the first edition. The [.na
 is described in detail in https://github.com/nim-lang/nimble, and also in the Manning book.
 There you can also learn how you can create [.name]#Nimble# packages yourself, and how you can register
 your own packages in [.name]#Nimble's# database so that other people can find them easier. While [.name]#Nimble# is
-[.nim]#Nim's# default package manager, which is currently used by the majority of the user base, there exist
+[.nim]#Nim's# default package manager, which is currently used by the majority of the user base, there exists
 also the alternative implementation https://github.com/disruptek/nimph, and some lesser-known
 ones like [.name]#Nimp#, [.name]#Slim# or [.name]#Nifty#.footnote:[Currently, the appendix of this book has
 a short introduction to Nimble, similar to the one from the Manning book. But it may get removed later again, and
@@ -17251,22 +17251,22 @@ creating a private fork of that [.var]#GitHub# package.
 
 Some programming languages like Python are shipped already with a very large collection of
 libraries so that external packages are not that often required at all. Other languages
-like {cpp} come basically without any packages or a language specific package manager,
+like {cpp} come basically without any packages or a language-specific package manager,
 so we would use the package manager provided by the {os} to install important
 {cpp} packages like [.name]#Boost# or [.name]#CGAL#, or install needed libraries manually.
 [.nim]#Nim# is between these two extremes -- it provides already a large collection
-of modules with its standard library, but has also a lot of external packages.
+of modules with its standard library but has also a lot of external packages.
 Both, internal core modules, and external packages have their merits.
 We mentioned already some disadvantages of external packages, but actually,
 they have also benefits: They may be developed, updated, and improved very fast, as
-they are not strongly coupled to compiler release updates, and one external package
+they are not strongly coupled to compiler release updates and one external package
 can easily be replaced by another similar one. A large set of internal packages can
-on the other hand be a large maintainment burden for the language core team -- the
+on the other hand, be a large maintainment burden for the language core team -- the
 packages have to be tested and maybe fixed for each new compiler version, and
 replacing or removing legacy internal core packages can lead to a lot of problems.
 
 In this part of the book, we will present a very small set of external packages only.
-This is mostly done to tell you about the existence and usefulness, and for some packages,
+This is mostly done to tell you about the existence and usefulness, and for some packages
 because the currently available documentation is not really beginner-friendly.
 
 We will start with a powerful package for the use of the [.ndef]#Parsing Expression Grammar# (PEG),
@@ -17280,7 +17280,7 @@ Parsing whole text files or single [.str]#strings# is a common programming task,
 or to extract data from HTML or CSV files. Traditionally, this is often done by the use of [.ndef]#regular expressions# --
 in part III of the book we show, how it can be done by use of the [.mod]#regex# module.
 
-[.ndef]#PEGs#, or [.ndef]#Parsing Expression Grammars#, are another formalism for recognizing patterns in text by use of a set of rules.
+[.ndef]#PEGs#, or [.ndef]#Parsing Expression Grammars#, are another formalism for recognizing patterns in texts by use of a set of rules.
 A PEG can be used as an alternative to [.ndef]#regular expressions# for parsing, pattern matching, and text processing.
 The  [.ndef]#Parsing Expression Grammar# was introduced by Bryan Ford in 2004 and is closely related to the family of top-down parsing languages introduced in the early 1970s.
 PEGs are a derivative of the [.ndef]#Extended Backus-Naur Form# (EBNF) with a different interpretation, designed to represent a recursive descent parser.
@@ -17299,14 +17299,14 @@ Nim's standard library includes already a simple [.mod]#pegs# module, but we wil
 of Ico Doornekamp instead.
 [.name]#NPeg# is a pure [.nim]#Nim# library, that provides [.mac]#macros# to compile PEGs to Nim procedures, which can parse [.str]#strings# and collect selected parts of the input.
 
-In this section, we will try to explain the basic concepts of the PEG use and give some examples.
+In this section, we will try to explain the basic concepts of PEG use and give some examples.
 For a more formal and complete description, you should refer to the linked Wikipedia article
 and consult the API documentation of the [.mod]#npeg# module.
 
 Formally, a [.ndef]#parsing expression grammar# consists of a starting expression, a set of parsing rules, and finite sets of terminal and nonterminal symbols.footnote:[https://en.wikipedia.org/wiki/Parsing_expression_grammar]
 
 Each parsing rule has the form [.code]#A <- e#, where [.var]#A# is a nonterminal symbol, and [.var]#e# is a parsing expression.
-An (atomic) parsing expression consists of terminal or nonterminal symbols, or an empty [.str]#string#.
+An (atomic) parsing expression consists of terminal or nonterminal symbols or an empty [.str]#string#.
 New parsing expressions can be constructed from existing ones by concatenation (sequence), an ordered choice,
 by repetitions (zero-or more, one-or-more, optional) of an existing expression, and by
 use of the [.ndef]#and# and [.ndef]#not# predicate.
@@ -17343,8 +17343,8 @@ decimal digits zero to nine.
 The [.mod]#npeg# module uses as terminal symbols single characters enclosed in single quotes
 or [.str]#strings# enclosed in double quotes.
 
-In the original PEG syntax, a pair of square brackets is used to specify character ranges
-like ['a'..'z'] for the lower case letters of the alphabet, but the [.mod]#npeg# module uses
+In the original PEG syntax, a pair of square brackets are used to specify character ranges
+like ['a'..'z'] for the lowercase letters of the alphabet, but the [.mod]#npeg# module uses
 curly braces instead.
 
 So in the [.var]#npeg# syntax [.code]#{'0'..'9'}# stands for a single decimal digit, and the leading [.var]#{plus}# indicates
@@ -17433,8 +17433,8 @@ if m.ok:
 The [.type]#MatchResult# returned by the [.func]#peg()# [.mac]#macro# has the exported fields [.var]#matchLen# and [.var]#captures#,
 which we can read out in case of a successful match. The field [.var]#matchLen# tells us how many characters
 of the [.str]#string# have been captured, and [.var]#captures# is a [.type]#seq[string]#, containing the captured [.str]#strings#.footnote:[
-Of course, the example from above works only for lines containing only lower case words -- we will present a better
-line splitting example soon.]
+Of course, the example from above works only for lines containing only lowercase words -- we will present a better
+line-splitting example soon.]
 
 ==== Code Block Captures
 
@@ -17649,8 +17649,8 @@ In this part of the book, we will try to explain the more difficult parts of the
 Macros and meta-programming, asynchronous code, threading, and parallel processing, and finally
 the use of Nim's concepts. We will start with [.mac]#macros# and meta-programming, as that seems to
 be a really stable part of Nim's advanced features. Nim's concepts just got a redesign, and for
-the use of asynchronous code, threading and parallel processing, there exists currently
-various implementations, and all that may change again when the Nim core devs should decide
+the use of asynchronous code, threading, and parallel processing, there exists currently
+various implementations and all that may change again when the Nim core devs should decide
 to actually use the CPS (Continuation-Passing Style) based programming style for the implementation of this.
 
 == Macros and Meta-Programming
@@ -17677,7 +17677,7 @@ common C [.mac]#macros# are
 
 The basic C [.mac]#macro# syntax is, that the first continues character sequence after the {cdefine} directive is replaced by
 the C preprocessor with the rest of that line. The {cdefine} directive has some basic parameter support, which
-was used for the [.func]#sqr()# [.mac]#macro# above. C [.mac]#macros# have the purpose to support named constants and support
+was used for the [.func]#sqr()# [.mac]#macro# above. C [.mac]#macros# have the purpose to support named constants and to allow
 simple parameterized expressions like the [.func]#sqr()# from above, avoiding the need to create actual functions.
 The C pre-processor would substitute each occurrence of the symbol [.const]#PI# in the C source file with the [.type]#float# literal
 [.lit]#3.1415#, and the term [.code]#sqr(1{plus}2)# with [.code]#(1{plus}2){asterisk}(1{plus}2)#.
@@ -17686,11 +17686,11 @@ A Nim [.mac]#macro# is a code block, that is executed at compile-time, and trans
 This can be used to add custom language features and implement domain-specific languages (DSL).
 While [.mac]#macros# enable advanced compile-time code transformations, they cannot change Nim's syntax.
 
-The [.key]#macro# keyword is used similar to [.key]#{proc}#, [.key]#func#, and [.key]#template# to define a parameterized code block, which is executed at compile-time
+The [.key]#macro# keyword is used similarly to [.key]#{proc}#, [.key]#func#, and [.key]#template# to define a parameterized code block, which is executed at compile-time
 and consists of ordinary Nim code, and meta-programming instructions. The meta-programming instructions are imported from the [.mod]#macros#
 module and are used to construct an [.ndef]#Abstract Syntax Tree# (AST) of the Nim language. This AST is created by the [.macro]#macro# body at compile time
-and is returned by the [.mac]#macro# as an [.italic]#untyped# data type. The parameter list of [.mac]#macros# accepts ordinary (static) Nim data types and additional the data types
-[.type]#typed# and [.type]#untyped#, which we already used for [.key]#templates#. We will explain the differences beteen the various possible data types
+and is returned by the [.mac]#macro# as an [.italic]#untyped# data type. The parameter list of [.mac]#macros# accepts ordinary (static) Nim data types, and additionally the data types
+[.type]#typed# and [.type]#untyped#, which we already used for [.key]#templates#. We will explain the differences between the various possible data types
 for [.mac]#macro# parameters later in more detail after we have given a first simple [.mac]#macro# example. Note, that Nim [.mac]#macros# are hygienic by default, that
 is, symbols defined inside the [.mac]#macro# body are local and do not pollute the namespace of the environment.
 As [.mac]#macros# are executed at compile-time, the use of [.mac]#macros# may increase the compile time, but their use
@@ -17699,22 +17699,22 @@ improve the performance of our final program.
 
 ****
 [.mac]#Macros# are by far the most difficult part of the Nim programming language. While in languages like Lisp [.mac]#macros# integrate very well into the language,
-for Nim the meta-programming with [.mac]#macros# is very different to the use of the language itself. Nim's [.mac]#macros# are very powerful -- the current
+for Nim the meta-programming with [.mac]#macros# is very different from the use of the language itself. Nim's [.mac]#macros# are very powerful -- the current
 Nim [.italic]#async# implementation is based on Nim [.mac]#macros#, and some advanced libraries for threading, parallel processing, or data serialization
-using JSON or YAML file formats, make heavily use of Nim [.mac]#macros#. And many modules of the Nim standard library provide some [.mac]#macros#,
-which extend the power of the Nim core language. The famous [.italic]#with# [.mac]#macro# of the equality named module is only one example for the
+using JSON or YAML file formats, make heavy use of Nim [.mac]#macros#. And many modules of the Nim standard library provide some [.mac]#macros#,
+which extend the power of the Nim core language. The famous [.italic]#with# [.mac]#macro# of the equality-named module is only one example of the
 usefulness of Nim's [.mac]#macros#. And some small, but important, parts of the high-level GTK bindings are created with [.mac]#macros#, e.g. the
 code to connect GTK callback functions to GTK signals.
 But this means not, that each Nim user really has to use [.mac]#macros#. For a few use cases, we really need [.mac]#macros#, for other use
 cases, [.mac]#macros# may make our code shorter, maybe even cleaner. But at the same time, the use of [.mac]#macros# can make it for
 other people harder to understand the code, at least when we use exotic or our own complicated [.mac]#macros#. And learning advanced Nim [.mac]#macro#
 programming is not that easy. Nim [.mac]#macros# have some similarities to the programming language {cpp}: When we follow the explanations in a {cpp} textbook, then the
-{cpp} language seems to be not extremely difficult, and even seems to follow a more or less logical design. But then, when we later try to write some
+{cpp} language seems to be not extremely difficult and even seems to follow a more or less logical design. But then, when we later try to write some
 actual code in {cpp}, we notice that actually using the languages is hard, as long as we do have not a lot of practice. For Nim [.mac]#macros#, it is similar --
 when we follow a talk of an experienced Nim programmer about [.mac]#macro# programming, or when we read the code of an existing [.mac]#macro#, written by
 the Nim core devs, then all seems to be not that hard. But when we try to create [.mac]#macros# of our own for the first time, it can be frustrating.
 Strange error messages, or even worse, no idea at all how we can solve a concrete task. So maybe the best start with [.mac]#macros# is to read
-the code of existing [.mac]#macros#, study the [.mod]#macros# module, to see what is available, and maybe to follow some of the various tutorials listed
+the code of existing [.mac]#macros#, study the [.mod]#macros# module, to see what is available, and maybe follow some of the various tutorials listed
 at the end of this section. And finally, you would have to ask for help in the Nim forum, on IRC, or on the other Nim help channels.
 ****
 
@@ -17740,7 +17740,7 @@ does only return an empty AST. The careful reader may wonder, why the [.func]#ec
 works at all, as the parameter of [.mac]#macro# [.func]#m1()# is specified as an ordinary [.str]#string#, not as a [.type]#static[string]#. So the type
 of [.var]#s# in the [.mac]#macro# body should be a [.type]#NimNode#. Well, perhaps an [.func]#echo()# overload exists, that can work with NimNodes,
 or maybe, as we pass a [.str]#string# constant to [.mac]#macro# [.func]#m1()#, in this concrete case [.var]#s# is indeed an ordinary [.str]#string#
-in the [.mac]#macro# body. Possibly we should have used [.code]#s: static[string]# as parameter type, which would give
+in the [.mac]#macro# body. Possibly we should have used [.code]#s: static[string]# as the parameter type, which would give
 us the exact same results.
 
 ****
@@ -17774,7 +17774,7 @@ Our last example would give a compile error in this case, while the one before w
 [.str]#string# constant would work as expected.
 
 Now, let us create [.mac]#macros#, which actually create an AST, which is returned by the [.mac]#macro# and executed when we run our program.
-For creating an AST in the [.mac]#macro# body, we have various options: we can use the [.func]#parseStmt()# function, or the [.code]#"quote do:"# notation,
+For creating an AST in the [.mac]#macro# body, we have various options: we can use the [.func]#parseStmt()# function or the [.code]#"quote do:"# notation,
 to generate the AST from regular program code in text form, or we can create the syntax tree directly with expressions provided by the [.mod]#macros# module, e.g.
 by calls like [.func]#newTree()# or [.func]#newLit()# and such. The latter gives us the best control over the AST generation process but is not easy for beginners. The good news
 is, that Nim now provides a set of helper functions like [.func]#dumpTree()# or [.func]#dumpAstGen()#, which shows us the AST representation of a Nim source code
@@ -17866,11 +17866,11 @@ And when we run it, we get:
 3.0
 ----
 
-Well, not a really great result for this concrete use case: We have replaced three [.func]#echo()# commands with a five lines [.mac]#macro#.
+Well, not a really great result for this concrete use case: We have replaced three [.func]#echo()# commands with a five-lines [.mac]#macro#.
 But at least, you got a feeling of what [.mac]#macros# can do for use.
 
-The [.func]#parseStmt()# function is actually not used that often, as the string construction is inconvenient and avoiding some
-issues like name space collisions can be difficult. In the following sections, we will introduce the [.code]#quote do:# construct and
+The [.func]#parseStmt()# function is actually not used that often, as the string construction is inconvenient, and avoiding some
+issues like namespace collisions can be difficult. In the following sections, we will introduce the [.code]#quote do:# construct and
 the [.func]#genast()# macro, which allows easier AST generation from textual code blocks. And later, we will learn how we can create
 macros directly by manually AST manipulation.
 
@@ -17901,18 +17901,18 @@ As parameters for Nim's [.mac]#macros#, we can use ordinary Nim data types like 
 [.key]#static# keyword like [.type]#static[int]#, or the [.type]#typed# and [.type]#untyped# data types. When we call [.mac]#macros#, then the data types of the parameters are used in the same way for overload resolution
 as it is done for [.proc]#{procs}# and [.key]#templates#. For example, if a [.mac]#macro# defined as [.code]#foo(arg: int)# is called as [.func]#foo(x)#, then [.var]#x# has to be of a type compatible with [.type]#int#.
 
-What may be surprising at first is, that inside the [.mac]#macro# body, all parameter types have not the data type of the actual
+What may be surprising at first is, that inside the [.mac]#macro# body, all parameter types do not have the data type of the actual
 argument, that we have passed to the [.mac]#macro#, but the special [.mac]#macro# data type [.type]#NimNode#, which is defined in the [.mod]#macros# module.
 The predefined [.var]#result# variable of the [.mac]#macro# has the type [.type]#NimNode# as well. The only exceptions are [.mac]#macro# parameters
 which are explicitly marked with the [.key]#static# keyword to be compile-time constants like [.type]#static[string]#, these parameters
 are not NimNodes in the [.mac]#macro# body but have their ordinary data types in the [.mac]#macro# body.
-Variables, that we define inside the [.mac]#macro# body, have exactly that type that we give to them, e.g. when we define a
+Variables, that we define inside the [.mac]#macro# body, have exactly the type that we give to them, e.g. when we define a
 variable as [.code]#s: string#, then this is an ordinary Nim [.str]#string# variable, for which we can use the common [.str]#string# operations.
 But of course, we have always to remember that [.mac]#macros# are executed at compile time, and so the operations
 on variables defined in the [.mac]#macro# body occur at compile time, which may restrict a few operations.
-Currently, [.mac]#macros# are evaluated at compile-time by the Nim compiler in the NimVM (Vittual Machine), and so
+Currently, [.mac]#macros# are evaluated at compile-time by the Nim compiler in the NimVM (Virtual Machine), and so
 share all the limitations of the NimVM: [.mac]#Macros# have to be implemented in pure Nim code, and can currently not
-call C functions, except those that are built in the compiler.
+call C functions, except those that are built into the compiler.
 
 In the Nim [.mac]#macros# tutorial, the [.type]#static#, [.type]#typed#, and [.type]#untyped# [.mac]#macro# parameters are described in some detail. We will
 follow that description, as it is more detailed than the current description in the Nim compiler manual. As these
@@ -17937,7 +17937,7 @@ This definition is from the Nim [.mac]#macros# tutorial, written by A. Doering, 
 
 ==== Typed Macro Parameters
 
-For [.type]#typed# arguments, the semantic checker runs on the argument and does transformations on it, before it is passed to the [.mac]#macro#.
+For [.type]#typed# arguments, the semantic checker runs on the argument and does transformations on it before it is passed to the [.mac]#macro#.
 Here identifier nodes are resolved as symbols, implicit type conversions are visible in the tree as calls, [.key]#templates# are expanded,
 and probably most importantly, nodes have type information. Typed arguments can have the type [.type]#typed# in the arguments list.
 But all other types, such as [.type]#int#, [.type]#float#, or [.type]#MyObjectType#, are typed arguments as well, and they are passed to the [.mac]#macro# as a syntax tree.footnote:[
@@ -18010,7 +18010,7 @@ y = 7
 m1(y)
 ----
 
-We get the same result again, both [.func]#echo()# statements prints [.var]#y#. The advantage of the use of [.type]#typed# here is, that
+We get the same result again, both [.func]#echo()# statements print [.var]#y#. The advantage of the use of [.type]#typed# here is, that
 we can change the data type of [.var]#y# from [.type]#int# to [.type]#float#, and our program still compiles. So the [.type]#typed# parameter type
 just enforces, that the parameter has a well-defined type, but it does not restrict the actual data type
 to a special value. The previous [.mac]#macro#, with [.type]#int# parameter type, would obviously not accept a [.type]#float# value.
@@ -18055,7 +18055,7 @@ Nim code represented as a multi-line [.type]#string#
 to an abstract syntax tree representation. [.mac]#Macros# use as a return type the [.type]#"untyped"# data type, which is compatible with the [.type]#NimNode# type
 returned by the [.func]#parseStmt()# function.
 
-The [.func]#quote()# function and the [.code]#quote do:# construct has some similarity with the [.func]#parseStmt()# function: It accepts an expression or a block of Nim code as an argument
+The [.func]#quote()# function and the [.code]#quote do:# construct have some similarity with the [.func]#parseStmt()# function: It accepts an expression or a block of Nim code as an argument
 and compiles that Nim code to an abstract syntax tree representation. The advantage of [.func]#quote()# is, that the passed Nim code can contain [.type]#NimNode# expressions from the surrounding scope.
 The [.type]#NimNode# expressions have to be quoted using backticks.
 
@@ -18118,7 +18118,7 @@ add as the last line of our [.mac]#macro# the statement [.code]#"echo result.rep
 === The genast() macro as a replacement for quote do:
 
 The [.mod]#genasts# module provides with the [.func]#genAstOpt()# macro and the [.func]#genAst()# template
-a drop in replacement for the "quote do:" construct.
+a drop-in replacement for the "quote do:" construct.
 Like [.code]#quote do:#, [.func]#genAst()# accepts an expression or a code block and returns the AST that represents it.
 Within the quoted AST, we are able to interpolate NimNode expressions from the surrounding scope.
 While for [.code]#quote do:# quoting is done using backticks (or other user-defined operators), we pass to [.func]#genAst()# a list of the variable to capture,
@@ -18140,7 +18140,7 @@ var b = 9.0
 show(a * sqrt(b))
 ----
 
-GenAst() captures (interpolates) parameters of the surrounding macro and local macro variables, when we
+GenAst() captures (interpolates) parameters of the surrounding macro and local macro variables when we
 specify them as parameters to genAst(). A macro local proc is automatically captured and does not have
 to be included in the capture list explicitly. This behavior can be modified, when
 instead of the plain genAst(), the genAstOpt() macro is used, which has a set of options
@@ -18174,7 +18174,7 @@ echo "a + b", ": ", a + b
 ----
 
 That is, for debugging, we would like to print an expression first in its [.str]#string# representation, and
-divided by a colon, the evaluated expression. The [.func]#dumpTree()# [.mac]#macro# can show us how the Nim syntax tree
+separated by a colon, the evaluated expression. The [.func]#dumpTree()# [.mac]#macro# can show us how the Nim syntax tree
 for such a print debug statement should look:
 
 [source, nim]
@@ -18202,7 +18202,7 @@ When we compile this code, we get as output:
 ----
 
 So the Nim syntax tree for the [.func]#echo()# statement from above is a statement list
-consisting of an [.func]#echo()# command with two [.str]#string# literal arguments, and a last argument which
+consisting of an [.func]#echo()# command with two [.str]#string# literal arguments and a last argument which
 is built with the infix {plus} operator and the two arguments [.var]#a# and [.var]#b#. So we can see how the
 AST, which we would have to construct, would have to look, but we still have no idea how
 we could construct such an AST in detail. Well, the [.mod]#macros# module would contain the functions that we
@@ -18238,7 +18238,7 @@ dumpAstGen:
 
 This is a nested construct. The most outer instruction constructs a new tree of Nim Nodes with the node type statement list.
 The next construct creates a tree with node kind command, which again contains the ident node with name [.func]#echo#,
-which again contains two literals, and the infix {plus} operator.
+which again contains two literals and the infix {plus} operator.
 
 Indeed, we can use the output of the [.func]#dumpAstGen()# [.mac]#macro# directly to create a working Nim program:
 
@@ -18277,7 +18277,7 @@ a + b: 0
 So the AST from above is fully equivalent to the one-line [.func]#echo()# statement.
 But now we would have to investigate how we can pass an actual expression
 to our [.mac]#macro#, and how we can use that passed argument in the [.mac]#macro# body --
-first print its textual form, and then the evaluated value separated by a colon.
+first, print its textual form, and then the evaluated value, separated by a colon.
 And there is one more problem: That nested [.mac]#macro# body from above is not really useful for
 our final [.func]#dump()# [.mac]#macro#, as we would like to be able to construct the [.type]#NimNode#, that is
 returned by the [.func]#dump()# [.mac]#macro# step-wise: Add the [.func]#echo()# command, then the passed expression
@@ -18326,7 +18326,7 @@ macro m2(): untyped =
 m2()
 ----
 
-First, we create the tree empty three structures of node kinds
+First, we create the three empty tree structures of node kinds
 statement list, command, and infix operator. Then we use the overloaded [.func]#add()#
 [.proc]#{proc}# to populate the threes, using [.proc]#{procs}# like [.func]#newIdentNode()# or [.func]#newLit()# to
 create the nodes of matching types as before. When we run our program with the modified
@@ -18340,7 +18340,7 @@ The next step to create our actual [.func]#dump()# [.mac]#macro# is again easy -
 as an [.type]#untyped# [.mac]#macro# parameter to the [.mac]#macro#, convert it to a [.type]#NimNode# of [.str]#string# type, and use that
 instead of the [.code]#newLit("a {plus} b")# from above. In our second [.mac]#macro#, where we used the [.code]#quote do:# construct,
 we applied already [.func]#toStrLit()# on an [.type]#untyped# [.mac]#macro# parameter, so we should be able to reuse that
-to get the [.str]#string# [.type]#NimNode#. Instead, we would have to apply the stringify operator additional
+to get the [.str]#string# [.type]#NimNode#. Instead, we would have to apply the stringify operator additionally
 on that value. But a simpler way is to just apply [.func]#repr()# on the [.type]#untyped# [.mac]#macro# argument to
 get a [.type]#NimNode# of [.str]#string# type. And finally, to get the value of the evaluated expression in our [.func]#dump()#
 [.mac]#macro#, we [.func]#add()# the [.type]#untyped# [.mac]#macro# parameter directly in the command three -- that value is
@@ -18372,7 +18372,7 @@ Again, we get the desired output:
  a + b: 0
 ----
 
-So our [.func]#dump()# [.mac]#macro# called still [.func]#m2()# is complete, and can be used
+So our [.func]#dump()# [.mac]#macro# called still [.func]#m2()# is complete and can be used
 to debug arbitrary expressions. Note, that this [.mac]#macro# works for arbitrary expressions, not only
 for numerical ones. We may use it like
 
@@ -18502,7 +18502,7 @@ argument.
 
 We have to admit that this [.mac]#macro# is not really useful in real life, as it is restricted to
 simple boolean expressions with a single infix operator. And what it does in its body
-makes not much sense: The original [.mac]#macro# argument is split into tree parts, the
+makes not much sense: The original [.mac]#macro# argument is split into three parts, the
 infix operator and the two operands, which are then just joined again to show
 the exception message. But at least we have learned, how we can access the various
 parts of a [.mac]#macro# argument by use of subscript operators, how we can use the [.func]#treeRepr()#
@@ -18723,17 +18723,17 @@ So let us investigate it.footnote:[You may wonder, why we have separate sequence
 the geometric shapes at all here, as we could put all the shapes in a single seq
 when the shape types are reference types. Well, the shapes types could be value types,
 so that we can not store them all in a single seq. Or, even when the base types are all references,
-we may intent to draw and print them in a well defined order, and that may be easier and faster
+we may intend to draw and print them in a well-defined order, and that may be easier and faster
 when they are ordered by shape in different sequences.]
 Let us assume that we need a reference [.obj]#object# with some fields that are sequences of
 the base types [.type]#int#, [.type]#float#, and [.type]#string#. Again, we start by use of the [.func]#dumpAstGen()# macro.
 We don't have to understand its output in detail. It is enough to recognize that
-the three actual fields of our [.obj]#ref object# were created by [.func]#nnkIdentDefs.newTree()# statements each, and
+the three actual fields of our [.obj]#ref object# were created by [.func]#nnkIdentDefs.newTree()# statements each and
 that these three statements are surrounded by a [.func]#nnkRecList.newTree()# call.
 So we start by producing an empty RecList with a call of [.func]#nnkRecList.newTree()#, and
 then iterate over an [.type]#array# with the three type names, create the IdentDefs with [.func]#nnkIdentDefs.newTree()#
 and add them to the RecList. Finally, we call [.func]#nnkStmtList.newTree()# passing our RecList as a parameter.
-Mostly this is just copy and paste, with the only exception that we have to remember that our
+Mostly this is just copy&paste, with the only exception that we have to remember that our
 [.var]#rfn# variable, which we use to iterate over the type names, is not a [.type]#string#, but a [.type]#NimNode#
 inside the macro, so we have to apply the stringify operator [.op]#$# on it when we pass it as an argument to
 [.func]#newIdentNode()#:
@@ -18835,7 +18835,7 @@ In this section, we will learn how we can create a [.mac]#macro#, that does not
 only create an operator that can work on existing variables but that can be used
 to create new variables. In Nim, we use the [.key]#var# or [.key]#let# keyword to
 create new variables. Some other languages allow creating new variables on the fly
-by using just "=", ":=" or "!=" to create new variables.
+by using just "=", ":=", or "!=" to create new variables.
 
 [source, nim]
 ----
@@ -18899,7 +18899,7 @@ and sequential program execution are also called multitasking or multi-threading
 Threading is generally the splitting of one path of actions into various sub-parts,
 which can be processed in parallel, or concurrent. On a CPU with multiple physical
 cores, threads can be distributed between them, while on a CPU with only one core,
-all threads have to run obviously alternating on that single-core, which is called
+all threads have to run obviously alternating on that single core, which is called
 concurrency. Parallel processing requires always dedicated physical hardware, that
 is multiple CPUs, or a multicore CPU consisting of two or more independent units,
 called cores.
@@ -18932,10 +18932,10 @@ ready, waiting, or halted. A process executes one or multiple threads, which can
 concurrent, or parallel on multiple physical CPU cores. All the threads of one single
 process can use common resources and access common variables, which enables data
 exchange between threads, with some restrictions. Data exchange between different,
-separated processes is not that easy, but it is also possible by the use of
+separated processes is not that easy, but it is also possible with the use of
 [.ndef]#inter-process-communication# protocols. Early PC {os}s executed only one
 process at a time, sometimes the user was able to switch between multiple launched
-processes. Modern {os}s do a fast switching between all the ready processes, so that
+processes. Modern {os}s do a fast switching between all the ready processes so that
 the user gets the feeling, that all of them are running in parallel, even when the CPU
 has only one physical core. The fast switching between processes is called
 multitasking or concurrent execution. Unfortunately, these two terms are a bit
@@ -18971,7 +18971,7 @@ simplify the process of writing non-blocking asynchronous software. The async/aw
 framework actually hides the use of callbacks or use of system functions like epoll
 from the user. This asynchronous programming style has gained some popularity due to
 the fact that many programs perform a lot of network communication, where data is
-transferred often slow compared to the processing power of the CPU. The Nim standard
+transferred often slowly, compared to the processing power of the CPU. The Nim standard
 library provides an async/await framework, which can be used similarly to that
 of Python, and the external Chronos package of [.ndef]#Status corp.# offers one more
 similar package. Additionally, there was a discussion among some Nim developers to
@@ -18980,7 +18980,7 @@ should mention, that async/await has its drawbacks -- its internal working is
 difficult, its usage is not always easy, and the user has to be careful when using
 asynchronous and synchronous functions together. Async/await was definitely the best
 option when desktop PCs had only one single CPU core, but with the arrival of
-multi-core CPUs the importance of asynchronous operations has become less important,
+multi-core CPUs, the importance of asynchronous operations has become less important,
 as using many threads running in parallel has become an alternative solution. It is
 said, that asynchronous program execution has less overhead than just using parallel
 processing on multiple cores, which may be one reason, why asynchronous programming is
@@ -19146,7 +19146,7 @@ request user input without blocking the whole app.
 
 With the [.key]#parallel# statement, the [.mod]#threadpool# module offers one more way
 to use threads to process data in parallel. While the [.key]#parallel# statement is
-already available in Nim since many years, it was recently labeled as an
+already available in Nim for many years, it was recently labeled as an
 [.ndef]#experimental feature#, so we have to use the [.code]#{.experimental.}# pragma
 to use it. And the detailed description is currently only available in the
 experimental section of the manual:
@@ -19193,7 +19193,7 @@ to get the total sum of all the [.type]#array# elements.
 Our example code above is kept very simple by intent, to clearly show the principal
 use. You may try to modify it to work on sequences with arbitrary runtime sizes
 instead of a fixed-sized [.type]#array# and to use more than two threads. For all the details
-of the [.mod]#threadpool# module, you should consult is documentation.
+of the [.mod]#threadpool# module, you should consult its documentation.
 
 As a direct replacement for the [.mod]#threadpool# module, you may also try the external [.mod]#taskpools#
 package. Or you may try the much more advanced [.mod]#weave# package:
@@ -19253,11 +19253,11 @@ of the threads of the pool, we get immediately the result of the executed functi
 back, when the work of the function is done.
 
 [.type]#Threads# created with the [.func]#createThread()# function of the
-[.mod]#threads# module do not directly return a result, but may be executed for a long
+[.mod]#threads# module do not directly return a result but may be executed for a long
 time period, often for the whole lifetime of the main process. Typically, it is
 necessary to exchange messages and data between these types of threads -- among
 multiple child threads themselves, or among them and the process's main thread. For
-this message- and data-exchange, [.type]#Channels# can be used. Nim's Channels use
+this message- and data exchange, [.type]#Channels# can be used. Nim's Channels use
 internally a [.type]#queue# for sending data from one thread to another thread. A
 [.type]#queue# is a first-in-first-out (FIFO) data structure -- items put in first
 will also be extracted first. That way, the receiving thread will receive the items
@@ -19315,7 +19315,7 @@ Received: 26
 Received: 19
 ----
 
-The [.proc]#proc# [.func]#sum()# sums up continuously 4 more numbers, and then sends the
+The [.proc]#proc# [.func]#sum()# sums up continuously 4 more numbers and then sends the
 partial sum into the channel. The generic [.type]#Channel[int]# variable [.var]#ch#
 is defined in the global scope. In the [.var]#main()# [.proc]#proc#, we create the child thread,
 open the [.type]#Channel#, and read the [.type]#Channel# data with calls to
@@ -19396,9 +19396,9 @@ uncontrolled way.
 We have already learned about Channels, which provide a way to exchange data between
 threads without the use of global variables. Other methods to protect global
 variables from uncontrolled access, which can lead to corrupted states, are locks,
-mutexes, or semaphores. We will give an example to do access control by the use of locks
+mutexes, or semaphores. We will give an example to do access control through the use of locks
 in the next section. In the example above, we used as global data a primitive value
-data type. Even more problems may occur, when we try to use global reference data
+data type. Even more problems may occur when we try to use global reference data
 types: In the past, the Nim standard library provided special functions like
 allocShared() to allocate [.type]#pointer# and reference data types that can be accessed from
 multiple threads. But as Nim's thread handling may change and improve in the future
@@ -19426,8 +19426,8 @@ the guard pragma attached, each thread has to first acquire the lock, before it 
 allowed to access that variable. If the lock is already acquired by another thread,
 acquire blocks until that other thread releases the lock to indicate that it is done
 with its access. Of course, this possible blocking can decrease the total
-performance, so each thread should acquire the lock only, when it needs really access
-to the protected data and release the lock as soon as possible.
+performance, so each thread should acquire the lock only, when it really needs access
+to the protected data, and release the lock as soon as possible.
 
 We can use the [.key]#template# [.var]#withLock# to access the guarded global variable in a
 block -- [.var]#withLock()# acquires the given lock and releases the lock again at
@@ -19554,7 +19554,7 @@ in previous sections of the book. The usual strategy for parsing CSV files is, t
 we read the file line by line, and process the data fields of each line. We will start by processing the CSV data
 with various single-threaded programs, using different functions and modules from Nim's standard library
 ([.mod]#strutils# split(), [.mod]#parseutils#, [.mod]#strscans#, [.mod]#parsecsv#, [.mod]#memfiles#) or the external packages [.mod]#regex# and [.mod]#ngegs#. After we have compared
-the performance of all these solutions, we will use a fast one with code executed in parallel on all available CPU core
+the performance of all these solutions, we will use a fast one with code executed in parallel on all available CPU cores
 to optimize the processing speed.
  
 ==== Using regular expressions
@@ -19604,7 +19604,7 @@ The [.op]#^# has a special meaning if used in square brackets: It inverts the ch
 matches all characters that are not a comma. This makes some sense in our case, as our data
 fields are separated by commas. The pattern [.code]#P = """([^,]+)"""# matches one or more characters that are not commas.
 The outer round brackets indicate, that we want to capture the match. We build our final pattern
-by the concatenation of pattern [.var]#P# following by a comma, repeated five times, and a final [.var]#P#.
+by the concatenation of pattern [.var]#P# followed by a comma, repeated five times, and a final [.var]#P#.
 In the [.key]#for# loop, we skip all lines starting with a hash character, and we have commented
 out the printout of the actual captures so that we can later measure the time for
 the pure regex parsing.
@@ -19754,14 +19754,14 @@ main()
 
 As described in Part 3 of the book (<<Module strscans>>), we use the [.func]#scanf()# [.key]#macro# to process each line.
 The [.var]#$w# parameters parse an identifier each; the [.lit]#','# character in the format [.str]#string#
-stands for itself; and [.var]#$f# and [.var]#$i# parse a floating point-number and an integer number, respectively.
-Compiling the program with option [.term]#-d:release# and executing it results in run times of
+stands for itself; and [.var]#$f# and [.var]#$i# parse a floating-point number and an integer number, respectively.
+Compiling the program with the option [.term]#-d:release# and executing it results in run times of
 260 ms when compiled with [.term]#--mm:orc# and 240 ms for [.term]#--mm:refc#.
 That is really fast and comparable to the times for the [.mod]#parseutils# module. Note that
 [.mod]#strscans# gives us for [.var]#area# and [.var]#pop# not only the unprocessed [.str]#string# but already the numeric value!
 
 The following
-table lists the run-times for the five different ways of
+table lists the run times for the five different ways of
 parsing the CSV data into [.str]#strings#.
 //We used the CSV file
 //with one million lines, that we generated earlier.
@@ -19770,7 +19770,7 @@ the table, we have used [.mod]#parseutils# to parse the area
 and population directly into numeric variables.
 The CSV data have been generated with our program from the start of this section,
 and we compiled our parsers with [.term]#-d:release#, and with [.term]#--mm:arc# and [.term]#--mm:refc# each.
-The [.func]#time# shell command was used to measure the program run-times.
+The [.func]#time# shell command was used to measure the program run times.
 All programs are run on a modern AMD Ryzen 9 5900HX (8-core) machine and
 have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64-bit Linux box. 
 
@@ -19809,7 +19809,7 @@ have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64
 
 As expected, regex parsing is the slowest, and with [.term]#--gc:arc# it is even slower.
 The use of [.mod]#strscans# or [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
-The performance with option [.term]#--mm:orc# is typically close to [.term]#--mm:arc#.
+The performance with the option [.term]#--mm:orc# is typically close to [.term]#--mm:arc#.
 
 Can we further improve the performance? Indeed, for the concrete data format,
 and when we are only interested to find numeric extreme values, then
@@ -19887,12 +19887,12 @@ Then we can access the fields of that row with the ordinary [.func]#items()# [.k
 The API documentation has some more examples for the use of the module, including an example,
 in which a CSV header is read first and then
 used as a reference for item access. The API documents also describe how we can use different field separators
-or how we can apply custom quoting characters. Quoting is needed when the fields may contain the separator character,
+or how we can apply custom quoting characters. Quoting is needed when the fields may contain the separator character
 or newlines. Note that currently only single separator characters are allowed, so separator [.str]#strings# like [.code]#"; "# are not supported.
 One reason why the reading performance of this module is very high is that it avoids [.str]#string# allocations.
 Each row of the CSV file is read into a pre-allocated row field of the [.str]#string# data type.
 For our test of the pure file read performance, we set the constant [.var]#Debug# to [.lit]#false# to avoid
-the slow output operations. To test if our program actually does what we expect, we can set [.var]#Debug# to [.lit]#true#
+slow output operations. To test if our program actually does what we expect, we can set [.var]#Debug# to [.lit]#true#
 and run the program with terminal output.
 
 Before we actually investigate how we can make file parsing parallel, we will introduce another interesting
@@ -19905,7 +19905,7 @@ and manipulated as if it were an array in memory. This enables faster and more e
 read/write calls and allows the operating system to manage file access and caching more effectively.footnote:[GPT-4 reply for prompt:
 Please give me a simple and short explanation for the term "memory-mapped file".]
 
-Using memory-mapped files can increase the I/O performance for large files, may allow to access
+Using memory-mapped files can increase the I/O performance for large files, may allow accessing
 very large files by using small amounts of RAM using a technique called "lazy loading", and
 may avoid unnecessary copying of data.
 Typically, the memory mapping process is handled by the virtual memory manager of the {os}.
@@ -19949,17 +19949,17 @@ proc main =
 main()
 ----
 
-The pure I/O performance of this code is very high, but drops significantly, as expected, when real data processing
+The pure I/O performance of this code is very high, but drops significantly, as expected when real data processing
 like parsing of numbers is involved. To be sure that the inner [.loop]#loop# body is not completely removed by the compiler,
 we have added the [.var]#dummy# variable. And still, we get running times of only 32 nanoseconds!
 The example is based on a code snippet provided by Mr. C. Blake in the Nim forum.footnote:[https://forum.nim-lang.org/t/9688#63737]
 The [.func]#toOpenArrayChar()# template uses the experimental [.func]#toOpenArray()# function to convert the memslice to an
 [.type]#open array# with [.type]#char# base type, which the [.type]#string# processing functions of Nim's standard library can process.
-In the example, actually two memSlices are used: First we read the lines of a file into a slice, and then we copy that
+In the example, actually two memSlices are used: First, we read the lines of a file into a slice, and then we copy that
 slice into a locale slice variable called [.var]#r# to iterate over the comma-separated fields.
 We will not try to explain the details of the above code. When you should really need extreme I/O performance, and the task is not
 already restricted by actual data processing operations like parsing of numeric data, you should study the [.mod]#memfiles#
-module carefully. Maybe you have to consult additional resources or to ask, as the module documentation is still short
+module carefully. Maybe you have to consult additional resources or ask, as the module documentation is still short
 and has not many examples.
 
 The table below summarizes our results. All programs are run on a modern AMD Ryzen 9 5900HX (8 cores) machine, and
@@ -20014,7 +20014,7 @@ References:
 ==== Making it parallel
 
 The next task is to somehow distribute all the work to a set of threads.
-In this section, we do not focus on optimum I/O performance but on actual parsing
+In this section, we do not focus on optimum I/O performance but on the actual parsing
 of all the data fields, which is a CPU-intensive task and should benefit from the use of all
 available CPU cores. So we do not use the [.mod]#memfiles# or the dedicated [.mod]#parsecsv# module in this section, but
 ordinary file operations like [.func]#readChars(buf)# provided by the [.mod]#system# module and parsing functions from the
@@ -20172,7 +20172,7 @@ That is indeed a performance improvement of a factor of eight, which is not bad.
 Unfortunately, when we compile the code with [.term]#-d:release --gc:arc#, we get runtimes of about 500 ms,
 which is no improvement compared to the single-threaded code. And with [.term]#-d:release --gc:orc#
 the runtime is even in the range of 700 ms.
-At the end of this section we will present a solution, which works fine also for [.term]#--gc:arc# -- for
+At the end of this section, we will present a solution, which works fine also for [.term]#--gc:arc# -- for
 [.term]#--gc:orc# the runtime is decreased to 300 ms at least.
 </s>.
 ++++
@@ -20200,7 +20200,7 @@ proc. Well, our data chunks end with newline characters, and the [.func]#splitLi
 gives an empty line for the last split. That empty line has to be ignored. The test [.code]#l.len > 0#
 should cost not that much performance. You may think yourself about a way to save this test,
 by passing only chunks to [.func]#candidate()# [.proc]#{proc}# that do not end with a newline character. Seems to be possible,
-but then we have to care for the fact, that our whole CSV file may end with a newline, or may not end with a newline.
+but then we have to care for the fact, that our whole CSV file may end with a new line, or may not end with a new line.
 We have to take care of that.
 
 The performance of our code strongly depends on the used [.var]#BlockSize#. We used one megabyte,
@@ -20225,7 +20225,7 @@ the [.key]#parallel# construct. Or we may experiment with so-called [.ndef]#memo
 
 ==== Fixes for ARC and ORC
 
-NOTE: These fixes are not any longer necessary for Nim V 2.0!
+NOTE: These fixes are no longer necessary for Nim V 2.0!
 
 As we found out, the performance is currently disappointing, when we compile with [.term]#--gc: arc# or [.term]#--gc:orc#.
 One easy way to fix that is when we use additional the compiler option [.term]#-d:useMalloc#. This avoids
@@ -20310,7 +20310,7 @@ value [.key]#objects# in the code above, we do not need references. This is poss
 with [.term]#--gc:arc# or [.term]#--gc:orc#, for [.term]#--gc:refc# we would get the compile Error: [.italic]#cannot create a flowVar of type: Res#.
 We have done one additional modification -- we allocate the buffer [.var]#buf# inside of the [.key]#while# loop. This may
 look strange, as we generally avoid allocations in loops. But as [.func]#candidates()# gets a copy of the
-[.var]#buf# [.str]#string#, and ARC uses move semantics and sink parameters, this may make sense. The compiler
+[.var]#buf# [.str]#string# and ARC uses move semantics and sink parameters, this may make sense. The compiler
 may pass the newly allocated [.var]#buf# variable just to [.func]#candidates()#, instead of copying it. And
 we do not have to call [.code]#buf.setLen(BlockSize)# at the end of the loop.
 
@@ -20346,9 +20346,9 @@ really help to improve the throughput or performance.
 
 The initial idea of asynchronous operations was to avoid blocking the CPU for longer
 time periods during slow network and IO (input/output) requests. Indeed, that made
-much sense in times, when we read data from floppy disks or magnetic tapes, and send
+much sense in times, when we read data from floppy disks or magnetic tapes and send
 data with 300 baud modems. And when true parallel thread execution was not possible
-at all, as CPUs had only one core, and computers with more than one CPU were very
+at all, as CPUs had only one core and computers with more than one CPU were very
 expensive and not used by ordinary people.
 
 Today, with network data rates of up to one Gbit/s for our smartphones or home
@@ -20377,19 +20377,19 @@ way, the program can launch an IO operation, and perform other work, until that 
 is interrupted by a call of the callback function. As most programming languages
 support the use of callback functions, this form of asynchronous IO is widely
 supported by software libraries, e.g. the Glib library of the GTK GUI toolkit. As
-doing asynchronous IO with callback can get complicated, when we have a lot of nested
+doing asynchronous IO with callback can get complicated when we have a lot of nested
 IO operations, the async/await workflow was introduced, which allows asynchronous
 code to be written in a synchronous style.
 
 The async/await pattern is a syntactic feature of many programming languages, that
 allows an asynchronous, non-blocking function to be structured in a way similar to an
 ordinary synchronous function. It is semantically related to the concept of a
-coroutine, and is often implemented using similar techniques, and is primarily
+coroutine and is often implemented using similar techniques, and is primarily
 intended to provide opportunities for the program to execute other code while waiting
 for a long-running, asynchronous task to complete, usually represented by promises or
 similar data structures.footnote:[https://en.wikipedia.org/wiki/Async/await] The
 programming language F{hashtag} (pronounced F sharp) introduced asynchronous workflows with
-await points already in 2007 for the version 2.0 of the language. And in 2012
+await points already in 2007 for version 2.0 of the language. And in 2012
 Microsoft released C{hashtag} in version 5 with async/await support. Later languages like
 Haskell, Python, JavaScript and TypeScript, Kotlin, Dart, Julia, Zig, Swift, and Rust
 used the async/await pattern, and since 2020 it is also available for {cpp}.
@@ -20409,9 +20409,9 @@ events, and immediately enable execution of a different code path.
 As for this form of cooperative multitasking, only the code execution path is
 changed, but no switching between threads is necessary, additional overhead can be
 avoided, and typical problems of multi-threading, like the passing of data between
-different threads or race conditions, do no exist.
+different threads or race conditions, do not exist.
 
-So at least in theory, the co-operative multitasking controlled by the async/await
+So at least in theory, the cooperative multitasking controlled by the async/await
 pattern is more efficient, and for maximum performance, it can be combined with
 threading and parallel program execution.
 
@@ -20425,22 +20425,22 @@ implementation, and the [.func]#async# [.mac]#macro#, which allows asynchronous 
 written in a synchronous style with the [.key]#await# keyword.
 
 The [.mod]#asyncdispatch# module implements a global dispatcher (technically one per
-thread), that is responsible for running the procedures that are registered with
+thread), which is responsible for running the procedures that are registered with
 it.footnote:[https://peterme.net/asynchronous-programming-in-nim.html]
 
 Built on top of these two modules, there exist various modules for asynchronous
 communication: Module [.mod]#std/asyncnet# implements a high-level asynchronous
-sockets API, and [.mod]#std/asynchttpserver# implements a high-performance
+sockets API and [.mod]#std/asynchttpserver# implements a high-performance
 asynchronous HTTP server. Some other modules, like [.mod]#std/httpclient#, support
 synchronous and asynchronous data transfers.
 
-Nim's async/await framework is not part of the language itself but implemented with
+Nim's async/await framework is not part of the language itself but is implemented with
 [.mac]#macros# and meta-programming, and the use of Nim's [.key]#iterators#. The underlying
 implementation is based on [.func]#epoll# on Linux, IO Completion Ports on Windows,
 and [.func]#select# on other operating systems.
 
 Currently, Nim's async/await uses only one single thread on its own, but applications
-can combine it with multiple parallels running threads. As an alternative
+can combine it with multiple parallel running threads. As an alternative
 implementation, we could use https://github.com/status-im/nim-chronos, which provides
 similar functionality.
 
@@ -20548,7 +20548,7 @@ total time elapsed: 0.4007678031921387
 
 The result is not really surprising, as for each call of [.proc]#{proc}# [.func]#tick()#, the
 loop in its body is executed two times, generating a [.lit]#100 ms# delay for each
-iteration. But the output will drastically change, when we call instead of the
+iteration. But the output will drastically change when we call instead of the
 ordinary [.func]#sleep()# function the function [.func]#sleepAsync()# provided by the
 [.mod]#asyncdispatch# module:
 
@@ -20592,7 +20592,7 @@ The two calls of the [.func]#tick()# [.proc]#{proc}# each return nearly instantl
 [.type]#Future[void]# [.obj]#object#, no waiting happens here. The use of the [.key]#await#
 keyword in the [.proc]#{proc}# body causes the [.proc]#{proc}# to suspend its execution, and control flow
 returns to the call site immediately. But at the same time, the asynchronous
-[.func]#tick()# [.proc]#{proc}# got registered by the dispatcher loop, so that it can resume
+[.func]#tick()# [.proc]#{proc}# got registered by the dispatcher loop so that it can resume
 its execution.
 
 The returned [.type]#Future# [.obj]#object# encapsulates the actual return type of the call
@@ -20633,7 +20633,7 @@ returns always after 2 loop iterations.
 
 The important result of this modified code is, that the [.proc]#{proc}# execution alternates,
 and the total runtime of the program is only [.lit]#0.2 ms#. The reason for this is,
-as we already explained, that the use of the [.key]#await# keyword in our
+as we already explained, that use of the [.key]#await# keyword in our
 [.func]#tick()# [.proc]#{proc}# suspends the execution, and so immediately the next call of
 [.func]#tick()# with [.lit]#"BBB"# as an argument is executed.
 
@@ -20703,7 +20703,7 @@ accurate timings.
 //internet, and then present as one typical example a simple chat application consisting of
 //a server and a client application.
 
-=== File download
+=== File Download
 
 The module [.mod]#std/httpclient# of Nim's standard library provides procedures for
 synchronous and asynchronous file transfer. Let us start with this simple synchronous
@@ -20746,7 +20746,7 @@ In this example, we use an asynchronous HTTP client, for which the overloaded [.
 the future, which is a [.str]#string# containing the page content.
 
 With the knowledge which we get from our previous example with [.func]#sleepAsync()#,
-we can easily modify the above code to download two files asynchronous:
+we can easily modify the above code to download two files asynchronously:
 
 [source, nim]
 ----
@@ -20807,7 +20807,7 @@ main()
 
 Here we used the construct [.term]#waitFor all(f)# to wait for finishing all the downloads.
 For our tests, we typically got only transfer rates of a few MB/s max. We don't know the reason
-for this currently, maybe we should compare that to the chronos framework.
+for this currently, maybe we should compare that to the Chronos framework.
 
 References:
 
@@ -20858,17 +20858,17 @@ A chat server has to perform two primary tasks:
 * Listen for new connections from potential clients
 * Listen for new messages from clients that have already connected to the server
 
-All the messages that the server receive will need to be sent to every other client
+All the messages that the server receives will need to be sent to every other client
 that is currently connected to it.
 
-We do have not a working client app yet, but in the case that you have the
+We do not have a working client app yet, but in the case, that you have the
 [.ndef]#telnet# program installed on your computer, you can already use that one to
 test this server. Telnet sends messages unencrypted, so its use is generally not
 recommended to send messages over the Internet, but for testing purposes on the local
 net, we may use it. If the telnet app is not installed on your computer, you may
 install it with the package manager of your OS -- for Gentoo Linux, we would run
 "emerge -av telnet-bsd". An alternative may be the use of the [.ndef]#busybox# app,
-which provides the telnet functionality as well.
+which provides telnet functionality as well.
 
 If you have a telnet app available, you may open three terminal windows: On the first
 one, you compile and run the server app -- you will see no output in that window. In
@@ -20908,7 +20908,7 @@ practice in network communication. We will not try to explain any details here, 
 citing some definitions from Wikipedia should be enough for now:
 
 A computer network is a set of computers sharing resources located on or provided by
-network nodes. The computers use common communication protocols over digital
+network nodes. Computers use common communication protocols over digital
 interconnections to communicate with each
 other.footnote:[https://en.wikipedia.org/wiki/Computer_network]
 
@@ -21024,8 +21024,8 @@ sense and is necessary to determine when a client disconnects.
 
 When we have managed to understand the simplified code from above, understanding the
 original example is easy: We use a sequence with all the connected clients, as we
-want to forward each message that we get from one client to all other connected
-clients. So the [.func]#serve()# [.proc]#{proc}# adds each new client to that seq, and [.proc]#{proc}#
+want to forward each message that we get from one client to all the other connected
+clients. So the [.func]#serve()# [.proc]#{proc}# adds each new client to that seq and [.proc]#{proc}#
 [.func]#processClient()# iterates over that seq and sends the received message to all
 the connected clients, followed by a [.lit]#"\c\L"# to separate the messages. And
 instead of [.code]#waitFor sleepAsync()# [.func]#runForever()# is used, and instead
@@ -21044,7 +21044,7 @@ it is terminated by [.lit]#CTRL-C# or another OS intervention.
 We have intentionally left out some less important points in the above explanations:
 The call of [.func]#server.setSockOpt(OptReuseAddr, true)# should prevent a common
 problem when apps using sockets are terminated and restarted: Socket instances are
-not immediately removed by the OS, when an app terminates, as data packages for that
+not immediately removed by the OS when an app terminates, as data packages for that
 socket may be still traveling. So a restart of the app may produce an error message like
 [.lit]#"Socket address is already in use"#. Another point is, that we used not the IP
 address [.str]#string# [.lit]#"localhost"#, but leave out that parameter, which seems to
@@ -21056,7 +21056,7 @@ commonly used in network communication to separate messages. You may still wonde
 about the capital [.lit]#"L"# -- well should be identical to [.lit]#"\l"#, you can
 verify it yourself.
 
-The careful reader may also wonder if initialization of the client list with
+The careful reader may also wonder if the initialization of the client list with
 [.code]#clients = @[]# is really necessary. No, should not be necessary for recent
 Nim versions, maybe that is a legacy from the old Nimrod days. And is the threadvar
 pragma in [.code]#var clients {.threadvar.}: seq[AsyncSocket]# really needed? Our
@@ -21117,11 +21117,11 @@ the new asynchronous socket and then calls the asynchronous [.proc]#{proc}#
 [.func]#doConnect()#, which actually connects to the server and enters an infinite
 loop watching for messages from the server. When [.func]#doConnect()# calls
 [.key]#await#, control flow returns immediately to our [.func]#main()# [.proc]#{proc}#. But
-[.func]#doConnect()# has become a component of the dispatcher loop, so its infinite
+[.func]#doConnect()# has become a component of the dispatcher loop, so it's infinite
 [.code]#while loop# with the [.key]#await# statement will gain control back later.
 In the [.func]#main()# [.proc]#{proc}#, we then use [.func]#spawn# to execute [.func]#readLine()#
 on one thread of the [.var]#threadpool#, and enter a different infinite [.code]#while
-loop#. This loops checks if user input is available, and calls poll() to ensure that
+loop#. This loop checks if user input is available, and calls poll() to ensure that
 the global dispatcher loop is executed. If there is user input available, that
 message is sent to the server, and [.func]#spawn# is called again waiting for the
 next user input.
@@ -21155,7 +21155,7 @@ encode the [.obj]#object# before you send it, and encode it again on the receivi
 data types to JSON [.str]#strings# or JSON [.obj]#objects#, and the [.func]#parseJson()# [.proc]#{proc}# to
 convert the text [.str]#string# back into Nim data types. When you have some free time and
 are interested in that topic, you can try that yourself, it should be not difficult.
-Maybe, we will give later in the last part of the book a concrete example for such an
+Maybe, we will give later in the last part of the book a concrete example of such an
 app -- but maybe that is just too trivial and boring? What you may try as a small
 exercise is this: We send the verbatim message over the net, that is exactly what the
 user typed in, and we send it to all clients, including the one who initially send
@@ -21209,10 +21209,10 @@ We can use trait bounds to specify that a generic type can be any type that has 
 
 Nim's [.key]#concepts# have been redefined in 2019 and are now sometimes referred to as "new concepts".
 They are described in the "experimental" part of the compiler manual, and may still have some issues.
-Maybe syntax and semantic may change in future a bit, but it is expected that they remain part of the language.
+Maybe syntax and semantics may change in the future a bit, but it is expected that they remain part of the language.
 
-In this section, we will try to give an easy understandable introduction to Nim's [.key]#concepts#. If you have already some
-experience with concepts, interfaces or traits in other programming languages, you may read the section in the
+In this section, we will try to give an easily understandable introduction to Nim's [.key]#concepts#. If you have already some
+experience with concepts, interfaces, or traits in other programming languages, you may read the section in the
 Nim compiler manual instead. And of course, you should consult that section later, when you really intend to use [.key]#concepts#,
 to learn about all the details and possible future changes. The following explanations are based on the experimental section of
 the Nim compiler manual for Nim 1.9.1, which does not explicitly refers to the term "new concepts" and does not already use
@@ -21224,13 +21224,13 @@ for the "new concept" implementation.
 Modern programming languages care a lot for abstractions and code reuse. Functions like [.func]#sort()#, [.func]#max()#, or iterator variants should
 work on as many data types as possible. So [.func]#sort()# or [.func]#max()# may work on all data for which a [.func]#cmp()# or a [.op]#<# predicate is defined, and
 iterators like [.func]#items# should work on all container types. People sometimes say that they try to write [.italic]#DRY# code:
-"Don't repeat yourself" (DRY) is a principle of software development aimed at reducing repetition of software patterns,
+"Don't repeat yourself" (DRY) is a principle of software development aimed at reducing the repetition of software patterns,
 replacing it with abstractions or using data normalization to avoid redundancy.footnote:[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself]
 Some dynamic languages like Python or Ruby use the term [.italic]#Duck Typing#
 for these kinds of abstractions: [.italic]#Duck typing in computer programming is an application of the duck test—"If it walks like a duck
 and it quacks like a duck, then it must be a duck"—to determine whether an object can be used for a particular
 purpose.footnote:[https://en.wikipedia.org/wiki/Duck_typing]# Interpreted,
-dynamic languages may do all these type tests at runtime, while statically typed, compiled languages like {cpp}, Rust, D or Nim
+dynamic languages may do all these type tests at runtime, while statically typed, compiled languages like {cpp}, Rust, D, or Nim
 do the test already at compile-time, advertised by the term [.italic]#"Abstraction without overhead"#.
 
 Nim's [.key]#concepts# are also called [.italic]#"user-defined type classes"# and specify a set of requirements that a data type must have.
@@ -21285,14 +21285,14 @@ Expected one of (first mismatch at position [#]):
 ...
 ----
 
-Actually the compiler error messages are very clear in this case already. And the
-[.op]#<# predicate may be not a really good example for the use of concepts, as [.op]#<# is typically defined for most of Nim's data
+Actually, the compiler error messages are very clear in this case already. And the
+[.op]#<# predicate could not be a really good example for the use of concepts, as [.op]#<# is typically defined for most of Nim's data
 types, even for sets and tables. But [.key]#concepts#
 allow us to express the constraints more clearly, already visible in the proc definition
 and resulting in even more clear compiler error messages.
 
 So let us define a [.type]#Comparable# data type, which we then can use for our [.func]#mx()# proc.footnote:[We
-called the proc mx() instead of max(), to ensure that there is no name space conflict with the system module.
+called the proc mx() instead of max(), to ensure that there is no namespace conflict with the system module.
 Just to be absolutely sure for this test...] 
 
 The fundamental idea of Nim's [.key]#concepts# is that we define a set of expressions for variables or types:
@@ -21312,7 +21312,7 @@ type
 The identifiers that follow the [.key]#concept# keyword represent instances
 of data types that may or may not match this concept type.
 For the match test we employ two instance variables x and y,
-on which we try to apply an infix [.op]#<# operator. When that expression compiles, and has a result of boolean type, then
+on which we try to apply an infix [.op]#<# operator. When that expression compiles, and has a result of a boolean type, then
 we say that a candidate data type matches this concept. We can use this [.type]#Comparable# [.key]#concept# data type
 for the parameter types of our [.func]#mx()# proc and see what happens when we try to pass matching or non-matching parameter types:
 
@@ -21367,7 +21367,7 @@ A [.key]#concept# matches if:
 * all statically evaluable [.type]#boolean# expressions in the body are [.lit]#true#
 
 The identifiers following the [.key]#concept# keyword represent instances of the currently matched type.
-We can apply any of the standard type modifiers such as [.key]#var#, [.key]#ref#, [.key]#ptr# and [.key]#static# to denote a more specific type of instance.
+We can apply any of the standard type modifiers such as [.key]#var#, [.key]#ref#, [.key]#ptr#, and [.key]#static# to denote a more specific type of instance.
 We can also apply the [.key]#type# modifier to create a named instance of the type itself:
 
 [source, nim]
@@ -21473,10 +21473,10 @@ suggested [.code]#each T# and [.code]#either orelse# constructs, which are still
 [.key]#concept# like [.type]#Iterable[T]#, while an atom always lacks any kind of generic
 parameter (as in [.type]#Comparable#).
 
-Syntactically a [.key]#concept# consists of a list of proc and [.key]#iterator#
+Syntactically a [.key]#concept# consists of a list of proc- and [.key]#iterator#
 declarations. There are 3 syntactic additions:
 
-* [.type]#Self# is a builtin type within the concept's body and stands for the
+* [.type]#Self# is a built-in type within the concept's body and stands for the
 current [.key]#concept#. (Or the data type that is matched?)
 
 * [.key]#each# is used to introduce a generic parameter [.type]#T# within the
@@ -21573,7 +21573,7 @@ proc writeStuff[T: Serializable](x: T) =
 
 Note: [.code]#either orelse# is currently not implemented.
 
-In generic code it's often desirable to specialize the code in an ad-hoc manner.
+In generic code, it's often desirable to specialize the code in an ad-hoc manner.
 [.func]#system.addQuoted# is an example of this:
 
 [source, nim]
@@ -21629,7 +21629,7 @@ Note that a declaration like
 [source, nim]
 ----
 type
-  Sortable[T] = Indexable[T] and T is Comparable and T is Swapable
+  Sortable[T] = Indexable[T] and T is Comparable and T is Swappable
 ----
 
 is possible but unwise. The reason is that [.type]#Indexable# either contains
@@ -21656,7 +21656,7 @@ A type [.type]#T# matches a [.key]#concept# [.type]#C# if every proc and [.key]#
 The matching process is forgiving:
 
 * If H is a proc, E can be a proc, a func, a method, a template,
-a converter or a macro. E can have more parameters than H as long
+a converter, or a macro. E can have more parameters than H as long
 as these parameters have default values. The parameter names do not have
 to match.
 
@@ -21695,7 +21695,7 @@ References:
 Special thanks go to Mr. Jim Wilcoxson (https://github.com/hashbackup), who did
 proofreading the first dozen pages of the book and gave some advice on English grammar
 and spelling. Thanks go also to Mr. Marek Ľach (https://github.com/marek-lach), for fixing many more spelling and grammar
-errors. Finally, a lot of missing commas and some more grammar errors have been detected by use of the
+errors. Finally, a lot of missing commas and some more grammar errors have been detected by the use of the
 languagetool.org software, used from the command line with the pyLanguagetool application.
 Some longer prose sections have been also checked by use of the free Firefox grammar check browser extension of
 https://www.grammarly.com/ and the online grammar checker from https://quillbot.com.
@@ -21724,8 +21724,8 @@ some incompatibility issues with other implementations like the https://github.c
 may arise. The future will show if alternative implementations will try to be as compatible as possible with
 the implementation of Rumpf, or if they will create language dialects or even new languages with new names like Cyo
 for nimskull. We had a similar case already for modules of Nim's standard library, which have been partly
-replaced by incompatible, improved variants created by Status corporation
-(e.g. https://github.com/status-im/nim-taskpools and https://github.com/status-im/nim-chronos) and other Nim  contributors.
+replaced by incompatible, improved variants created by Status Corporation
+(e.g. https://github.com/status-im/nim-taskpools and https://github.com/status-im/nim-chronos) and other Nim contributors.
 
 The most important improvement for Nim 2.0 is that the ORC memory management system is now the default.
 We have mentioned some new features of Nim 2.0 already in the book, and we
@@ -21736,15 +21736,15 @@ will summarize the most important changes of Nim 2.0 in the next few sections:
 Initially, Nim used a traditional garbage collector for automatic memory management, similar to how most other
 high-level programming languages do. For time-critical or resource-limited systems, traditional garbage collectors
 have some serious disadvantages like fully blocking the system for a few milliseconds, or releasing resources late
-and needing a lot of memory. Early Java implementations suffered from this, and for this reason
+and needing a lot of memory. Early Java implementations suffered from this, and for this reason,
 some modern high-performance languages like Rust, Zig, or Jai do not use automatic memory management at all.
 Languages like Nim and VLang tried to find automatic memory strategies that avoided the disadvantages
 of traditional garbage collectors. And Nim was successful already, while Vlang seems to have some miles to go still.
 ARC is a deterministic, destructor-based memory management system: As soon as referenced, heap-allocated objects go
-out of scope, so that they can no longer be accessed by any reference, the heap-object is immediately freed.
+out of scope, so that they can no longer be accessed by any reference, and the heap object is immediately freed.
 This works very well, as long as the referenced objects build no cyclic structures, e.g. in graphs like the triangulation of
 a surface, where all the vertices and edges may have neighbor references. To handle cycles, the ORC memory handler
-was created, and is now the default. For many applications, it is not really important if the traditional refc
+was created and is now the default. For many applications, it is not really important if the traditional refc
 GC system or ARC/ORC is used. REFC may still have small performance benefits, but ARC/ORC works very well for critical
 applications. With ARC/ORC a Nim program should behave like one with only manual memory management, without all
 the disadvantages of pure memory management like double-frees, dangling pointers, or memory leaks. When your program uses no
@@ -21752,10 +21752,10 @@ cyclic data structures, you can now use arc. When you know that you use cycles, 
 should use orc to ensure that all unreferenced objects are really released immediately. Programs compiled with option
 --mm:orc are typically 10 kB larger as compiled with --mm:arc. Both options generate significantly smaller executables
 than --mm:refc. For performance-critical programs, it is always a good idea to do some testing, as refc or maybe
-even one of the other GC options like boehm may give a larger throughput. Currently, Nim cannot report if ARC is
+even one of the other GC options like Boehm may give a larger throughput. Currently, Nim cannot report if ARC is
 sufficient, or ORC is needed due to cyclic references. So you may have to do some tests if you are not sure, like
 setting all the references at the end of a proc to nil, and then calling GC_fullCollect() and GC_getStatitics()
-to monitor the still occupied memory resources.  
+to monitor the still-occupied memory resources.  
 
 === Default values for object fields
 
@@ -21776,13 +21776,13 @@ type
 
 Default values for object fields are useful whenever the default zero makes no sense or may
 even cause a runtime exception, like the denominator of a fraction, or a scaling parameter, which
-generally has the default value 1 or 100 percent, but not the value zero.
+generally has the default value of 1 or 100 percent, but not the value of zero.
 
 === Overloadable enums
 
 Before Nim 2.0, using enumerations in larger programs could be very verbose, as different
 enum types could have members with the same name, so that we had to use the pure pragma
-and to prefix the enum value with the type name. To avoid this, some modules used
+and prefix the enum value with the type name. To avoid this, some modules used
 values with a prefix, like nkProc. In section <<Enumeration types>> we had two enums with a few common values:
 
 [source, nim]
@@ -21804,7 +21804,7 @@ echo caution # {Stop, Caution}
 
 For Nim 2.0, the compiler is smart now and knows that in {TrafficLigth.yellow, red}
 the red value is also from the TrafficLigth data type, so we do not have
-to use the type name prefix. The {.pure.} pragma is not needed any more, and the compiler
+to use the type name prefix. The {.pure.} pragma is not needed anymore, and the compiler
 is really smart: Only a statement like "var caution = {red, blue}" would obviously not
 compile without type prefixes for one of the values.
 
@@ -21815,7 +21815,7 @@ Nim's strings are mutable value objects with length and capacity properties and 
 is heap-allocated and NULL-terminated, it is compatible with the string data type in the C language,
 which is basically a pointer to a character (*char). In early Nimrod, we often used the Nim cstring
 data type as an alias for a string in the C language. In modern Nim, cstring stands for compatible string,
-that is a string that is compatible with the C and JavaScript backends. In Nim 2.0, cstrings have become
+which is a string that is compatible with the C and JavaScript backends. In Nim 2.0, cstrings have become
 second-class citizens. We can use cstrings as parameters of C  library functions without problems, but
 when we pass a variable of cstring data type to an ordinary Nim proc, we get a serious warning:
 
@@ -21875,7 +21875,7 @@ Warning: use explicit initialization of 'a' for clarity [Uninit]
 
 This may later be even the default. Again, the compiler is smart
 and does a detailed code analysis: When we assign in each possible code path
-an value to a variable, then there is no warning. This works now even for the let
+a value to a variable, then there is no warning. This works now even for the let
 statement as in the above example.
 
 === Out parameters
@@ -21904,7 +21904,7 @@ main()
 Compiling the above code results in this warning:
 
 ----
-Warning: Cannot prove that 'i' is initialized. This will become a compile time error in the future. [ProveInit]
+Warning: Cannot prove that 'i' is initialized. This will become a compile-time error in the future. [ProveInit]
 ----
 
 The reason is obviously that proc p does not assign a value to the out parameter i.
@@ -21946,7 +21946,7 @@ In Nim 2.0, we can use a few Unicode operators; see https://nim-lang.github.io/N
 for details. When we create mathematical libraries, that may result in cleaner code, e.g., we
 may use Unicode symbols for the cross-product of vectors. Entering these Unicode symbols can be difficult.
 In section <<Entering Unicode Characters>> we learned how to type in Unicode symbols. You may also find the Linux (Gnome) tool
-gucharmap useful: Launch the tool, select View/By Unicode Block from menu, and then select Mathematical Operators.
+gucharmap useful: Launch the tool, select View/By Unicode Block from the menu, and then select Mathematical Operators.
 
 [source, nim]
 ----
@@ -22013,7 +22013,7 @@ which are used as libraries. But packages can also contain complete application 
 and may even contain pre-compiled executables. In part IV of the book, we have already used the
 library packages nim-regex and cligen. An example of a package containing a complete
 application is the [.ndef]#c2nim# tool, which can convert C source code to Nim code.
-You can find a longer introduction to the Nimble package manager in the Manning book, and a detailed description
+You can find a longer introduction to the Nimble package manager in the Manning book and a detailed description
 on the Nimble GitHub page. As the GitHub page is not really intended as an introduction, and
 as some people may not have a copy of the Manning book, we will give a short introduction
 to Nimble, which includes its use to install packages, as well as the creation and distribution
@@ -22027,7 +22027,7 @@ by the user.
 
 Packages and package managers can be divided into two categories: Most Linux distributions have one or more
 package managers closely coupled to the OS, which are used to install libraries and executables for that OS.
-These package managers are usually executed from a user with administrator rights and install
+These package managers are usually executed by a user with administrator rights and install
 the software system-width, in a way that all users of that computer can access it. Most well-known
 tools and libraries like Firefox, Gimp, GCC, CGAL, BOOST, and GTK are installed this way. The other category
 of package managers is the ones, which are strongly coupled to a single programming language
@@ -22045,7 +22045,7 @@ Nimble, can resolve and install dependencies for us automatically.
 A big problem can occur when packages are available in multiple, incompatible versions.
 A common practice is to assign version numbers to packages -- these version
 numbers are typically built of three parts, each separated with a period, like [.lit]#1.2.14#.
-Larger numbers indicate a never package version. A common scheme for
+Larger numbers indicate a newer package version. A common scheme for
 version numbers is called [.ndef]#semantic versioning#, where the leftmost number
 is the major version, the second number is the minor version, and the rightmost
 number is the patch level. The rightmost number is increased for each tiny change of the
@@ -22069,8 +22069,8 @@ with version [.lit]#1.0#.
 
 Unfortunately, even tiny bug fixes for packages or libraries, for which the major and minor version does not change,
 can already generate some trouble, as the fix may change the {behave} of the package,
-and our application program, that uses this package, may be sensible to this change.
-But these issues are easily fixable. More serious issues may arise, when we create larger
+and our application program, which uses this package, may be sensitive to this change.
+But these issues are easily fixable. More serious issues may arise when we create larger
 applications, that have to use multiple packages: A package [.lit]#A# may be available in two incompatible
 major versions [.lit]#1.7# and [.lit]#2.1#. And our software may depend on two external packages called
 [.lit]#B# and [.lit]#C#, where package [.lit]#B# requires package [.lit]#A# in version [.lit]#1.7#, but package [.lit]#C# requires package [.lit]#A#
@@ -22092,8 +22092,8 @@ these conflicts by attempting to select a set of package versions, that are comp
 
 Nimble can work with local packages that are stored on the user's file system, and with external packages
 provided by repository hosting services.
-Nimble uses as foundation for external packages [.ndef]#Distributed Version Control Systems# (DVCS)
-like Git or Mercurial, and the packages are hosted on online platforms like GitHub or GitLab.
+Nimble uses as the foundation for external packages [.ndef]#Distributed Version Control Systems# (DVCS)
+like Git or Mercurial and the packages are hosted on online platforms like GitHub or GitLab.
 
 While Nim uses currently no dedicated central package repository, it supports a centralized list with
 package names and some metadata. We can upload our own packages to hosting servers and register
@@ -22104,7 +22104,7 @@ can be downloaded and installed in a similar way, but we have to specify the ful
 like https://github.com/stefansalewski/gintro.git.
 
 Nimble can be used also to install packages, that are locally stored on our computer, this
-includes packages that we have manually downloaded from the Interned, or packages
+includes packages that we have manually downloaded from the Internet, or packages
 that are not saved on a remote location at all.
 
 Nimble packages are basically plain directories, which have to include a special text file,
@@ -22119,7 +22119,7 @@ The directory structure of a valid Nimble package has to follow
 a well-defined shape, which we will discuss later in detail.
 When we have a valid local package directory somewhere on our file system, then we can [.term]#cd# into
 it and call [.term]#nimble install# to install that package, without having to download all the files (again)
-from a remote server. This installation from an existing directory does not only save us the download
+from a remote server. This installation from an existing directory saves us not only the download
 but also allows us to fix the package before the installation. Maybe the package needs some
 tiny fixes to compile and work with the latest compiler version?
 
@@ -22227,10 +22227,10 @@ srcDir        = "src"
 requires "nim >= 1.7.1"
 ----
 
-We see immediately a tiny issue: Nimble accepts the package name with upper case letters, and use
-it for the module name. But by convention, module names should be all lower case for Nim. We can manually fix that,
+We see immediately a tiny issue: Nimble accepts the package name with upper case letters and uses
+it for the module name. But by convention, module names should be all lowercase for Nim. We can manually fix that,
 or use a package name with all lowercase letters.
-For most packages, names with only lower case letters should be OK, but sometimes
+For most packages, names with only lowercase letters should be OK, but sometimes
 we may like to have package names like RTtree. Note, that the package name itself
 and all the file and folder names of the package should not contain hyphens or the [.italic]#at# symbols ('-', '@') --
 the minus sign is generally not allowed for Nim symbols, and the [.lit]#@# has a special meaning for Nimble.
@@ -22266,7 +22266,7 @@ the instruction on their homepage at GitHub.com. You require your username, and 
 Since August 2021, GitHub requires using personal access tokens instead of the original passwords,
 when you want to modify your repositories. In the case that GitHub has not asked you to create an access token during
 the initial registration, you have to create one now, before you can continue. The GitHub page or
-a search engine should give you detailed instructions, of how you can create a personal access token.
+a search engine should give you detailed instructions, on how you can create a personal access token.
 The token is a long ASCII [.str]#string#, which you may store in some file, and paste in later when
 GitHub asks for passwords during uploading files. Later, you can save the token in the local git database
 somehow, which may save you from the copy/paste process.
@@ -22323,7 +22323,7 @@ and the required compiler version. The requirements field of the .nimble file
 lists all the dependencies, like [.term]#requires "nim >= 1.6.0", regex, bigints#.
 Nimble supports the command [.lit]#c#,
 which can be used from within a package directory, and
-which we can use to compile the package, and to verify the requirements:
+which we can use to compile the package, and verify the requirements:
 While the command [.term]#nim c myapp.nim# always searches for libraries at
 all known locations (current folder, Nimble packages, and standard library)
 the command [.term]#nimble c myapp.nim# firsts check the requirement field of
@@ -22350,7 +22350,7 @@ is necessary only once: It is not necessary to publish the package again when yo
 
 When you intend to create a public package, that is used by a lot of people and that is regularly
 updated, it may make some sense to create tagged versions of your package. That way people will
-be able to easily install an older version, in the case that they have issues with the most recent version,
+be able to easily install an older version, in case they have issues with the most recent version,
 and other packages, that may use your package, can require the version that they need.
 Currently, creating tagged versions with Nimble is a bit complicated, as you have to update the
 version in the .nimble file first: Actually, the correct procedure to add a (new) tag is:
@@ -22384,7 +22384,7 @@ will get these latest changes:
 
 ----
 nimble install fft # install latest tagged version, or
-nimble install fft@v0.2.0 # install existing older version, or
+nimble install fft@v0.2.0 # install an existing older version, or
 nimble install fft@#head # install latest changes
 ----
 
@@ -22397,20 +22397,20 @@ References:
 == Performance of multiplication vs. division
 
 In various places in the book, we said that for
-arithmetic operations, division is typically slower than
+arithmetic operations, a division is typically slower than
 multiplication. And we said that on modern hardware,
 floating-point operations are nearly as fast as integer operations.
 To prove this, we provide the following
 small test program. Compile it with option -d:danger for meaningful results.
 
 Float division can often be replaced by
-multiplication with the inverse, so instead of [.code]#x / 2# we can always
+multiplication with the inverse, so instead of [.code]#x / 2#, we can always
 write [.code]#x * 0.5#. An expression like [.code]#x / 2# looks cleaner, so we may wonder
 if it pays off to write [.code]#x * 0.5#, or if the compiler will rewrite
 the expression for us automatically. So our test program tests the performance of
 direct division and reciprocal multiplication, and also the performance of
 integer data types for a similar operation. As for integers, there are no
-reciprocal value, we have used a plain multiplication instead. We have tested
+reciprocal values, we have used a plain multiplication instead. We have tested
 for constant divisors 2, 3, and 97 (prime), and the division by a variable with unknown
 content. Obviously, the compiler has some freedom for optimizations when one operand
 is a constant. As a simple example, [.code]#x * 2# can always be evaluated as [.code]#x + x#, and
@@ -22521,7 +22521,7 @@ doTheTestWith(3)
 doTheTestWith(97) # prime
 
 ----
-.Division and Multiplication with compile time constants
+.Division and Multiplication with compile-time constants
 [cols=3*,options="header"]
 [%autowidth]
 |===
@@ -22661,7 +22661,7 @@ Of course, the actual performance differences of the tested operations are a bit
 the loop execution and index updates generate a constant offset.
 We see, that timings for [.code]#/ 2# vs. [.code]#* 0.5# differ, so the compiler does not do
 an automatic replacement. The reason why the compiler does not make automatic replacements is that
-such an replacements may have a tiny impact on the accuracy of the operation.
+such a replacements may have a tiny impact on the accuracy of the operation.
 With the Nim compiler option [.code]#--passC:-ffast-math# we can tell the compiler that we do not
 care for utmost accuracy, so the compiler can use reciprocal multiplication.
 To only allow reciprocal multiplication but not all the other math optimizations enabled by [.code]#-ffast-math#, we can use
@@ -22719,7 +22719,7 @@ To only allow reciprocal multiplication but not all the other math optimizations
 The above table is the result of operations with a variable, and
 we assume that the compiler does not manage to know the actual
 content of the variable. So the compiler has no freedom for
-optimizations, in  all cases a [.code]#/, div or {asterisk}# is executed.
+optimizations, in all cases a [.code]#/, div or {asterisk}# is executed.
 You may wonder, why the [.code]#{asterisk} (1/x)# reciprocal multiplication
 is fast here, while it should be very slow: First calculation of [.code]#(1 / x)#,
 and then the multiplication. Well, the compiler is smart and recognizes that
@@ -22868,7 +22868,7 @@ We have added a few more simple examples and exercises:
 * <<Integer to string conversion>>
 * <<No Game Programming?>>
 
-=== Februar 2022
+=== February 2022
 
 * <<Regular Expressions>>
 * <<Part V: External Packages>>
