@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-28
+//v0.1, 2023-APR-30
 :doctype: book
 :toc: left
 :icons: font
@@ -35,11 +35,11 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :pp: ++
 :behav: behavior
 :runtime: run-time
+:part: Part{nbsp}
 :cdefine: #define
 
 ////
 
-asciidoctor -a stylesheet=asciidoctor.css nimprogramming.adoc
 asciidoctor -a stylesheet=adoc.css nimprogramming.adoc
 
 We are using these custom roles for clean semantic markup:
@@ -91,7 +91,7 @@ In the year 1970, {wirth} invented the [.ndef]#Pascal# programming language to t
 his students the fundamentals of computer programming. While the initial core Pascal
 language was designed for teaching purposes only, it was soon expanded by commercial
 vendors and gained some popularity. Later, Wirth presented the language [.ndef]#Modula-2#
-with improved syntax and support for modules for larger projects, and the
+with improved syntax and the module concept for larger projects, and the
 [.ndef]#Oberon# language family with additional support for [.ndef]#Object-Oriented
 Programming#.
 
@@ -112,26 +112,26 @@ maybe for a technical job. And there may exist some children that are not satisf
 with the introduction to computer science taught at school. So we have decided to
 start this book with a short introduction to fundamental concepts -- most people may
 skip that part, but you should be really sure that you know these foundations.
-This book is divided into six parts. It is possible to read the parts independently in arbitrary
+This book is divided into six parts. It is possible to read the parts independently of each other in arbitrary
 order, but for Nim beginners, it is recommended to read them mostly in ascending order,
 maybe while looking already early at some interesting sections in the second half of the book.
-In part II, we explain the basics of computer programming step by step
+In {part}II, we explain the basics of computer programming step by step
 in a way that should enable even children to learn independently. In this part, we may repeat
-some of the stuff which we already mentioned in part I. We do that by intent, as some
-people may skip part I, and because it is generally not a bad idea to support the learning
+some of the stuff which we already mentioned in {part}I. We do that by intent, as some
+people may skip {part}I, and because it is generally not a bad idea to support the learning
 process of the reader with some repetitions.
-Part III will give
+{part}III will give
 you an overview of Nim's standard library, which contains many useful functions and data types,
 that we can use in our programs to solve common tasks like input and output operations, using the file
 system, or sorting of data.
-In part IV, we will apply what we have learned
+In {part}IV, we will apply what we have learned
 by solving some common programming tasks, like sorting, searching, or converting numbers from
 the internal computer format to displayable text.
-Part V will introduce some useful
+{part}V will introduce some useful
 external packages, which can be easily installed with one of Nim's package managers.
 Nim has already a few thousand external packages -- some of them may support or replace
 the standard library, and others offer special or advanced functionalities.
-Part VI of the book
+{part}VI of the book
 will finally introduce advanced concepts like [.ndef]#asynchronous
 operations#, [.ndef]#threading# and [.ndef]#parallel processing#, [.ndef]#macros#
 and [.ndef]#meta-programming#, and last but not least, Nim's concept implementation.
@@ -145,7 +145,7 @@ on their own, with no, or only minimal help from adults. The English language
 may still be a problem for many kids not born in a country with a good
 English language tradition, unfortunately. But luckily automatic
 translations are already supported for some languages, and perhaps we
-will be able to offer some translated editions later, possibly a Chinese
+will be able to offer some translated editions of the book later, possibly a Chinese
 and a German translation?
 
 In the last decades in the area of computer programming,
@@ -161,7 +161,7 @@ books may give you a good start, but for that, we already have a lot of textual 
 The concern with these kinds of books is, that they may help you with solving some common tasks, but they do not
 really support a deeper understanding. The idea of a "Crash course" and "Learning by doing" may not be that bad in general. But in computer
 science, starting with a larger example application can be an overwhelming process, as you have to learn
-a lot of stuff in parallel. It may work for you, but there is the danger that you forget all the details very quickly again.
+a lot stuff in parallel. It may work for you, but there is the danger that you forget all the details very quickly again.
 And these kinds of books are not very helpful when you have to look up something.
 The other concern with "Learning by doing" in computer science is, that learning materials
 may have only examples which you may not really be interested in: Of course, we can create
@@ -210,7 +210,7 @@ Also, we will not explain game programming, as game programming is
 a broad area, and there are already a lot of tutorials available. Maybe in later editions of the
 book, we will add some of these topics, e.g. game programming, as so many people like it.
 But we will always have to ensure that a possible printed book version will not get
-more than 500 pages, so we may then leave out some stuff in the printed version.
+more than 500 pages, so we may then leave out some other stuff in the printed version.
 
 Generally, when learning a new programming language, people start with some short
 tutorials before really learning the language following a book. This way is indeed a good start.
@@ -226,7 +226,7 @@ may be fully sufficient for you, and you may not need this book at all. Or you m
 recently published book of Mr. Rumpf, called "Mastering Nim: A complete guide to the programming language"
 available at Amazon.com.
 
-This book is based on the Nim reference implementation of the team around
+This book is based on the Nim reference implementation of //the team around
 Mr. A. Rumpf.
 While the first pages of this book were written already in the spring of 2020, it should be mostly up-to-date
 with the latest stable version 1.6 of the Nim 1.x series. Most explanations and examples should
@@ -281,13 +281,13 @@ dynamic, constrained Delaunay triangulation, are freely available as open-source
 projects at https://github.com/StefanSalewski.
 ****
 
-.ChatGPT
+.ChatGPT and GPT-4
 ****
 You may have already heard about ChatGPT, an AI (artificial intelligence) chatbot developed by OpenAI.
 ChatGPT was launched as a prototype on November 30, 2022, and quickly garnered attention for its detailed
 responses and articulate answers across many domains of knowledge.footnote:[https://en.wikipedia.org/wiki/ChatGPT]
 While this book was still written by a real human, parts of it could have been created
-by ChatGPT, perhaps with a more fluent sound and fewer spelling errors
+by GPT, perhaps with a more fluent sound and fewer spelling errors
 and grammar issues. So this book, or at least parts of it, could be considered
 obsolete now :-(. While ChatGPT has some serious issues still (better not ask it about
 the author of this book, the creator of the Nim language, or other Nim core devs) it
@@ -295,7 +295,7 @@ can provide very valuable information about some topics. We were really surprise
 already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
 languages. To use ChatGPT, you would have to register with your real name and phone number.
 We think that is OK to prevent misuse. The basic service is still free. A professional
-version with a monthly payment may appear soon, but the free basic version still works.
+version with a monthly payment (called GPT-4) is now also available, but the free basic version still works.
 When you log in to the OpenAI homepage (https://chat.openai.com/auth/login?next=/chat) you can
 ask the bot questions, ask it to create a simple Nim program for you, fix errors in your program, or
 add comments. The bot may even be able to convert source code from other languages to Nim.
@@ -350,6 +350,8 @@ with the value "123", and use parseInt to convert it to an integer, which we sto
 ----
 
 Since spring 2023, GPT-4 has been available for paying subscribers and provides more helpful information and less nonsense.
+
+We recently created a short Nim info page with GPT-4:  https://nimprogramming.com/
 
 = Part I: Introduction
 
@@ -930,6 +932,28 @@ the native operating system of the computer. Note that unlike the name may indic
 JavaScript is not closely related to the Java language. Nim can compile to a
 JavaScript backend, so it supports web development well.
 
+Finally, perhaps the most important criterion for choosing a language for a programming
+task is handling of memory and other resources. Allocating memory blocks, and releasing
+them again when they are not needed any more, can be some serious effort, and doing it wrong
+can lead to various bugs, like free-after-use or memory leaks. The original Pascal
+compiler had no function to release memory at all, which may have been a simple strategy to just avoid this
+difficult matter. C does all the memory- and resource-handling manually, which is one reason why C
+programming is difficult, and C programs often have serious bugs. The C++ languages
+handles most memory- and resource management by scope-based destructors, but still
+supports manually memory- and resource handling like C. Rust is similar to C++ in this regard,
+but has advanced features like the borrow-checker. Fully automatic memory management
+is a difficult topic, and can generate overhead or delay in program execution. This is the reason, why
+some modern languages like Zig, Odin, and Jai avoid automatic memory handling. Other languages
+like Python, Java, JavaScript, C#, Julia, Go, and D use some form of garbage collector and makes the life for
+the programmers much easier and avoid all the memory-management related bugs.
+
+Nim was initially designed for the use of a garbage-collector, with the option for
+manually memory handling for critical areas. But since version 1.0, Nim supports the ORC/ARC
+memory handling, which is some form of scope- and destructor-based automatic memory management.
+ARC can be used when our memory blocks have no cycles, which is often the case. And ORC
+can handle additional cyclic structures. ARC and ORC may not yet provide the optimum throughput, compared
+to the older REFC called Garbage-Collector, but avoid delayed deallocation, and delays in
+program execution, making it a good choice for critical code like device drivers and games.
 
 ////
 [cols=6*,options="header"]
@@ -944,7 +968,7 @@ JavaScript backend, so it supports web development well.
 |Syntax
 ////
 
-.Overview of popular programming languages:footnote:[Here we list only languages similar to Nim, and ignore languages with dynamic
+.Overview of popular programming languages.footnote:[Here we list only languages similar to Nim, and ignore languages with dynamic
 typing like Python, Ruby, JavaScript, and also Java with its rigid OOP design.]
 [cols=9*,options="header"]
 |===
@@ -2274,7 +2298,7 @@ const TwoPi = 2 * Pi
 const MinusPi = -Pi
 ----
 
-We mentioned in part I of the book already, that we usually put a space on both sides
+We mentioned in {part}I of the book already, that we usually put a space on both sides
 of an operator when we use it in an infix notation between two operands, but this is
 only a convention to improve the readability of the source code. We also mentioned
 that in Nim spaces can in some cases change the interpretation of expression: Nim
@@ -2355,7 +2379,7 @@ declaration and definition makes not that much sense, which is why we may use bo
 
 Statements, or instructions, are a core component of Nim programs: they tell the
 computer what it shall do. Often statements are procedure calls, like the call of the
-[.func]#echo()# or [.func]#inc()# procedure, which we have already seen in part I of
+[.func]#echo()# or [.func]#inc()# procedure, which we have already seen in {part}I of
 the book. We will learn what procedures exactly are in later sections. For now, we
 just regard procedures as entities that perform a well-defined task for us when we
 call (or invoke) them. We call them by just writing their name in our source code file, followed
@@ -2572,7 +2596,7 @@ notation would not work well for var/let/const distinction and for type declarat
 ****
 
 With what we have learned in this section, we can rewrite our initial Nim example from
-part I in this form:
+{part}I in this form:
 
 [source,nim]
 ----
@@ -2947,7 +2971,8 @@ current Nim implementation of A. Rumpf [.type]#float# is identical to [.type]#fl
 as an implementation detail. For other implementations, the [.type]#float# size may depend on
 OS and CPU.] [.type]#Floats# can store values up to a magnitude of approximately
 [.lit]#1E308# with a positive or negative sign and [.type]#floats# have a typical precision
-of 16 digits. That is, when you do a division of two arbitrary [.type]#floats# and print the
+of 16 digits.footnote:[Note that precision and accuracy are not the same, see https://en.wikipedia.org/wiki/Accuracy_and_precision.]
+That is, when you do a division of two arbitrary [.type]#floats# and print the
 result, you will get up to 16 valid digits.
 If you tried to print more than 16 significant digits, then the additional decimal places
 would be just some form of random garbage.
@@ -8087,7 +8112,7 @@ currying.
 
 === Anonymous Procedures
 
-In the section <<Module sequtils>> in part III of the book, we will introduce a few functions
+In the section <<Module sequtils>> in {part}III of the book, we will introduce a few functions
 which are often used in the functional programming style, like [.func]#map()# or [.func]#filter()#.
 These functions get procedures as arguments that determine how container data types
 are converted. We can pass a regular named procedure as a second argument to [.proc]#{procs}# like
@@ -8186,7 +8211,7 @@ Obviously, there must exist some condition that finally stops the recursion, wit
 [.proc]#{proc}# would call itself, again and again, for each call some data would have to be stored on the stack, at least the
 [.proc]#{proc}# return address, so finally the stack would overflow, and the program would crash.
 Generally, recursion should be used only for cases where it really helps to simplify the algorithm.
-In part V of the book, in the section about the various sorting algorithms, we will discover some useful
+In {part}V of the book, in the section about the various sorting algorithms, we will discover some useful
 applications for recursion. In most cases, a plain iterative algorithm is faster than a recursive one,
 because all the overhead with many [.proc]#{proc}# calls is avoided for plain iterative solutions. But sometimes
 recursive algorithms are easier to understand, or programming an iterative solution can be really complicated.
@@ -8786,7 +8811,7 @@ in the semantic pass of the compiler,
 integrate well with the rest of the language, and share none of C's preprocessor [.mac]#macros# flaws.
 
 In some way, Nim [.key]#templates# are a simplified application of Nim's powerful [.key]#macro# and meta-programming
-system, which we will discuss in detail in part VI of the book.
+system, which we will discuss in detail in {part}VI of the book.
 
 In C we could use the "{cdefine}" preprocessor directive to define two simple C [.mac]#macros#.
 
@@ -9058,7 +9083,7 @@ when we want to create a variable of a special data type. The "meta-types"
 between [.key]#typed# and [.key]#untyped# parameters is not as difficult and important
 for [.key]#templates# as it is for [.key]#macros#, in most cases, it is just clear if we need the [.key]#typed# or
 [.key]#untyped# parameter type for a [.key]#template#, or both work fine. We discuss
-the differences between [.key]#typed# and [.key]#untyped# in much more detail in part VI of
+the differences between [.key]#typed# and [.key]#untyped# in much more detail in {part}VI of
 the book, when we discuss [.key]#macros# and meta-programming.
 
 The following example demonstrates the use of the [.key]#untyped# and the [.key]#typedesc# parameter:
@@ -10135,7 +10160,7 @@ parameters to influence the {behav} of the program. We have done so
 already when we launched the Nim compiler or maybe a text editor from inside our terminal
 window. Using command line parameters is convenient when we work from inside a terminal
 and there are parameters that we know in advance. A more interactive way to collect
-parameters is reading in input while the program is already running, as we did in part II of the
+parameters is reading in input while the program is already running, as we did in {part}II of the
 book when processing the list of our friends. We will learn some more details about this interactive
 processing of input in the next section.
 
@@ -10233,7 +10258,7 @@ and for waiting on a single keypress event.
 
 For input and output operations in a terminal window, the [.mod]#io# module defines the three
 variables [.var]#stdin#, [.var]#stdout#, and [.var]#stderr# of the [.type]#File# data type.
-// We will discuss file-based input and output operations in more detail in part III of the book.
+// We will discuss file-based input and output operations in more detail in {part}III of the book.
 Many [.proc]#{procs}# of the [.mod]#io# module expect
 as the first parameter a variable of [.type]#File# type. We can explicitly open a named file to write data
 to external media like the SSD, or we can just use the [.var]#stdin# and [.var]#stdout# variables
@@ -10460,7 +10485,7 @@ set of functionality and can generate real human-readable text files by use of t
 
 Other available external packages for data serialization are the nim-serialization module set from (https://github.com/status-im/nim-serialization)
 and the very powerful but complicated NimYaml implementation (https://nimyaml.org/). We may describe these packages
-in part V of the book.
+in {part}V of the book.
 
 When we have to store and read back Nim data to nonvolatile storage media, we have some serious
 points to consider: First, we have to handle various data types like integers, [.type]#floats#, [.str]#strings#, [.obj]#objects# -- and
@@ -11220,12 +11245,12 @@ the Nim standard library. Then we will introduce some more specialized modules l
 [.mod]#strscans#, [.mod]#parsecsv#, [.mod]#parseutils# and [.mod]#strformat#.
 While parsing [.str]#strings# with regular expressions or by use of the parsing expression grammar
 is very flexible and powerful, it is not that easy, not the fastest solution, and not that often really needed.
-So we have moved the Regex section to the end of this part III of the book, and we introduce
+So we have moved the Regex section to the end of this {part}III of the book, and we introduce
 PEGs later in part V, where we discuss some useful external packages.
 
 // and finally we will give an introduction to the use of regular expressions
 //(regex) and to the use of the [.italic]#parsing expression grammar# (PEG). While we describe generally
-//only modules of Nim's standard library in this part III of the book, we will make an exception
+//only modules of Nim's standard library in this {part}III of the book, we will make an exception
 //for regex and PEG. The reason for this is, that regex and PEG use is closely related to
 //basic [.str]#string# processing, and that very powerful external packages exists, which are not
 //too difficult to use and so needs not too much introductory explanation.
@@ -11259,7 +11284,7 @@ an ordinary [.str]#string#, as long as the taint mode is not turned on. Function
 
 === Basic string operations
 
-We discussed Nim's [.str]#string# data type already in part II of the book. Remember that a [.type]#string#
+We discussed Nim's [.str]#string# data type already in {part}II of the book. Remember that a [.type]#string#
 in Nim is a variable-size container for ASCII characters. [.str]#Strings# can be plain ASCII [.type]#strings#, or
 the bytes of the [.str]#string# can be interpreted as Unicode glyphs. Nim has also a [.type]#cstring# data type,
 which was initially introduced to be compatible with the character [.type]#arrays# used in C libraries
@@ -12179,7 +12204,7 @@ not create an alias.
 While [.type]#arrays# have a fixed size defined already at compile-time, sequences are like [.str]#strings# of dynamic size and
 can grow when we append more elements. As [.type]#arrays# have a fixed size, they can be allocated on the stack, while
 for sequences due to their dynamic size, the actual data buffer has to be allocated on the heap. We explained some details
-about sequences already in part II of the book. One important aspect was, that sequences use a continuous data
+about sequences already in {part}II of the book. One important aspect was, that sequences use a continuous data
 buffer with a fixed capacity to store the actual elements. When that data buffer is fully occupied, and we try to
 add more elements, then a new larger buffer is allocated on the heap, and the contained elements have
 to be copied from the old to the new larger buffer before the old buffer can be deallocated.
@@ -12281,7 +12306,7 @@ for el in s0[1 .. 2]: # may create a copy of the seq
 
 Note that line three may create a temporary copy of the sequence,
 which may not be that nice for optimal performance. We discussed that
-topic already in part II of the book, Nim 2.0 may improve the situation further by
+topic already in {part}II of the book, Nim 2.0 may improve the situation further by
 introducing views, which create no copies. Besides the [.op]#s[a .. b]# slice operator which includes
 the elements at position [.var]#a# and [.var]#b#, there is [.op]#s[a ..< b]# which does not include position [.var]#b# and [.op]#s[a .. ^b]#
 where position [.var]#b# is taken from the end of the [.type]#seq# or [.type]#array#, e.g. [.lit]#^1# is the last position, [.lit]#^2# the second last.
@@ -13572,7 +13597,7 @@ https://forum.nim-lang.org/t/7320#46431.
 Other functions of the [.mod]#os# module that can sometimes be useful are [.func]#sleep()# to delay the program execution for
 a time period specified in milliseconds, and [.func]#parseCmdLine()#, which splits the command line argument [.type]#string#
 into several components. But in the next section, we will present the [.mod]#parseopt# module, which is an advanced command-line parser,
-and in part V of the book, we will present the external [.var]#cligen# package, which is even more powerful.
+and in {part}V of the book, we will present the external [.var]#cligen# package, which is even more powerful.
 
 //== Command-line parsing # asciidoc bug for changelog
 == Command line parsing
@@ -13815,7 +13840,7 @@ print()
 In this example, we left out the interpretation for the short options, which
 should be processed similarly to the long ones. You can see, that the actual use of the
 [.mod]#parseopt# module still requires a lot of code for validation and interpretation
-of options and arguments. In part V of the book, we will present the external
+of options and arguments. In {part}V of the book, we will present the external
 Cligen package, which further simplifies the command line parsing.
 
 == Regular Expressions
@@ -15302,17 +15327,17 @@ References:
 
 //== Concepts
 
-//= Part VI: Advanced examples
+//= {part}VI: Advanced examples
 
 //== something
 
 == Reading CSV files and other data
 
-We discuss the reading of CSV files (comma-separated values) and other data files in part VI of the book,
+We discuss the reading of CSV files (comma-separated values) and other data files in {part}VI of the book,
 labeled "Advanced Nim". Not because it is difficult, but because we compare the performance of
 various processing techniques, including RegEx and PEG matching, and finally show how we can
 distribute the parsing work across multiple CPU cores. The PEG (Parsing-Expression-Grammar) is
-introduced in Part V of the book, which discusses some interesting external packages. If you are interested in CSV reading and parsing, you may already
+introduced in {part}V of the book, which discusses some interesting external packages. If you are interested in CSV reading and parsing, you may already
 read section <<Parsing data files (in parallel)>> now; just skip the sections about PEGs and parallel parsing.
 
 == Some small exercises
@@ -15760,7 +15785,7 @@ Initially, we create a copy [.var]#v# with a positive sign of the passed integer
 argument was initially negative, then we add an additional minus sign to the temporary [.type]#array#,
 which is finally also copied to the result [.str]#string#. All this is not difficult, we have only to care that we get all
 the indices right. A tiny problem is, that when the passed integer argument has the value [.func]#low(int)#, then applying
-[.func]#abs()# would generate an overflow error, see section <<Binary Numbers>> in part II of the book if you forgot it. We fix that
+[.func]#abs()# would generate an overflow error, see section <<Binary Numbers>> in {part}II of the book if you forgot it. We fix that
 by returning just the correct [.str]#string# for that unique negative value for now.
 
 The above [.proc]#{proc}# looks not that bad, but maybe we can improve it, maybe we can avoid the
@@ -17303,7 +17328,7 @@ which is some form of an alternative to the use of [.ndef]#regular expressions# 
 
 Parsing whole text files or single [.str]#strings# is a common programming task, e.g. to process textual user input
 or to extract data from HTML or CSV files. Traditionally, this is often done by the use of [.ndef]#regular expressions# --
-in part III of the book we show, how it can be done by use of the [.mod]#regex# module.
+in {part}III of the book we show, how it can be done by use of the [.mod]#regex# module.
 
 [.ndef]#PEGs#, or [.ndef]#Parsing Expression Grammars#, are another formalism for recognizing patterns in texts by use of a set of rules.
 A PEG can be used as an alternative to [.ndef]#regular expressions# for parsing, pattern matching, and text processing.
@@ -17545,7 +17570,7 @@ We will end our introduction to the parsing expression grammar and the use of th
 To learn all the details about PEG like restrictions, performance, and memory consumption, you should
 consult the Wikipedia article or other dedicated literature. And for advanced uses of the [.mod]#npeg# module,
 including the use of back-references, and all the available syntax elements, you
-have to study its API documentation carefully. The section <<Parsing data files in parallel>> in part VI of
+have to study its API documentation carefully. The section <<Parsing data files in parallel>> in {part}VI of
 the book has one more example of the use of PEGs. There we compare various parsing strategies and present
 a program that parses a larger CSV file in parallel.
 
@@ -17556,7 +17581,7 @@ References:
 
 == Cligen Command Line Interface generator
 
-In part III of the book, we presented the module [.mod]#parseopt# of Nim's standard library, which can help
+In {part}III of the book, we presented the module [.mod]#parseopt# of Nim's standard library, which can help
 us to parse the command line [.str]#string# -- for programs launched from within a terminal
 window, by typing the command name followed by a set of options and arguments. There we also
 explained the difference between short and long option names and options with and without values.
@@ -17668,7 +17693,7 @@ References:
 
 * https://github.com/c-blake/cligen
 
-= Part VI: Advanced Nim
+= {part}VI: Advanced Nim
 
 In this part of the book, we will try to explain the more difficult parts of the Nim programming language:
 Macros and meta-programming, asynchronous code, threading, and parallel processing, and finally
@@ -19116,7 +19141,7 @@ threads with [.func]#spawn#, which can be processed in parallel, and then we wai
 with [.op]#^# on all the results.
 
 In the example above, we use a plain [.proc]#{proc}#, which sums up the first [.var]#i# natural
-numbers, very similar to our very first example program in part I of the book. We
+numbers, very similar to our very first example program in {part}I of the book. We
 use [.func]#spawn()# to launch two instances of that [.proc]#{proc}#, and then wait for the
 results with the [.op]#^# operator applied to the flowvar. If your PC has more than
 one physical CPU core, then both [.proc]#{proc}# instances should be running in parallel, taking
@@ -19664,7 +19689,7 @@ main()
 ----
 
 This solution should be again not surprising for you, as we have discussed the [.mod]#npeg# module
-in part V of the book in some detail. We used [.code]#+(1 - ',')# as a pattern to grep the data fields, that
+in {part}V of the book in some detail. We used [.code]#+(1 - ',')# as a pattern to grep the data fields, that
 is one or more repetitions of any character that is not a comma. The [.code]#[5]# indicates exactly five
 repetitions -- it may be a bit surprising, that we have to put this expression after the pattern
 expression, while operators like [.op]#{asterisk}#, [.op]#{plus}# and [.op]#?# have to be put in front for the [.mod]#npegs# module.
@@ -19725,7 +19750,7 @@ proc main =
 main()
 ----
 
-As we have discussed the [.mod]#parseutils# module in part V of the book in much detail,
+As we have discussed the [.mod]#parseutils# module in {part}V of the book in much detail,
 the above code should be easily understandable for you. For extracting the area
 and population data, we will use [.str]#string# parsing only for now and avoid
 the also available [.func]#parseFloat()# and [.func]#parseInt()# functions, as we want to compare
@@ -19733,7 +19758,7 @@ the performance of the four solutions before we continue.
 
 ==== Using strscans
 
-In Part III of the book, in the section about <<String Processing>>, we introduced the module
+In {part}III of the book, in the section about <<String Processing>>, we introduced the module
 [.mod]#strscans#, which can be convenient when we have to parse data with a strict, well-defined format.
 But that module has some restrictions, which can make its use difficult or impossible for
 some parsing tasks. The provided [.func]#scan()# [.key]#macro# supports, with the parameter types [.var]#$i#, [.var]#$f#, and [.var]#$w#,
@@ -22035,7 +22060,7 @@ Nim packages are collections of Nim modules and other related files, which have 
 serve a special purpose or to solve a special task, and have been made available to
 other Nim users. Nim's packages are usually distributed in the form of Nim source code modules,
 which are used as libraries. But packages can also contain complete application programs,
-and may even contain pre-compiled executables. In part IV of the book, we have already used the
+and may even contain pre-compiled executables. In {part}IV of the book, we have already used the
 library packages nim-regex and cligen. An example of a package containing a complete
 application is the [.ndef]#c2nim# tool, which can convert C source code to Nim code.
 You can find a longer introduction to the Nimble package manager in the Manning book, and a detailed description
