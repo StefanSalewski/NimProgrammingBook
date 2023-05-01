@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-APR-30
+//v0.1, 2023-MAI-01
 :doctype: book
 :toc: left
 :icons: font
@@ -398,10 +398,10 @@ basically, that data is nothing more than numbers, but it can be interpreted in 
 ways, such as pictures, sounds, and much more.
 
 The traditional hard disk drives (HDD), which store data electromechanical on rotating magnetic disks, as
-well as the more modern variants, the solid-state-devices (SDD), which store data using modern semiconductor
+well as the more modern variants, the solid-state-devices (SSD), which store data using modern semiconductor
 technologies, can store data persistently for longer time periods, even when no electric power
 supply is available. Both, SSDs and HDDs, can be optionally split into multiple partitions, e.g. one or multiple OS partitions
-for executable programs or pure data partitions for passive data like text files or pictures.
+for executable programs or pure data partitions for passive data, like text files or pictures.
 Before use, each partition is generally formatted and a file system (FS) is created. These two steps
 create an internal structure on the storage device, which allows us to store and retrieve individual data
 blocks like programs, text files, or pictures.
@@ -434,7 +434,7 @@ power and the amount of data that they can store and process, but they are conta
 in many consumer devices. They control your washing machine, refrigerator, television,
 radio, and much more. Some devices in your home may even contain multiple {uc}s and
 often the {uc}s can already communicate with each other by RF (Radio-Frequency), or
-access by WLAN the internet, which is sometimes called the [.ndef]#Internet of Things#
+access by WLAN the Internet, which is sometimes called the [.ndef]#Internet of Things#
 (IoT).
 
 Another class of large and very powerful digital computers is called
@@ -564,7 +564,7 @@ convert it into a digital approximation. For that task, special devices called
 convert the digital output data of computers to analogue signals, like when a
 computer plays music: The computer output in form of digital data is then converted
 by a device called [.ndef]#digital to analog converter# (DAC) into an analogue
-voltage, that generates an analogue current through a coil in the speakers of our
+voltage, that generates an analogue current flowing through a coil in the speakers of our
 soundbox, and that electric current in the coil generates a magnetic field which
 exercises mechanical forces and moves the membrane of the speaker, resulting in
 oscillating motions, which generates air pressure variations that our ear can detect
@@ -578,7 +578,7 @@ program, that is loaded and started when we switch the computer on and that work
 some kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
 often another tiny program called a [.ndef]#Boot Manager# is launched. Boot managers
 are used to select different {os}s to boot, maybe Linux or Windows, or to pass
-parameters as the hard disk boot partition number to the OS.] it can load other
+parameters as the hard disk boot partition number to the OS.] it can load and execute other
 programs, and it distributes resources like CPU cores or RAM between multiple running
 programs. It also controls user input by keyboard and mouse, displays output data on
 the screen -- as text or graphics, controls how data is loaded and stored to
@@ -590,8 +590,8 @@ processor or a game, and the hardware of the computer. The OS allows user progra
 work on a higher level of abstraction, so they do not need to know much about the
 low-level hardware details.
 
-An important ability of most modern {os}s is to run multiple system and user
-programs concurrent or parallel. Concurrent execution of programs means, that
+An important ability of most modern {os}s is to run multiple system- and user-programs
+concurrent or parallel. Concurrent execution of programs means, that
 the execution switches very fast between all the active programs. That way the user
 does not notice when programs do pause for a short time interval, and all of them
 seem to be running all the time, but not at full speed.
@@ -790,7 +790,7 @@ To run a program written in a high-level language with many abstractions, we nee
 sort of converter to transform that program into the basic instructions that the CPU can
 execute. For the conversion process, we have basically two options: We can convert the
 entire program into machine code, store it on disk, and then run it on the CPU. Or we
-can convert it into small portions, maybe line by line, and run each portion whenever
+can convert it in small portions, maybe line by line, and run each portion whenever
 we have converted it. Tools that convert the whole program first are called
 compilers. [.ndef]#Compilers# process the program that we have written, include other
 source code like needed library modules, check the code for obvious errors, and then
@@ -915,7 +915,8 @@ For example, Kotlin and Julia were executed on a virtual machine initially but n
 can compile the source code to native executables.
 
 An important class of programming languages is the group of so-called [.ndef]#{oop}# (OOP)
-languages, which use inheritance and dynamic dispatch and become popular in the
+languages, which use classes with attached methods, and typically reference semantics,
+inheritance and dynamic dispatch. OOP languages become very popular in the
 1990s. For some time, it was assumed that {oop} was the ultimate solution to manage
 and structure really large programs. Java was the most prominent example of the OOP
 languages. Java forces the programmer to use OOP design, and languages like {cpp},
@@ -933,22 +934,22 @@ JavaScript is not closely related to the Java language. Nim can compile to a
 JavaScript backend, so it supports web development well.
 
 Finally, perhaps the most important criterion for choosing a language for a programming
-task is handling of memory and other resources. Allocating memory blocks, and releasing
-them again when they are not needed any more, can be some serious effort, and doing it wrong
+task is the handling of memory and other resources. Allocating memory blocks, and releasing
+them again when they are not needed anymore, can be a serious effort, and doing it wrong
 can lead to various bugs, like free-after-use or memory leaks. The original Pascal
 compiler had no function to release memory at all, which may have been a simple strategy to just avoid this
 difficult matter. C does all the memory- and resource-handling manually, which is one reason why C
-programming is difficult, and C programs often have serious bugs. The C++ languages
+programming is difficult, and C programs often have serious bugs. The C++ language
 handles most memory- and resource management by scope-based destructors, but still
-supports manually memory- and resource handling like C. Rust is similar to C++ in this regard,
+supports manual memory- and resource handling like C. Rust is similar to C++ in this regard,
 but has advanced features like the borrow-checker. Fully automatic memory management
-is a difficult topic, and can generate overhead or delay in program execution. This is the reason, why
-some modern languages like Zig, Odin, and Jai avoid automatic memory handling. Other languages
-like Python, Java, JavaScript, C#, Julia, Go, and D use some form of garbage collector and makes the life for
-the programmers much easier and avoid all the memory-management related bugs.
+is a difficult topic and can generate overhead or delay in program execution. This is the reason, why
+some modern languages, like Zig, Odin, and Jai, avoid automatic memory handling. Other languages
+like Python, Java, JavaScript, C#, Julia, Go, and D use some form of garbage collector, which makes life for
+the programmers much easier and avoids all the memory-management-related bugs.
 
-Nim was initially designed for the use of a garbage-collector, with the option for
-manually memory handling for critical areas. But since version 1.0, Nim supports the ORC/ARC
+Nim was initially designed for use with a garbage collector, with the option for
+manual memory handling for critical areas. But since version 1.0, Nim supports the ORC/ARC
 memory handling, which is some form of scope- and destructor-based automatic memory management.
 ARC can be used when our memory blocks have no cycles, which is often the case. And ORC
 can handle additional cyclic structures. ARC and ORC may not yet provide the optimum throughput, compared
