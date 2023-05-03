@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-01
+//v0.1, 2023-MAI-03
 :doctype: book
 :toc: left
 :icons: font
@@ -83,7 +83,7 @@ When you are not able to explain it with words, you may have to add pictures.
 And when you even do not manage it with pictures, you can still make a video.
 ____
 
-[.normal]
+//[.normal]
 
 == About this book
 
@@ -360,7 +360,7 @@ ____
 Give me a video, I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
 ____
 
-[.normal]
+//[.normal]
 
 For using computers and writing computer programs, you initially do not have to know
 many details. It is basically like driving a car: Although a car is a powerful and
@@ -969,8 +969,7 @@ program execution, making it a good choice for critical code like device drivers
 |Syntax
 ////
 
-.Overview of popular programming languages.footnote:[Here we list only languages similar to Nim, and ignore languages with dynamic
-typing like Python, Ruby, JavaScript, and also Java with its rigid OOP design.]
+.Overview of popular programming languages. Here we list only languages similar to Nim, and ignore languages with dynamic typing like Python, Ruby, JavaScript, and also Java with its rigid OOP design.
 [cols=9*,options="header"]
 |===
 |Language
@@ -1131,14 +1130,14 @@ Nim combines successful concepts from mature languages like Python, Ada, and Mod
 with a few established features of the latest research. It offers high performance
 with type and memory safety while keeping the source code short and readable. The
 compiler itself and the generated executables support all major platforms including
-Windows, Linux, BSD, and Mac OS X. Cross-compiling to Android and other mobile and embedded devices and {uc}s is possible, and
+Windows, Linux, BSD, and {macos}. Cross-compiling to Android and other mobile and embedded devices and {uc}s is possible, and
 the JavaScript backend allows the creation of web apps and to run programs in web browsers.
 The custom package managers, Nimble or Nimph, makes
 use and redistribution of programs and libraries easy and secure. Nim supports
 various "backends" to generate the final code. The C, {cpp} and LLVM-based backends
 allow easy OS library calls without additional glue code, while the JavaScript
 backend generates high-quality code for web applications. The integrated
-"Read/Eval/Print Loop" (REPL), "Hot code reloading", an incremental compilation (expected for version 1.8), and
+"Read/Eval/Print Loop" (REPL), "Hot code reloading", and incremental compilation (expected for versions > 2.0), and
 support of various development environments including debugging and language server
 protocols make working with Nim productive and enjoyable.
 
@@ -1151,12 +1150,12 @@ and other programming styles. Nim supports common OOP features, including inheri
 polymorphism, and dynamic dispatch.
 
 * The generated executables are dependence free and small: a simple
-chess program with a plain GTK-based graphical user interface is only 100 KB in size,
+chess program with a plain GTK-based graphical user interface is only 100 KB in size,footnote:[https://github.com/StefanSalewski/salewski-chess]
 and the size of the Nim compiler executable itself is about 6.5 MB. It is possible to
 shrink the executable size of "Hello World" programs to about 10 KB for use on tiny
 {uc}s.
 
-* Nim is fast. Generally, performance is very close to other
+* Nim is fast. Typically, performance is very close to other
 high-performance languages such as C or {cpp}. There are some exceptions still: other
 languages may have libraries or applications that have been tuned for performance for
 many years, while similar Nim applications are so far less tuned for performance, or
@@ -1200,7 +1199,7 @@ of use cases. External packages can be installed easily with Nim's package manag
 
 * Asynchronous operation, threading, and parallel processing are supported.
 
-* Nim supports all popular operating systems including Linux, Windows, macOS, and Android.
+* Nim supports all popular operating systems including Linux, Windows, {macos}, and Android.
 
 * Usage of external libraries written in C is easy and occurs directly
 without any glue code, and Nim can even work together with code written in other
@@ -1227,7 +1226,7 @@ various programming styles. While we may regard Nim in the
 first line as an imperative, procedural programming language, it supports the popular functional
 and object-orientated programming styles well.
 
-In classical OOP programming languages, we have the concept of [.ndef]#classes# with [.ndef]#attributes# and methods that are very closely bound to
+In classical OOP languages, we have the concept of [.ndef]#classes# with [.ndef]#attributes# and methods that are very closely bound to
 the classes, as in Python:
 
 [source, python]
@@ -1240,15 +1239,15 @@ user = User()
 user.say()
 ----
 
-In this Python snippet, we declare a class User, with a custom method named [.func]#say()# bound
-to this class. Then we create an instance variable of this class and call
-its say() method.
+In this Python snippet, we declare a class [.type]#User#, with a custom method named [.func]#say()# bound
+to this class. Then we create an instance variable [.var]#user# of this class and call
+its [.func]#say()# method.
 
 This tight binding of methods to classes is not very flexible, e.g. extending the set
 of methods of a class can be difficult or impossible. Another problem with such a class concept
 is, that it is not always clear to which class a method belongs when more than just one single
 class is involved: Imagine that we need a method that appends a single character to a text [.str]#string#.
-Is that method a member of the character class, or a member of the text [.str]#string# class?
+Is that method a member of the [.type]#character# class, or a member of the text [.str]#string# class?
 
 Nim avoids such a strict class concept, while its generalized [.ndef]#method call syntax# allows us
 to use a class-like syntax for all of our data types: e.g. to get the length of a [.str]#string# variable, we can
@@ -1284,9 +1283,9 @@ that in functional programming style in this way:
 
 [source, nim]
 ----
-from strutils import join
-from sequtils import mapIt
-from strformat import fmt
+from std/strutils import join
+from std/sequtils import mapIt
+from std/strformat import fmt
 const DefaultWorldRange = [0.0, 0, 800, 600]
 let str = DefaultWorldRange.mapIt(fmt("{it:g}")).join(", ")
 echo str # "0, 0, 800, 600"
@@ -1296,11 +1295,14 @@ In the imperative, procedural style, we would write it like
 
 [source, nim]
 ----
+from std/strformat import fmt
+const DefaultWorldRange = [0.0, 0, 800, 600]
 var str: string
 for i, x in pairs(DefaultWorldRange):
   str.add(fmt("{x:g}"))
   if i < DefaultWorldRange.high:
     str.add(", ")
+echo str # "0, 0, 800, 600"
 ----
 
 === Nim is Efficient
@@ -1313,10 +1315,11 @@ compiler to catch most errors already in the compile phase, like the undefined
 addition of a number and a letter, and to report the errors in the terminal window or
 directly in the editor or IDE. When no errors are found or all errors have been
 fixed, then the compiler generates highly optimized dependency-free executables. And
-this compilation process is generally really fast, for example, the compiler compiles
-itself in maybe 10 to 30 seconds on a typical modern PC.footnote:[Indeed, the Nim
-compiler compiles itself three times in this time period to ensure a stable result.
-Incremental compilation may further reduce recompile times soon.]
+this compilation process is typically really fast, for example, the compiler compiles
+itself in less than 10 seconds on a modern PC.
+//footnote:[Indeed, the Nim
+//compiler compiles itself three times in this time period to ensure a stable result.
+//Incremental compilation may further reduce recompile times soon.]
 
 Modern concepts like zero-overhead [.key]#iterators#, compile-time evaluation of user-defined
 functions, and cross-module inlining in combination with the preference for
@@ -1325,7 +1328,7 @@ Multi-threading, asynchronous input/output operations (async IO), parallel proce
 and SIMD instructions including GPU execution are supported. Various memory
 management strategies exist: selectable and tuneable high-performance
 [.ndef]#Garbage Collectors# (GC), including a new fully deterministic destructor-based
-GC, are supported for automatic memory management. These can be disabled for
+memory management, are supported for automatic memory management. These can be disabled for
 manual memory management. This makes Nim a good choice for application development
 and close-to-the-hardware system programming at the same time. The unrestricted
 hardware access, small executables, and optional GC will make Nim a perfect solution
@@ -1423,6 +1426,12 @@ e.g. Android is strongly coupled to Java or its new variant Kotlin.
 But using Nim on Android and IOS devices is possible, Games and Apps have been already created for these devices, see
 https://github.com/treeform/glfm as an example.
 
+Currently, Nim has not the one and only, perfect GUI library.
+Instead, there exist a lot of attempts: Various GTK and Qt bindings, many web-based GUIs,
+a few simple, pure Nim GUIs, and the Fidget project. The situation is currently not really satisfying, but the same is the
+case for most other modern languages like Go, Julia, Rust, and even Python. The exceptions are
+Dart with Flutter, perhaps {cpp} with Qt and the Java/Kotlin/Android bundle, and of course the commercial languages Swift and C{hashtag}.
+
 Some people just prefer languages with full OOP support and true classes. While Nim does support
 OPP design with heap-allocated reference objects, inheritance, and methods with dynamic runtime dispatch,
 it does not strongly enforce its use. People educated in the 1990s of the last century may still suffer
@@ -1444,12 +1453,12 @@ Java, and just feel more professional when they have their curly brackets.
 Scala introduced significant white space in version 3 of the language, and its
 designer Martin Odersky said that this improves productivity overall by 10%.footnote:[https://en.wikipedia.org/wiki/Off-side_rule#Productivity]
 
-Nim programmers usually import symbols from other modules unqualified ("import strutils" instead of "from strutils import ...").
-Fully qualified symbol import is possible (from strutils import nil), but as Nim uses no classes, that
+Nim programmers usually import symbols from other modules unqualified ("import std/strutils" instead of "from std/strutils import ...").
+Fully qualified symbol import is possible (from std/strutils import nil), but as Nim uses no classes, that
 may make it hard to use imported operators, and Nim's method call syntax may then not work properly (strutils.toUpperAscii(myStr) vs myStr.toUpperAscii).
 People coming from dynamically typed languages like Python are sometimes scared about namespace pollution and symbol conflicts
 due to unqualified imports. The practice has proven that unqualified import is no actual problem in Nim, as
-proc overload resolution typically works reliably when the proc parameter types are not all identical.
+[.proc]#proc# overload resolution typically works reliably when the [.proc]#proc# parameter types are not all identical.
 Only for constants or enumeration data types name conflicts may occur in rare situations. These are reported by the compiler
 and can easily be resolved by the use of module name prefixes when necessary. But still, some people worry
 and argue that fully qualified names make it easier to see the origin of symbols.footnote:[Of course,
@@ -1570,7 +1579,7 @@ exist. And someone who has managed to learn {cpp} really well over a period of
 many years may decide to continue with {cpp} also. Currently, another possible reason for not using Nim
 can be missing libraries. When you require some important libraries for your project, and
 these are currently not available for Nim, this can be of course a big problem in the case that you do
-have not the skills or the time to write them from scratch or at least create high-level bindings
+not have the skills or the time to write them from scratch or at least create high-level bindings
 to a C library.
 
 == Our first Nim Program
@@ -1580,7 +1589,12 @@ should have delayed this section until we have installed the Nim compiler on our
 computer, but we can already run and test the program by just copying it into one of
 the available Nim online playgrounds like
 
-https://play.nim-lang.org/
+* https://play.nim-lang.org/
+
+Two more, inofficial sites that can run Nim code online are
+
+* https://replit.com/languages/nim
+* https://wandbox.org/
 
 In the section <<What is an Algorithm?>> we described an algorithm to sum up the
 first 100 natural numbers. Converting that algorithm into a Nim program is
@@ -1619,7 +1633,7 @@ Nim source code files are processed by the Nim compiler from the top to the bott
 for the generated executable the program execution also starts in principle at the top.
 But for the program execution there exist some exceptions, e.g. program code enclosed in functions
 is not immediately executed where it appears in the program source code file, but later
-when the function is called. And the program execution is not a linear process -- we can use
+when the function is called (invoked). And the program execution is not a linear process -- we can use
 conditional expressions to skip parts of the program, or various loop constructs to repeat
 the execution of some program segments. Actually, the program execution in Nim is more
 similar to languages like Python or Ruby than to the C language: A C program always
@@ -1640,19 +1654,25 @@ the variable name from the data type.
 The
 first line of our program declares a new variable named [.var]#sum# of data type [.type]#int#. [.type]#Int# is
 short for integer and indicates, that our variable should be able to store negative or
-positive integer numbers. The [.key]#var# at the start of the line is a
+positive integer numbers.
+(Integer numbers are whole numbers without a fraction, like [.code]#-1, 0, 1234#. Another important
+numeric data type are floating-point numbers like [.code]#3.14159#, which we will use later as well.)
+The [.key]#var# at the start of the line is a
 [.ndef]#keyword#. Keywords are reserved symbols that have a special meaning for the
-compiler. Var indicates that we want to introduce a new variable. The compiler will
+compiler. [.key]#Var# indicates that we want to introduce a new variable. The compiler will
 recognize that and will reserve a memory location in the RAM of the computer which
 can store the actual value of the variable.
 
 The second line is nearly identical to the first line: we declare another variable,
-again with [.type]#int# type and plain name [.var]#i#. Variable names like i, j, and k are typically used when
+again with [.type]#int# type and plain name [.var]#i#. Variable names like [.var]#i#, [.var]#j#, and [.var]#k# are typically used when
 we have no idea of a meaningful name and when we intend to use that variable as a
-counter in a loop.
+counter in a loop. Note that in Nim, we can use arbitrary names for variables (with some restrictions)
+and that the actual name of a variable is not coupled to its data type or {behav}.
+In early Fortran that was handled differently, as Fortran used the convention that variables
+named [.var]#i#, [.var]#j#, and [.var]#k# had automatically an integer type by default.
 
 In lines 3 and 4 of our program, we initialize the variables, that is, we give
-them a well-defined initial value. To do that, we use the [.op]#=# operator to
+them a well-defined initial start value. To do that, we use the [.op]#=# operator to
 assign a value to the variable. Operators are special symbols like [.op]#{plus}#, [.op]#-#,
 [.op]#{asterisk}#, or [.op]#/# to indicate our desire to do an addition, a subtraction, a
 multiplication, or a division. Note that the [.op]#=# operator is used in Nim like
@@ -1663,7 +1683,7 @@ used the compound [.op]#:=# operator for assignment, which is closer to
 mathematics use, but is more difficult to type on a keyboard and looks not too nice
 for most people. An expression like [.code]#x = y# assigns the content of variable y
 to x, that is, x gets the value of y, the former value of x is overwritten and lost,
-and the content of y remains unchanged. After that assignment, x and y contain the
+and the content of y remains unchanged. After such an assignment, x and y contain the
 same value. In the above example, we do not assign the content of a variable to the
 destination, but instead, use a literal numeric constant with the value [.lit]#0#. When the
 computer has executed lines 3 and 4 the variables sum and i each contain the start
@@ -1679,7 +1699,7 @@ in the same way as we would do it in ordinary text files.
 Line 5 of our code example is much more interesting: it contains a [.key]#while# condition. The line
 starts with the term [.key]#while#, which is again a reserved keyword, followed by
 the logical expression [.code]#i < 100# and a colon. An expression in Nim is
-something that has a result, as a math expression as [.code]#2 {plus} 2# which has the numeric
+something that has a result, as the math expression [.code]#2 {plus} 2# which has the numeric
 result [.lit]#4# of type integer. A logical expression has no numerical result, but a logical (boolean)
 one, which can be [.lit]#true# or [.lit]#false#. The logical expression [.code]#i <
 100# depends on the actual content of variable [.var]#i#. The two lines following
@@ -1687,7 +1707,7 @@ the line with the [.key]#while# keyword are each indented by two spaces, meaning
 that these lines start with two spaces more than the line before. This form of
 indentation is used in Nim (and Python) to indicate blocks. Blocks are grouped statements. The
 complete while loop consists of the line containing the [.key]#while# keyword followed by a
-block of statements. The block after the [.key]#while# condition is executed as long as the
+block of statements. The statement block after the [.key]#while# condition is executed as long as the
 [.key]#while# condition evaluates to the logical value [.lit]#true#. For the first loop iteration [.var]#i# has the
 initial value [.lit]#0#, the condition [.code]#i < 100# evaluates to the boolean value [.lit]#true#,
 and the block after the [.key]#while# condition is executed for the first time. In
@@ -1727,7 +1747,7 @@ Note that you have to do the indentation really with spaces, as Nim does not acc
 its source files.
 Also, note that the Nim compiler does distinguish between words starting with a lower or an upper case letter.
 Nim keywords are written always in lowercase, and when we define a variable as [.var]#sum# then we
-should always refer to it in exactly this notion.footnote:[Actually, Nim relaxes this strict notation a bit, which is called
+should always refer to it in exactly this notation.footnote:[Actually, Nim relaxes this strict notation a bit, which is called
 "style insensitivity" and is explained later in the book in more detail.]
 Also note that spaces in the Nim source code are important and can change the semantics: While
 in C spaces are mostly only used to separate distinct symbols, in Nim spaces have some more functionality.
@@ -1771,7 +1791,7 @@ by 10^1, and so on. A literal decimal number like 7382 has then the numerical
 value [.term]#2 {asterisk} 10^0 {plus} 8 {asterisk} 10^1 {plus} 3 {asterisk} 10^2 {plus} 7 {asterisk} 10^3#. We have used here the
 exponential operator [.term]#^# -- with [.term]#10^3 = 10 {asterisk} 10 {asterisk} 10#. Current
 computers use binary representation internally for numbers. Generally, we do not care
-much about that fact, but it is good to know some facts about binary numbers. Binary
+much about that fact, but it is good to know some properties of binary numbers. Binary
 numbers work nearly identically to decimal numbers. The distinction is that we have
 only two available digits, which we write as [.term]#0# and [.term]#1#. A number in
 binary representation is a sequence of these two digits. Like in the decimal system,
@@ -1812,7 +1832,7 @@ entity that the computer can process in one single instruction. When we have a C
 with an 8-byte word size, this means that the computer can, for example, add two variables,
 each 8-byte in size, in one single instruction.
 
-Let us investigate some basic properties of binary numbers. Let us assume that we
+Let us investigate some basic properties of binary numbers. Assume that we
 have an 8-bit word (a byte). An 8-bit word can have 2^8 different states, as each bit
 can be set or unset independently of the other bits. That corresponds to the numbers 0
 up to 255 -- we assume that we work with positive numbers only for now, we will come
@@ -1898,8 +1918,8 @@ also negative, we have for 8-bit words the range from -128 to 127 available, whi
 -2^7 up to 2^7 - 1. For a signed 16-bit word, the range would be -2^15 up to 2^15 - 1.
 
 While we can work with 8 or 16-bit words, for PC programming the CPU usually supports
-32 or 64-bit words, so we have a much larger number range available. But when we
-program {uc}s or embedded devices we may indeed have only 8 or 16-bit words
+32- or 64-bit words, so we have a much larger number range available. But when we
+program {uc}s or embedded devices we may indeed have only 8- or 16-bit words
 available, or we may use such small words size intentionally on a PC to fit all of
 our data into a smaller memory area.
 
@@ -1929,12 +1949,13 @@ are not enough bits available to store the result -- we may get a run-time error
 that case.footnote:[For the current Nim implementation, signed overflow generates an
 overflow exception, while unsigned types just wrap around. For C it is similar -- for
 C99 it is defined that unsigned [.type]#int# types wrap around, while the {behav} for signed
-ints is undefined and depends on the actual implementation of the C compiler.] In a
+[.type]#ints# is undefined and depends on the actual implementation of the C compiler.] In a
 statically-typed language, each variable has a well-defined type, and the compiler can
 ensure at compile time that all operations on that variable are valid. If an
 operation is not valid, then the compiler will give an error message. Then when these
 operations are executed at run-time they are always valid operations, and the actual
-content, like the actual numeric value, does not matter.
+content, like the actual numeric value, does not matter (with the exception of overflow
+and perhaps a few other invalid math operations like division by zero).
 
 == Hexadecimal Numbers
 
@@ -2031,7 +2052,7 @@ characters like a newline character are sometimes specified in hexadecimal form 
 We will not describe in too much detail how you can install the Nim compiler, because
 that strongly depends on your operating system, and because the installation instructions
 may change in the future. We assume that you have a computer with an installed
-operating system and internet access, and you are able to do at least very basic
+operating system and Internet access, and you are able to do at least very basic
 operations with your computer, such as switching it on, logging in, and opening a web
 browser or a terminal window. If that is not the case, then you really should ask
 someone for help with this basic step, and maybe for some more help with other basic
@@ -2105,7 +2126,7 @@ editor without a GUI is [.ndef]#Vim# or [.ndef]#NeoVim#. That is a very powerful
 difficult to learn, and it is a bit strange as you have a [.ndef]#command mode# and an ordinary
 [.ndef]#text input mode# available. For NeoVim there is very good Nim support available.
 
-If you do not want to work from a terminal, or if you are using Windows or macOS,
+If you do not want to work from a terminal, or if you are using Windows or {macos},
 then you should have a graphical user interface that enables you also to create a
 directory and launch an editor.
 
@@ -2164,7 +2185,7 @@ your computer from erroneously launching a program in the current directory whil
 you intended to launch a system command. Imagine you downloaded a zip file from the
 internet, extract it, [.term]#cd# into the extracted directory, and type [.term]#ls# to see the
 directory content. Imagine now that the directory contains an executable named [.italic]#ls#,
-which is executed instead of system [.term]#ls#. That foreign ls command may damage
+which is executed instead of system [.term]#ls#. That foreign [.italic]#ls# command may damage
 your system. So to execute non-system commands, you generally have to use the prefix
 [.term]#./# where the period refers to the current directory. Of course, you can
 install your own programs in a way that you don't need such a prefix anymore -- just
@@ -2209,14 +2230,15 @@ option. For games, benchmarks, or other uncritical stuff, you may try [.term]#-d
 
 There exist many more compiler options, you can find them explained in the Nim
 manual, or you may use the command [.term]#nim --help# and [.term]#nim --fullhelp# to get them
-displayed. One important new option is [.term]#--gc:arc# to enable the new deterministic
-memory management. You may combine [.term]#--gc:arc# with [.term]#-d:useMalloc# to disable Nim's own
+displayed. One important new option is [.term]#--mm:arc# to enable the new deterministic
+memory management. You may combine [.term]#--mm:arc# with [.term]#-d:useMalloc# to disable Nim's own
 memory allocator, this reduces the executable size and enables the use of [.ndef]#Valgrind# to
-detect memory leaks. Similar to [.term]#--gc:arc# is the option [.term]#--gc:orc#, which can deal with
+detect memory leaks. Similar to [.term]#--mm:arc# is the option [.term]#--mm:orc#, which can deal with
 cyclic data structures. Finally, a very powerful option is [.term]#--passC:-flto#. This option
 is for the C compiler backend and enables [.ndef]#link time optimization# (LTO). LTO enables
 inlining for all procedure calls and can significantly reduce the final program size.
-For a recent Nim compiler version, instead of [.term]#--passC:-flto# also [.term]#-d:lto# can be used.
+For a recent Nim compiler version, instead of [.term]#--passC:-flto# also [.term]#-d:lto# can be used,
+and for Nim v2.0 [.term]#--mm:orc# is already the default memory management strategy.
 We should mention that you can also try the {cpp} compiler backend with the [.term]#cpp# sub-command
 instead of the plain [.term]#c# command, and that you may compile with the [.ndef]#CLang# backend instead of the
 default GCC backend with the [.term]#--cc:clang# option. You can additionally specify the option
@@ -2237,8 +2259,13 @@ compiler invocation. You may find more explanations for all the compiler options
 the Nim manual, or in later sections of this book, this includes the options for the
 JavaScript backend.
 
-
 = Part II: The Basics
+
+//[.normal]
+
+Introducing text without line break or other strange markup this is really only ordinary text but still the font is something like condensed what we do not want and the line space is tiny which we also do not want and a few more words to make this text multiline in html.
+
+== Dummy title
 
 In this part of the book, we will introduce the most essential constructs of the Nim programming
 language, like statements and expressions, conditional and repeated code execution,
@@ -14614,9 +14641,9 @@ For each new partition of our data, we have to put only the two bounds [.var]#a#
 is not as much as a recursive [.proc]#{proc}# would put on the real computer stack. The modifications to our code
 from above are tiny.footnote:[Unfortunately, we have used the term STACK in two different meanings in this section:
 For our recursive sorting [.proc]#{proc}#, we are talking about the CPU stack, which is used to pass [.proc]#{proc}# parameters and
-store [.proc]#{proc}# local data -- and can overflow. In our nonrecursive [.proc]#{proc}#, we use a variable, which is also called [.var]#stack#,
-but that is only an ordinary buffer variable. The term stack is common for such buffers, where we can [.func]#push()# and
-[.func]#pop()# values.]
+store [.proc]#{proc}# local data -- and can overflow. In our nonrecursive [.proc]#{proc}#, we use a variable, which is also
+called [.var]#stack#, but that is only an ordinary buffer variable. The term stack is common for such buffers, where
+we can [.func]#push()# and [.func]#pop()# values.]
 
 [source, nim]
 ----
@@ -17694,7 +17721,7 @@ References:
 
 * https://github.com/c-blake/cligen
 
-= {part}VI: Advanced Nim
+= Part VI: Advanced Nim
 
 In this part of the book, we will try to explain the more difficult parts of the Nim programming language:
 Macros and meta-programming, asynchronous code, threading, and parallel processing, and finally
