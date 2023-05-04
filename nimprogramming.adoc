@@ -2,6 +2,8 @@
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 //v0.1, 2023-MAI-03
 :doctype: book
+:part-signifier: Part
+:partnums:
 :toc: left
 :icons: font
 //:experimental:
@@ -14,7 +16,7 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 //:rouge-style: magritte
 :rouge-style: molokai
 //:stylesheet: nimbook.css
-
+//
 // all terms in lower case letters!
 :wirth: Prof. Niklaus Wirth
 :macos: macOS
@@ -82,8 +84,6 @@ ____
 When you are not able to explain it with words, you may have to add pictures.
 And when you even do not manage it with pictures, you can still make a video.
 ____
-
-//[.normal]
 
 == About this book
 
@@ -353,14 +353,12 @@ Since spring 2023, GPT-4 has been available for paying subscribers and provides 
 
 We recently created a short Nim info page with GPT-4:  https://nimprogramming.com/
 
-= Part I: Introduction
+= Introduction
 
 [quote]
 ____
 Give me a video, I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
 ____
-
-//[.normal]
 
 For using computers and writing computer programs, you initially do not have to know
 many details. It is basically like driving a car: Although a car is a powerful and
@@ -2259,19 +2257,16 @@ compiler invocation. You may find more explanations for all the compiler options
 the Nim manual, or in later sections of this book, this includes the options for the
 JavaScript backend.
 
-= Part II: The Basics
+= The Basics
 
-//[.normal]
-
-Introducing text without line break or other strange markup this is really only ordinary text but still the font is something like condensed what we do not want and the line space is tiny which we also do not want and a few more words to make this text multiline in html.
-
-== Dummy title
-
+[partintro]
+--
 In this part of the book, we will introduce the most essential constructs of the Nim programming
 language, like statements and expressions, conditional and repeated code execution,
-functions and procedures, [.key]#iterators#, [.key]#templates#, exceptions, and we will discuss
-various basic data types including the container types [.type]#array#, sequence, and
-[.str]#string#.
+functions and procedures, [.plain]#iterators#, [.plain]#templates#, exceptions, and we will discuss
+various basic data types including the container types [.plain]#array#, sequence, and
+[.plain]#string#.
+--
 
 == Declarations
 
@@ -2286,15 +2281,15 @@ A constant declaration in its simplest form maps a symbolic name to a value, lik
 
 [source, nim]
 ----
-const Pi = 3.1415
+const Pi = 3.14159
 ----
 
-We use the reserved word [.key]#const# to tell the compiler that we want to declare a
-constant which we have named Pi, and we assign it the numeric decimal value [.lit]#3.1415#.
-Nim has a small set of reserved words like [.key]#var#, [.key]#const#, [.key]#proc#, [.key]#while#, and
+We use the reserved keyword [.key]#const# to tell the compiler that we want to declare a
+constant which we have named Pi, and we assign it the numeric decimal value [.lit]#3.14159#.
+Nim has a small set of reserved keywords like [.key]#var#, [.key]#const#, [.key]#proc#, [.key]#while#, and
 others, to tell the compiler that we want to declare a variable, a constant, a
 procedure, or that we want to use a [.key]#while# loop for some repeated code execution.
-Reserved words in Nim are special symbols that have a special meaning for the compiler, and we should
+Reserved keywords in Nim are special symbols that have a special meaning for the compiler, and we should
 avoid using these symbols as names for other entities like variables, constants, or functions, as that
 would confuse the compiler.
 The
@@ -2312,7 +2307,7 @@ like [.op]#{plus}# for the addition of two numbers, or [.op]#=# for the assignme
 value to a symbol.
 Most operators are used as infix operators in between two arguments, as
 in the expression [.code]#2 {asterisk} Pi# to denote the multiplication of the constant [.var]#Pi# with
-the literal number [.lit]#2#, resulting in the floating-point value [.lit]#6.29#.
+the literal number [.lit]#2#, resulting in the floating-point value [.lit]#6.28318#.
 But operators can also be used as unitary operators, like in
 [.code]#-Pi# to invert the sign of a numeric value.
 When we declare named constants, we must always assign a value immediately.
@@ -2325,6 +2320,26 @@ const Pi = 3.14
 const TwoPi = 2 * Pi
 const MinusPi = -Pi
 ----
+
+For constant declarations, it is also possible to specify the exact data type of the constant
+value, like in
+
+[source, nim]
+----
+const Pi: float = 3.14
+const Two: float = 2
+----
+
+Typically it is not necessary to specify the type, as Nim uses type inference: From the literal
+value [.lit]#3.14# it is obvious, that it is a decimal floating point number. For the second line,
+type inference would indicate that constant [.var]#Two# is of integer type, as no fractional
+part is given. In this case, we can specify the desired data type after the name of the
+constant, separated by a colon. But we could just write [.code]#const Two = 2.0# instead.
+In numeric expressions with constants, the Nim compiler does some smart, automatic type promotion for us,
+so for the [.code]#const TwoPi = 2 * Pi# from above, Nim assumes that we actually desired
+[.code]#const TwoPi = 2.0 * Pi#. For numeric expressions with variables, this type-promotion is more
+strict, to avoid unnecessary type conversions at runtime, and to ensure that the final program
+really used the intended data types.
 
 We mentioned in {part}I of the book already, that we usually put a space on both sides
 of an operator when we use it in an infix notation between two operands, but this is
@@ -2344,9 +2359,11 @@ For numeric constants like our [.var]#Pi# value, the compiler will do a substitu
 source code when the program is compiled, so where we write the symbol [.var]#Pi#
 the actual numeric value is used.
 
-For constant declarations, it must be possible to determine its value at compile time.
-Expressions assigned to constants can contain simple operations like basic math, but
-some function calls may not be allowed.
+Expressions, that we assign to constants, are already evaluated at compile
+time. So complicated expressions have no negative impact on the performance of the program.
+The expressions can contain simple operations like basic math,
+and most Nim functions can be used as well, but functions like sin() from external C libraries
+may currently not be available.
 
 Variable declarations are more complicated, as we ask the compiler to reserve a named
 storage location for us:
@@ -2383,12 +2400,16 @@ stop = 10 * start + 1
 ----
 
 In lines one and two, we declare two variables called [.var]#start# and [.var]#stop#, which initially have the default integer value of zero.
-In line three, we declare a different integer variable called [.var]#delta#, to which we assign an initial value [.lit]#3#.
+In line three, we declare one more integer variable called [.var]#delta#, to which we assign an initial value [.lit]#3#.
 And finally, in line four, we assign to the variable [.var]#stop# an integer expression. For variable declarations Nim
 offers some more variants, which we will discuss soon: We can use type inference when we immediately assign an
 initial value, we can use [.key]#var# sections to introduce multiple variables without the need to type the [.key]#var#
 keyword multiple times, we can list multiple names of the same data type in front of the colon, separated by commas, or we may
 use the [.key]#let# keyword to declare immutable variables.
+
+Nim v2.0 introduces the [.code]#strictDefs# pragma, which can enforce variable initialization. That way we can
+avoid errors, that may result from the fact, that variables have the default value zero, while another start value is necessary.
+The strictDefs pragma and the other new features of Nim 2.0 are described in some detail in the Appendix of the book.
 
 ****
 In some Nim documentation and in this book, the terms [.ndef]#declaration# and [.ndef]#definition# are
@@ -10147,7 +10168,7 @@ The [.key]#include# statement should be not confused with the [.key]#import# sta
 insert a text file at the position where the [.key]#include# statement occurs. [.key]#Include# can be
 used to split very large modules into smaller entities.
 
-= Part III: Nim's Standard Library
+= Nim's Standard Library
 
 In this part of the book, we will introduce you to some of the most essential
 modules of Nim's standard library. This includes modules for common operations
@@ -14263,7 +14284,7 @@ References:
 * https://www.regular-expressions.info/pcre.html
 * https://nitely.github.io/nim-regex/regex.html
 
-= Part IV: Some Programming Tasks
+= Some Programming Tasks
 
 In this section, we will present a few simple programming exercises.
 
@@ -17277,7 +17298,7 @@ own game engine based on OpenGL or Vulkan, is a very demanding task.
 So maybe, we will add a section about game programming at the end, when the rest of the book
 is done, or maybe when the next edition of the book is published.
 
-= Part V: External Packages
+= External Packages
 
 In this part of the book, we will present you with some external packages, which
 can easily be installed with Nim's package manager(s).
@@ -17721,8 +17742,10 @@ References:
 
 * https://github.com/c-blake/cligen
 
-= Part VI: Advanced Nim
+= Advanced Nim
 
+[partintro]
+--
 In this part of the book, we will try to explain the more difficult parts of the Nim programming language:
 Macros and meta-programming, asynchronous code, threading, and parallel processing, and finally
 the use of Nim's concepts. We will start with [.mac]#macros# and meta-programming, as that seems to
@@ -17730,6 +17753,7 @@ be a really stable part of Nim's advanced features. Nim's concepts just got a re
 the use of asynchronous code, threading, and parallel processing, there exists currently
 various implementations and all that may change again when the Nim core devs should decide
 to actually use the CPS (Continuation-Passing Style) based programming style for the implementation of this.
+--
 
 == Macros and Meta-Programming
 
