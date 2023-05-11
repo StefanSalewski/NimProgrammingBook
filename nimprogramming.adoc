@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-03
+//v0.1, 2023-MAI-11
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -2434,10 +2434,14 @@ just regard procedures as entities that perform a well-defined task for us when 
 call (or invoke) them. We call them by just writing their name in our source code file, followed
 by a list of parameters, also called arguments. When we write [.code]#echo 7# then
 echo is the procedure that we call, and 7 is the argument, an integer literal in
-this case. When the parameter list has more than one argument, then we separate
+this case.
+When the parameter list has more than one argument, then we separate
 the arguments with a comma each, and generally, we put an optional space after that comma.
 The effect of our procedure call is that the decimal number 7 is written
-to the terminal when we run the program after compilation. While in languages like
+to the terminal when we run the program after compilation.
+The parameter list can be empty, and the parameters can be expressions, that may contain again
+function calls like [.code]#echo sin(0) {plus} 2.0#.
+While in languages like
 C the parameter list has to be always enclosed in brackets, in Nim we can frequently leave the
 brackets out, which is called command invocation syntax.
 
@@ -2463,7 +2467,8 @@ pair of brackets, to make it for the compiler clear that we want to call that fu
 A special form of
 procedures are functions, which are procedures that perform operations to return a value or a result. In
 mathematics, [.func]#sin()# or [.func]#cos()# would be functions -- we pass an angle as an argument and
-get the sine, or cosine as a result.
+get the sine, or cosine as a result. The [.func]#echo# procedure is not a function, as that procedure
+performs a task, the printing of the arguments, but does not return a result.
 
 Let's look at this minimal Nim program:
 
@@ -2618,6 +2623,10 @@ var
 ----
 
 both variables get the initial value of zero.
+
+We mentioned already, that Nim 2.0 introduces the strictDefs pragma, which enforces
+explicit initialization. That is explained in more detail in the Appendix where we summarize
+all the new 2.0 features.
 
 There exists a variant for variable declarations which uses the [.key]#let# keyword
 instead of the [.key]#var# keyword. [.key]#Let# is used when we need a variable that only once gets
@@ -2831,7 +2840,7 @@ would look not that nice.
 === Integer types
 
 We have already used the [.type]#int# data type, which indicates a signed integer
-type of [.lit]#4# or [.lit]#8#-byte size, depending on the {os}. The reason why the size of that type depends on the
+type of [.lit]#4#- or [.lit]#8#-byte size, depending on the {os}. The reason why the size of that type depends on the
 word size of the OS will become clear later when we explain what references and
 [.type]#pointers# are.
 
@@ -3234,7 +3243,7 @@ in this process some tiny inaccuracies can accumulate. Actually, it should be po
 get exact 16 digits precision when a very smart conversion routine like the
 [.ndef]#Ryu# or [.ndef]#dragon box# algorithm is used. We may still wonder why Python
 just seems to get it right -- well there are rumors that Python is cheating, maybe some
-past-processing to guess the [.str]#string# that the user may like.
+post-processing to guess the [.str]#string# that the user may like.
 
 From the discussions above, it should be clear that testing two [.type]#floats# for
 equality is regularly problematic. Instead of just testing for equality, we may better
@@ -3279,6 +3288,8 @@ as [.type]#ints# may avoid the expensive saving of floating-point CPU registers.
 try to avoid [.type]#float# math. But all this is a difficult topic, and this advice can give you only some
 simple recommendations, which could be wrong for a concrete case. So finally you have to decide for yourself,
 and as always it is a good idea to do some performance tests.
+In the Appendix of this book, you can find a small test for the performance of various [.type]#int# and [.type]#float#
+operations in section <<Performance of multiplication vs. division>>.
 
 References:
 
@@ -3307,7 +3318,7 @@ type
   Time = distinct float # in seconds
   Distance = distinct float # in meters
 
-var t: time = 0.2 # not allowed
+var t: Time = 0.2 # not allowed
 var t: Time = Time(0.2)
 ----
 
@@ -3460,7 +3471,7 @@ type
 Here the assigned numerical values should be 0, 2, and 3. Currently, the enum's numerical values
 must always be specified in ascending order.
 
-When we have many [.type]#enums# in a program, then name conflicts may occur, for example, we
+When we have many [.type]#enums# in a program, then name conflicts may occur. For example, we
 may have an additional [.type]#enum# type named [.type]#BaseColor#, which also has [.lit]#red# and [.lit]#green#
 members. For that case, the {.pure.} pragma exists:
 
@@ -3474,6 +3485,10 @@ type
 With the pure pragma applied, we can use the full qualified enum name when necessary,
 like [.lit]#BaseColor.red#. But we can still use unqualified names like [.lit]#blue# when there is no
 name conflict.
+
+With the upcoming Nim 2.0, the compiler will be smarter for handling enums: The pure pragma is not needed anymore,
+and for set expressions like {BaseColor.red, green} the compiler knows that the second set member is
+a BaseColor as well, so we do not need the prefix anymore. For details, see the Appendix.
 
 === Boolean types
 
@@ -3492,7 +3507,7 @@ var
   age = 17
   adult: bool = age > 17
   iLikeNim = true
-  iLikeOtherLangaugeBetter = false.
+  iLikeOtherLangaugeBetter = false
 ----
 
 In line three, we assign to the variable [.var]#adult# the result of a logical comparison. The
@@ -3522,6 +3537,7 @@ none zero values are interpreted as true.
 [source, nim]
 ----
 var a: int = 0
+var cond: bool
 if cond:
   a = 7
 
@@ -3548,7 +3564,7 @@ are not used that often, since we generally group them in sequences called [.typ
 build text.
 
 The initial ASCII table contains only the characters with numbers 0 up to 127, here
-is an overview generated with the small program listed in the appendix:
+is an overview generated with the small program listed in the Appendix:
 
 ----
 Visible ASCII Characters
@@ -3763,9 +3779,11 @@ to be processed.
 
 We will start our explanation with [.type]#sets# with character base type, as these [.type]#sets# are
 very easy to understand and at the same time very useful. Let us assume that we have
-a variable of character type, and we want to test if that variable is alphanumeric,
+a variable [.var]#x# of character type, and we want to test if that variable is alphanumeric,
 that is if it is a lower or upper case letter or a digit. A traditional test would be
-[.code]#(x +>=+ a and x +<=+z) or (x +>=+ A and x +<=+ Z) or (x +>=+ 0 and x +<=+ 9)#. Using Nim's set
+[.code]#(x +>=+ 'a' and x +<=+ 'z') or (x +>=+ 'A' and x +<=+ 'Z') or (x +>=+ '0' and x +<=+ '9')#.
+For this test, we use the fact that letters and digits build continuous blocks in the ASCII table. 
+Using Nim's set
 notation, we can write that in a simpler form:
 
 [source, nim]
@@ -3784,8 +3802,10 @@ letters, the upper case letters, and the decimal digits built an uninterrupted r
 in the ASCII table.
 
 With that definition, we can use a simple test with the [.key]#in# keyword. This test
-is equivalent to the procedure call AlphaNum.contains(x). In compiled languages (most) set
-operations are generally very fast as they map well to CPU instructions.
+is equivalent to the procedure call AlphaNum.contains(x). And this set membership test
+should be even faster than the test with [.code]#<=# and [.code]#or# from above.
+#In compiled languages (most) set
+#operations are generally very fast as they map well to CPU instructions.
 
 Older languages like C do not have a dedicated set data type, but as sets are so useful
 and efficient, C emulates these operations by using bit-wise [.op]#and# and [.op]#or#
@@ -3865,7 +3885,7 @@ In the code above, the compiler detects the first assignment to the variable [.v
 
 [.type]#Sets# of numbers work in principle in the same way as [.type]#sets# of characters. One problem
 is that in Nim integer numbers are generally 4 or 8 bytes large, but [.type]#sets# can contain
-only numbers with 1 or 2-byte size. So we have to specify the type of [.type]#set# members
+only numbers with 1- or 2-byte size. So we have to specify the type of [.type]#set# members
 explicitly:
 
 [source, nim]
@@ -3874,6 +3894,7 @@ type
   ChessPos = set[0'i8 .. 63'i8]
 
 var baseLine: ChessPos = {0.int8 .. 7.int8}
+# var baseLine: ChessPos = {0 .. 7} # works as well
 var p: int8
 echo p in baseLine
 ----
@@ -3906,6 +3927,7 @@ type
 
 var xp: XPos = {-3.int8 .. 1.int8}
 var pp: int8 = -1
+echo pp in xp
 ----
 
 [.type]#Enum# [.type]#sets# are also very useful and can be used to represent multiple boolean
@@ -3917,7 +3939,7 @@ this purpose:
 type
   CompLangFlags = enum
     compiled, interpreted, hasGC, isOpenSource, isSelfHosted
-   CompLangProp = set[CompLangFlags]
+  CompLangProp = set[CompLangFlags]
 
 const NimProp: CompLangProp = {compiled, hasGC, isOpenSource, isSelfHosted}
 ----
@@ -3967,8 +3989,8 @@ generator script to ensure type matching. Nim's devs sometimes recommend using p
 (distinct) integer constants for C enums. That may appear easier, but integer constants
 provide no namespaces, so names may be aFlagWheel instead of AxisFlag.wheel or plain
 wheel when there is no name conflict for pure [.type]#enums#. And with integer constants, we
-have to combine flags by or operation like (aFlagWheel or aFlagSlider) instead of
-clean {AxisFlag.wheel, slider}.
+have to combine flags by an [.op]#or# operation like [.code]#(aFlagWheel or aFlagSlider)# instead of
+clean [.code]#{AxisFlag.wheel, slider}#.
 
 Can we print [.type]#sets# easily? As [.type]#sets# are an unordered type, it is not fully trivial, but
 we can iterate over the full base type and check if the element is contained in our
@@ -3992,6 +4014,14 @@ We will learn how the for loop works soon. Note that the sequence in which the [
 members are printed is determined by our query loop, not by the [.type]#set# content itself,
 as [.type]#sets# are unordered types.
 
+At the end of this section, we should mention that Nim's standard library has also a module called
+[.mod]#setutils# that provides a few useful functions and a template:
+The function [.func]#`[]=`# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
+to exclude or to include value [.var]#x# to [.type]#set# [.var]#s#, instead of using the [.op]#incl# or [.op]#excl# notation.
+And the functions [.func]#fullset()# and [.func]#complement()# make it easy to get a set that includes all possible  members,
+and to complement ("invert") a set. Finally, the template [.func]#toSet()# can be used to convert other data types to
+corresponding sets.
+
 === Strings
 
 The [.type]#string# data type is a sequence of characters. It is used whenever a textual input
@@ -4001,7 +4031,7 @@ characters, that allow displaying nearly unlimited symbols as long as all the ne
 fonts are installed on your computer, and you manage to enter them -- Unicode
 characters may not be accessible by a simple keystroke. For now, we will only use
 ASCII characters, as they are simpler and work everywhere. [.type]#String# literals must be
-enclosed in double quotes. Nim's [.type]#strings# are similar to the Nim [.type]#seq# data types: both
+enclosed in double quotes. Nim's [.type]#strings# are similar to the Nim [.type]#seq# data type: both
 are homogeneous variable-size containers. That means that a [.type]#string# or a [.type]#seq# expands
 automatically when you append or insert characters or other [.type]#strings#.
 Nim's [.type]#seq# data type is discussed later in the book in some detail.
@@ -4023,7 +4053,7 @@ add(str, ' ')
 echo str, name
 ----
 
-In the above example code, we declare a variable called [.var]#str# and assign it the initial
+In the above example code, we declare a variable called [.var]#str# of [.type]#string# type and assign it the initial
 literal value [.lit]#"Hello"#. We use the [.func]#echo()# procedure to ask the user
 for his name and use the [.func]#readLine()# procedure to read the user input from
 the terminal. To show how we can add characters to existing [.type]#string# variables, we call
@@ -4053,7 +4083,7 @@ that the plain [.func]#len()# function returns the number of 8-bit characters, n
 of Unicode glyphs, when the [.type]#string# should be interpreted as Unicode text. To determine
 the number of glyphs of Unicode [.type]#strings#, you should use some of the [.mod]#unicode# modules.
 The [.func]#high()# function is very similar to the [.func]#len()# function, it returns the index of
-the last character in the [.str]#string#. For each [.type]#string# [.var]#s# [.code]#high(s) == len(s) -1#,
+the last character in the [.str]#string#. For each [.type]#string# [.var]#s# [.code]#high(s) == len(s) - 1#,
 so [.func]#high("")# is [.lit]#-1#.
 Remember
 that Nim supports the method call syntax, so we can also write [.code]#s.len# instead of [.code]#len(s)#.
@@ -4073,7 +4103,7 @@ s[s.high] = '!'
 
 In the example above, we define the [.type]#string# variable [.var]#s# by the use of two literal [.type]#strings# to show the
 use of the concatenation operator. In line two we use the slice operator to replace
-the sub-string [.lit]#"hate"#, that is, the characters with index position 3 up to 6, with the [.str]#string# literal [.lit]#"like"#. In
+the sub-string [.lit]#"hate"#, that is, the characters with index position 3 up to 6, by the [.str]#string# literal [.lit]#"like"#. In
 this case, the replacement has exactly as many characters as the text to replace,
 but that is not necessary: We can replace sub-strings with longer or shorter [.type]#strings#,
 which includes the empty [.str]#string# [.lit]#""# to delete a text area. In the last line of the above
@@ -4132,7 +4162,7 @@ var
 s1 = "Nim"
 s2 = s1
 s1.add(" is easy!")
-echo s1 & "\n" & "s2"
+echo s1 & "\n" & s2
 ----
 
 The output is
@@ -4241,14 +4271,14 @@ Nim [.type]#string# would generate an inconsistency, as C library functions like
 would regard [.lit]#'\x0'# as the [.type]#string# end marker, while pure Nim functions
 may assume still a longer [.type]#string#. Intermediate [.lit]#'\x0'# bytes in [.type]#strings# can in very rare cases
 be a problem when we get the actual byte sequence from C libraries. For the
-same reason, a Nim [.type]#string# is not identical or fully compatible with s [.type]#seq[char]#,
+same reason, a Nim [.type]#string# is not identical or fully compatible with a [.type]#seq[char]#,
 as a [.type]#seq[char]# may contain multiple zero byte data, while Nim [.type]#strings# should not.
 ****
 
 ==== Escape Sequences in Strings
 
 We learned about control characters already in the section about characters, and
-earlier in this section, we mentioned that …[.type]#strings# can also contain control
+earlier in this section, we mentioned that [.type]#strings# can also contain control
 characters. As the use of control characters may not be really easy to understand, we
 will explain their use in [.type]#strings# in some more detail and give a concrete example.
 
@@ -4257,7 +4287,7 @@ moves the cursor in the terminal window to the beginning of the next line. The
 [.func]#echo()# procedure prints that character automatically after each output
 operation. Indeed, it can be important, to terminate each output operation with that
 character, as the output can be buffered, and writing just a [.type]#string# without a
-termination newline may not appear at once on the screen, but can be delayed. That is
+terminating newline may not appear at once on the screen, but can be delayed. That is
 bad when the user is asked something and should respond, but the message is still
 buffered and not yet visible.
 
@@ -4281,7 +4311,7 @@ echo "Hello\nHello\nHello"
 ----
 
 The first line prints two empty lines -- two because the [.lit]#\n# generates a jump
-to next the line, and because [.func]#echo()# always adds one more jump to the next line. The
+to the next line, and because [.func]#echo()# always adds one more jump to the next line. The
 second line prints three lines, which each contains the word [.lit]#Hello#, and the cursor is
 moved below the last [.lit]#Hello#, because [.func]#echo()# automatically adds one more
 newline character.
@@ -4304,7 +4334,7 @@ want the compiler to replace a [.lit]#'\n'# with a newline character. You can do
 ways: You can [.italic]#escape# the escape character, that is, you put in front of the backslash
 one more backslash. When you print the [.str]#string# [.lit]#"\\n"# you will get a backslash and the
 [.lit]#n# character in your terminal. Or you can use so-called [.ndef]#raw strings#, that is, you put
-the character [.lit]#r# immediately in front of your [.type]#string# like
+the character [.lit]#r# immediately in front of the [.type]#string# literal like
 
 [source, nim]
 ----
@@ -4349,7 +4379,7 @@ comments.
 ## important note for documentation
 #[ a longer
 but useless comment
-#]
+]#
 ----
 
 Multi-line documentation comments also exist and can also be nested.
@@ -4382,7 +4412,7 @@ You have already seen a few examples of simple Nim source code. The code is basi
 a plain text file consisting of ASCII characters, that is, the ordinary characters
 that you can type on your keyboard. Generally, Nim source code can also contain
 Unicode utf-8 characters, so instead of using names consisting of ASCII characters
-for your symbol names, you could just use single Unicode characters or sequences of
+for your symbols, you could just use single Unicode characters or sequences of
 Unicode characters. But typically that makes not much sense, entering Unicode is not
 that easy with a keyboard, and it is displayed only correctly on the screen or in the
 terminal when the editor or terminal supports Unicode properly and when all necessary
@@ -4446,7 +4476,7 @@ make some renaming necessary.
 The only minor disadvantage of Nim's fuzzy names is when you use tools like grep or
 your editor search functionality: You could not be sure if a search for "KdTree"
 would give you all results, you would have to try "Kd_Tree" or "KDTree" and potentially
-some more variants too. For that task, Nim provides a tool called nimgrep that does a
+some more variants too. For that task, Nim provides a tool called [.italic]#nimgrep# that does a
 case- and style-insensitive search. And possibly your editor supports that type of
 search also. You can also enforce a consistent naming scheme when you call the
 compiler with the command line argument [.term]#--styleCheck:error# or
@@ -4611,7 +4641,7 @@ is no infix operator between the two variables.
 A [.proc]#{proc}# call like
 [.code]#echo(1, 2)# is interpreted as a call of [func]#echo()# with two integer literal arguments, while
 a call like [.code]#echo (1, 2)# with a space after the [.proc]#{proc}# name is interpreted in command invocation syntax as a call with a
-[.tup]#tuple# argument. While in C code it is not uncommon to always insert a space
+[.tup]#tuple# argument. While in C code, it is not uncommon to always insert a space
 between the function name and its parameter list, we should avoid that in Nim for the described reason.
 We will learn more about [.proc]#{proc}# calls and the [.tup]#tuple# data type later.
 
@@ -5078,6 +5108,9 @@ in the code segment above. Using [.key]#break# in such a way is not very nice, a
 it may make it harder to understand the code structure, but sometimes
 it can be very useful.
 
+Before Nim 2.0, it was possible to use a [.key]#break# in unnamed blocks, but
+this gives a warning for 2.0 and may later give an error.
+
 === For Loops and Iterators
 
 For loops can be used to easily iterate over containers, collections, ranges, and many more entities.
@@ -5199,7 +5232,7 @@ a new custom type. Writing the [.key]#type# keyword on its own line begins a [.k
 where we can declare one or more custom data types. All type declarations in a [.key]#type#
 section must be indented. In the next line, we write our type name, an equal sign, and
 the keyword [.key]#object#. That indicates that we want to declare a new [.key]#object# [.key]#type#
-named Computer. Here Computer is a type name, in Nim, we use the convention that user-defined
+named [.type]#Computer#. Here [.type]#Computer# is a type name, in Nim, we use the convention that user-defined
 type names start with a capital letter. In the following indented block we
 specify the desired fields of this [.key]#object#, each line contains the name of a field and a colon
 followed by the needed data type. That is similar to a plain variable declaration.
@@ -5273,7 +5306,7 @@ Foo(field: value, ...). Unspecified fields get the field type's default values:
 [source, nim]
 ----
 var
-  computer1: Computer(price: 799.99; quantity: 2)
+  computer1 = Computer(price: 799.99, quantity: 2)
   comp2: Computer
 
 comp2 = computer1
@@ -5285,6 +5318,17 @@ In line five, we use the assignment operator to copy the content
 of variable [.var]#computer1# into variable [.var]#comp2#, and finally, we overwrite
 the [.var]#price# field of [.var]#comp2#. As both variables are distinct instances,
 the fields of variable [.var]#computer1# are not modified this way.
+
+Starting with Nim v2.0, object fields can have custom default values, instead of the binary zero.
+The syntax for the defaults equals the assignment to ordinary variables, like
+
+[source, nim]
+----
+type
+  Computer = object
+    freeShipping: bool = true
+    manufacturer = "bananas"
+----
 
 Typically, a computer store would offer many different types of computers, so it would
 make sense to store all the different devices in a container like a sequence, called
@@ -5331,7 +5375,7 @@ var
 for el in mitems(a):
   el = v
   inc(v)
-for el in mitems(a)
+for el in mitems(a):
   el = el * el
 for square in a:
   echo square
@@ -5349,6 +5393,13 @@ one would allow us to access [.type]#array# elements with index positions from [
 It may help to remember that for plain variables the data type comes last also like
 in var i: int.]
 
+When we declare an [.type]#array# instance variable, then all the contained elements get the default value binary zero.
+But we can also explicitly assign initial values like [.code]#a: array[8, int] = [1, 2, 3, 4, 5, 6, 7].# Here the
+expression on the right is Nim's [.type]#array# constructor. Whenever we use an [.type]#array# constructor to initialize an array instance
+variable, then the number of elements that the constructor provides has to match the size of the array variable, and
+the element types have to match as well. To specify the element type of an [.type]#array# constructor, it is often enough to specify the
+type of the first element, so [1.int8, 2] is equivalent to [1.int8, 2.int8].
+We can use [.key]#for# loops to iterate over all the elements of an [.type]#array#, in a similar way as we did it for [.type]#strings#. 
 The first [.key]#for# loop of the above program fills our [.type]#array# -- that is, for each of the [.lit]#8#
 storage places in the [.type]#array#, we fill in some well-defined data. We use the
 [.func]#mitems()# [.key]#iterator# here because we want to modify the content of our [.type]#array#
@@ -5357,7 +5408,7 @@ and finally, we print the content. In the last [.key]#for# loop, we do not modif
 so a plain [.func]#items()# instead of [.func]#mitems()# would work, but we already learned that we
 have not to write the plain [.func]#items()# at all in this case.
 
-Sequences work very similar to [.type]#arrays#, but they can grow:
+Sequences, called just [.type]#seq# in Nim, work very similar to [.type]#arrays#, but they can grow:
 
 [source, nim]
 ----
@@ -5367,7 +5418,7 @@ var
 while v < 8:
   inc(v)
   add(s, v)
-for el in mitems(s)
+for el in mitems(s):
   el = el * el
 for square in s:
   echo square
@@ -5457,6 +5508,16 @@ position, the compiler only has to add a constant value to the current stack [.t
 [.type]#arrays# are stored on the stack. To access a constant position in a [.type]#seq#, the compiler would
 have to add a constant to the base address of the memory block that contains the [.type]#seq# data.
 
+NOTE: Typically, when we need a container data type, and its size is known in advance at compile time, then
+we use an array instead of a seq, as the seq has some minimal overhead, and as the compiler can better
+detect out-of-range access for arrays than for seqs. But there is one exception: Array instances declared inside of
+{profus} are stack-allocated, which ensures optimal performance for the allocation. But we have to
+keep in mind, that the stack size of a program is an OS-dependent constant, which is not very large by default.
+On Linux, the default stack size is often only 8 MB, so it is clear that we can not use arrays that are larger.
+We would use a seq in that case. Actually, the Linux user may use the command ulimit to enlarge the maximum stack size,
+but that is generally not recommended. Typically, very large stacks are not needed, and a restricted stack
+makes it easier for the OS to kill a program that does unlimited recursion due to a bug.
+
 We said that appending elements to sequences is not extremely fast -- indeed, it is a few
 times slower than access to an [.type]#array# element by its index using the subscript
 operator. So when we know that our [.type]#seq# will have to contain at least an initial
@@ -5517,7 +5578,7 @@ a dynamic data buffer, which is allocated on the heap, so it would be possible t
 assignment like [.code]#seq1 = seq2# would not copy the data buffer but reuse the old one. In
 that case, both sequences would be not independent, [.var]#seq2# would be an alias for [.var]#seq1#.
 This is called reference semantics, some languages like Ruby behave in this way. But
-in Nim [.type]#arrays#, [.str]#strings# and sequences have value semantic, an assignment creates an
+in Nim [.type]#arrays#, [.str]#strings# and sequences have value semantics, an assignment creates an
 independent copy. We will learn more details about reference semantics and the use of
 the stack or heap to store data soon when we discuss references to [.obj]#objects#.
 ****
@@ -8856,7 +8917,7 @@ have indeed some similarities to C [.mac]#macros#. But while C [.mac]#macros# ar
 can do only plain source text substitutions, Nim [.key]#templates#
 operate on Nim's abstract syntax trees,
 are processed
-in the semantic pass of the compiler,
+in the semantics pass of the compiler,
 integrate well with the rest of the language, and share none of C's preprocessor [.mac]#macros# flaws.
 
 In some way, Nim [.key]#templates# are a simplified application of Nim's powerful [.key]#macro# and meta-programming
@@ -18039,7 +18100,7 @@ This definition is from the Nim [.mac]#macros# tutorial, written by A. Doering, 
 
 ==== Typed Macro Parameters
 
-For [.type]#typed# arguments, the semantic checker runs on the argument and does transformations on it before it is passed to the [.mac]#macro#.
+For [.type]#typed# arguments, the semantics checker runs on the argument and does transformations on it before it is passed to the [.mac]#macro#.
 Here identifier nodes are resolved as symbols, implicit type conversions are visible in the tree as calls, [.key]#templates# are expanded,
 and probably most importantly, nodes have type information. Typed arguments can have the type [.type]#typed# in the arguments list.
 But all other types, such as [.type]#int#, [.type]#float#, or [.type]#MyObjectType#, are typed arguments as well, and they are passed to the [.mac]#macro# as a syntax tree.footnote:[
@@ -19286,7 +19347,7 @@ main()
 Inside the parallel block, we use again [.func]#spawn# to launch a function, which is
 then executed by a thread of the threadpool. The [.func]#sum()# function in our
 example code sums up a range of [.type]#array# elements. When [.func]#spawn()# is
-used inside a [.key]#parallel# block, then its semantic is different: Instead of a
+used inside a [.key]#parallel# block, then its semantics is different: Instead of a
 [.type]#FlowVar[T]#, [.func]#spawn()# now returns directly the result of the called
 [.proc]#proc#. We can save these results in ordinary variables, and access them freely after
 the parallel block. In the above case, we would finally sum up the individual result
@@ -22999,6 +23060,11 @@ We have added a few more simple examples and exercises:
 
 * <<Using parsecsv>>
 * <<Memory-mapped files>>
+
+
+////
+We capitalize Appendix and Part, see https://ell.stackexchange.com/questions/11630/chapter-sections-etc-in-capital-letters
+////
 
 ////
 Part I: Introduction
