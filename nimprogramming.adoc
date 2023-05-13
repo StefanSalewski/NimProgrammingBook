@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-11
+//v0.1, 2023-MAI-13
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -1579,6 +1579,29 @@ can be missing libraries. When you require some important libraries for your pro
 these are currently not available for Nim, this can be of course a big problem in the case that you do
 not have the skills or the time to write them from scratch or at least create high-level bindings
 to a C library.
+
+=== How long does it take to learn Nim?
+
+Some people may tell you, that you can learn it in only two weeks. Perhaps, when you are very, very bright.
+But when it would be so easy, the world would be full of Nim experts.
+Studying the official tutorials Part I and II should take really only a few hours, and then you have
+already a basic feeling for the language and can do some simple exercises.
+Theoretically, for learning the foundations of Nim, it should be sufficient to read this book, skipping Part I and the exercises in  Part IV.
+So you have to read only 400 pages actually, which should be possible in 100 hours. But who can really read
+8 hours a day, and remember all the stuff without practicing? Reading the language manual or the book
+of Mr. Rumpf would be also ways to learn the language.
+
+I started with Nim in 2014, with some prior experience in Pascal, C, Modula, Oberon, Ruby, and assembly language.
+I learned from all the tutorials, Nim forum, IRC, and later from the Manning book.
+And I studied the compiler manual and the API docs of Nim's standard library and a few important external packages.
+I would say it took me one year,
+learning 10 hours a week, to understand the foundations and be able to use the language.
+Additional to learning, I did some exercises, e.g. writing a simple chess game.
+So for me, it took actually more than 500 hours.
+We think, that with a good book, the learning process
+should be at least 50% faster, so when you can spend 10 hours a week learning, and some more hours practicing,
+you may call yourself a Nim programmer after a half year. Of course, your motivation makes a big difference. Loving the
+language, having an interesting project for which you intend to use the language, and maybe even a job where you can use it, helps a lot.
 
 == Our first Nim Program
 
@@ -3804,8 +3827,8 @@ in the ASCII table.
 With that definition, we can use a simple test with the [.key]#in# keyword. This test
 is equivalent to the procedure call AlphaNum.contains(x). And this set membership test
 should be even faster than the test with [.code]#<=# and [.code]#or# from above.
-#In compiled languages (most) set
-#operations are generally very fast as they map well to CPU instructions.
+//In compiled languages (most) set
+//operations are generally very fast as they map well to CPU instructions.
 
 Older languages like C do not have a dedicated set data type, but as sets are so useful
 and efficient, C emulates these operations by using bit-wise [.op]#and# and [.op]#or#
@@ -5788,8 +5811,8 @@ const
 
 type
   Fig = int8
-  Row = array[Cols, Fig]
-  Board = array[Cols, Row]
+  Col = array[Rows, Fig]
+  Board = array[Cols, Col]
 
 var b: Board
 
@@ -5957,7 +5980,7 @@ main()
 Here, we use the slice construction operator [.op]#..# to exclude the first element from our summing
 operation. Unfortunately, when we use the slice operation in this way, the Nim compiler
 may create a copy of our sequence, which increases the run-time and memory consumption.
-At least for Nim versions up to 1.6, this was the case, never versions may use view types instead to avoid the copy.
+At least for Nim versions up to 1.6, this was the case, newer versions may use view types instead to avoid the copy.
 We may try to use the new [.func]#toOpenArray()# expression and try a construct like
 
 [source, nim]
@@ -6043,7 +6066,7 @@ All these data types are stack-allocated, and we say that the data types have va
 Even [.str]#strings# and sequences, which use actually a heap-allocated data buffer, behave in the same way in Nim.
 
 Whenever possible, we should use this simple form of variables, as they are fast and
-easy to use.
+easy to use.footnote:[See https://nim-lang.org/blog/2021/11/15/zen-of-nim.html, section "Value based datatypes"]
 
 Maybe that is not too surprising for you, but when we would have references instead of plain
 variables, then the situation would be different, as we will see soon. Actually, some other
@@ -6054,7 +6077,7 @@ that both variables still use the same data buffer -- when we then modify one va
 But there exist situations where we need some sort of indirection, and then
 references and [.type]#pointers# come into play. For example, when the data entities depend in
 some form on each other, the elements may build linked lists, trees, or other
-structures. The entities may have some neighborhood relation, also called some one-to-many
+structures. The entities may have some neighborhood relation, also called some many-to-one
 relation.
 
 Indeed, value [.obj]#objects# and references occur in real life also:
@@ -6082,22 +6105,35 @@ lists, this is it refers to the same person.
 In computers, dynamic storage, called RAM, consists of consecutive, numbered
 storage locations, called words. Each individual word has its address, which is a
 number typically starting at zero and extending to a value, which is defined by the
-amount of memory available on your computer. These addresses can be used to access
+amount of memory available on your computer.footnote:[For technical reasons,
+the valid memory addresses typically do not start at location zero, and the usable address
+range may haves holes. But these details are not important for our discussion.]
+These addresses can be used to access
 the storage locations, that is, to store a value at that address, or to read the
 content again. Reading generally does not modify the content, you can read it many
 times and will always get the same value. When you write another value to that
-storage location, then reads will give you that new value.
+storage location, then the old content gets overwritten, and further reads will give you the new value.
 
 Basically, for all the data that you use in your program you need in some form its
 address in the RAM, without the address, you can not access it. But what is with all
-the plain, value [.obj]#object# variables we have used before, we have never used addresses?
+the plain, value [.plain]#object# variables we have used before, we have never used addresses?
 That is true -- we used only names to access our variables, and the compiler mapped
 our chosen name to the actual address of the variables in memory whenever we accessed
 the variable. For most simple cases, this is the best way to access variables. Now, let
-us assume we have such value [.obj]#object# type of variable declared in our program, can we
+us assume we have such value [.plain]#object# type of variable declared in our program, can we
 access it without using its name? When we have declared it, it should reside
-somewhere in the RAM when the program is executed. Well, when we do really not want
-to access it by variable name, then there is still one chance: We can search in the
+somewhere in the RAM when the program is executed.
+One way to access the content of the variable is, that we first determine its address from its name, and then
+can access it as well by name and by its memory location. Nim has the [.func]#addr()# function for
+this purpose, we give it the name of our variable as an argument and get its address. But this
+is rarely useful -- when we already can access it by name, why should we then use its address
+to access it? One of these rare cases is when we want to call a C function passing our variable, and that C
+function has an address parameter.
+Now let us assume, that we do not want to access our variable by name and that we do not know its address.
+Can we still access it?
+//Well, when we do really not want
+//to access it by  name, then there is still one chance: 
+Well, we can search the
 whole RAM for the desired content. In practice, we would never do that, as it is
 stupid and would take very long, but we could do it. But how can we detect our variable?
 How can we be sure that it is indeed ours? Generally, we can not. Even when we are
@@ -6107,8 +6143,8 @@ variable, we would only know what bit pattern it should have, so for most words 
 the RAM with a different bit pattern we could say for sure that it can not be our
 variable, but whenever we find the expected bit pattern then it can be just a
 coincidence, there can be many more words in RAM with that content. In some way, it is
-as if you would search for a person, and you know that that person lives on a long road with
-numbered houses. If you only know that the person wears brown shoes, but you do know not
+as if you would search for a person, and you know that the person lives on a long road with
+numbered houses. If you only know that the person wears brown shoes, but you do not know
 the number of the house nor the name of the person and no other unique property of
 that person, then you do have not much luck.
 
@@ -6175,7 +6211,7 @@ low-level function provided by the compiler, it can be used to determine the mem
 address of variables and some other entities known to the
 compiler.footnote:[Sometimes the compiler may refuse to accept the addr() function,
 for example for variables defined with the let keyword. For that case, we may have to
-use the function unsafeAddr().] We used the [.func]#echo()# procedure to show us the numeric
+use the function unsafeAddr().In Nim 2.0 unsafeAddr() is an alias for addr().] We used the [.func]#echo()# procedure to show us the numeric
 decimal value of the addresses in the terminal. As it typically makes not too much
 sense to print addresses, [.func]#echo()# would refuse to print it, so we have used the
 construct [.code]#cast[int](someValue)# to tell that [.func]#echo()# should regard our [.type]#pointers# as
@@ -6284,6 +6320,12 @@ main()
 When we do [.type]#pointer# arithmetic or similar math to calculate the address of variables
 in the computer memory, then memory addresses are used like integer numbers, and so
 it makes some sense that Nim's integers have the same byte size as [.type]#pointers#.
+Note that for arrays, addr(a[0]) is identical to addr(a), because an array is just a memory block,
+and the address of the block is identical to the address of the first element. Actually, we should have 
+used  addr(a[a.low]) instead of addr(a[0]) for the general case, as array indices don't have to start at position zero.
+For sequences and strings, addr(s[0]) is not identical to addr(a), as sequences and strings are objects, that
+contain not only the data buffer but also other data like the capacity. When we have to pass the data buffer
+of strings or sequences to C functions, we typically pass addr(s[0]), or for strings, we may pass s.cstring.
 
 References:
 
@@ -6337,7 +6379,9 @@ programming languages like C, but it is inconvenient and dangerous: We can forge
 call [.func]#dealloc()# and waste resources, or we may even deallocate memory blocks, but still
 use it by our [.type]#pointers#. The latter would at some point in time crash our program, as
 we would use memory blocks that are already released and may now be reused for other
-variables -- from our own program or from other programs. Note that in the source
+variables -- from our own program or from other programs.footnote:[At least, modern operating systems prevent
+that our program corrupts memory regions of other software. So other programs are safe, but our own program may crash.]
+Note that in the source
 code above, there is only one single [.func]#dealloc()# call. The reason for that is, that we
 only allocated one single memory block in one single [.func]#create()# call, [.var]#ip2# is only one
 more [.type]#pointer# that points to that block. If we had used an additional
@@ -6349,7 +6393,7 @@ higher-level programming languages to this problem is a [.ndef]#Garbage-Collecto
 GC does the dangerous and inconvenient task of deallocating unused memory blocks for
 us automatically.
 
-To distinguish the GC-managed "pointers" cleanly from the manually managed ones, we call
+To distinguish the GC-managed "pointers" clearly from the manually managed ones, we call
 them in Nim [.ndef]#references#, in some other languages they are called traced
 [.type]#pointers#. References are always typed like [.type]#ptr#, there is no equivalent to the untyped
 [.type]#pointer# type for references.
@@ -6364,10 +6408,10 @@ the memory for our references ourselves is still a concern, as we may forget tha
 step. Well, it is not that dangerous, when we forget the allocation step, we would use
 a reference with the value [.lit]#nil#, which would immediately result in a runtime error. So we
 would see the problem immediately. Other [.type]#pointer# errors, like missing de-allocation
-or use after free, are not that obvious and more dangerous. In languages like C tools
-like Valgrind are used to check for errors like "use after free". Valgrind is a very helpful tool,
+or use-after-free, are not that obvious and more dangerous. In languages like C tools
+like [.ndef]#Valgrind# are used to check for errors like "use after free". Valgrind is a very helpful tool,
 but it can not find all errors that may occur, and its reports can be very verbose. We may
-use Valgrind as well when we compile our Nim program with [.term]#--gc:arc# and [.term]#-d:useMalloc# -- this
+use Valgrind as well when we compile our Nim program with [.term]#--mm:arc# and [.term]#-d:useMalloc# -- this
 can be used to ensure that our program really works perfectly, maybe when we have to
 use C libraries, and it may help us find the cause for bugs.
 
@@ -6480,7 +6524,7 @@ list, where the head is just an ordinary node. If the head has the value nil,
 then the list is empty.
 ****
 
-Now we create a small Nim program, which reads in names of our friends from the
+Now we create a small Nim program, which reads in the names of our friends from the
 terminal, creates a list of all friends, and finally prints the list.
 
 [source, nim]
@@ -6790,8 +6834,9 @@ procedures that we never call would not make it into our final executable at all
 ****
 The procedure body builds a new scope. We can declare entities like variables,
 constants, types, or other {profus} in that scope. These entities are only visible in
-the procedure body, but not outside the [.proc]#{proc}#. Will will learn more about scopes and
-visibility soon.
+the procedure body, but not outside the [.proc]#{proc}#.
+//Will will learn more about scopes and
+//visibility soon.
 ****
 
 Parameter lists of procedures consist of one or more lists of parameter names, separated with commas, followed by a colon and
@@ -6976,7 +7021,7 @@ one -- [.key]#var# [.proc]#{proc}# parameters are different from [.key]#var# dec
 be modified in the procedure body, and that modification is visible after the [.proc]#{proc}#
 call.footnote:[We learned already about [.type]#pointers#, and passing var parameters to
 {profus} is closely related to [.type]#pointers#: The compiler passes indeed the address of
-the var parameter. But we do have not to care about these details.] The second [.proc]#{proc}#
+the var parameter. But we do not have to care about these details.] The second [.proc]#{proc}#
 parameter is a plain value type, it is a character that has the default value '{asterisk}'.
 To specify a default value for a parameter, we write an equal sign after the parameter type followed by the
 actual default value, as we would do in an assignment. Indeed, as in an assignment, we can even leave out the
@@ -6987,6 +7032,9 @@ leave that parameter out. For default values, we have to be a bit careful, only 
 parameters can have default values, and when we call a [.proc]#{proc}# with many parameters with
 default values, it may not always be clear which parameter we pass and for which
 parameter we want a default value.
+
+It should be obvious, that passing literals or named constants as [.key]#var# parameters as in
+[.code]#frame("Hello")# makes no sense and results in an error message from the compiler. 
 
 To generate the frame around the passed-in [.type]#string#, we have to insert two characters at
 the front of the [.type]#string# and append two more characters. Inserting in [.str]#strings# is not a
@@ -7019,8 +7067,8 @@ types, when we really need them, e.g. when we really need reference semantics, o
 like tree structures.
 ****
 
-When we call a [.proc]#{proc}# or function with multiple arguments, then we have to pass the
-arguments in the same order as they are specified in the [.proc]#{proc}# declaration.
+//When we call a [.proc]#{proc}# or function with multiple arguments, then we have to pass the
+//arguments in the same order as they are specified in the [.proc]#{proc}# declaration.
 
 Our [.func]#frame()# [.proc]#{proc}# above modifies the passed [.type]#string#. We could have instead decided that
 the [.proc]#{proc}# should not modify the [.type]#string#, but should return a new [.type]#string# consisting of
@@ -7104,7 +7152,7 @@ example:
 
 [source, nim]
 ----
-from sugar import dup
+from std/sugar import dup
 
 proc frame(s: var string; c: char = '*') =
   var cs = newString(2)
@@ -7177,14 +7225,14 @@ a case.
 For the performance of our code, it may have a tiny benefit to only use the
 result variable and fully avoid return statements, as in this case for
 a function call like [.code]#var i = sqr(j)# the result variable may be just an alias for the
-actual result i here, so that the compiler can optimize the code and avoid temporary copies.
+actual result [.var]#i# here, so that the compiler can optimize the code and avoid temporary copies.
 This is a well-known optimization in languages like {cpp} and is called NRVO (Named Return Value Optimization).footnote:[https://forum.nim-lang.org/t/4041]
 //But that are rumors and may depend on the actual compiler version.
 
-Programmers often like to do some early checks at the beginning of a proc, to verify that all parameters have
-valid values, and terminate proc execution immediately in case of invalid data by use of a return statement.
-This avoids deeply nested code in the proc body for these checks. In contrast, compiler designers like Mr. Rumpf
-prefer to avoid these return statements and to use nested if clauses instead, as this allows better control flow
+Programmers often like to do some early checks at the beginning of a [.proc]#proc#, to verify that all parameters have
+valid values, and terminate the procedure execution immediately in case of invalid data by use of a [.key]#return# statement.
+This avoids deeply nested code in the [.proc]#proc# body for these checks. In contrast, compiler designers like Mr. Rumpf
+prefer to avoid these return statements and to use nested [.key]#if# clauses instead, as this allows better control flow
 analyses and optimization for the compiler.
 
 ==== Var Return Type
@@ -7217,7 +7265,8 @@ References:
 Note that we used the [.proc]#{proc}# names [.var]#sqr1#, [.var]#sqr2#, and [.var]#sqr3# above. Using the same name with
 the same argument types multiple times would result in a redefinition error, as the
 compiler could not know what [.proc]#{proc}# body should be executed when that [.proc]#{proc}# name is
-called.
+called. Redefining existing procedures, with the same name and the identical parameter list,
+is not allowed in Nim.
 
 But Nim supports so-called [.proc]#{proc}# overloading, that is we can use the same name, when
 the parameter list is different, as the compiler can select from the parameters in
@@ -7230,7 +7279,7 @@ func sqr(i: real): real =
 ----
 
 We have only changed the parameter and result data type. Now there is no conflict
-with the [.proc]#{proc}# with the same name which, we defined for integers. Note that Nim uses only
+with the [.proc]#{proc}# with the same name, which we defined for integers. Note that Nim uses only
 the parameter list for overload resolution, but not the result type of a [.proc]#{proc}# or
 function. The reason for that is, that Nim supports type inference, and that would not
 work when we would have two [.proc]#{procs}# with the same name each accepting an [.type]#int# parameter, but
@@ -7241,9 +7290,25 @@ above with sqr(i = 2.0). Named arguments can be useful when [.proc]#{procs}# or 
 many arguments, maybe some with default values, and we do not remember the order of
 parameters or when we want to specify only a few.
 
+Actually, we can use multiple [.proc]#procs# with the same name and identical parameter list,
+when we use named arguments for the invocation as in
+
+[source, nim]
+----
+proc p(i: int): int =
+  i * i
+
+proc p(j: int): int =
+  j + j
+
+#echo p(2) # fails to compile, ambiguous call
+echo p(i = 3)
+echo p(j = 3)
+----
+
 ==== Objects and Ref Objects as Procedure Parameters
 
-In the previous section, we learned that we have to pass [.key]#var# parameters when the
+In the previous section, we learned that we have to use [.key]#var# parameters when the
 procedure should be able to mutate the variable permanently. This is also valid when
 the parameters are [.obj]#objects#. When a procedure should modify fields of an [.obj]#object#
 parameter, then we have to pass that [.obj]#object# as a [.key]#var# parameter. In the following
@@ -7316,7 +7381,7 @@ proc t2(o: var O) =
   o = O(i : 11)
 
 proc main =
-  var x = O(i : 3)
+  var x = O(i: 3)
   echo x.repr
   t1(x)
   echo x.repr
@@ -7344,9 +7409,15 @@ new instance and assigned that value to the variable [.var]#x# in the [.var]#mai
 notice this as the address of variable [.var]#x# has changed. The old instance variable with
 the address [.lit]#0x7f054a904050# is now unused and will be freed by the Nim memory management.
 
+Nim v2.0 will provide the [.ndef]#strictFuncs# pragma, which can be used to ensure that a [.proc]#proc# with a [.key]#ref object#
+parameter is not allowed to modify fields of that [.key]#ref object#. For details, see the Appendix of this book or
+the latest version of the Nim language manual.
+
 === Special Argument Types: OpenArray and Varargs
 
-The [.type]#openArray# and [.type]#varargs# data types can be used only in parameter lists. [.type]#OpenArray#
+The [.type]#openArray# and [.type]#varargs# data types can be used only in parameter lists.footnote:[Hint: Since
+Nim v1.6, the openArray type can be used as result type as well, see below.]
+[.type]#OpenArray#
 is a type that allows passing [.type]#arrays# and sequences to the procedure or function.
 Allowing that makes sense, as [.type]#arrays#, as well as sequences, store their content in a block of
 memory, which can be processed uniformly. Although [.type]#arrays# generally do not have to
@@ -7457,7 +7528,7 @@ that is a new statement block, then all symbols declared in that block are only
 visible in that block and in sub-blocks of this block, but not outside that block.
 Nim has another important concept of visibility, which is called modules and allows
 the separation of our code into logically separated text files with well-defined visibility
-rules, we will discuss modules later.
+rules; we will discuss modules later.
 
 Visibility is really a simple concept, let us regard this useless example:
 
@@ -7480,7 +7551,9 @@ echo y # ?
 ----
 
 In line one, we declare a so-called global variable, that one is visible after the
-declaration, that is below the line where it is declared, in the entire program. The
+declaration, that is below the line where it is declared, in the entire program.footnote:[Actually
+e is visible in this file, but not in other modules. We will discuss modules later.]
+The
 variables declared in the [.proc]#{proc}# [.var]#p1# are called local variables, they are not visible
 outside that [.proc]#{proc}# [.var]#p1#. The variable [.var]#x# is declared at the start of the [.proc]#{proc}# body and
 is visible in the whole [.proc]#{proc}# everywhere, while variable [.var]#y# is declared in the [.key]#if# block
@@ -7544,7 +7617,7 @@ Let us at the end of this section investigate some special cases:
 
 While in languages like C, we have always a well-defined [.func]#main()# function and all
 program code is contained in this function or in other functions which are called
-from this main function, in Nim, we have also global code as in scripting languages
+from this main function, in Nim, we have also global code as in the scripting languages
 Ruby or Python:
 
 [source, nim]
@@ -7587,7 +7660,7 @@ proc p =
     inc(i)
 ----
 
-When we carefully investigate that [.proc]#{proc}# within the while loop, we may wonder about two
+When we carefully investigate that [.proc]#{proc}# with the while loop, we may wonder about two
 points. First, we said earlier that we can and should use the [key]#let# keyword instead of
 [.key]#var# when there is only one assignment to a variable, so the variable can be regarded
 as immutable. But the loop is executed 100 times, so how can we say there is only a
@@ -7643,7 +7716,7 @@ body.
 
 We can now call that [.proc]#{proc}# with parameters of different types, including [.type]#int# and [.type]#float#
 types. You may wonder why that works -- Nim is a statically typed language, so how
-can the parameter of function [.func]#sqr()# as well accept an integer as a floating-point number? Is
+can the parameter of function [.func]#sqr()# as well accept an integer and a floating-point number? Is
 there a hidden type-conversion involved? No, the trick is that whenever we call that
 generic [.proc]#{proc}# with a different type, then a new [.proc]#{proc}# or function is instantiated. As
 we called the generic [.func]#sqr()# [.proc]#{proc}# with an [.type]#int# and a [.type]#float# parameter, during compile
@@ -7851,8 +7924,16 @@ In the example above, our [.type]#TestObj1# data type has no field with a name m
 [.func]#sortBySize()# [.proc]#{proc}#, but we define a [.func]#size()# [.proc]#{proc}# for our data type which that library function
 can use. This solution is more flexible, and when we add the inline pragma to the used [.func]#size()# [.proc]#{proc}#
 or when we compile with link-time optimization (LTO) enabled, then the overhead should be negligible.
-The two examples above are located in a single file each, but of course, for practical use,
-we would use separate modules for the library and the application part as in
+
+Generics are typically used in library modules, which provide some functionality to client modules.
+For example, a library module can provide a generic sort() function, which then can be used by different
+client modules to sort containers with arbitrary element types. We will discuss modules
+later in more detail. For now, it is sufficient to know, that each Nim module is a separate file, and that
+we can use the [.key]#import# keyword to import functionality from a (library) module into our main module.
+One restriction is, that we can actually only import symbols, that are marked with the [.op]#{star}# export marker
+in the imported module.
+
+When we split our example from above into two modules, we may get something like
 
 [source, nim]
 ----
@@ -7898,6 +7979,8 @@ proc main =
 main()
 ----
 
+Note that all [.proc]#procs# of module [.mod]#t3# and the generic container data type are marked with the
+[.op]#{star}# export marker, so that we can actually use these symbols in the importing main module.
 The example with direct field access would look for different modules like this:
 
 [source, nim]
@@ -8018,6 +8101,8 @@ become smarter every day, so that restriction may disappear in the future.]
 A useful coding style introduced by OOP languages is the method-call-syntax, which
 was initially used in the OOP programming style for [.obj]#objects#, and later applied by
 languages like Ruby to all data types. Ruby in some way regards all data as [.obj]#objects#.
+As the method-call-syntax is so useful, we have mentioned it already a few times before. But as that syntax belongs
+to the "procedures and functions" section, we will repeat the basic facts here: 
 
 Method call syntax means, that for example, for a variable [.var]#s# of data type [.type]#string# we do
 write [.func]#s.add(c)# instead of [.func]#add(s, c)#. Or for an integer variable [.var]#i#, we may write [.func]#i.abs#
@@ -8038,7 +8123,7 @@ Nim simple allows that notation generally, as did the D language, but D used the
 [.ndef]#Uniform Function Call Syntax# (UFCS) for it.
 
 === Procedure Variables
-
+//puh
 Procedures and functions are not always fully static entities. We can assign
 procedures and functions to variables, and we can pass whole procedures or functions
 as parameters to other procedures or functions. And functions can even generate and
