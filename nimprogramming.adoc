@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-13
+//v0.1, 2023-MAI-14
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -5872,6 +5872,7 @@ template from the [.mod]#sequtils# module. We will cite the example of that modu
 
 [source, nim]
 ----
+import std/sequtils
 ## Creates a seq containing 5 bool seqs, each of length of 3.
 var seq2D = newSeqWith(5, newSeq[bool](3))
 assert seq2D.len == 5
@@ -6479,7 +6480,7 @@ With that declaration, we could declare a few friends variables like
 
 [source, nim]
 ----
-  var harry, clint, eastwood: Friend
+var harry, clint, eastwood: Friend
 ----
 
 But that is not what we want, we would need a list with all of our friends that we
@@ -6543,15 +6544,16 @@ while true:
   n = readline(stdin)
   if n == "" or n == "quit":
     break
-  var node: Friend // <1>
+  var node: Friend # // <1>
   new(node)
   node.name = n
   node.next = f
   f = node
 
-while f != nil:
-  echo f.name
-  f = f.next
+var ff = f # save f for later...
+while ff != nil:
+  echo ff.name
+  ff = ff.next
 ----
 <1> The actual name for this temporary
 variable is arbitrary, we could have used [.var]#el# for element, maybe.
@@ -6588,19 +6590,22 @@ condition after the [.key]#while# statement at the top. So we use the simple con
 condition [.lit]#true#, which would never terminate the loop. We need a [.key]#break# inside the loop
 body to terminate the loop.
 
-Let us investigate the second loop first, as it is really easy: In the [.key]#while# condition,
-we check if the current value of [.var]#f# is [.lit]#nil#, that is if there are no more entries in our
-list. In that case, we terminate the loop, as we are done. If [.var]#f# has not the value
-[.lit]#nil#, then [.var]#f# points to a valid content, that is, there is at least a valid name, which
-we access by the field access operator and print it with [.code]#echo f.name#. Note that in
+Let us investigate the second loop first, as it is really easy:
+We use a new variable called [.var]#ff# instead [.var]#f# for this loop, to ensure that
+original [.var]#f# is not modified, so we can further use it.
+In the [.key]#while# condition,
+we check if the current value of [.var]#ff# is [.lit]#nil#, that is if there are no more entries in our
+list. In that case, we terminate the loop, as we are done. If [.var]#ff# has not the value
+[.lit]#nil#, then [.var]#ff# points to a valid content, that is, there is at least a valid name, which
+we access by the field access operator and print it with [.code]#echo ff.name#. Note that in
 Nim the field access operator [.op]#.# works in the same way for value [.obj]#object# types
-as well as for [.key]#ref# [.obj]#object# types. For [.key]#ref# [.obj]#objects# types we could also write [.var]#f[].name#
-instead of plain [.var]#f.name#, that is we first apply [.op]#[]# to [.var]#f# to get the content, and then
+as well as for [.key]#ref# [.obj]#object# types. For [.key]#ref# [.obj]#objects# types we could also write [.var]#ff[].name#
+instead of plain [.var]#ff.name#, that is we first apply [.op]#[]# to [.var]#ff# to get the content, and then
 use the [.op]#.# operator to access the [.var]#name# field. In some other languages like C, we would have to use
 a special operator +->+ to access fields of [.type]#pointer# or reference types.
 
-The most interesting statement in the output loop is [.code]#f = f.next#. We assign the
-content of [.var]#f.next# to [.var]#f# and proceed with that new content. The content could be a
+The most interesting statement in the output loop is [.code]#ff = ff.next#. We assign the
+content of [.var]#ff.next# to [.var]#ff# and proceed with that new content. The content could be a
 valid reference to one more [.type]#Friend# [.obj]#object#, or it could be [.lit]#nil#, indicating that our
 loop should terminate.
 
@@ -6641,37 +6646,38 @@ program above:
 
 [source, nim]
 ----
-while f != nil:
-  write(stdin, "Name to delete: ")
+var f1 = f # save original f
+while f1 != nil:
+  write(stdout, "Name to delete: ")
   n = readline(stdin)
   if n == "" or n == "quit":
     break
-  if f.name == n:
-    f = f.next
+  if f1.name == n:
+    f1 = f1.next
   else:
-    while f.next != nil:
-      if f.next.name == n:
-        f.next = f.next.next
+    while f1.next != nil:
+      if f1.next.name == n:
+        f1.next = f1.next.next
         break
-      f = f.next
+      f1 = f1.next
 ----
 
 Here we are using again an outer [.key]#while# loop to read in the names which we want to
-delete. That loop uses the condition [.code]#while f != nil:# because when the list is empty
+delete. That loop uses the condition [.code]#while f1 != nil:# because when the list is empty
 we should stop, of course.
 
 In the loop body, we have an [.key]#if# statement, and in the [.key]#else# branch of the [.key]#if# statement
 we have one more loop. The reason why we need the [.key]#if# statement is, that the case
 that our name to delete is the first in the list is some sort of special. Let us
 investigate the inner loop first. That loop assumes that there are at least 2
-elements in the list, [.var]#f#, and [.var]#f.next#. We compare the name of the next entry with [.var]#n#. If
+elements in the list, [.var]#f1#, and [.var]#f1.next#. We compare the name of the next entry with [.var]#n#. If
 they match, then we would have to skip the next entry. We can do that by the statement
-[.code]#f.next = f.next.next#. That is, we replace the reference from the current element [.var]#f# to
-the next list entry, that is [.var]#f.next#, by the next entry of the next element, which is
+[.code]#f1.next = f1.next.next#. That is, we replace the reference from the current element [.var]#f1# to
+the next list entry, that is [.var]#f1.next#, by the next entry of the next element, which is
 [.var]#(n.next).next#. We do not have to write the parenthesis. The [.var]#n.next.next# entry can be
 [.lit]#nil#, in that case, it is the end of the list. If we found a matching name, then we
 terminate the inner loop with a [.key]#break# statement, and we are done. Otherwise, we assign
-to [.var]#f# the value of [.var]#f.next# and continue the loop execution. Now to the special case
+to [.var]#f1# the value of [.var]#f1.next# and continue the loop execution. Now to the special case
 where the name to delete is the first in the list. We need the first [.key]#if# branch for
 that -- if already the first element matches the name to delete, then we just skip the
 first element by setting the head of the list to the next entry, which may or may not
@@ -6861,7 +6867,8 @@ in the order, as they are listed in the [.proc]#{proc}# header, separated with c
 
 [source, nim]
 ----
-var i: int = 7; x: float = 3.1415
+var i: int = 7
+var x: float = 3.1415
 p(i, 13, 19, x, 2.0, "We call proc p() with a lot of parameters")
 ----
 
@@ -6945,14 +6952,17 @@ We have already learned, that we can also use the method call syntax, like 7.myF
 that we can use the command invocation syntax like in [.code]#echo "Hello"#, and that we should avoid putting a space
 between the [.proc]#{proc}# name and the opening bracket, as that would be interpreted as a [.italic]#command# call with a [.tup]#tuple# argument.
 When the function or [.proc]#{proc}# expects multiple arguments, then we separate the arguments with commas, and
-we put generally a space after each comma:
+we put generally a space after each comma. For the use of the [.ndef]#command invocation syntax# there are
+some restrictions: When the proc has more than one parameter and returns a result, then it can
+not be used:
 
 [source, nim]
 ----
-proc p(i, j: int): int = i + j
+proc p(i, j: int): int = i + j # command invocation syntax does not work
+proc p2(i, j: int) = echo i * j
 echo p(1, 2) # ordinary proc call
 echo 1.p(2) # method call syntax
-echo p 1, 2 # command invocation syntax
+p2 1, 2 # command invocation syntax
 echo p (1, 2) # argument looks like a tuple, so this would not compile
 ----
 
@@ -7339,8 +7349,8 @@ main()
 The output is:
 
 ----
-[i = 3]
-[i = 13]
+O[i = 3]
+O[i = 13]
 ----
 
 [.proc]#Proc# [.var]#t2# gets a [.key]#var# parameter and can modify fields of the passed [.key]#object#. Here we
@@ -7391,7 +7401,7 @@ proc main =
 main()
 ----
 
-When we compile and run the above code, we get:
+When we compile and run the above code, we get:footnote:[For Nim 2.0 the address is not printed!]
 
 ----
 ref 0x7f054a904050 --> [i = 3]
@@ -7930,7 +7940,7 @@ For example, a library module can provide a generic sort() function, which then 
 client modules to sort containers with arbitrary element types. We will discuss modules
 later in more detail. For now, it is sufficient to know, that each Nim module is a separate file, and that
 we can use the [.key]#import# keyword to import functionality from a (library) module into our main module.
-One restriction is, that we can actually only import symbols, that are marked with the [.op]#{star}# export marker
+One restriction is, that we can actually only import symbols, that are marked with the [.op]#{asterisk}# export marker
 in the imported module.
 
 When we split our example from above into two modules, we may get something like
@@ -7980,7 +7990,7 @@ main()
 ----
 
 Note that all [.proc]#procs# of module [.mod]#t3# and the generic container data type are marked with the
-[.op]#{star}# export marker, so that we can actually use these symbols in the importing main module.
+[.op]#{asterisk}# export marker, so that we can actually use these symbols in the importing main module.
 The example with direct field access would look for different modules like this:
 
 [source, nim]
@@ -8123,7 +8133,7 @@ Nim simple allows that notation generally, as did the D language, but D used the
 [.ndef]#Uniform Function Call Syntax# (UFCS) for it.
 
 === Procedure Variables
-//puh
+
 Procedures and functions are not always fully static entities. We can assign
 procedures and functions to variables, and we can pass whole procedures or functions
 as parameters to other procedures or functions. And functions can even generate and
@@ -8316,7 +8326,7 @@ operator provided by the [.mod]#sugar# module:
 
 [source, nim]
 ----
-import sequtils, sugar
+import std/[sequtils, sugar]
 
 proc primeFilter(x: int): bool =
   x in {3, 5, 7, 13}
@@ -8331,7 +8341,7 @@ echo s.map(x => x * x) # from sugar module
 ----
 
 Here we use the [.func]#toSeq()# [.key]#template# to create our initial sequence with numbers [.lit]#0# up to [.lit]#9# --
-just to have not to type all the numbers in, we will explain [.key]#templates# soon.
+just to have not to type all the numbers in; we will explain [.key]#templates# soon.
 Then we apply the [.func]#filter()# [.proc]#{proc}# to that sequence. The [.func]#filter()# [.proc]#{proc}# expects as a second argument a function
 with an argument of the seq's base type, returning a boolean value. We can pass the named
 function [.func]#primeFilter()#, or we can just pass an anonymous [.proc]#{proc}# explicitly.
@@ -8455,7 +8465,7 @@ else:
 
 With the above [.key]#converter#, we can pass an integer to a [.proc]#{proc}# that expects a boolean parameter,
 and we can even use an integer as a logical expression in an [.key]#if# condition in the same
-way as it is done in C language. [.key]#Converters# do work only in a direct way, that is
+way as it is done in the C language. [.key]#Converters# do work only in a direct way, that is
 automatic chaining is not supported: If we have one [.key]#converter# from character to integer
 and one from [.type]#int# to boolean, that does not mean that we can pass a character to a
 [.proc]#{proc}# that expects a boolean. We would have to declare one more [.key]#converter# that
@@ -8603,16 +8613,21 @@ the fields with constant indices starting at zero.
 ----
 type
   Move = tuple # the object definition syntax
-    from: int
+    fro: int
     to: int
     check: bool
 
-type Move = tuple[from: int, to: int, check: bool] # equivalent tuple constructor syntax
+type Move2 = tuple[fro: int, to: int, check: bool] # equivalent tuple constructor syntax
 
-proc findBestNextMove(): (dest: int; check: bool) =
-  ...
+proc findBestNextMove(): tuple[dest: int; check: bool] =
+  discard
+
+proc findBestNextMove2(): (int, bool) =
+  discard
 
 let (dst, check) = findBestNextMove()
+
+let (dst2, check2) = findBestNextMove2()
 ----
 
 In the code example above, we show two equivalent ways to define a [.tup]#tuple# type,
@@ -8643,18 +8658,19 @@ proc p2(x: (int, int)): int =
   x[0] + x[1]
 
 echo p2((7, 7))
+echo p2 (7, 7)
 ----
 
 Proc [.func]#p1()# creates a [.tup]#tuple# type using the [.tup]#tuple# constructor syntax with named fields, so
 in the [.proc]#{proc}# body we can access the fields by their names, while [.proc]#{proc}# [.func]#p2()# uses an
 anonymous [.tup]#tuple#, and so has to access the fields by constant indices. Both [.proc]#{procs}# are called with
-an anonymous [.tup]#tuple# parameter.
+an anonymous [.tup]#tuple# parameter. The last line of above example code uses the command invocation syntax.
 
 === Object Variants
 
-Nim's [.obj]#object# variants, sometimes also called sum types or abstract data types (ADT),
-are advanced and type save variants of the union type known from C. The basic idea
-is that we may use value types that may store similar, but not identical data.
+Nim's [.obj]#object# variants, sometimes also called [.ndef]#sum types# or [.ndef]#abstract data types# (ADT),
+are advanced and type save variants of the [.ndef]#union# type known from C. The basic idea
+is that we may use value types that may store similar, but not identical data, as elements in containers.
 Dynamically typed languages like Ruby or Python allow that of course, and we can do it in Nim
 with [.key]#ref# types and inheritance too, as we showed in a previous section with our [.type]#Shape#
 base type and various geometric shapes. We could store that [.key]#ref# types in [.type]#arrays# or
@@ -8705,7 +8721,8 @@ As you can see, we can store all the different [.obj]#object# variants as value 
 sequence and iterate over it. Note that [.obj]#object# variants may waste some storage, as
 all variants are silently enlarged to have the exact same size so that all variant
 types can be stored in [.type]#arrays# or sequences and can be passed as [.proc]#{proc}# parameters in
-the same way to the same [.proc]#{proc}#.
+the same way to the same [.proc]#{proc}#. For more details about object variants please
+consult the Nim language manual.
 
 == Iterators
 
@@ -8755,7 +8772,7 @@ site multiple times, instead of returning just once.
 
 Whenever a [.key]#yield# statement is reached in the body of the [.key]#iterator#,
 the yielded data is bound to the [.key]#for# loop variable(s), the body of the for
-loop is executed, and at the end of the [.key]#for# loop body control returns to the
+loop is executed, and at the end of the [.key]#for# loop body, control returns to the
 [.key]#iterator#, that is execution continues directly after the [.key]#yield# statement. The
 [.key]#iterator's# local variables and execution state are automatically saved
 between calls. The iteration process continues until the end of the body of the
@@ -8808,7 +8825,7 @@ The two [.key]#iterators# in the example code from above use as argument a value
 and return the single characters as a value type. This way, we can not modify the
 [.type]#string# content. When we intend to modify the content of a container by use
 of an [.key]#iterator#, we have to pass the container as a [.key]#var# parameter and
-return the elements as [.key]#var# also. By convention for iterating over mutable
+return the elements as [.key]#var# also. By convention, for iterating over mutable
 containers the [.key]#iterator# names [.func]#mitems()# and [.func]#mpairs()# are used, where
 the leading [.var]#m# stands for mutable. We have to specify these names explicitly:
 
@@ -8826,7 +8843,7 @@ iterator mpairs(a: var string): tuple[key: int, val: var char] =
     yield (i, a[i])
     inc(i)
 
-from strutils import toLowerAscii
+from std/strutils import toLowerAscii
 var s = "NIM"
 for i, c in mpairs(s):
   if i > 0:
@@ -8971,15 +8988,17 @@ and [.key]#iterators# the same names. [key]#Iterators# have no predefined
 [.key]#result# variable and do not support recursion. Inline [.key]#iterators# can
 be used only inside [.key]#for# loops, and can not be forward declared, because
 the compiler must be able to inline an [.key]#iterator#. (This restriction will be
-gone in a future version of the compiler.) And [.key]#iterators# do not support
-recursion. Closure [.key]#iterators# are not supported by the JS backend, and cannot be
-executed at compile time. Inline [.key]#iterators# are second-class citizens; They can be
+gone in a future version of the compiler.)
+//And [.key]#iterators# do not support
+//recursion.
+Closure [.key]#iterators# are not supported by the JS backend, and cannot be
+executed at compile time. Inline [.key]#iterators# are second-class citizens; they can be
 passed as parameters only to other inlining code facilities like [.key]#templates#, [.key]#macros#,
 and other inline [.key]#iterators#. In contrast to that, a closure [.key]#iterator# can be passed
 around more freely.
 
 == Templates
-
+//puh
 ****
 Nim [.key]#templates# are very different from {cpp} [.key]#templates#!
 In {cpp} [.key]#templates# are used for
