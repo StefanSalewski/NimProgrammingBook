@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-14
+//v0.1, 2023-MAI-17
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -1007,7 +1007,7 @@ program execution, making it a good choice for critical code like device drivers
 |Native, web browser (JavaScript)
 |GC, refcount, destructors
 |Yes
-|AST based, hygenic
+|AST based, hygienic
 |Yes
 
 |Rust
@@ -1017,7 +1017,7 @@ program execution, making it a good choice for critical code like device drivers
 |Native
 |Destructors, borrow-checker
 |Yes
-|AST based, hygenic
+|AST based, hygienic
 |Yes
 
 |D
@@ -8998,7 +8998,7 @@ and other inline [.key]#iterators#. In contrast to that, a closure [.key]#iterat
 around more freely.
 
 == Templates
-//puh
+
 ****
 Nim [.key]#templates# are very different from {cpp} [.key]#templates#!
 In {cpp} [.key]#templates# are used for
@@ -9166,6 +9166,9 @@ So when [.const]#debug# is set to [.lit]#false#, absolutely no code is generated
 [.proc]#proc#, the situation is different, the expensive [.type]#string# concatenation operation would always have to be
 performed, but the [.func]#log()# [.proc]#proc# would immediately return for [.code]#debug == false#. What exactly would happen
 when [.func]#log()# is an inlined [.proc]#proc# may depend on the actually used compiler backend.
+You may wonder if inside our template from above, we should have better used "when" instead of "if".
+Use of "when" should be possible, as [.var]#debug# is a compile-time constant, but we assume that use of "if"
+generates the same machine code for this use case.
 
 Note that the delayed (lazy) parameter evaluation for [.key]#template# parameters can have disadvantages:
 When we modify the [.func]#log()# [.key]#template# like
@@ -9230,7 +9233,7 @@ well-known way by putting them in a parameter list enclosed in round brackets. B
 instead of passing this way also the final actions parameter, we put a colon after
 the parameter list and pass this way the following indented code block as the last [.key]#untyped# parameter.
 In the body of the above [.key]#template#, we have an [.func]#open()# call which opens a file with the specified
-filename and the [.lit]#fmWrite# mode, then executes the passed code block, and finally closes
+filename and the [.lit]#fmWrite# mode. The template then executes the passed code block, and finally closes
 the file. The first parameter of our [.func]#withFile()# [.key]#template# has also a special property:
 As we use [.key]#untyped# for the [.var]#f# parameter, we can pass the still undefined symbol
 [.var]#myTextFile# to the [.key]#template#. In the [.key]#template# body, this symbol is used as a variable
@@ -9238,7 +9241,7 @@ name, and our two [.func]#writeLine()# [.proc]#proc# calls can use it to refer t
 
 As Nim [.key]#templates# are hygienic, the instance of the file variable created in the body
 of our [.key]#template# can be used by the passed code block, but it actually
-exists only in the [.key]#template# and pollutes not the global namespace of our program.
+exists only in the [.key]#template# and pollutes not the global namespace of our program. 
 
 When we pass an integer and a code block to a [.key]#template#, we can easily create a function
 like the [.func]#times()# construct known from Ruby, to execute a code block [.var]#n# times:
@@ -9339,6 +9342,13 @@ Explicit immediate [.key]#templates# are now deprecated.
 For historical reasons, stmt was an alias for [.key]#typed# and expr was an alias for [.key]#untyped#, but they are removed."
 ****
 
+Earlier, we said that Nim's templates are hygienic, so you may wonder why the variable declared inside
+of the template is visible outside. Actually, this is only the case, because we pass the symbol
+[.var]#n# as a template parameter. An ordinary declaration like [.code]#var h: int# would create a variable,
+that is only visible inside the template body, we could not use it after invoking the template.
+We can use the inject pragma to make such ordinary variables visible outside of templates, for details
+please consult the language manual.
+
 === Passing a code block to a template
 
 In the [.func]#withFile()# example above, we showed that we
@@ -9418,7 +9428,7 @@ All this is explained well in the compiler manual, so it makes no sense to repea
 And it makes more sense to read it when you actually have problems with the (default)
 {behav} of [.key]#templates# in special situations.
 
-== Casts and Type Conversion
+== Casts and Type Conversions
 
 While we have various types of casts in {cpp}, we have only one cast and type
 conversions in Nim. In Nim, the [.key]#cast# just reinterprets the same bit pattern for another
@@ -9450,7 +9460,7 @@ Totally different from casting is type conversion. We can convert integers to fl
 without problems, for the conversion we use the type like a [.proc]#{proc}# call, that is
 [.func]#int(myfloat)# or [.func]#float(myInt)# -- of course, we could use method call syntax like
 [.func]#myInt.float# instead. Type conversion is some effort for the CPU, but most advanced
-CPUs should have fast instructions for basic conversion.
+CPUs should have fast instructions for basic conversions.
 
 Nim generally only allows type conversions that involve not too much effort. So we
 should not expect [.code]#var i: string ="1234"; echo i.int {asterisk} 7# to be available. Such a conversion is
@@ -9486,7 +9496,7 @@ one seems to be a legacy.
 
 [source, nim]
 ----
-from strutils import toBin
+from std/strutils import toBin
 var i = 1.int8 # 0b00000001
 i = i shl 7 # 0b10000000
 i = i shr 2 # 0b11100000 as sign is preserved
@@ -9509,7 +9519,7 @@ unsigned numbers, [.op]#shl# by one position is a multiplication by two, and shr
 Negative numbers are not allowed for the number of bits to shift -- [.code]#i = i shl -1# does compile, but the result is
 always zero. For all the shift operations, [.var]#n# shifts each by one position would give the same result as one single shift
 by [.var]#n# positions. For most modern CPU hardware, all the bit shifting operations are very fast and generally take only one clock
-cycle, independent of how many positions we move the bit pattern and independent of whether is a logical or an arithmetic shift operation.
+cycle, independent of how many positions we move the bit pattern and independent of whether it is a logical or an arithmetic shift operation.
 
 We can use the [.op]#and# and the [.op]#or# operator to extract single bits, or to set single bits:
 
@@ -9644,7 +9654,8 @@ e.msg = "the request to the OS failed"
 raise e
 ----
 
-If no [.type]#Exception# name is given for a [.key]#raise# call, the current [.type]#Exception# is re-raised.
+//If no [.type]#Exception# name is given for a [.key]#raise# call, the current [.type]#Exception# is re-raised.
+If [.key]#raise# is invoked without an [.type]#Exception# argument, the current [.type]#Exception# is re-raised.
 The [.type]#ReraiseDefect# [.type]#Exception# is raised if there is no [.type]#Exception# to re-raise.
 It follows that the [.key]#raise# statement always raises an [.type]#Exception#.
 Reraising an [.type]#Exception# can be useful in an [.key]#except# block (see below) when the actual
@@ -9667,6 +9678,7 @@ In the Nim compiler manual, we have an example like this one:
 
 [source, nim]
 ----
+import std/strutils
 var
   f: File
 if f.open("numbers.txt"):
@@ -9712,12 +9724,14 @@ optionally [.key]#finally# branch has to return nothing (void):
 
 [source, nim]
 ----
-from std/strutils import parseInt
-let x = try: parseInt("3.14")
+from std/strutils import parseInt, parseFloat
+let x = try: parseFloat("3.14")
         except: NaN
-        finally: echo "well we tried."
+        finally: echo "well we tried." # always executed!
+echo x # 3.14
 
 let i = (try: parseInt("133a") except: -1)
+echo i # -1
 ----
 
 === Except clauses
@@ -9780,7 +9794,8 @@ References:
 * https://forum.nim-lang.org/t/7514
 * https://en.wikipedia.org/wiki/Exception_handling
 
-== Effect system
+//== Effect system
+// maybe we will add it later?
 
 == Destructors
 
@@ -9820,7 +9835,7 @@ type
 proc `=destroy`(o: var O) =
   echo "destroying O"
 
-import random
+import std/random
 
 proc test =
   for i in 0 .. 5:
@@ -9847,7 +9862,7 @@ type
 proc `=destroy`(o: var typeof(O()[])) =
   echo "destroying O"
 
-import random
+import std/random
 
 proc test =
   for i in 0 .. 5:
@@ -9876,7 +9891,7 @@ type
 proc `=destroy`(o: var O) =
   echo "destroying O"
 
-import random
+import std/random
 
 proc test =
   for i in 0 .. 5:
@@ -9903,7 +9918,7 @@ type
 proc `=destroy`(o: var OP) =
   echo "destroying OP"
 
-import random
+import std/random
 
 proc test =
   for i in 0 .. 5:
@@ -10057,13 +10072,29 @@ proc main =
   var o3 = O(i: 7)
 
 main()
+GC_fullcollect()
 ----
 
+We have added a call to [.func]#GC_fullcollect()# to ensure that the REFC GC is actually called before the
+program terminates. For ARC/ORC we get this output:
+
 ----
+
 finalize O
 finalize O
 finalize O
 ----
+
+But when we compile with old REFC, we get only two finalizer calls:
+
+----
+nim r --mm:refc t.nim
+
+finalize O
+finalize O
+----
+
+For [.var]#o3# the finalizer is not called. We don't know if that is a bug or feature of v1.9.3.
 
 The output of the above program is astounding at first: Only for variable [.var]#o# we do call the
 [.proc]#{proc}# [.func]#newO()# to initialize it, which then calls [.func]#new()# by passing a finalizer [.proc]#{proc}# named [.func]#finO()#.
@@ -10086,6 +10117,8 @@ as the unintended called finalizers may do things that they should not do with o
 
 Finalizer [.proc]#{procs}# have to be defined always in the same module as the type for
 which the finalizer shall be used is defined:
+
+NOTE: This restriction seems to have been removed for Nim 2.0!
 
 [source, nim]
 ----
@@ -10142,7 +10175,7 @@ modules are Nim's classes.
 
 In Nim, each module directly corresponds to one text file. Submodules as known from
 Ruby, that divide a single text file into multiple modules, are not supported by Nim
-currently. For module names similar restrictions as for other Nim symbols exist, e.g.
+currently. For module names similar restrictions as for other Nim symbols exist,
 e.g. the hyphen '-' is not allowed in module names. Typically, we use only lowercase
 and the extension ".nim" for the names of modules. It is strongly recommended to
 avoid using module names, that are identical to symbol (type) names of that module.
@@ -10248,22 +10281,22 @@ qualified use of method call syntax or qualified use of user-defined or overload
 operators is difficult. Imagine strutils.add(s, '\n'), how should that look with
 method-call-syntax?
 
-For imports, we have also the except keyword, so we may do something like
+For imports, we have also the [.key]#except# keyword, so we may do something like
 
 [source, nim]
 ----
-import strutils except toUpper
+import std/strutils except toUpper
 ----
 
-The except keyword can be used to prevent possible name conflicts, without having to
+The [.key]#except# keyword can be used to prevent possible name conflicts, without having to
 use qualified names.
 
 Note that the system module is imported automatically, we should not import it
-directly. Also note, that Nim always imports only what is really needed in the final
+explicitly. Also note, that Nim always imports only what is really needed in the final
 executable, so importing only a few symbols from a module has no code size benefit
 over importing the whole module. Still, it may improve the readability of your code, when
 you import only single symbols for the case that you are sure that you require no more. Maybe like
-[.code]#from math import Pi#. Note that you can even in that case access other symbols of that
+[.code]#from std/math import Pi#. Note that you can even in that case access other symbols of that
 module by fully qualified names like [.func]#math.sin()#.
 
 With the growing standard library, it may occur that module names of the standard
@@ -10277,7 +10310,7 @@ like
 
 [source, nim]
 ----
-import tables as maps
+import std/tables as maps
 ----
 
 With the recent Nim compiler, you can also enforce fully qualified import and use of an
@@ -10285,7 +10318,7 @@ alternate module name by using an import statement like
 
 [source, nim]
 ----
-from tables as maps import nil
+from std/tables as maps import nil
 ----
 
 With this import statement, you could access symbols from the [.var]#tables# module only by
@@ -10330,7 +10363,7 @@ But remember, that the use of templates, inline iterators, generics, and inline 
 == Include
 
 The [.key]#include# statement should be not confused with the [.key]#import# statement. [.key]#Include# just
-insert a text file at the position where the [.key]#include# statement occurs. [.key]#Include# can be
+inserts a text file at the position where the [.key]#include# statement occurs. [.key]#Include# can be
 used to split very large modules into smaller entities.
 
 = Nim's Standard Library
@@ -10355,7 +10388,7 @@ Formally, Nim distinguishes between [.italic]#pure# and [.italic]#impure# librar
 Nim's standard libraries consist of pure libraries, which are modules completely written in Nim code.
 Impure libraries provide a high-level Nim interface and can be used like pure libraries, but
 use C libraries under the hood. Examples are the two modules [.mod]#re# and [.mod]#nre#,
-which both use the PCRE C library and some
+which both use the PCRE C library, and some
 database modules. Impure libraries can be used like pure ones when the underlying
 C library is installed. The few wrappers that are shipped with Nim provide only a low-level
 interface to C libraries, which may use unsafe [.type]#pointers# as [.proc]#{proc}# parameters and may require the user
@@ -10434,7 +10467,7 @@ An argument evaluation similar to our C program from above may look like
 
 [source, nim]
 ----
-from os import paramCount, paramStr
+from std/os import paramCount, paramStr
 
 proc main =
   echo "Executing program ", paramStr(0)
@@ -10455,6 +10488,7 @@ Using this plain API is OK when we expect one or two arguments, maybe a file nam
 and an option, like the [.term]#-d# or [.term]#--debug# parameter used in the code above. For more command-line
 arguments, things get complicated fast, as arguments can be passed in arbitrary orders and
 combinations. So you should try one of the available libraries for that case.
+One of these is the [.mod]#cligen# package, which we will present in {part}III of the book.
 
 References:
 
@@ -10526,7 +10560,7 @@ References:
 * https://github.com/johnnovak/illwill
 
 == Writing text to the terminal window
-
+//puh
 In previous sections, we have used the [.func]#echo()# function to write variables
 of various data types to the terminal window. The [.func]#echo()# function accepts
 multiple arguments, writes the [.str]#string# representation of the passed arguments
