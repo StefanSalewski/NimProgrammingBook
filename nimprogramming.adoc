@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-17
+//v0.1, 2023-MAI-18
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -196,7 +196,7 @@ Nim package managers like Nimble, Nimph, or others, using the foreign function i
 to create bindings to C libraries, and internal compiler details like the various
 memory management options, all the pragmas and similar. Also, we do not intend to
 fill the book up with redundant stuff, like tables listing all the Nim keywords or Nim's
-primitive data types and such, as you can find all that in the compiler manual easily.
+primitive data types and such, as you can find all that in the Nim language manual easily.
 
 While creating graphical user interfaces (GUIs) is an important topic, we can not
 give many details for that due to various reasons: Nim has not yet the one and only
@@ -221,7 +221,7 @@ There exist also
 some video tutorials, in case you have problems reading, but in that case,
 this book will not be of much use to you at all.
 When you know already some computer science and have already experience
-with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim compiler manual
+with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim language manual
 may be fully sufficient for you, and you may not need this book at all. Or you may prefer the
 recently published book of Mr. Rumpf, called "Mastering Nim: A complete guide to the programming language"
 available at Amazon.com.
@@ -1593,7 +1593,7 @@ of Mr. Rumpf would be also ways to learn the language.
 
 I started with Nim in 2014, with some prior experience in Pascal, C, Modula, Oberon, Ruby, and assembly language.
 I learned from all the tutorials, Nim forum, IRC, and later from the Manning book.
-And I studied the compiler manual and the API docs of Nim's standard library and a few important external packages.
+And I studied the Nim language manual and the API docs of Nim's standard library and a few important external packages.
 I would say it took me one year,
 learning 10 hours a week, to understand the foundations and be able to use the language.
 Additional to learning, I did some exercises, e.g. writing a simple chess game.
@@ -2279,6 +2279,20 @@ parameters in configuration files, so that we don't have to actually type them f
 compiler invocation. You may find more explanations for all the compiler options in
 the Nim manual, or in later sections of this book, this includes the options for the
 JavaScript backend.
+
+== Stropping for keywords and operators
+
+At the end of this introduction, we should mention that the Nim languages
+supports stropping for keywords and operators by enclosing them in backticks.
+This way, it is possible to use Nim keywords like [.key]#type#, [.key]#from#, or [.object]#object#
+as ordinary symbols, e.g. as variable or field names. Typically, we just avoid the use
+of keywords as ordinary symbols, but when interfacing with C libraries, it may occur that these
+libs are using symbols that are keywords in Nim. So instead of renaming the symbols, we could then
+use a notation like `object` for a proc parameter name, or `from` for a field name. Actually, we have to use
+stropping, when we define procedures and functions that are used as operators, as in
+[.code]#proc `*`(c: char; i: int): string = c.repeat(i)#.
+
+* https://en.wikipedia.org/wiki/Stropping_(syntax)
 
 = The Basics
 
@@ -3014,7 +3028,7 @@ in size, but there can be exceptions, so we better should not write code that de
 on the actual byte size of the types. The Nim types [.type]#cint# and [.type]#cuint# are mainly only
 used for parameter lists of (C) library functions. To match other C integer types like
 [.type]#char#, [.type]#short#, [.type]#long#, [.type]#longlong# Nim supports these types when we put a c letter in
-front of the name like clong. Again, you should consult the Nim compiler manual when
+front of the name like clong. Again, you should consult the Nim language manual when
 you need more details, i.e. when you create bindings to external libraries.
 
 === Floating-point types
@@ -3968,7 +3982,7 @@ const NimProp: CompLangProp = {compiled, hasGC, isOpenSource, isSelfHosted}
 ----
 
 [.type]#Enum# [.type]#sets# can be used to interact with functions of C libraries, where for flag
-variables often or'ed [.type]#ints# are used. For example, for the gintro C bindings, there is
+variables often or'ed [.type]#ints# are used. For example, for the Gintro C bindings, there is
 this definition:
 
 [source, nim]
@@ -4443,7 +4457,7 @@ fonts are installed. That may be the case for your local computer, but what when
 someone others may edit your source code?
 
 Starting with Nim version 1.6, we got some support for Unicode operators, which may
-be useful for some applications. For details, please see the Nim compiler manual.
+be useful for some applications. For details, please see the Nim language manual.
 
 Nim currently does not allow inserting tabular characters (tabs) in your source code,
 so you have to do the indentation of blocks by spaces only. Typically, we use two
@@ -4694,10 +4708,10 @@ and, or, not, xor, shl, shr, div, mod, in, notin, is, isnot, of, as, from.
 Operators have different priorities, e.g. [.op]#{asterisk}# and [.op]#/# have a higher
 priority than [.op]#{plus}# and [.op]#-#. In most cases, the priority is just as we would
 expect, maybe with a few exceptions. If we are unsure, we can group terms with
-brackets, or consult the compiler manual for details.
+brackets, or consult the Nim language manual for details.
 
 Since version 1.6 Nim also allows to define and use of a few Unicode operators, but these
-are still considered experimental. For details, you should consult the compiler manual.
+are still considered experimental. For details, you should consult the language manual.
 
 === Order of Execution
 
@@ -7248,7 +7262,7 @@ analyses and optimization for the compiler.
 ==== Var Return Type
 
 A procedure, [.key]#converter#, or [.key]#iterator# may return a [.key]#var# type, which can be modified by the caller.
-The Nim compiler manual provides this basic example:
+The Nim language manual provides this basic example:
 
 [source, nim]
 ----
@@ -7264,7 +7278,7 @@ In the above example, this works, as the result is an alias for the global varia
 
 Actually used are [.ndef]#var return types# for [.key]#iterators# like [.func]#mitems()# or [.func]#mpairs()#,
 which allows modifying the yielded results. For details and restrictions
-of the [.ndef]#var return type#, you should consult the Nim compiler manual:
+of the [.ndef]#var return type#, you should consult the Nim language manual:
 
 References:
 
@@ -8192,7 +8206,7 @@ that data type.
 
 [source, nim]
 ----
-from algorithm import sort
+from std/algorithm import sort
 
 proc cmp(a, b: int): int =
   if a < b:
@@ -8969,7 +8983,7 @@ while true:
   echo v
 ----
 
-In this example from the compiler manual, the [.proc]#proc# [.func]#mycount()#
+In this example from the Nim language manual, the [.proc]#proc# [.func]#mycount()#
 captures the bound for the counter. When we compile and run the code above, we get:
 
 ----
@@ -9354,7 +9368,7 @@ please consult the language manual.
 In the [.func]#withFile()# example above, we showed that we
 can pass a block of statements as the last argument to a [.key]#template# following the special [.op]#:# syntax.
 To demonstrate the difference between code blocks of [.key]#typed# and [.key]#untyped# data type
-we will cite the compiler manual, see https://nim-lang.org/docs/manual.html#templates-passing-a-code-block-to-a-template:
+we will cite the Nim language manual, see https://nim-lang.org/docs/manual.html#templates-passing-a-code-block-to-a-template:
 
 Usually, to pass a block of code to a [.key]#template#, the parameter that accepts the block needs to be of type [.key]#untyped#.
 Because symbol lookups are then delayed until [.key]#template# instantiation time:
@@ -9418,13 +9432,13 @@ we can pass such an operator as [.key]#untyped# parameter to a [.key]#template#.
 
 === Advanced template use
 
-For the advanced [.key]#template# stuff, you should consult the compiler manual.
+For the advanced [.key]#template# stuff, you should consult the Nim language manual.
 
 This includes the symbol binding rules, identifier construction in [.key]#templates#,
 lookup rules for [.key]#template# parameters, hygiene in [.key]#templates#, use of the [.lit]#inject# pragma, and
 limitations of the method-call-syntax.
 
-All this is explained well in the compiler manual, so it makes no sense to repeat it here.
+All this is explained well in the language manual, so it makes no sense to repeat it here.
 And it makes more sense to read it when you actually have problems with the (default)
 {behav} of [.key]#templates# in special situations.
 
@@ -9605,7 +9619,7 @@ breaks the regular control flow of the program,
 which may make it hard to reason about all the possible code paths.
 For this reason, the popular Go programming language was initially released with [.type]#Exception# handling explicitly omitted, with the developers arguing that it obfuscated control flow.
 Actually, the Nim compiler can help us with the bookkeeping of all the involved [.type]#Exceptions# by its
-effect system, which is described in much detail in the compiler manual and which we will
+effect system, which is described in much detail in the Nim language manual and which we will
 discuss briefly in the next section. Nim's [.type]#Exception# tracking is part of Nim's effect system --
 we can annotate each [.proc]#proc# with all the various types of [.type]#Exceptions# that it may [.key]#raise#, and
 the compiler can help us with this annotation and verify that it is correct.
@@ -9674,7 +9688,7 @@ type
 
 === Try statement
 
-In the Nim compiler manual, we have an example like this one:
+In the Nim language manual, we have an example like this one:
 
 [source, nim]
 ----
@@ -9753,7 +9767,7 @@ except IOError as e:
 === Imported exceptions
 
 It is possible to [.key]#raise# and catch imported {cpp} exceptions.
-The Nim compiler manual has a detailed example of that, see
+The Nim language manual has a detailed example of that, see
 https://nim-lang.org/docs/manual.html#exception-handling-imported-exceptions
 
 === Defer statement
@@ -9803,7 +9817,7 @@ Destructors and finalizers are used for automatic resource management.
 For example, files can be closed automatically when a file variable goes out of scope,
 or when we create high-level Nim bindings to C libraries we can use
 finalizers or destructors to deallocate entities of the C libs when a corresponding
-Nim (proxy) [.obj]#object# is freed. Libraries like the gintro GTK bindings make use of this.
+Nim (proxy) [.obj]#object# is freed. Libraries like the intro GTK bindings make use of this.
 
 Finalizers are procedures that can be passed as a second, optional parameter to the
 system [.func]#new()# [.proc]#{proc}#. That way, the finalizer [.proc]#{proc}# is attached to the data type of the variable which
@@ -10337,9 +10351,9 @@ import gintro/[glib, gobject, gtk4]
 export glib, gobject, gtk4
 ----
 
-Then a user of [.var]#gintro# could just write [.code]#import gtkplus# to have access to all
+Then a user of [.var]#Gintro# could just write [.code]#import gtkplus# to have access to all
 the modules. Actually, for GTK this is not really a good idea, we will tell you more
-about the [.var]#gintro# module and maybe about one more of Nim's GUI libraries in the second half of the book.
+about the [.var]#Gintro# module and maybe about one more of Nim's GUI libraries in the second half of the book.
 
 === Cyclic Imports
 
@@ -10560,7 +10574,7 @@ References:
 * https://github.com/johnnovak/illwill
 
 == Writing text to the terminal window
-//puh
+
 In previous sections, we have used the [.func]#echo()# function to write variables
 of various data types to the terminal window. The [.func]#echo()# function accepts
 multiple arguments, writes the [.str]#string# representation of the passed arguments
@@ -10652,7 +10666,7 @@ echo "Nim".find('i')
 
 For a more formalized way to indicate the absence of a meaningful [.key]#result#,
 many modern programming languages provide the concept of [.type]#Option# types,
-which are also called sometimes [.type]#Maybe# types.
+which are sometimes also called [.type]#Maybe# types.
 [.type]#Option# types can encapsulate an arbitrary data type and provide
 functions like [.func]#isSome()# or [.func]#isNone()# to test for the existence of a valid value, and
 functions like [.func]#get()# to extract the actual value from the [.type]#Option# type:
@@ -10695,6 +10709,7 @@ should be not significant in most use cases.
 
 The [.mod]#options# module provides some more procedures for the handling of [.key]#Option# types,
 but this short introduction should be enough to get you started.
+You can find an alternative implementation of a Nim Option-Type at https://github.com/arnetheduck/nim-results.
 
 References:
 
@@ -10722,18 +10737,21 @@ not read back stored files anymore.
 So we will explain how you can store Nim data types in a human-readable text format first.
 Two popular text formats are [.ndef]#JSON# and [.ndef]#YAML#. JSON is a simple format, which is easy to parse, but not
 well readable for humans. YAML is more complicated, but more flexible and is very good
-readable for humans.
+readable for humans. Other popular data formats are XML or TOML.
 
 For Nim, we have already many modules available, which we can use for storing data in JSON or YAML format.
-The Nim standard library includes the [.mod]#marshal# and the [.mod]#json# module. The [.mod]#marshal# module uses, like
-the [.mod]#json# module, the JSON data file format, which is easy to use and simple but is not really designed
-to generate human-readable data files, as the stored data is not stored as a sequence of individual lines.
+The Nim standard library includes the [.mod]#marshal# and the [.mod]#json# module. Both store
+the data in JSON format, but the [.mod]#marshal# module
+can not separate the distinct data fields into multiple lines,
+which seriously restrict the human readability.
 So we will describe and use the [.mod]#json# module in this section, which is also easy to use, but has a larger
-set of functionality and can generate real human-readable text files by use of the pretty() function.
+set of functionality and can generate real human-readable text files by use of the [.func]#pretty()# function.
 
 Other available external packages for data serialization are the nim-serialization module set from (https://github.com/status-im/nim-serialization)
 and the very powerful but complicated NimYaml implementation (https://nimyaml.org/). We may describe these packages
-in {part}V of the book.
+in {part}V of the book. An alternative to the [.mod]#json# module of Nim's standard library is the https://github.com/treeform/jsony
+package, which has the advantage, that is can handle default values and missing object fields. Both is useful, when we extend our
+software, and have to be able to process old data files.
 
 When we have to store and read back Nim data to nonvolatile storage media, we have some serious
 points to consider: First, we have to handle various data types like integers, [.type]#floats#, [.str]#strings#, [.obj]#objects# -- and
@@ -10750,7 +10768,7 @@ storing that [.str]#string# and reading it back from the file will be explained 
 
 [source, nim]
 ----
-import json
+import std/json
 
 type
   Line = object
@@ -10859,8 +10877,8 @@ creating a new [.type]#Arc# type:
 
 [source, nim]
 ----
-import json
-from math import PI
+import std/json
+from std/math import PI
 
 type
   Line = object
@@ -10941,8 +10959,8 @@ Will will show an example of that now:
 
 [source, nim]
 ----
-import json
-from math import PI
+import std/json
+from std/math import PI
 
 type
   Line = ref object of RootRef
@@ -11035,8 +11053,8 @@ dynamic [.key]#of# type query to select the exact matching sequence.
 
 After that, we can use the already known JSON functions to serialize the storage [.obj]#object# into a [.str]#string#, store the [.str]#string#
 to a file, read it back, and deserialize the data again into a different variable of [.type]#Storage# data type. Finally, we use a simple [.key]#for# loop
-to copy the [.key]#ref# [.key]#objects# from the temporary storage [.key]#object# into a [.type]#Data# variable called d2. For storing the data in an external
-nonvolatile medium, we use the [.type]#File# data type and the related functions [.func]#open()#, close, [.func]#write()# and [.func]#read()#. Their use should be
+to copy the [.key]#ref# [.key]#objects# from the temporary storage [.key]#object# into a [.type]#Data# variable called [.var]#d2#. For storing the data in an external
+nonvolatile medium, we use the [.type]#File# data type and the related functions [.func]#open()#, [.func]#close#, [.func]#write()# and [.func]#read()#. Their use should be
 obvious: We pass an uninitialized variable of [.type]#File# data type, a file name, and a file mode to [.func]#open()#, use [.func]#write()# to write
 the whole [.str]#string#, and use [.func]#readAll()# to read the data back. When done with each file, we use [.func]#close()# to close the file.
 The [.type]#File# data type is part of the [.mod]#io# module, which is again part of the [.mod]#system# module, so we don't have to import these modules.
@@ -11062,6 +11080,7 @@ References:
 * https://nim-lang.org/docs/io.html
 * https://nim-lang.org/docs/marshal.html
 * https://github.com/status-im/nim-serialization
+* https://github.com/treeform/jsony
 * https://nimyaml.org/
 
 == Streams and Files
@@ -11088,7 +11107,7 @@ For storing unstructured data, Nim provides the [.mod]#io# module with the [.typ
 data type and related [.proc]#{procs}#, and the [.mod]#streams# module with the [.type]#Stream# data type
 and related [.proc]#{procs}#. While a [.type]#File# in Nim is currently only a [.type]#pointer# to a C file, the [.mod]#streams#
 module has a higher abstraction level. Although the Nim language does not directly support
-interfaces, the [.type]#Stream# data type of the [.mod]#streams# module is some form of an interface,
+[.ndef]#interfaces#, the [.type]#Stream# data type of the [.mod]#streams# module is some form of an interface,
 which is implemented by a [.type]#StringStream# and a [.type]#FileStream# data type. Internally, this interface
 concept is realized by storing a set of function [.type]#pointers# in the [.type]#Stream# instance.
 
@@ -11117,7 +11136,7 @@ magnetic tapes in the past.
 
 [source, nim]
 ----
-from os import fileExists
+from std/os import fileExists
 proc main =
   const FN = "NoImportantData"
   if os.fileExists(FN):
@@ -11138,7 +11157,7 @@ Hello World!
 3.1415
 ----
 
-At the start of our function, we check if a file with that name already exists in the current working directory by using the function [.func]#os.fileExists()#
+At the start of our main() proc, we check if a file with that name already exists in the current working directory by using the function [.func]#os.fileExists()#
 to ensure that we do not overwrite important data.
 
 Module [.mod]#io# provides multiple overloaded [.func]#open()# [.proc]#{procs}#. We use here a variant
@@ -11158,13 +11177,13 @@ When the file is successfully opened, we can use [.proc]#{procs}# like [.func]#w
 write text [.str]#strings# to the file. Both [.proc]#{procs}# accept multiple arguments and apply the stringify operator
 [.op]#$# on them before writing the content. [.func]#WriteLine()# writes a [.lit]#'\n'# after the last argument to start a new line.
 When done, we call [.func]#close()# to close the file. The {os} would close the file for us when our program terminates, so
-calling close is not that important, but when we open many files without closing them, we may get
-errors from the {os} finally about too many open files and our program may fail or terminate.
+calling [.func]#close()# is not that important, but when we open many files without closing them, we may finally get
+errors from the {os} about too many open files and our program may fail or terminate.
 
 The [.func]#close()# [.proc]#{proc}# gets passed the file not as a [.key]#var# parameter, so it can not set the file
 to value [.lit]#nil#. When the file has the value [.lit]#nil#, then the [.func]#close()# call is ignored, but when we would call
 [.func]#close()# multiple times with a non-[.lit]#nil# argument, we get a program crash.
-We may use the try/finally or the defer construct to ensure that we really close the file when done.
+We may use the [.key]#try/finally# or the [.key]#defer# construct to ensure that we really close the file when done.
 
 The [.mod]#io# module provides some [.proc]#{procs}# like [.func]#writeBuffer()#, [.func]#writeBytes()#, or [.func]#writeChars()#, which gives us
 as a return value the actual number of bytes written. This return value should generally match
@@ -11333,7 +11352,7 @@ References:
 * https://nim-lang.org/docs/io.html
 
 === Streams
-
+//puh
 A stream is an abstract interface for performing certain I/O operations, which was introduced
 by languages like C or Modula-2 decades ago. The [.mod]#streams# module of the Nim standard library
 provides a [.type]#FileStream# and a [.type]#StringStream# implementation, which behave very similarly.
@@ -11353,7 +11372,7 @@ just return [.lit]#nil#. We can write and read textual data with the [.mod]#stre
 
 [source, nim]
 ----
-from os import fileExists
+from std/os import fileExists
 import streams
 
 proc main =
@@ -11382,7 +11401,7 @@ In a very similar way, we can write to and read from [.str]#string# streams:
 
 [source, nim]
 ----
-import streams
+import std/streams
 proc main =
   var stream = newStringStream()
   stream.write(123, ' ')
@@ -11429,8 +11448,8 @@ to set back the old position to the initial value, so [.func]#peek()# has some o
 
 [source, nim]
 ----
-import streams
-from os import getFileSize
+import std/streams
+from std/os import getFileSize
 proc main =
   const SN = "NoImportantData" # stream name
   var fstream = newFileStream(SN, fmReadWrite)
@@ -11775,7 +11794,7 @@ We mentioned already the useful but performance-critical set of [.func]#split()#
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 let str = "Zero, first, second, third"
 var s: seq[string] = str.split(", ")
 echo s
@@ -11816,7 +11835,7 @@ one split for each separator, so we can get empty [.str]#strings# as result as i
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 let str = "Zero___first_second__third"
 let str2 = "Zero first\tsecond           third"
 echo str.split('_')
@@ -11831,7 +11850,7 @@ when the [.str]#string# to split starts or ends with the separator:
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 let str = "_Zero_first_second_third_"
 let str2 = "   Zero first\tsecond           third   "
 echo str.split('_')
@@ -11857,7 +11876,7 @@ all characters from a set or a single [.str]#string#:
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 var s = "NNimmm Language"
 s.removePrefix('N'); echo s # immm Language
 s.removePrefix({'N', 'i', 'm', ' '}); echo s # Language
@@ -11870,7 +11889,7 @@ and return a boolean value:
 
 [source, nim]
 ----
-import strutils
+import /stdstrutils
 var s = "Nim Language"
 echo s.startsWith('N') # true
 echo s.startsWith("Nim") # true
@@ -11886,7 +11905,7 @@ also when the elements are not already [.str]#strings# -- in that case, the stri
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 var a = ["Nim", "Rust", "Julia"]
 var s = a.join(", ")
 echo s
@@ -11902,7 +11921,7 @@ the index position of the first match or [.lit]#-1# when the search gave no resu
 
 [source, nim]
 ----
-import strutils
+import std/strutils
 var s = "Nim Language"
 echo s.find('L') # 4
 echo s.find({' ', 'a'}) # 3
@@ -11973,7 +11992,7 @@ include the version numbers, but we require the plain names. The function
 
 [source, nim]
 ----
-import parseutils
+import std/parseutils
 var libs = ["libdconf.so.1.0.0", "libnice.so.10.11.0", "libwebkit2gtk-5.0.so.0.0.0"]
 var l = newStringOfCap(128)
 for s in libs:
@@ -12032,7 +12051,7 @@ Functions like [.func]#parseInt()# and [.func]#parseFloat()# can be used to extr
 
 [source, nim]
 ----
-import parseutils
+import std/parseutils
 var s = "In the year 2020 I gain 2.5 kg more fat."
 var year: int
 var value: float
@@ -12289,7 +12308,7 @@ control the matching process:
 
 [source, nim]
 ----
-import strscans
+import std/strscans
 
 proc ndigits(input: string; intVal: var int; start: int; n: int): int =
   var i, x: int
@@ -12345,8 +12364,8 @@ With the [.func]#fmt()# [.mac]#macro# from the [.mod]#strformat# module, we can 
 
 [source, nim]
 ----
-import strformat
-from strutils import `%`
+import std/strformat
+from std/strutils import `%`
 var lang = "C"
 var year = 1972
 stdout.write "The programming language ", $lang, " was created in ", $year, ".\n"
@@ -12365,7 +12384,7 @@ or we can use the notations [.lit]#{'\n'}#, [.func]#fmt()# or [.func]#"".fmt#.
 
 [source, nim]
 ----
-import strformat
+import std/strformat
 var lang = "Fortran"
 var year = 1957
 stdout.write &"The programming language {lang} was created in {year}.\n"
@@ -12379,7 +12398,7 @@ The [.func]#fmt()# [.mac]#macro# also works with multi-line raw [.type]#strings#
 
 [source, nim]
 ----
-import strformat
+import std/strformat
 echo fmt"""This is a {1 + 1 + 1} lines
 multiline
 string."""
@@ -12389,7 +12408,7 @@ The [.func]#fmt()# [.mac]#macro# accept a few directives for the formatting of i
 
 [source, nim]
 ----
-import strformat
+import std/strformat
 var pi = 3.1415
 var people = 123
 echo fmt"The number{pi:>8.2f} is called PI by {people:>8} people."
@@ -12410,7 +12429,7 @@ to get the initial expression both as [.str]#string# and as interpolated value, 
 
 [source, nim]
 ----
-import strformat
+import std/strformat
 var pi = 3.1415
 echo fmt"{2 * pi = }" # 2 * pi = 6.283
 ----
@@ -12424,7 +12443,7 @@ expression that should be interpolated:
 
 [source, nim]
 ----
-import strformat
+import std/strformat
 echo fmt"{2} curly braces {'\{'} {'\}'}." # 2 curly braces { }.
 echo "three time three is <3 * 3>".fmt('<', '>') # three time three is 9
 ----
@@ -12583,7 +12602,7 @@ While the [.func]#max()# and [.func]#min()# [.proc]#{procs}# are available from 
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 var s = @[7, 3, 5]
 echo s.min, " ", s.max # 3 7
 echo s.minIndex, " ", s.maxIndex # 1 0
@@ -12598,7 +12617,7 @@ The functions [.func]#minIndex()# and [.func]#maxIndex()# as well as [.func]#cou
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 var s = @[3, 5, 1, 7, 3, 3, 5]
 echo s.count(5) # 2
 echo s.deduplicate # @[3, 5, 1, 7]
@@ -12620,7 +12639,7 @@ allows removing a range of items from the [.type]#seq# when we specify two index
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 var s: seq[int]
 s = concat(@[1, 2], @[3, 4], @[5, 6])
 echo s # @[1, 2, 3, 4, 5, 6]
@@ -12635,7 +12654,7 @@ repeats the items of an existing [.type]#seq# multiple times:
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 echo 2.repeat(4) # @[2, 2, 2, 2]
 echo @[1, 2].cycle(3) # @[1, 2, 1, 2, 1, 2]
 ----
@@ -12644,7 +12663,7 @@ A bit more complicated, but really useful are functions like [.func]#map()#, [.f
 
 [source, nim]
 ----
-import sequtils, sugar
+import std/sequtils, sugar
 var s = (0 .. 9).toSeq
 echo s.map(proc(x: int): int = x * x) # always @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 echo s.map(x => x * x) # from sugar module
@@ -12668,7 +12687,7 @@ items with positive results survive.
 
 [source, nim]
 ----
-import sequtils, sugar
+import std/sequtils, sugar
 var s = (0 .. 9).toSeq
 var s1 = s
 s1.apply(x => x * x) # @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
@@ -12715,7 +12734,7 @@ a condition or if all items fulfill a condition:
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 var s = (0 .. 9).toSeq
 echo s.all(proc(x: int): bool = x < 10) # true
 echo s.any(proc(x: int): bool = x * x == 25) # true
@@ -12726,7 +12745,7 @@ can separate the [.tup]#tuple# items again in two separate sequences:
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 var s = (0 .. 9).toSeq
 var s1 = s.mapIt(it * it)
 var z = zip(s, s1)
@@ -12744,7 +12763,7 @@ from left to right, returning the accumulation and accepts an optional start val
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 var s = (0 .. 9).toSeq
 echo s.foldl(a + b, 100) # 145
 echo s.foldr(a + b) #45
@@ -12771,7 +12790,7 @@ A fast on-the-fly solution is this, as suggested by someone in the Nim forum:
 
 [source, nim]
 ----
-import sequtils, sets, sugar
+import std/sequtils, sets, sugar
 let a = [1, 2, 5, 2, 9, 7, 0]
 let b = [7, 4, 1, 10, 7]
 let bSet = b.toHashSet()
@@ -12784,7 +12803,7 @@ When we should need this operation frequently, we may define our own [.proc]#{pr
 ----
 # https://ruby-doc.org/core-2.6/Array.html#method-i-2D
 # Array Difference
-import sets
+import std/sets
 
 proc `-`*[T](a, b: openArray[T]): seq[T] =
   let s = b.toHashSet
@@ -12943,8 +12962,8 @@ So the module [.mod]#random# provides overloaded [.func]#rand()# functions that 
 
 [source, nim]
 ----
-from times import getTime, toUnix, nanosecond
-import random
+from std/times import getTime, toUnix, nanosecond
+import std/random
 
 let now = getTime()
 var rstate = initRand(now.toUnix * 1_000_000_000 + now.nanosecond)
@@ -13357,7 +13376,7 @@ A useful variant of the [.type]#Table# data type is the [.type]#CountTable#, whi
 
 [source, nim]
 ----
-import tables
+import std/tables
 var ct: CountTable[string]
 ct.inc("Nim")
 ct.inc("Rust")
@@ -13397,7 +13416,7 @@ hash function is available, we have to declare another hash function for [.obj]#
 
 [source, nim]
 ----
-import tables, hashes
+import std/[tables, hashes]
 
 type
   Person = object
@@ -13435,7 +13454,7 @@ We can even attach properties to plain data types this way:
 
 [source, nim]
 ----
-import tables
+import std/tables
 
 var t: Table[float, string]
 
@@ -13465,7 +13484,7 @@ how Nim compares value and reference types:
 
 [source, nim]
 ----
-import tables, hashes
+import std/[tables, hashes]
 
 type
 
@@ -13552,7 +13571,7 @@ With a hash table using a [.tup]#tuple# of two city coordinates as key, it is ea
 
 [source, nim]
 ----
-import tables, math
+import std/[tables, math]
 
 const
   InvalidFloat = 1e30 # arbitrary marker that in not a valid value
@@ -13640,7 +13659,7 @@ in a text file:
 ----
 import std/tables
 
-from strutils import split
+from std/strutils import split
 
 proc main =
   const FileName = "t.nim"
@@ -14369,7 +14388,7 @@ fix it.
 
 [source, nim]
 ----
-import regex, strutils
+import regex, std/strutils
 let fileName = "test.nim"
 let trail = re"\s+$"
 let aan = re"a(\s+[AEIOUaeiou])"
@@ -14532,7 +14551,7 @@ proc selectionSort(s: var seq[int]) =
     swap(s[j], s[k]) # exchange smallest value with the one currently at position k
     inc(j) # sorted range increased by one
 
-import random
+import std/random
 proc main =
   var s: seq[int]
   for i in 0 .. 9:
@@ -14622,7 +14641,7 @@ proc insertionSort(s: seq[int]): seq[int] =
       dec(j)
     result[j + 1] = x # insert x
 
-import random
+import std/random
 proc main =
   var s: seq[int]
   for i in 0 .. 9:
@@ -14721,7 +14740,7 @@ s[a], s[a {plus}1] .. s[b].
 
 [source, nim]
 ----
-from algorithm import isSorted, sort
+from std/algorithm import isSorted, sort
 import std/monotimes
 
 proc qsort(s: var seq[int]; a, b: int) =
@@ -14764,7 +14783,7 @@ proc quickSort(s: var seq[int]) =
   if s.len > 2:
     qsort(s, 0, s.high)
 
-import random
+import std/random
 proc main =
   var s: seq[int]
   var start: MonoTime
@@ -14867,7 +14886,7 @@ we can [.func]#push()# and [.func]#pop()# values.]
 
 [source, nim]
 ----
-from algorithm import isSorted, sort
+from std/algorithm import isSorted, sort
 import std/monotimes
 
 proc qsort(s: var seq[int]) =
@@ -14910,7 +14929,7 @@ proc quickSort(s: var seq[int]) =
   if s.len > 2:
     qsort(s)
 
-import random
+import std/random
 proc main =
   var s: seq[int]
   var start: MonoTime
@@ -14963,7 +14982,7 @@ a [.type]#seq# with [.lit]#2^64# entries.
 
 [source, nim]
 ----
-from algorithm import isSorted, sort
+from std/algorithm import isSorted, sort
 import std/monotimes
 
 proc qsort(s: var seq[int]) =
@@ -15009,7 +15028,7 @@ proc quickSort(s: var seq[int]) =
   if s.len > 2:
     qsort(s)
 
-import random
+import std/random
 proc main =
   var s: seq[int]
   var start: MonoTime
@@ -15068,7 +15087,7 @@ scenario:
 
 [source, nim]
 ----
-from algorithm import isSorted, sort
+from std/algorithm import isSorted, sort
 import std/monotimes
 
 proc qsort(s: var seq[int]) =
@@ -15122,7 +15141,7 @@ proc quickSort(s: var seq[int]) =
   if s.len > 2:
     qsort(s)
 
-import random
+import std/random
 proc main =
   var s: seq[int]
   var start: MonoTime
@@ -15282,7 +15301,7 @@ proc mergeSort(s: seq[int]): seq[int] =
     return s
   msort(s, s.low, s.high)
 
-import random, algorithm
+import std/[random, algorithm]
 proc main =
   var s, st: seq[int]
   randomize()
@@ -15364,7 +15383,7 @@ proc msort(s: var seq[int]; a, b: int) =
 proc mergeSort(s: var seq[int]) =
   msort(s, s.low, s.high)
 
-import random, algorithm, std/monotimes
+import std/[random, algorithm, monotimes]
 proc main =
   var s: seq[int]
   var start: MonoTime
@@ -15467,7 +15486,7 @@ proc mergeSort(s: var seq[int]) =
   var sh = newSeq[int](s.len div 2)
   msort(s, sh, s.low, s.high)
 
-import random, algorithm, std/monotimes
+import std/[random, algorithm, monotimes]
 proc main =
   var s: seq[int]
   var start: MonoTime
@@ -15698,7 +15717,7 @@ the difference as a new [.type]#seq#, and a [.op]#\`-=`# [.proc]#{proc}#, which 
 
 [source, nim]
 ----
-import sets
+import std/sets
 
 proc `-`*[T](a, b: openArray[T]): seq[T] =
   let s = b.toHashSet
@@ -15754,7 +15773,7 @@ combination with the [.op]#+=>+# operator of the [.mod]#sugar# module:
 
 [source, nim]
 ----
-import sequtils, sets, sugar
+import std/[sequtils, sets, sugar]
 
 let a = [1, 2, 5, 2, 9, 7, 0]
 let b = [7, 4, 1, 10, 7]
@@ -16048,7 +16067,7 @@ it should be OK to use it. At the end of this section, we will consider how we m
 
 [source, nim]
 ----
-import math
+import std/math
 
 proc intToStr(a: int): string =
   if a == int.low:
@@ -16086,7 +16105,7 @@ with [.type]#uint64# instead of [.type]#int# in the [.proc]#{proc}# body, as in
 
 [source, nim]
 ----
-import math
+import std/math
 
 proc intToStr(a: int): string =
   var v: uint64
@@ -16116,7 +16135,7 @@ And now we can make the [.proc]#{proc}# generic:
 
 [source, nim]
 ----
-import math
+import std/math
 
 proc intToStr(a: SomeInteger): string =
   var v: uint64
@@ -16172,7 +16191,7 @@ on {uc} CPUs. Let us see how a [.proc]#{proc}# for only unsigned types may look:
 
 [source, nim]
 ----
-import math
+import std/math
 
 proc intToStr(a: SomeUnsignedInt): string =
   var i: int
@@ -16509,7 +16528,7 @@ graphics library. To actually run the program, you would need a computer with pr
 installed GTK and Cairo. For Linux boxes, this should be typically no problem, for
 Windows or Mac, you may have to install them, or you may use other toolkits or just
 delete the graphical output routines from the above program. Additionally, you would need
-the gintro Nim GTK bindings, which you may install with the command "nimble install gintro@#head"
+the Gintro Nim GTK bindings, which you may install with the command "nimble install gintro@#head"
 if not already available. Then you can run our program with the command "nim r prim.nim"
 and should get a GUI window displaying the constructed path. Our program contains a main() and an activate()
 proc, which are typically used in modern GTK to launch an app. The activate() proc
@@ -16557,7 +16576,7 @@ of a subtree in an ordinary Nim bitset.
 ----
 import std/[random, times, sets]
 from std/math import `^`, Tau
-from algorithm import sort, SortOrder
+from std/algorithm import sort, SortOrder
 
 const
   WindowWidth = 1000
@@ -16724,7 +16743,7 @@ we will sketch the very simple Nim implementation here:
 
 [source, nim]
 ----
-import sequtils
+import std/sequtils
 
 type
   Subsets = object
@@ -16773,7 +16792,7 @@ Using the disjoint-set data structure drastically beautifies the Kruskal algorit
 ----
 import std/[random, times, sequtils]
 from std/math import `^`
-from algorithm import sort, SortOrder
+from std/algorithm import sort, SortOrder
 
 ### Subsets implementation
 
@@ -16919,7 +16938,7 @@ endpoints of an edge, where org is short for the origin, and dest for the destin
 ----
 import std/[random, times, sequtils]
 from std/math import `^`
-from algorithm import sort, SortOrder
+from std/algorithm import sort, SortOrder
 import cdt2/[dt, vectors, edges, types]
 
 ### Subsets implementation
@@ -17367,9 +17386,9 @@ References:
 Explaining only one of the more than 20 available GUI toolkits in some detail
 would be far too much for this book. So we can give only a list of
 some of the available toolkits with a short description and a link to
-it. For the gintro GTK bindings, you may also consult the GTK-Programming
+it. For the Gintro GTK bindings, you may also consult the GTK-Programming
 companion book by the same author, which is still in an early stage (maybe 25 % done).
-But note that GTK is not that popular these days, and the gintro package has currently very few
+But note that GTK is not that popular these days, and the Gintro package has currently very few
 users. The reasons are obvious: GTK is coded in C, which makes its further development a pain, bindings to
 other languages always imply some overhead, a high maintenance effort, and never work perfectly. But even Rust, with its
 much larger community and many bright developers, has similar problems: Native Rust GUI toolkits
@@ -18023,7 +18042,7 @@ To verify that [.mac]#macros# are really executed at compile time, we will start
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(s: string): untyped =
   echo s
@@ -18057,7 +18076,7 @@ expect a compiler error:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(s: string): untyped =
   echo s
@@ -18091,7 +18110,7 @@ with a fully [.key]#static# [.str]#string#, that [.func]#parseStmt()# actually w
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(s: static[string]): untyped =
   result = parseStmt(s)
@@ -18122,7 +18141,7 @@ a simple text [.str]#string# based [.mac]#macro# can solve the task:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 type
   O = object
@@ -18216,7 +18235,7 @@ share all the limitations of the NimVM: [.mac]#Macros# have to be implemented in
 call C functions, except those that are built into the compiler.
 
 In the Nim [.mac]#macros# tutorial, the [.type]#static#, [.type]#typed#, and [.type]#untyped# [.mac]#macro# parameters are described in some detail. We will
-follow that description, as it is more detailed than the current description in the Nim compiler manual. As these
+follow that description, as it is more detailed than the current description in the Nim language manual. As these
 descriptions are very abstract, we will give some simple examples later.
 
 ==== Static Macro Parameters
@@ -18267,7 +18286,7 @@ print a short message when we compile our program:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(x: static[int]): untyped =
   echo "executing macro body"
@@ -18280,7 +18299,7 @@ and indeed, it does. The next example is not that easy:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(x: int): untyped =
   echo "executing macro body"
@@ -18299,7 +18318,7 @@ prints the value [.lit]#7#. Instead, we get just [.var]#y# for both [.func]#echo
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(x: typed): untyped =
   echo "executing macro body"
@@ -18320,7 +18339,7 @@ Now, let us see what happens when we pass an undefined symbol to this [.mac]#mac
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(x: typed): untyped =
   echo "executing macro body"
@@ -18335,7 +18354,7 @@ by replacing [.type]#typed# with [.type]#untyped#:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m1(x: untyped): untyped =
   echo "executing macro body"
@@ -18378,14 +18397,14 @@ by using the [.code]#quote do:# construct, it is very easy to create our desired
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro show(x: untyped): untyped =
   let n = x.toStrLit
   result = quote do:
     echo `n`,": ", `x`
 
-import math
+import std/math
 var a = 7.0
 var b = 9.0
 show(a * sqrt(b))
@@ -18435,7 +18454,7 @@ macro show(x: untyped): untyped =
   genAst(x, n):
     echo n, ": ", x
 
-import math
+import std/math
 var a = 7.0
 var b = 9.0
 show(a * sqrt(b))
@@ -18480,7 +18499,7 @@ for such a print debug statement should look:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 var a, b: int
 
@@ -18512,7 +18531,7 @@ can list us exactly the needed functions:
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 var a, b: int
 
@@ -18545,7 +18564,7 @@ Indeed, we can use the output of the [.func]#dumpAstGen()# [.mac]#macro# directl
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 var a, b: int
 
@@ -18590,7 +18609,7 @@ it is easy to guess how we can construct the [.mac]#macro# body:
 
 [source, nim]
 ----
- import macros
+import std/macros
 
 var a, b: int
 
@@ -18649,7 +18668,7 @@ evaluated when we run the [.mac]#macro# generated code.
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 var a, b: int
 
@@ -18698,7 +18717,7 @@ in the [.mac]#macro# body with a [.key]#for# loop over the [.type]#varargs# argu
 
 [source, nim]
 ----
-import macros
+import std/macros
 
 macro m2(args: varargs[untyped]): untyped =
   result = nnkStmtList.newTree()
@@ -19706,13 +19725,13 @@ multiple threads. But as Nim's thread handling may change and improve in the fut
 further, we will not try to discuss all these details here. It should be enough that
 you have a feeling for the concerns, that may arise from executing multiple threads
 with shared data -- for the details, you should consult the documentation of Nim's
-standard library and the compiler manual.
+standard library and the language manual.
 
 === Guards and Locks
 
 While Nim's [.type]#Lock# data type and the corresponding functions are defined in
 the [.mod]#locks# module of the standard library, that module contains only minimal
-explanations, so we have to consult the experimental section of the compiler manual.
+explanations, so we have to consult the experimental section of the language manual.
 
 In computer science, a lock or mutex (from mutual exclusion) is a synchronization
 primitive, that enforces limits on access to a resource when there are many threads of
@@ -20406,7 +20425,7 @@ then we would need [.type]#Channels# to return results.
 ----
 import std/threadpool
 import std/parseutils
-from strutils import splitLines
+from std/strutils import splitLines
 const
   FileName = "csvdata.txt"
   BlockSize = 1024 * 1024 - 1
@@ -20515,7 +20534,7 @@ usually use at least the number of physical CPU cores, but not a much larger val
 Maybe you wonder why we chose as the result for the [.func]#candidate()# [.proc]#{proc}# [.code]#ref Res# and not just [.type]#Res#. The
 reason is, that currently a spawned [.proc]#{proc}# may only return a value [.key]#object# when the [.key]#object# has no
 fields, that contain data types that are handled by the garbage collector. For details, you may consult
-the compiler manual.
+the Nim language manual.
 
 Note, that the call [.code]#spawn candidate(buf)# copies the [.var]#buf# parameter. This way all the chunks of the initial
 CSV file have to be copied, which may minimally decrease performance. But the copying of data
@@ -21509,14 +21528,14 @@ The Rust programming language uses the term traits instead:
 We can use trait bounds to specify that a generic type can be any type that has certain behavior.footnote:[https://doc.rust-lang.org/book/ch10-02-traits.html]#
 
 Nim's [.key]#concepts# have been redefined in 2019 and are now sometimes referred to as "new concepts".
-They are described in the "experimental" part of the compiler manual, and may still have some issues.
+They are described in the "experimental" part of the Nim language manual, and may still have some issues.
 Maybe syntax and semantics may change in the future a bit, but it is expected that they remain part of the language.
 
 In this section, we will try to give an easily understandable introduction to Nim's [.key]#concepts#. If you have already some
 experience with concepts, interfaces, or traits in other programming languages, you may read the section in the
-Nim compiler manual instead. And of course, you should consult that section later, when you really intend to use [.key]#concepts#,
+Nim language manual instead. And of course, you should consult that section later, when you really intend to use [.key]#concepts#,
 to learn about all the details and possible future changes. The following explanations are based on the experimental section of
-the Nim compiler manual for Nim 1.9.1, which does not explicitly refers to the term "new concepts" and does not already use
+the Nim language manual for Nim 1.9.1, which does not explicitly refers to the term "new concepts" and does not already use
 the new [.type]#Self# data type introduced for the "new concepts". At the end of this section, we will cite the actual RFC (Request for Comments)
 for the "new concept" implementation.
 
@@ -21644,7 +21663,7 @@ The last line would not compile, as the object data type [.type]#O# has no
 [.op]#<# predicate defined. From the [.type]#Comparable# type definition or from
 the error message, it may now be easier to understand the concrete issue.
 
-We can also define more complicated [.key]#concepts#. The compiler manual has an
+We can also define more complicated [.key]#concepts#. The language manual has an
 example of a [.type]#Stack# [.key]#concept#:
 
 [source, nim]
@@ -21691,7 +21710,7 @@ type
 In a [.key]#concept# body, we can also use and test for types.
 We can use directly the named type instances following the [.key]#concept# keyword [.code]#(concept x, y, type T)#
 and we can explicitly prefix data types with the [.key]#type# modifier. The following example is from
-the experimental section of the compiler manual:
+the experimental section of the Nim language manual:
 
 [source, nim]
 ----
@@ -21738,20 +21757,20 @@ effect of that pragma.]
 
 === Generic concepts
 
-Concept data types can be parametric just like regular generic types. The compiler manual
+Concept data types can be parametric just like regular generic types. The Nim language manual
 presents a generic concept for a 2D matrix type that can be used with arbitrary
 numeric base types.
 
 === Concept-derived values and concept refinement
 
-The compiler manual also explains how existing [.key]#concepts# can be refined and
+The language manual also explains how existing [.key]#concepts# can be refined and
 how we can even define constants and types inside a [.key]#concept# body.
 
 === Concept redesign 2019
 
 The above descriptions are based on the experimental section of the Nim compiler
 manual for Nim 1.9.1 (RC 2.0) as available in early 2023. An RFC (Request for Comments) from 2019 suggested a
-[.key]#concept# redesign, which is not explicitly mentioned in the compiler manual, but
+[.key]#concept# redesign, which is not explicitly mentioned in the Nim language manual, but
 seems to be partly implemented already. The most noticeable change for these "new concepts" is,
 that now a [.type]#Self# data type can be used to refer to the [.key]#concept# type instance.
 The [.key]#concept# body consists now mostly of a set of procs, which may use the [.type]#Self# data type.
