@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-18
+//v0.1, 2023-MAI-20
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -1658,7 +1658,7 @@ when the function is called (invoked). And the program execution is not a linear
 conditional expressions to skip parts of the program, or various loop constructs to repeat
 the execution of some program segments. Actually, the program execution in Nim is more
 similar to languages like Python or Ruby than to the C language: A C program always
-needs a main() function with exactly this name, and the execution of a C program
+needs a [.func]#main()# function with exactly this name, and the execution of a C program
 always starts with a compiler-generated call of this function.
 
 Elementary entities of computer programs are [.ndef]#variables#, which are basically named
@@ -2282,15 +2282,55 @@ JavaScript backend.
 
 == Stropping for keywords and operators
 
-At the end of this introduction, we should mention that the Nim languages
+////
+// we use single quote insted of backtick for now, as asciidoctor has issues with it
+
+=== This is a temporary test for Asciidoctor only
+
+One approach is to instruct AsciiDoc not to interpret the pair of backticks as monospace formatting:
+
+[.code]#proc \`*`(c: char; i: int): string = c.repeat(i)#
+
+The \`object` type ...
+
+//That will produce:
+
+//<span class="code">proc `*`(c: char; i: int): string = c.repeat(i)</span>
+
+However, given that you are representing code inside the code span, it might be better to use an inline passthrough:
+
+[.code]#+proc `*`(c: char; i: int): string = c.repeat(i)+#
+
+The +`object`+ type ...
+
+This then allows you to format the whole run of text in monospace if you want. The passthrough takes precedence and hides the inner backticks from the outer monospace span.
+
+`+proc `*`(c: char; i: int): string = c.repeat(i)+`
+
+The `+`object`+` type ...
+
+We call that literal monospace. See https://docs.asciidoctor.org/asciidoc/latest/text/literal-monospace/
+
+If it gives you any trouble, you can use the other forms of passthrough:
+
+`++proc `*`(c: char; i: int): string = c.repeat(i)++`
+
+The `++`object`++` type ...
+
+`pass:c[proc `*`(c: char; i: int): string = c.repeat(i)]`
+
+The `pass:c[`object`]` type ...
+
+////
+At the end of this introduction, we should mention that the Nim language
 supports stropping for keywords and operators by enclosing them in backticks.
-This way, it is possible to use Nim keywords like [.key]#type#, [.key]#from#, or [.object]#object#
+This way, it is possible to use Nim keywords like [.key]#type#, [.key]#from#, or [.key]#object#
 as ordinary symbols, e.g. as variable or field names. Typically, we just avoid the use
 of keywords as ordinary symbols, but when interfacing with C libraries, it may occur that these
 libs are using symbols that are keywords in Nim. So instead of renaming the symbols, we could then
-use a notation like `object` for a proc parameter name, or `from` for a field name. Actually, we have to use
+use a notation like `++`object`++` for a proc parameter name, or `++`from`++` for a field name. Actually, we have to use
 stropping, when we define procedures and functions that are used as operators, as in
-[.code]#proc `*`(c: char; i: int): string = c.repeat(i)#.
+[.code]#+proc `*`(c: char; i: int): string = c.repeat(i)+#.
 
 * https://en.wikipedia.org/wiki/Stropping_(syntax)
 
@@ -2399,7 +2439,7 @@ the actual numeric value is used.
 Expressions, that we assign to constants, are already evaluated at compile
 time. So complicated expressions have no negative impact on the performance of the program.
 The expressions can contain simple operations like basic math,
-and most Nim functions can be used as well, but functions like sin() from external C libraries
+and most Nim functions can be used as well, but functions like [.func]#sin()# from external C libraries
 may currently not be available.
 
 Variable declarations are more complicated, as we ask the compiler to reserve a named
@@ -2781,7 +2821,7 @@ more detail when we explain {profus}. For now, it is enough that you know about 
 existence of that syntax, as we may use it in some places in the following sections.
 For example, for the length of text [.str]#strings#, we generally write [.code]#myTextString.len#
 instead of [.code]#len(myTextString)#. Both notations are fully equivalent.footnote:[
-Here [.func]#len()# is a predefined function of the Nim standard library, len() is short for length,
+Here [.func]#len()# is a predefined function of the Nim standard library, [.func]#len()# is short for length,
 and that function returns the actual length of a text [.str]#string# as an integer value.]
 ****
 
@@ -4053,7 +4093,11 @@ as [.type]#sets# are unordered types.
 
 At the end of this section, we should mention that Nim's standard library has also a module called
 [.mod]#setutils# that provides a few useful functions and a template:
-The function [.func]#`[]=`# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
+//The function [.func]#\`[]=`# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
+//The function [.func]#+`[]=`+# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
+//The function `++`[]=`++` allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
+The function [.func]#'[]='# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
+
 to exclude or to include value [.var]#x# to [.type]#set# [.var]#s#, instead of using the [.op]#incl# or [.op]#excl# notation.
 And the functions [.func]#fullset()# and [.func]#complement()# make it easy to get a set that includes all possible  members,
 and to complement ("invert") a set. Finally, the template [.func]#toSet()# can be used to convert other data types to
@@ -4393,7 +4437,7 @@ of text"""
 echo "this is\nthree lines\nof text"
 ----
 
-Both echo() commands above generate exactly the same machine code!
+Both [.func]#echo()# commands above generate exactly the same machine code!
 
 === Comments
 
@@ -4717,7 +4761,7 @@ are still considered experimental. For details, you should consult the language 
 
 Global program code or code in [.proc]#{procs}# is generally executed from top to the
 bottom and from left to the right, as long as control structures do not enforce a different order.
-To demonstrate this, we use here a set of four different [.proc]#{procs}#, which contain an echo() statement each, and
+To demonstrate this, we use here a set of four different [.proc]#{procs}#, which contain an [.func]#echo()# statement each, and
 return a numeric expression. Well, we have not yet formally introduced procedures, so if you should
 feel too uncomfortable with the code below, just skip this section for now and come back when you have read the
 section about [.proc]#{procs}#:
@@ -4747,7 +4791,7 @@ echo a(1) < 0 and b(1) > 0
 echo a(1) > 0 or b(1) > 0
 ----
 
-It should be no real surprise, that the first three echo() statements produce this output:
+It should be no real surprise, that the first three [.func]#echo()# statements produce this output:
 
 ----
 a
@@ -6024,8 +6068,8 @@ and use
 for x in s.span(1, s.high):
 ----
 
-Or we may do the summing in a procedure and pass that [.proc]#{proc}# an openArray created with
-toOpenArray() like
+Or we may do the summing in a procedure and pass that [.proc]#{proc}# an [.type]#openArray# created with
+[.func]#toOpenArray()# like
 
 [source, nim]
 ----
@@ -6732,12 +6776,12 @@ echo ro1 == ro3 # true
 ----
 
 NOTE: In modern Nim, we generally use the constructor syntax like [.code]#var ro1 = RO(i: 1)# or [.code]#var computer1: Computer(price: 799.99; quantity: 2)#
-to allocate and initialize ref objects, and avoid explicit new() calls for the allocation, followed by explicit field initialization.
+to allocate and initialize ref objects, and avoid explicit [.func]#new()# calls for the allocation, followed by explicit field initialization.
 The constructor syntax is more compact,
 and the combined construction with initialization may allow the compiler to reason about the code more effectively and to produce better code.
 As the constructor
 syntax looks the same for value and ref objects, this may also simplify later changes of the program.
-So the use of explicit new() calls is a legacy and everybody is highly encouraged to use object constructors instead.
+So the use of explicit [.func]#new()# calls is a legacy and everybody is highly encouraged to use object constructors instead.
 In the rare case, that a very complicated constructor call fails to compile, we may fall back to the use of new().footnote:[https://forum.nim-lang.org/t/9929]
 
 //== Arithmetic -- Integers and Floats
@@ -7486,7 +7530,7 @@ print(["Hello", "World"]) # we generate the array our self
 ----
 
 There exists a variant of the [.type]#varargs# argument type that performs a type conversion
-automatically by applying a [.proc]#{proc}# on all arguments. For example, [.code]#varargs[string, `$`]#
+automatically by applying a [.proc]#{proc}# on all arguments. For example, [.code]#varargs[string, \`$`]#
 would apply the stringify operation on the passed arguments automatically. That is
 what [.func]#echo()# does.
 
@@ -7950,7 +7994,7 @@ can use. This solution is more flexible, and when we add the inline pragma to th
 or when we compile with link-time optimization (LTO) enabled, then the overhead should be negligible.
 
 Generics are typically used in library modules, which provide some functionality to client modules.
-For example, a library module can provide a generic sort() function, which then can be used by different
+For example, a library module can provide a generic [.func]#sort()# function, which then can be used by different
 client modules to sort containers with arbitrary element types. We will discuss modules
 later in more detail. For now, it is sufficient to know, that each Nim module is a separate file, and that
 we can use the [.key]#import# keyword to import functionality from a (library) module into our main module.
@@ -8435,7 +8479,7 @@ applications for recursion. In most cases, a plain iterative algorithm is faster
 because all the overhead with many [.proc]#{proc}# calls is avoided for plain iterative solutions. But sometimes
 recursive algorithms are easier to understand, or programming an iterative solution can be really complicated.
 
-As one of the most simple algorithms, we will present here the recursive fac() function:
+As one of the most simple algorithms, we will present here the recursive [.func]#fac()# function:
 
 [source, nim]
 ----
@@ -8523,7 +8567,7 @@ automatically ensure that always the matching method for each instance is called
 A classical example is a drawing program, where we have different geometrical shapes
 like rectangles, circles, and many more. All the geometrical [.obj]#objects# are stored in some
 form of a list, and when we want to draw all of them on the screen, then we have to call
-only an unspecific draw() method, and the compiler ensures that for each shape the
+only an unspecific [.func]#draw()# method, and the compiler ensures that for each shape the
 matching draw method is called. In Nim, that may look like
 
 [source, nim]
@@ -9427,7 +9471,7 @@ var p2 = p + p
 echo p2 # (x: 2, y: 2, z: 2)
 ----
 
-This works, because for operators math like [.code]#1+2# can be written as [.code]#`+`(1, 2)# and because
+This works, because for operators math like [.code]#1+2# can be written as [.code]#\`+`(1, 2)# and because
 we can pass such an operator as [.key]#untyped# parameter to a [.key]#template#.
 
 === Advanced template use
@@ -11157,7 +11201,7 @@ Hello World!
 3.1415
 ----
 
-At the start of our main() proc, we check if a file with that name already exists in the current working directory by using the function [.func]#os.fileExists()#
+At the start of our [.func]#main()# proc, we check if a file with that name already exists in the current working directory by using the function [.func]#os.fileExists()#
 to ensure that we do not overwrite important data.
 
 Module [.mod]#io# provides multiple overloaded [.func]#open()# [.proc]#{procs}#. We use here a variant
@@ -11352,7 +11396,7 @@ References:
 * https://nim-lang.org/docs/io.html
 
 === Streams
-//puh
+
 A stream is an abstract interface for performing certain I/O operations, which was introduced
 by languages like C or Modula-2 decades ago. The [.mod]#streams# module of the Nim standard library
 provides a [.type]#FileStream# and a [.type]#StringStream# implementation, which behave very similarly.
@@ -11537,7 +11581,7 @@ In some cases, the compiler can be able to optimize the slitting process, but
 it is also a good idea to think about other ways to extract the data, maybe by
 applying [.proc]#{procs}# from the [.mod]#strscans# module, which can parse lines directly into passed [.key]#var#
 parameters, avoiding unnecessary allocations. Nim 2.0 may get support for [.ndef]#view types#, which functions
-like split() may use as return types to reuse slices of the initial string instead of
+like [.func]#split()# may use as return types to reuse slices of the initial string instead of
 allocating new result strings.
 
 ****
@@ -11777,6 +11821,7 @@ The [.mod]#stringutils# module support [.str]#string# interpolation by use of th
 
 [source, nim]
 ----
+import std/strutils
 echo "The $1 programming language is $2." % ["best", "Nim"]
 echo "The $# programming languages are $#." % ["most difficult", "C++, Rust and Haskell"]
 echo "A $adj programming language is $lang." % ["adj", "low level", "lang", "assembly"]
@@ -11889,7 +11934,7 @@ and return a boolean value:
 
 [source, nim]
 ----
-import /stdstrutils
+import std/strutils
 var s = "Nim Language"
 echo s.startsWith('N') # true
 echo s.startsWith("Nim") # true
@@ -11943,7 +11988,7 @@ are surrounded by word boundary characters like spaces, tabulators, or newlines.
 The function [.func]#multiReplace()# is a variant, that can replace multiple substring/replacement pairs passed as [.type]#tuples# in one pass.
 
 The function [.func]#strip()# can be used to remove multiple characters from a set at the start and the end of a [.str]#string#. The default
-character set is whitespace, and per default, strip() removes characters at both ends of the [.str]#string#. The function [.func]#stripLineEnd()#
+character set is whitespace, and per default, [.func]#strip()# removes characters at both ends of the [.str]#string#. The function [.func]#stripLineEnd()#
 removes a single line end marker as \r, \n, \r\n, \f, \v from the end of the [.str]#string#, but only once.
 
 Sometimes useful is the boolean function [.func]#isEmptyOrWhitespace()# which checks if a [.str]#string# is empty or contains
@@ -12063,7 +12108,7 @@ echo year, ": ", value # 2020: 2.5
 ----
 
 In the above example, we used the module prefix, as [.mod]#strutils# contains also a [.func]#parseInt()# and a [.func]#parseFloat()# function.
-The functions [.func]#parseBin()#, [.func]#parseOct()# and parseHex() behave similarly. Returned is the number
+The functions [.func]#parseBin()#, [.func]#parseOct()# and [.func]#parseHex()# behave similarly. Returned is the number
 of processed characters. We add the returned value to the start position so that parsing can continue
 at the new position.
 
@@ -12168,8 +12213,8 @@ proc sep(input: string; start: int; seps: set[char] = {' ',',',';'}): int =
 The first parameter is the [.str]#string# to process, and the second parameter is
 the position at which the processing should start. (In other words, the second
 parameter of integer type is the actual position in the input [.str]#string#, that position
-moves during the whole capering process from the start of the input [.str]#string# to
-its end. The end may not be reached if the capering fails at some point.)
+moves during the whole capturing process from the start of the input [.str]#string# to
+its end. The end may not be reached if the capturing fails at some point.)
 The last parameter
 has always the type [.type]#set[char]# with a default value indicating which
 characters that [.proc]#{proc}# can process. Actually, a default value seems to be necessary, but the
@@ -12195,11 +12240,11 @@ return the number of processed characters. But additionally, a [.key]#var# param
 is used to return the result of the capture, and the last parameter with arbitrary data type can
 influence the capturing process. One possible use of the last parameter is to use an integer value
 to limit the maximum number of characters to process. This [.proc]#{proc}# is called in the pattern [.type]#string#
-by using curly braces like ${stt(0)}.
+by using curly braces like [.var]#${stt(0)}#.
 
 [.func]#Scanf()# returns true, when all the parameters match, in that case, all the passed variables get
 assigned a value. Currently, [.func]#scanf()# does not support the capturing of optional data, as the whole
-processing stops, when one capture fails, i.e. when $i is used to requesting the capture of an integer value,
+processing stops, when one capture fails, i.e. when [.var]#$i# is used to requesting the capture of an integer value,
 but the input [.str]#string# does not contain decimal digits at the current capture position. In the
 same way, the whole capturing process stops when a user-defined capturing matcher returns zero,
 as no capturing is possible. So intermediate optional arguments are currently not supported.
@@ -12350,11 +12395,11 @@ after the pattern [.str]#string#.
 
 Additionally, the [.mod]#strscans# module provides a [.func]#scanp()# [.mac]#macro#, which works somewhat similar to
 PEG or RegEx libraries. We will not try to explain the [.func]#scanp()# [.mac]#macro#, as its use may be too
-difficult for a beginner book. And when we really have to process text [.str]#strings# with
+difficult for the start of a beginner book. And when we really have to process text [.str]#strings# with
 regular expression grammars, then we can use the available RegEx or PEG modules,
 which have no restrictions and work for Nim similarly as for other programming languages.
 We will introduce the Nim RegEx and PEG modules later in the book -- maybe we will compare
-the scanp() [.mac]#macro# there.
+the [.func]#scanp()# [.mac]#macro# there.
 
 === Module strformat
 
@@ -12453,6 +12498,9 @@ not try to explain all these various formatting options in detail, as it is
 really hard to remember. It is enough that you know that these options exist, so
 you can consult the API docs for details when you would need them.
 
+Note that we will discuss the performance of various methods for parsing of strings (CSV data)
+in the second halve of the book, see <<Parsing data files (in parallel)>>.
+
 References:
 
 * https://nim-lang.org/docs/strutils.html
@@ -12474,7 +12522,7 @@ for sequences due to their dynamic size, the actual data buffer has to be alloca
 about sequences already in {part}II of the book. One important aspect was, that sequences use a continuous data
 buffer with a fixed capacity to store the actual elements. When that data buffer is fully occupied, and we try to
 add more elements, then a new larger buffer is allocated on the heap, and the contained elements have
-to be copied from the old to the new larger buffer before the old buffer can be deallocated.
+to be copied from the old to the new, larger buffer before the old buffer can be deallocated.
 
 When we pass [.type]#arrays# or sequences to [.proc]#{procs}#, then we can use the special data type [.type]#openArray# when we define the [.proc]#{proc}#, to
 allow passing both [.type]#arrays# and sequences. Note that this is very different from generic [.proc]#{procs}#: When we define
@@ -12663,7 +12711,7 @@ A bit more complicated, but really useful are functions like [.func]#map()#, [.f
 
 [source, nim]
 ----
-import std/sequtils, sugar
+import std/[sequtils, sugar]
 var s = (0 .. 9).toSeq
 echo s.map(proc(x: int): int = x * x) # always @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 echo s.map(x => x * x) # from sugar module
@@ -12687,7 +12735,7 @@ items with positive results survive.
 
 [source, nim]
 ----
-import std/sequtils, sugar
+import std/[sequtils, sugar]
 var s = (0 .. 9).toSeq
 var s1 = s
 s1.apply(x => x * x) # @[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
@@ -12790,7 +12838,7 @@ A fast on-the-fly solution is this, as suggested by someone in the Nim forum:
 
 [source, nim]
 ----
-import std/sequtils, sets, sugar
+import std/[sequtils, sets, sugar]
 let a = [1, 2, 5, 2, 9, 7, 0]
 let b = [7, 4, 1, 10, 7]
 let bSet = b.toHashSet()
@@ -12832,7 +12880,7 @@ proc main =
   echo a - b
   echo b - a
 
-  var x = @a
+  var x = @a # apply the "to_seq" operator @ on array a to get a seq
   x -= b
   echo x
 
@@ -12862,7 +12910,7 @@ References:
 * https://forum.nim-lang.org/t/7753#49189
 
 == Random Numbers
-
+//puh
 Most computer programs work fully deterministic, that is, one input data set
 generates exactly one well-defined output data set. This {behav} is not
 desired when we create games or simulations: The actions of computer-controlled characters
@@ -12944,7 +12992,7 @@ some basic mathematical operations like division for a range reduction.
 The most basic functions provided by the [.mod]#random# module are the overloaded [.func]#rand()#
 functions. [.func]#Rand()# called with an integer parameter [.var]#n# gives us integer random numbers in the
 range from [.lit]#0# up to [.var]#n#, and [.func]#rand()# called with a [.type]#float# parameter [.var]#x# will give us
-random [.type]#float# numbers in the range [.var]#0 .. x#. When we just use the rand() functions in this way,
+random [.type]#float# numbers in the range [.var]#0 .. x#. When we just use the [.func]#rand()# functions in this way,
 we would get the same sequence of numbers for each run of our program, as the generator
 always starts with the same well-defined initial state. We can call
 the [.proc]#{proc}# [.func]#randomize()# before calling [.func]#rand()# to initialize the generator to a different
@@ -13528,7 +13576,7 @@ By default, the [.op]#==# operator compares content for value [.key]#objects#, b
 Because of this, it makes sense to define hash functions for [.key]#object# types and [.key]#ref# [.key]#object# types
 in a compatible way: We use the hash value of the single integer field of our value [.obj]#object# as the hash result
 for the entire [.obj]#object#, and we use the address of the instance for the hash value of the reference [.obj]#object#.
-As different instances of [.key]#ref# [.obj]#objects# have always different addresses, the hasKey() does return false
+As different instances of [.key]#ref# [.obj]#objects# have always different addresses, the [.func]#hasKey()# does return false
 when we use as the argument a different instance variable, independent of the content of its fields.
 
 For special use cases, we may redefine the [.op]#==# operator, but we have to ensure that the defined hash function
@@ -15947,7 +15995,7 @@ This works because the 10 decimal digits follow each other in the ASCII table. A
 remember the position of the digit '0' in that table, we get the position by int('0').
 Note that int('0') and ord('0') are basically the same here, we have no real preference and use both alternately.
 The [.func]#ord()# function is generic, always returns an [.type]#int#, and works for ordinal types, [.type]#enums# with holes, and distinct ordinal types,
-while the int() functions
+while the [.func]#int()# functions
 have the advantage, that we have them for different sizes like int8(), and also for unsigned results.
 We strongly hope that you know well the difference between the [.type]#int# value [.lit]#0# and the
 decimal character digit [.lit]#'0'# -- if not, you may read again the section about characters in part II
@@ -16497,8 +16545,8 @@ for our current task, the use of references seems to be OK.
 Note that we used in our type definition a new feature introduced with Nim 2.0:
 Default values for object fields. With dist: float = Inf we initialize that field
 to math.Inf, instead of the default zero value.
-In the init() procedure, we create a sequence of random input vertices.
-Then, in the createforest() procedure, we pick an arbitrary starting vertex from the input data set and assign that
+In the [.func]#init()# procedure, we create a sequence of random input vertices.
+Then, in the [.func]#createforest()# procedure, we pick an arbitrary starting vertex from the input data set and assign that
 value to a variable called last. This value is the starting point of our MST for now, and
 later, variable last is always the point that we just added to the tree.
 Whenever we add one more point to the tree, the tree grows, and the distance to all the still
@@ -16513,7 +16561,7 @@ a minimum, we store that minimum value and the position of the vertex with the m
 When we have processed all vertices this way, the integer variable pos is the index of the
 closest vertex. We add this vertex to the forest, remove it from the seq of still
 unconnected vertices, and also store it in variable last for the next iteration.
-Note that we use the del() procedure to delete values from the sequence. Del() performs the
+Note that we use the [.func]#del()# procedure to delete values from the sequence. [.func]#Del()# performs the
 deletion by actually moving the last value from the seq to the position to remove.
 This avoids expensive shifts of elements but does not preserve the order of elements
 in the seq. For our seq of input data, this is OK, as the data has no special order.
@@ -16530,10 +16578,10 @@ Windows or Mac, you may have to install them, or you may use other toolkits or j
 delete the graphical output routines from the above program. Additionally, you would need
 the Gintro Nim GTK bindings, which you may install with the command "nimble install gintro@#head"
 if not already available. Then you can run our program with the command "nim r prim.nim"
-and should get a GUI window displaying the constructed path. Our program contains a main() and an activate()
-proc, which are typically used in modern GTK to launch an app. The activate() proc
+and should get a GUI window displaying the constructed path. Our program contains a [.func]#main()# and an activate()
+proc, which are typically used in modern GTK to launch an app. The [.func]#activate()# proc
 creates a window with a drawingarea widget in which we can use Cairo functions to
-draw lines, circles, and much more. To do that, we need a draw() function, which we
+draw lines, circles, and much more. To do that, we need a [.func]#draw()# function, which we
 set for our drawingarea widget, so it is called automatically when needed, e.g. for
 program startup or when we resize or uncover the main window. In the draw function,
 we iterate over the vertices of our forest, draw small circles to indicate the vertex positions,
@@ -16543,7 +16591,7 @@ the Nim GTK companion book. Or, just use one of the more than 20 other GUI toolk
 Nim, and modify the above program accordingly.
 
 When you compile the program with the option -d:release and run it, the
-displayed execution time for the createForest() should be
+displayed execution time for the [.func]#createForest()# should be
 around 15 microseconds for an input set of 50 points on modern hardware.
 That may look reasonably fast, but when you modify the program constant
 Points = 50 to value 500, the execution time rises to 1 ms already.
@@ -16692,9 +16740,9 @@ to avoid including each edge twice in the seq of input edges.
 Actually, as our vertices have unique ids, we could use the same test on the id fields instead
 on the memory address in this case.
 As we intend to sort all our edges by length, we have to define
-a cmp() proc for two edges, which we pass to the sort() proc.
+a [.func]#cmp()# proc for two edges, which we pass to the [.func]#sort()# proc.
 After we have sorted all the edges in descending order, we remove
-the shortest one with pop() from the container and investigate, in which sets
+the shortest one with [.func]#pop()# from the container and investigate, in which sets
 the two vertices of that edge are contained. If at least one vertex of
 the edge has still a set reference with a value nil, then we join both vertices into
 one set. If both edges are contained in different sets, then we join the two sets and
@@ -16781,7 +16829,7 @@ echo s.find(5)
 
 The Subset data structure uses the parent field to store the n initial disjoint subsets.
 Additionally, a rank field with also n positions is used, which controls the union()
-joining operations and improves performance. The recursive find() proc does a path
+joining operations and improves performance. The recursive [.func]#find()# proc does a path
 compression operation, which replaces a longer recursive path with the direct result.
 
 === Kruskal with Disjoint-set
@@ -16929,8 +16977,8 @@ The cdt and cdt2 modules support very advanced operations, including fully dynam
 insertions and deletions, not only for data points but also for constraining edges.
 For our current use case, a simpler variant would work as well, but as we have these modules freely
 available, we should use them. For the program below, we need from the cdt2 module only the function
-initDelaunayTriangulation() to create an outer rectangle for all of our data points,
-the insertPoint() function to add points, and finally the iterator unconstrainedEdges()
+[.func]#initDelaunayTriangulation()# to create an outer rectangle for all of our data points,
+the [.func]#insertPoint()# function to add points, and finally the iterator unconstrainedEdges()
 to iterate over the edges of the triangulation. With e.org and e.dest, we can access the
 endpoints of an edge, where org is short for the origin, and dest for the destination.
 
@@ -17354,9 +17402,9 @@ main()
 
 Before we can use the heap-queue, we have to define a < relation
 for our Container data type. We populate the Delaunay instance with our random points.
-At the beginning of our createForest() proc, we pick a random start point from the cdt
+At the beginning of our [.func]#createForest()# proc, we pick a random start point from the cdt
 instance -- actually not one of the first four, as that are points of the outer rectangle, which we intend to ignore.
-Then we use the iterator last.neighbors() to iterate over the neighbors of the point that we added last
+Then we use the iterator [.func]#last.neighbors()# to iterate over the neighbors of the point that we added last
 to our forest. After the distances have been updated, we can use hq.pop
 to extract an element with the lowest priority from the heap-queue, and add that vertex to
 our forest. You may wonder why we need the done field in the Vertex object. Well, without
@@ -18460,10 +18508,10 @@ var b = 9.0
 show(a * sqrt(b))
 ----
 
-GenAst() captures (interpolates) parameters of the surrounding macro and local macro variables when we
+[.func]#GenAst()# captures (interpolates) parameters of the surrounding macro and local macro variables when we
 specify them as parameters to genAst(). A macro local proc is automatically captured and does not have
 to be included in the capture list explicitly. This behavior can be modified, when
-instead of the plain genAst(), the genAstOpt() macro is used, which has a set of options
+instead of the plain genAst(), the [.func]#genAstOpt()# [.mac]#macro# is used, which has a set of options
 as a first parameter. You can find some more details about the [.mod]#genasts# module and
 two larger examples for its use in the API documentation of that module.
 
@@ -19720,7 +19768,7 @@ mutexes, or semaphores. We will give an example to do access control through the
 in the next section. In the example above, we used as global data a primitive value
 data type. Even more problems may occur when we try to use global reference data
 types: In the past, the Nim standard library provided special functions like
-allocShared() to allocate [.type]#pointer# and reference data types that can be accessed from
+[.func]#allocShared()# to allocate [.type]#pointer# and reference data types that can be accessed from
 multiple threads. But as Nim's thread handling may change and improve in the future
 further, we will not try to discuss all these details here. It should be enough that
 you have a feeling for the concerns, that may arise from executing multiple threads
@@ -20932,7 +20980,7 @@ finished, and then returns the generic value of the future -- in the code above,
 
 We can use the operators [.op]#and# or [.op]#or# to combine multiple futures, in this
 way we can wait until all of them or at least one of them completes. Note, that the
-dispatcher loop stops, when waitFor() succeeds, so when we wait only for one future
+dispatcher loop stops, when [.func]#waitFor()# succeeds, so when we wait only for one future
 and that one is finished, then the dispatcher loop stops, and other futures may stay
 unfinished.
 
@@ -21441,7 +21489,7 @@ loop watching for messages from the server. When [.func]#doConnect()# calls
 [.code]#while loop# with the [.key]#await# statement will gain control back later.
 In the [.func]#main()# [.proc]#{proc}#, we then use [.func]#spawn# to execute [.func]#readLine()#
 on one thread of the [.var]#threadpool#, and enter a different infinite [.code]#while
-loop#. This loop checks if user input is available, and calls poll() to ensure that
+loop#. This loop checks if user input is available, and calls [.func]#poll()# to ensure that
 the global dispatcher loop is executed. If there is user input available, that
 message is sent to the server, and [.func]#spawn# is called again waiting for the
 next user input.
@@ -22074,7 +22122,7 @@ should use orc to ensure that all unreferenced objects are really released immed
 than --mm:refc. For performance-critical programs, it is always a good idea to do some testing, as refc or maybe
 even one of the other GC options like Boehm may give a larger throughput. Currently, Nim cannot report if ARC is
 sufficient, or ORC is needed due to cyclic references. So you may have to do some tests if you are not sure, like
-setting all the references at the end of a proc to nil, and then calling GC_fullCollect() and GC_getStatitics()
+setting all the references at the end of a proc to nil, and then calling [.func]#GC_fullCollect()# and [.func]#GC_getStatitics()#
 to monitor the still-occupied memory resources.
 
 === Default values for object fields
@@ -23315,7 +23363,8 @@ tail asciidoctor.css
 .str{font-family: monospace} /* string type */
 .array{font-family: monospace} /* array type */
 
-.func{}
+//.func{}
+.func{background-color: #FF0; color: #000}
 
 .var{font-family: monospace; font-style: italic}
 .mod{font-family: monospace; font-variant: small-caps}
