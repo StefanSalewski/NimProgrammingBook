@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-20
+//v0.1, 2023-MAI-21
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -2269,7 +2269,7 @@ a program without the generation of a permanent executable file. Here is an exam
 we use all these options:
 
 ----
-nim c -d:release --gc:arc -d:useMalloc --passC:-flto --passC:-march=native board.nim
+nim c -d:release --mm:arc -d:useMalloc --passC:-flto --passC:-march=native board.nim
 ----
 
 In this example, we additionally pass [.term]#-march=native# to the C compiler backend to enable the
@@ -4993,7 +4993,7 @@ test for defined symbols, like [.code]#defined(windows)#:
 [source, nim]
 ----
 when not defined(gcDestructors):
-  echo "You may try to compile your code with option --gc:arc"
+  echo "You may try to compile your code with option --mm:arc"
 when isMainModule:
   doAllTheTests()
 ----
@@ -9874,7 +9874,7 @@ Destructors do not have this restriction. We define the destructor for a value t
 it is also called for reference types by the compiler.
 
 Starting with version 1.4, Nim got scope-based resource management, when
-the program is compiled with [.code]#--gc:arc# or [-code]#--gc:orc#. In that case,
+the program is compiled with [.code]#--mm:arc# or [-code]#--mm:orc#. In that case,
 variables are immediately deallocated when they go out of scope, and if
 a destructor was defined for the data type of that variable, it is called automatically.
 
@@ -9933,7 +9933,7 @@ randomize()
 test()
 ----
 
-To use destructors, we have to compile our program with the option [.code]#--gc:arc# or [.code]#--gc:orc#, otherwise
+To use destructors, we have to compile our program with the option [.code]#--mm:arc# or [.code]#--mm:orc#, otherwise
 the specified destructor [.proc]#{procs}# are just ignored. In our code, we can test for working destructors with
 a construct like [.code]#when defined(gcDestructors):#.
 
@@ -10070,7 +10070,7 @@ proc main =
 main()
 ----
 
-When we compile module [.var]#t.nim# with [.term]#--gc:arc# or [.term]#--gc:orc# and run it, we get this output:
+When we compile module [.var]#t.nim# with [.term]#--mm:arc# or [.term]#--mm:orc# and run it, we get this output:
 
 ----
 0
@@ -10221,7 +10221,7 @@ Error: type bound operation `fin` can be defined only in the same module with it
 ----
 
 Whenever we should really need a finalizer or a destructor, we should prefer destructors
-when we can compile our code with the compiler options --gc:arc or --gc:orc.
+when we can compile our code with the compiler options --mm:arc or --mm:orc.
 
 == Modules
 
@@ -11163,7 +11163,7 @@ in the stream.
 We will use the [.type]#File# data type of the [.mod]#io# module first. As the [.mod]#io# module is part of the [.mod]#system# module, we do
 not have to import it before we can use it. The principle usage of files is that we call the function [.func]#open()# to open
 a file with the given name, call some [.proc]#{procs}# to write or read data, and finally [.func]#close()# the file.
-While Nim supports destructors, when we compile with --gc:arc or --gc:orc, the [.mod]#io# module
+While Nim supports destructors, when we compile with --mm:arc or --mm:orc, the [.mod]#io# module
 does not yet use them, so we should actually call [.func]#close()# to close the file.
 
 ****
@@ -12910,7 +12910,7 @@ References:
 * https://forum.nim-lang.org/t/7753#49189
 
 == Random Numbers
-//puh
+
 Most computer programs work fully deterministic, that is, one input data set
 generates exactly one well-defined output data set. This {behav} is not
 desired when we create games or simulations: The actions of computer-controlled characters
@@ -12957,13 +12957,13 @@ next number:
 
 [source, nim]
 ----
-type
 when defined(js):
   type Ui = uint32
   const randMax = 4_294_967_295u32
 else:
   type Ui = uint64
 
+type
   Rand* = object # State of a random number generator.
     a0, a1: Ui
 
@@ -13250,7 +13250,7 @@ access a person by name:
 
 [source, nim]
 ----
-customers: seq[Customer]
+var customers: seq[Customer]
 
 # ...
 
@@ -13458,8 +13458,8 @@ The [.mod]#tables# module uses the [.mod]#hashes# module to calculate the hash v
 we use to access table content. For many data types, the [.mod]#hashes# module already defines
 a hash function. When we would like to use [.type]#tuples# or [.key]#object# data types as keys for table access, then we would have to
 define a hash function for that key [.obj]#object# first. The API documentation of the [.mod]#tables# module
-contains an example for this, where an [.obj]#object# data type with firstName and lastName fields is used as the key
-to store salary entries in the table. While firstName and lastName are [.str]#strings#, and for single [.str]#strings# a predefined
+contains an example for this, where an [.obj]#object# data type with [.var]#firstName# and [.var]#lastName# fields is used as the key
+to store salary entries in the table. While [.var]#firstName# and [.var]#lastName# are [.str]#strings#, and for single [.str]#strings# a predefined
 hash function is available, we have to declare another hash function for [.obj]#objects# with two [.str]#strings#:
 
 [source, nim]
@@ -13915,12 +13915,12 @@ into several components. But in the next section, we will present the [.mod]#par
 and in {part}V of the book, we will present the external [.var]#cligen# package, which is even more powerful.
 
 //== Command-line parsing # asciidoc bug for changelog
-== Command line parsing
+== Command-line parsing
 
 For Linux users, it is not uncommon to use a [.italic]#terminal window# or [.italic]#shell# to launch programs by
 typing in textual commands, instead of clicking on icons or pictograms. In the introducing
 sections of the book, we said, that one way to launch the Nim compiler is to
-type a command like [.term]#nim c --gc:arc test1.nim# in a terminal window.
+type a command like [.term]#nim c --mm:arc test1.nim# in a terminal window.
 
 Pure Windows users, who never use terminal windows to interact with the computer, may
 skip this section. For the others, we will give a short introduction to the structure of
@@ -14077,11 +14077,11 @@ have no values but work just like a plain switch. These specifications tell that
 that all other options do use values, so the numeric value [.lit]#13# after the [.term]#p# options is recognized as value, as well
 as the [.lit]#low# value that follows after [.term]#quality#. As the [.term]#verbose# option has no value, [.term]#report.pdf# is recognized as an argument.
 
-You may still wonder if the [.mod]#parseopt# module supports commands, as used in [.term]#nim c --gc:arc mycode.nim#?
+You may still wonder if the [.mod]#parseopt# module supports commands, as used in [.term]#nim c --mm:arc mycode.nim#?
 Yes, this works, we would get this output:
 
 ----
-./t c --gc:arc mycode.nim
+./t c --mm:arc mycode.nim
 Arg: c
 gc: arc
 Arg: mycode.nim
@@ -14156,10 +14156,10 @@ In this example, we left out the interpretation for the short options, which
 should be processed similarly to the long ones. You can see, that the actual use of the
 [.mod]#parseopt# module still requires a lot of code for validation and interpretation
 of options and arguments. In {part}V of the book, we will present the external
-Cligen package, which further simplifies the command line parsing.
+[.italic]#Cligen# package, which further simplifies the command line parsing.
 
 == Regular Expressions
-
+/puh
 A [.ndef]#regular expression#, shortened as [.ndef]#regex# or [.ndef]#regexp#, is a
 sequence of characters that specifies a search pattern, which is used to find or
 replace parts of a [.str]#string# or of a whole text document, or just to validate it. It is
@@ -20175,7 +20175,7 @@ have been compiled with Nim v1.9.3 with option -d:release and gcc 12.2.1 on a 64
 
 |===
 
-As expected, regex parsing is the slowest, and with [.term]#--gc:arc# it is even slower.
+As expected, regex parsing is the slowest, and with [.term]#--mm:arc# it is even slower.
 The use of [.mod]#strscans# or [.mod]#parseutils# is the fastest, and we get the [.type]#float# and [.type]#int# values for free.
 The performance with the option [.term]#--mm:orc# is typically close to [.term]#--mm:arc#.
 
@@ -20211,7 +20211,7 @@ proc main =
 main()
 ----
 
-This reduced the runtime with [.term]#--gc:arc# to 128 ms. Parsing the two numeric
+This reduced the runtime with [.term]#--mm:arc# to 128 ms. Parsing the two numeric
 values is enough to find the line with the extreme value -- we can then just
 return the whole line [.str]#string#, from which the other fields can then be extracted.
 But this optimization is a bit dangerous, for corrupted data, our backward scanning
@@ -20537,11 +20537,11 @@ When we compile the code above with option [.term]#-d:release#, it takes approx 
 That is indeed a performance improvement of a factor of eight, which is not bad.
 ++++
 <s>
-Unfortunately, when we compile the code with [.term]#-d:release --gc:arc#, we get {runtimes} of about 500 ms,
-which is no improvement compared to the single-threaded code. And with [.term]#-d:release --gc:orc#
+Unfortunately, when we compile the code with [.term]#-d:release --mm:arc#, we get {runtimes} of about 500 ms,
+which is no improvement compared to the single-threaded code. And with [.term]#-d:release --mm:orc#
 the runtime is even in the range of 700 ms.
-At the end of this section, we will present a solution, which works fine also for [.term]#--gc:arc# -- for
-[.term]#--gc:orc# the runtime is decreased to 300 ms at least.
+At the end of this section, we will present a solution, which works fine also for [.term]#--mm:arc# -- for
+[.term]#--mm:orc# the runtime is decreased to 300 ms at least.
 </s>.
 ++++
 (Has been fixed for Nim V 2.0, --mm:arc, --mm:orc and --mm:refc are all below 40 ms now.)
@@ -20595,7 +20595,7 @@ the [.key]#parallel# construct. Or we may experiment with so-called [.ndef]#memo
 
 NOTE: These fixes are no longer necessary for Nim V 2.0!
 
-As we found out, the performance is currently disappointing, when we compile with [.term]#--gc: arc# or [.term]#--gc:orc#.
+As we found out, the performance is currently disappointing, when we compile with [.term]#--mm: arc# or [.term]#--mm:orc#.
 One easy way to fix that is when we use additional the compiler option [.term]#-d:useMalloc#. This avoids
 the use of Nim's own memory allocator, which seems to be slow when we compile with [.term]#--threads:on#.
 The issue becomes very obvious due to the fact, that the current implementation of the [.func]#splitLines()#
@@ -20671,11 +20671,11 @@ proc main =
 main()
 ----
 
-This code, compiled with [.term]#nim c --threads:on -d:release --gc:arc t.nim#, runs in less than
-36 ms. With [.term]#-d:useMalloc#, we can save a few more ms. With [.term]#--gc:orc#, we get a runtime
+This code, compiled with [.term]#nim c --threads:on -d:release --mm:arc t.nim#, runs in less than
+36 ms. With [.term]#-d:useMalloc#, we can save a few more ms. With [.term]#--mm:orc#, we get a runtime
 of 37 ms, which is +++<s>not that</s>+++ great. As you may have noticed, we have used only [.type]#Res#
 value [.key]#objects# in the code above, we do not need references. This is possible, when we only compile
-with [.term]#--gc:arc# or [.term]#--gc:orc#, for [.term]#--gc:refc# we would get the compile Error: [.italic]#cannot create a flowVar of type: Res#.
+with [.term]#--mm:arc# or [.term]#--mm:orc#, for [.term]#--mm:refc# we would get the compile Error: [.italic]#cannot create a flowVar of type: Res#.
 We have done one additional modification -- we allocate the buffer [.var]#buf# inside the [.key]#while# loop. This may
 look strange, as we generally avoid allocations in loops. But as [.func]#candidates()# gets a copy of the
 [.var]#buf# [.str]#string# and ARC uses move semantics and sink parameters, this may make sense. The compiler
@@ -23247,7 +23247,7 @@ We have added a few more simple examples and exercises:
 === March 2022
 
 * <<Option types>>
-* <<Command line parsing>>
+* <<Command-line parsing>>
 * <<Cligen Command Line Interface generator>>
 * <<Nimble package manager>>
 * <<Parsing data files (in parallel)>>
