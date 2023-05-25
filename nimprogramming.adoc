@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-21
+//v0.1, 2023-MAI-25
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -190,7 +190,7 @@ the tutorials and manuals of Nim web packages like [.ndef]#Karax#,
 
 This book will not try to explain things that are already explained well elsewhere, or
 that should have been explained well elsewhere -- at least not in this first edition, where
-we still have so much other essential stuff. So what we will leaf out, for now, is the installation
+we still have so much other essential stuff. So what we will leave out, for now, is the installation
 of the compiler, installing and using text editors or IDEs with special Nim support, using
 Nim package managers like Nimble, Nimph, or others, using the foreign function interface (FFI)
 to create bindings to C libraries, and internal compiler details like the various
@@ -4097,7 +4097,7 @@ At the end of this section, we should mention that Nim's standard library has al
 //The function [.func]#+`[]=`+# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
 //The function `++`[]=`++` allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
 The function [.func]#'[]='# allows to write [.code]#s[x] = false# or [.code]#s[x] = true#
-
+//The [.func]#\`[]=`# is funny. Search for einstein. Google fonts issue! 
 to exclude or to include value [.var]#x# to [.type]#set# [.var]#s#, instead of using the [.op]#incl# or [.op]#excl# notation.
 And the functions [.func]#fullset()# and [.func]#complement()# make it easy to get a set that includes all possible  members,
 and to complement ("invert") a set. Finally, the template [.func]#toSet()# can be used to convert other data types to
@@ -9907,7 +9907,7 @@ test()
 ----
 
 In the [.key]#for# loop, we enter a new scope when the [key]#if# condition is evaluated to [.lit]#true#,
-and at the end of the [.key]#if# block, we leaf the scope, and the destructor is called automatically.
+and at the end of the [.key]#if# block, we leave the scope, and the destructor is called automatically.
 Inside the destructor [.proc]#{proc}#, we could do some cleanup tasks, close files, and release resources.
 Destructors are also called when [.key]#ref# [.obj]#objects# go out of scope:
 
@@ -14159,7 +14159,7 @@ of options and arguments. In {part}V of the book, we will present the external
 [.italic]#Cligen# package, which further simplifies the command line parsing.
 
 == Regular Expressions
-/puh
+
 A [.ndef]#regular expression#, shortened as [.ndef]#regex# or [.ndef]#regexp#, is a
 sequence of characters that specifies a search pattern, which is used to find or
 replace parts of a [.str]#string# or of a whole text document, or just to validate it. It is
@@ -14327,7 +14327,7 @@ group is captured. For a successful match, we can access the capture with the
 [.func]#group()# function, where we have to specify the index number of the capture,
 and the actual text [.str]#string# that was used for the match. The fact, that we have to
 specify the initial text may look a bit strange indeed. For [.str]#string# [.var]#t1#, we get
-a successful capture with the result @["7"]. So our actual captured [.str]#string# is
+a successful capture with the result @["77"]. So our actual captured [.str]#string# is
 contained in a seq, which is useful when multiple (nested) [.str]#strings# are captured. In
 the code from above, we could have used [.func]#groupFirstCapture()# instead, to get
 directly the first captured [.str]#string#.
@@ -14390,7 +14390,7 @@ white space, followed optionally by a single comma, or a single semicolon, follo
 again by any amount of white space, that is finally followed by at least one decimal
 digit. As we want to capture the decimal numbers, the sequence of decimal digits is
 enclosed in round brackets. The total regex pattern is constructed by the
-subexpression [.code]#[a-z]# for at least one letter, followed three times by the
+subexpression [.code]#[a-z]{plus}# for at least one letter, followed three times by the
 integer pattern with the allowed separators. Note, that we allow any amount of spaces
 or tabulators, but only a single comma or semicolon between the different entities.
 Also note, that the [.func]#match()# function of the [.mod]#regex# module always does a full match,
@@ -14426,8 +14426,8 @@ line has some unwanted trailing white space:
 ----
 # this is a example
 var   line_width:  int
-
-echo        line_width
+  
+echo        line_width 
 ----
 
 We will fix these four issues independently of each other, so we will try to find a
@@ -14590,7 +14590,7 @@ proc selectionSort(s: var seq[int]) =
   while j < s.len: # while there is an unsorted section left
     i = j # start with i one above the already sorted range
     x = s[i]; k = i # assume first element is the smallest
-    inc(i) # continue with next one in the still unsoprted range
+    inc(i) # continue with next one in the still unsorted range
     while i < s.len: # while there are unchecked candidates
       if s[i] < x: # that one is smaller than current candidate
         x = s[i] # remember its value
@@ -14599,11 +14599,9 @@ proc selectionSort(s: var seq[int]) =
     swap(s[j], s[k]) # exchange smallest value with the one currently at position k
     inc(j) # sorted range increased by one
 
-import std/random
+import std/[random, sequtils]
 proc main =
-  var s: seq[int]
-  for i in 0 .. 9:
-    s.add(rand(100))
+  var s = newSeqWith(10, rand(100))
   s.selectionSort
   echo s
 
@@ -14689,11 +14687,9 @@ proc insertionSort(s: seq[int]): seq[int] =
       dec(j)
     result[j + 1] = x # insert x
 
-import std/random
+import std/[random, sequtils]
 proc main =
-  var s: seq[int]
-  for i in 0 .. 9:
-    s.add(rand(100))
+  var s = newSeqWith(10, rand(100))
   echo s.insertionSort
 
 main()
@@ -14720,7 +14716,7 @@ We do not really need the variable [.var]#x#, as we can just use [.var]#s[k]# in
 code so that the subscript operator is not executed multiple times for the same index [.var]#k#, so the use of [.var]#s[k]# or [.var]#x#
 should make no difference to the performance. And we call [.func]#setLen()# in the outer loop to increase the
 capacity of the result sequence by one each. Of course, setting capacity only one time to the value
-of [.var]#s# would suffer, as obviously, the result has the same length as our input data. Another possible optimization would be to
+of [.var]#s# would suffice, as obviously, the result has the same length as our input data. Another possible optimization would be to
 take advantage of the fact that the destination sequence is sorted so that we would not have to do a linear search to find
 the insertion position, but we could use a binary search. But that would be more complicated and the benefit would be
 not large.
@@ -14883,10 +14879,10 @@ and [.func]#sort()# it a few times. [.func]#Shuffle()# reorders the entries by r
 of [.func]#quicksort()#, we call [.func]#isSorted()# from Nim's standard library to check the success
 of our sorting. After these tests, which do some warm-up of the CPU for us, we
 add more random entries, and again sort and test it, while we record the needed time
-with module [.mod]#monotimes#, as we did before in the Timers section. To get a feeling
+with module [.mod]#monotimes#, as we did before in the <<Timers>> section. To get a feeling
 about the performance of our sorting [.proc]#{proc}#, we [.func]#shuffle()# again and sort this time
 with the [.func]#sort()# [.proc]#{proc}# from Nim's [.mod]#algorithm# module. [.func]#Sort()# from [.mod]#algorithm# module
-uses currently another sorting method called merge sort, which has the advantage, that
+uses currently another sorting method called [.ndef]#merge sort#, which has the advantage, that
 it is a stable sorting algorithm, but it could be a bit slower than QuickSort. And [.func]#sort()#
 from [.mod]#algorithm# may pass a [.func]#cmp()# [.proc]#{proc}# around, which may cost some performance, while
 our plain, non-generic [.proc]#{proc}#, compares entries directly with the [.op]#<# and [.op]#># operators. So it is not
@@ -14999,7 +14995,6 @@ proc main =
   s.sort()
   echo getMonotime() - start
 main()
-
 ----
 
 We added a variable called [.var]#stack#, which is a [.type]#seq# that stores integer [.type]#tuples#.
@@ -15260,13 +15255,13 @@ So we may try instead something like
     dec(i); inc(j)
 ----
 
-You may try that variant yourself, or maybe look for other variants in internet sources or
+You may try that variant yourself, or maybe look for other variants in Internet sources or
 textbooks. Our intention in this section was not to present a perfect sorting function,
 but to teach you some basic coding strategies and related traps.
 
 === Merge Sort
 
-Initially, we did not intend to discuss the actual MergeSort algorithm at all, as it is a bit more complicated, and
+Initially, we did not intend to discuss the actual [.ndef]#MergeSort# algorithm at all, as it is a bit more complicated, and
 whenever we may have seen a sketch of it somewhere, it is generally
 not easy to remember details.footnote:[From introductory courses to Computer Science,
 people generally remember QuickSort best, just because of its name and its good performance,
@@ -15453,7 +15448,6 @@ proc main =
   echo getMonotime() - start
   assert s == st
 main()
-
 ----
 
 For the merging process, we
@@ -15998,7 +15992,7 @@ The [.func]#ord()# function is generic, always returns an [.type]#int#, and work
 while the [.func]#int()# functions
 have the advantage, that we have them for different sizes like int8(), and also for unsigned results.
 We strongly hope that you know well the difference between the [.type]#int# value [.lit]#0# and the
-decimal character digit [.lit]#'0'# -- if not, you may read again the section about characters in part II
+decimal character digit [.lit]#'0'# -- if not, you may read again the section about characters in {part}II
 of the book, see <<Characters>>.
 
 With these introductions, you may already have an idea of how we can get the decimal digit
@@ -16411,7 +16405,7 @@ too simple, so you should be able to understand it quickly in full detail. By us
 popular strategies for solving the problem, the Prim and the Kruscal algorithm, you learn
 how problems can be solved by different strategies, each with its own drawbacks and benefits, including
 the behaviour of performance for large data sets. And both the presented algorithms allow
-begining with a simple solution and then improve and refine it through the use of advanced data structures
+beginning with a simple solution and then improve and refine it through the use of advanced data structures
 (Delaunay triangulation, heap-queue, and the disjoint set data structure) to improve the performance
 or to simplify the code.
 
@@ -16432,15 +16426,15 @@ number of possible connections. Reducing this general case to input data with on
 set of direct connections is not hard.
 
 For minimizing the connection graph of n points, we need a cost function
-for each possible connection. In our simple case of n points in the plane, this
+for each possible connection. In our simple case of [.var]#n# points in the plane, this
 is just the distance between the points, and the solution to this special case is called
-Euclidean minimum spanning tree, see https://en.wikipedia.org/wiki/Euclidean_minimum_spanning_tree.
+[.ndef]#Euclidean minimum spanning tree#, see https://en.wikipedia.org/wiki/Euclidean_minimum_spanning_tree.
 For real-world problems like street construction, the cost function can be much more
 complex, as it can be necessary to avoid passing rivers, hills, and other barriers.
 
 === The Prim algorithm
 
-The Prim algorithm is a simple greedy algorithm that just connects the closest
+The [.ndef]#Prim# algorithm is a simple greedy algorithm that just connects the closest
 one from the still unconnected point set to the existing tree. The process starts
 by selecting an arbitrary point of the input data set as the first point of the tree, and then
 successively connects the nearest one from the other points, until all the points are
@@ -16531,11 +16525,11 @@ main()
 ----
 
 In the above program, we first define a Vertex data type, which is a point with
-x, and y coordinates in the plane, which has additionally a friend, and a dist field.
-Friend denotes a direct neighbor, and dist is the squared distance to this neighbor point.
+[.var]#x#, and [.var]#y# coordinates in the plane, which has additionally a [.var]#friend#, and a [.var]#dist# field.
+[.var]#Friend# denotes a direct neighbor, and [.var]#dist# is the squared distance to this neighbor point.
 In all of our examples, we use squared distances, as this avoids the square root calculations and
 gives the same results.
-We made Vertex a reference type, as our graph uses references to neighbors. Note that
+We made [.type]#Vertex# a reference type, as our graph uses references to neighbors. Note that
 defining a value Vertex type like above in this way would not work, as value types
 can not contain their own type as fields -- that would generate an infinite recursive type,
 like a box that contains itself, again and again. But we could have actually used value types
@@ -16543,32 +16537,32 @@ if we used for the friend field not a pointer, but an integer index to the posit
 the sequence of input data. For some applications, using indices may have advantages, but
 for our current task, the use of references seems to be OK.
 Note that we used in our type definition a new feature introduced with Nim 2.0:
-Default values for object fields. With dist: float = Inf we initialize that field
-to math.Inf, instead of the default zero value.
+Default values for object fields. With [.code]#dist: float = Inf# we initialize that field
+to [.var]#math.Inf#, instead of the default zero value.
 In the [.func]#init()# procedure, we create a sequence of random input vertices.
-Then, in the [.func]#createforest()# procedure, we pick an arbitrary starting vertex from the input data set and assign that
-value to a variable called last. This value is the starting point of our MST for now, and
+Then, in the [.func]#createForest()# procedure, we pick an arbitrary starting vertex from the input data set and assign that
+value to a variable called [.var]#last#. This value is the starting point of our MST for now, and
 later, variable last is always the point that we just added to the tree.
 Whenever we add one more point to the tree, the tree grows, and the distance to all the still
 unconnected points may shrink. So we have to update all the distances when they have decreased.
-As point last is the one which actually grows the tree, we have to check only the distances of all
+As point [.var]#last# is the one which actually grows the tree, we have to check only the distances of all
 the still unconnected points to this last point, as the rest of the tree has not changed.
 
-While we still have
-points available, we iterate over them, check distances to last, and update the dist and friend
+While we still have unconnected
+points available, we iterate over them, check distances to [.var]#last#, and update the [.var]#dist# and [.var]#friend#
 field, in the case that the distance has become shorter. If the currently evaluated distance is
 a minimum, we store that minimum value and the position of the vertex with the minimum distance in the sequence.
-When we have processed all vertices this way, the integer variable pos is the index of the
-closest vertex. We add this vertex to the forest, remove it from the seq of still
-unconnected vertices, and also store it in variable last for the next iteration.
+When we have processed all vertices this way, the integer variable [.var]#pos# is the index of the
+closest vertex. We add this vertex to the forest, remove it from the [.type]#seq# of still
+unconnected vertices, and also store it in variable [.var]#last# for the next iteration.
 Note that we use the [.func]#del()# procedure to delete values from the sequence. [.func]#Del()# performs the
-deletion by actually moving the last value from the seq to the position to remove.
+deletion by actually moving the last value from the [.type]#seq# to the position to remove.
 This avoids expensive shifts of elements but does not preserve the order of elements
-in the seq. For our seq of input data, this is OK, as the data has no special order.
+in the sequence. For our sequence of input data, this is OK, as the data has no special order.
 //You may wonder why we call the container instance for the collected points forest and not tree.
-You might be wondering why we named the container instance for the collected points forest rather than tree.
+You might be wondering why we named the container instance for the collected points [.var]#forest# rather than tree.
 Well, in principle, the MST algorithm may generate a set of distinct trees instead of only one,
-i.e. when there are barriers, like the famous Chinese wall. The Kruskal algorithm, which we will discuss next,
+i.e. when there are barriers, like the famous Chinese wall. The [.ndef]#Kruskal# algorithm, which we will discuss next,
 always starts with many distinct trees, which may finally get connected if there are no barriers.
 
 To display the result graphically, we have used the GTK toolkit together with the Cairo
@@ -16576,21 +16570,21 @@ graphics library. To actually run the program, you would need a computer with pr
 installed GTK and Cairo. For Linux boxes, this should be typically no problem, for
 Windows or Mac, you may have to install them, or you may use other toolkits or just
 delete the graphical output routines from the above program. Additionally, you would need
-the Gintro Nim GTK bindings, which you may install with the command "nimble install gintro@#head"
+the Gintro Nim GTK bindings, which you may install with the command [.term]#nimble install gintro@#head#
 if not already available. Then you can run our program with the command "nim r prim.nim"
-and should get a GUI window displaying the constructed path. Our program contains a [.func]#main()# and an activate()
+and should get a GUI window displaying the constructed path. Our program contains a [.func]#main()# and an [.func]#activate()#
 proc, which are typically used in modern GTK to launch an app. The [.func]#activate()# proc
 creates a window with a drawingarea widget in which we can use Cairo functions to
 draw lines, circles, and much more. To do that, we need a [.func]#draw()# function, which we
 set for our drawingarea widget, so it is called automatically when needed, e.g. for
-program startup or when we resize or uncover the main window. In the draw function,
-we iterate over the vertices of our forest, draw small circles to indicate the vertex positions,
+program startup or when we resize or uncover the main window. In the [.func]#draw()# function,
+we iterate over the vertices of our [.var]#forest#, draw small circles to indicate the vertex positions,
 and connect each vertex in the forest with its friend. In case you are interested
 in more details about the use of the GTK GUI and the Cairo library with Nim, you may consult
-the Nim GTK companion book. Or, just use one of the more than 20 other GUI toolkits available for
+the [.ndef]#Nim GTK companion book#. Or, just use one of the more than 20 other GUI toolkits available for
 Nim, and modify the above program accordingly.
 
-When you compile the program with the option -d:release and run it, the
+When you compile the program with the option [.term]#-d:release# and run it, the
 displayed execution time for the [.func]#createForest()# should be
 around 15 microseconds for an input set of 50 points on modern hardware.
 That may look reasonably fast, but when you modify the program constant
@@ -16606,15 +16600,15 @@ a different algorithm, which works on edges instead of points.
 
 === Kruskal algorithm
 
-The Kruskal algorithm works on edges. The strategy is to repeatedly find the shortest
+The [.ndef]#Kruskal# algorithm works on edges. The strategy is to repeatedly find the shortest
 edges and add them to the forest when they do not create cycles. Here, cycles mean
-connecting two vertices that are already connected by a path. If A is already connected
-to B, and B is connected to C, then we would skip connection A-C. This algorithm is again simple,
+connecting two vertices that are already connected by a path. If [.var]#A# is already connected
+to [.var]#B#, and [.var]#B# is connected to [.var]#C#, then we would skip connection [.italic]#A-C#. This algorithm is again simple,
 but managing the information about already existing connections is not that easy.
 Note that the construction process typically generates many subtrees consisting of short edges first, which then later gets
 connected by longer edges.
 A disadvantage of the Kruskal algorithm is that the number of edges
-is n^2 when there are no restrictions for possible connections, as in our Euclidean example
+is [.var]#n^2# when there are no restrictions for possible connections, as in our Euclidean example
 with plain points in a plane. You can find a formal description of this algorithm at
 https://en.wikipedia.org/wiki/Kruskal%27s_algorithm. We will start our explanation with
 a simple and stupid variant, where we store the information if a vertex is already part
@@ -16736,7 +16730,7 @@ a better implementation soon. We have attached to the Vertex data type a 16-bit 
 a set of these ids. Our Edge data type has two fields of Vertex type each.
 The seq[Edge] variable stores all the initial edges, and is filled in a nested loop iterating
 over the vertices. The test cast[int](v1.addr) < cast[int](v2.addr) is necessary
-to avoid including each edge twice in the seq of input edges.
+to avoid including each edge twice in the sequence of input edges.
 Actually, as our vertices have unique ids, we could use the same test on the id fields instead
 on the memory address in this case.
 As we intend to sort all our edges by length, we have to define
@@ -16761,28 +16755,28 @@ elements are included in the same subset. As elements of the subsets, we can use
 no restriction, as we can assign to each edge an integer id to identify it, and we can use
 the integer ids as array indices to access edges in containers.
 
-The disjoint-set data structure offers a surprisingly simple
+The [.ndef]#Disjoint-set data structure# offers a surprisingly simple
 and efficient way to present disjoint sets of integer numbers.
 This data structure provides only three basic operations:
-Creating a set of n disjoint subsets, where subset n contains
-initially only the value n. Testing, if two numbers i and j belong to
-the same subset, and finally joining the subsets of two elements i and j.
-The data structure for initially n subsets is actually only a plain array or seq of
-n integer numbers with indices 0 .. n-1. When we create the data structure,
-the index position i is initialized with the value i for all positions, that is
-s[i] == i for each i in the range 0 .. n-1. For the Disjoint-set data structure
+Creating a set of [.var]#n# disjoint subsets, where subset [.var]#n# contains
+initially only the value [.var]#n#. Testing, if two numbers [.var]#i# and [.var]#j# belong to
+the same subset, and finally joining the subsets of two elements [.var]#i# and [.var]#j#.
+The data structure for initially [.var]#n# subsets is actually only a plain array or seqquence of
+[.var]#n# integer numbers with indices [.var]#0# .. [.var]#n-1#. When we create the data structure,
+the index position [.var]#i# is initialized with the value [.var]#i# for all positions, that is
+[.code]#s[i] == i# for each [.var]#i# in the range [.code]#0 .. n-1#. For the "Disjoint-set data structure"
 each subset is represented by a single integer, and it is said that two
 elements are in the same subset, when they have the same representing number.
-Initially, for each element i, s[i] == i. Whenever for an element the value stored
-at position i is i, that indicates that element i is in subset i. So initially
-the container holds n disjoint subsets and each subset i contains the value i only.
-Joining the subsets of the numbers i and j is very easy, we just can set s[i] = j
-or s[j] = i. Now s[i] and s[j] are identical, indicating that i and j belong to the same subset.
-When we now want to join the subsets of elements i and k, we just set s[i] = k or s[k] = i.
-This can continue until all the n subsets are joined. For testing, if the subsets
-of numbers i and j are joined, we test the content at array positions i and j in a recursive manner:
-If the value stored at index position i is identical to i, then this is already the result.
-But if s[i] is k!=i, then we have to investigate s[k] and so on, until at some index position
+Initially, for each element [.var]#i#, [.var]#s[i] == i#. Whenever for an element the value stored
+at position [.var]#i# is [.var]#i#, that indicates that element [.var]#i# is in subset [.var]#i#. So initially
+the container holds [.var]#n# disjoint subsets and each subset [.var]#i# contains the value [.var]#i# only.
+Joining the subsets of the numbers [.var]#i# and [.var]#j# is very easy, we just can set [.code]#s[i] = j#
+or [.code]#s[j] = i#. Now [.var]#s[i]# and [.var]#s[j]# are identical, indicating that [.var]#i# and [.var]#j# belong to the same subset.
+When we now want to join the subsets of elements [.var]#i# and [.var]#k#, we just set [.code]#s[i] = k# or [.code]#s[k] = i#.
+This can continue until all the [.var]#n# subsets are joined. For testing, if the subsets
+of numbers [.var]#i# and [.var]#j# are joined, we test the content at array positions [.var]#i# and [.var]#j# in a recursive manner:
+If the value stored at index position [.var]#i# is identical to [.var]#i#, then this is already the result.
+But if [.var]#s[i]# is [.var]#k!=i#, then we have to investigate [.var]#s[k]# and so on, until at some index position
 finally, the content is identical with the index position. Then this is the final representing value,
 and when this final value is the same for two initial numbers, then the two numbers belong to the
 same subset. Explaining this data structure is much more complicated than the actual implementation.
@@ -16960,27 +16954,27 @@ main()
 ----
 
 But when we compile and run it, we notice that it is still slow.
-The obvious reason for that is that we work all the time with n^2
+The obvious reason for that is that we work all the time with [.var]#n^2#
 edges, which we first have to create, then sort, and finally, we iterate
-over all of them. In the next section, we will use a Delaunay
-triangulation, to attach to each vertex a small set of direct neighbors, and
+over all of them. In the next section, we will use a [.ndef]#Delaunay
+triangulation#, to attach to each vertex a small set of direct neighbors, and
 we will then use a set of edges that connect only direct neighboring vertices.
 
 === Kruskal with Disjoint-set and Delaunay triangulation
 
-To create the Delaunay triangulation, we use the cdt2 module, which is a variant of the initial, textbook-based
-cdt module, but with an API that is a bit more OOP-like, with support for subclassing of vertices.
-For the following code, the cdt modules would work as well, but for our last two examples, the Prim
-algorithm based on Delaunay data, the cdt2 module is easier to use. So we use cdt2 here as well.
+To create the Delaunay triangulation, we use the [.mod]#cdt2# module, which is a variant of the initial, textbook-based
+[.mod]#cdt# module, but with an API that is a bit more OOP-like, with support for subclassing of vertices.
+For the following code, the [.mod]#cdt# modules would work as well, but for our last two examples, the Prim
+algorithm based on Delaunay data, the [.mod]#cdt2# module is easier to use. So we use [.mod]#cdt2# here as well.
 You may install it with the command "nimble install https://github.com/stefansalewski/cdt2.git".
-The cdt and cdt2 modules support very advanced operations, including fully dynamic
+The [.mod]#cdt# and [.mod]#cdt2# modules support very advanced operations, including fully dynamic
 insertions and deletions, not only for data points but also for constraining edges.
 For our current use case, a simpler variant would work as well, but as we have these modules freely
-available, we should use them. For the program below, we need from the cdt2 module only the function
+available, we should use them. For the program below, we need from the [.mod]#cdt2# module only the function
 [.func]#initDelaunayTriangulation()# to create an outer rectangle for all of our data points,
-the [.func]#insertPoint()# function to add points, and finally the iterator unconstrainedEdges()
-to iterate over the edges of the triangulation. With e.org and e.dest, we can access the
-endpoints of an edge, where org is short for the origin, and dest for the destination.
+the [.func]#insertPoint()# function to add points, and finally the iterator [.func]#unconstrainedEdges()#
+to iterate over the edges of the triangulation. With [.var]#e.org# and [.var]#e.dest#, we can access the
+endpoints of an edge, where [.var]#org# is short for the origin, and [.dest]#dest# for the destination.
 
 [source, nim]
 ----
@@ -17124,19 +17118,19 @@ the Delaunay triangulation can improve the Prim algorithm.
 
 We can combine the Prim algorithm with a Delaunay triangulation to
 get neighbor relations for our initial point set. For this variant, it
-is important that we use the cdt2 module, not the cdt one.
-The cdt2 module supports a more OOP-style API, so we can subclass
+is important that we use the [.mod]#cdt2# module, not the [.mod]#cdt# one.
+The [.mod]#cdt2# module supports a more OOP-style API, so we can subclass
 the vertices of the triangulation. This way, we can add fields like
-dist, friend, and done, directly to the vertex instances. Without
+[.var]#dist#, [.var]#friend#, and [.var]#done#, directly to the [.var]#vertex# instances. Without
 subclassing, we had to attach this information in other ways, maybe by
-storing that information in a separate seq and accessing it by the id field of the
-CDT vertex instances.
+storing that information in a separate seq and accessing it by the [.var]#id# field of the
+CDT [.var]#vertex# instances.
 
-We are using a pool sequence, which holds copies of our vertices. This is
-necessary, as we have to remove elements from the pool, without
-touching the cdt itself. For this variant, we have to update only the direct
+We are using a [.var]#pool# sequence, which holds copies of our vertices. This is
+necessary, as we have to remove elements from the [.var]#pool#, without
+touching the [.var]#cdt# itself. For this variant, we have to update only the direct
 neighbors of the point that we add to the forest last. But still, we have to iterate
-over the whole pool, to select the next nearest point. In the next section, we will
+over the whole [.var]#pool#, to select the next nearest point. In the next section, we will
 finally learn how we may avoid this iteration by using a priority queue.
 
 [source, nim]
@@ -17245,29 +17239,29 @@ main()
 
 === Prim with Delaunay triangulation and priority queue
 
-A priority queue is a data structure that allows us to extract the
+A [.nedf]#Priority queue# is a data structure that allows us to extract the
 smallest element fast (O(1)), and to insert more elements while preserving the
-order. Textbooks sometimes advertise the famous Fibonacci heap, which is a
+order. Textbooks sometimes advertise the famous [.ndef]#Fibonacci heap#, which is a
 form of a priority queue, for which not only extraction of the smallest value, and insertion of
 more elements is of O(1), but which allows also very fast updating of the value of
 already contained elements. But the Fibonacci heap is a complicated thing, and it is often not that
 fast in practice as in theory. And for Nim, we currently have no Fibonacci heap implementation available.
-What is available for Nim is the simple heap-queue module of Nim's standard library. But as we need
-distance updates for our Prim algorithm, while the heap-queue does not support them, we may get the feeling
-that the Nim's heap-queue can not be used in our use case. But there is a trick available, with which we can
+What is available for Nim is the simple [.mod]#heap-queue# module of Nim's standard library. But as we need
+distance updates for our Prim algorithm, while the [.mod]#heap-queue# does not support them, we may get the feeling
+that the Nim's [.mod]#heap-queue# can not be used in our use case. But there is a trick available, with which we can
 circumvent this restriction -- the trick is sometimes mentioned in textbooks when Dijkstra's algorithm for
 shortest path search is discussed, see
 https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm.
 
-The trick is that instead of updating the priority field of elements already stored in the queue,
-we just add a copy with an updated priority field, and ignore the old elements for the
+The trick is that instead of updating the [.var]#priority# field of elements already stored in the queue,
+we just add a copy with an updated [.var]#priority# field, and ignore the old elements for the
 extraction process. This results typically in a good performance, as the updating
 is not that often needed at all, and we always extract the updated copies before the
 old, invalid elements, which we just ignore. To use this strategy, we need a way to
-detect old, invalid elements. Actually, ref object instances do not work for
+detect old, invalid elements. Actually, [.key]#ref object# instances do not work for
 this use case. We need value types for this, which we can copy and modify without
-modifying the original. As the Delaunay triangulation works internally with ref objects, we create
-a wrapper object for our vertices:
+modifying the original. As the Delaunay triangulation works internally with [.key]#ref objects#, we create
+a wrapper [.key]#object# for our vertices:
 
 [source, nim]
 ----
@@ -17282,15 +17276,15 @@ type
     pri: float
 ----
 
-We subclass the Vertex data type of the cdt2 Delaunay triangulation module by
-adding a distance field and a friend field, which stores the other endpoint
-of a vertex in the tree, and a boolean done field, which is used to remember if a
+We subclass the [.type]#Vertex# data type of the [.mod]#cdt2# Delaunay triangulation module by
+adding a [.var]#distance# field and a [.var]#friend# field, which stores the other endpoint
+of a vertex in the tree, and a boolean [.var]#done# field, which is used to remember if a
 vertex instance is already part of the tree or is still unprocessed.
 
-Our value data type called Container has two fields: a reference to a Vertex instance, and a pri
-field, which is initially identical to dist of the Vertex. When distances change,
-we update the dist field of our vertex and add a new Container instance to
-the priority queue. Then for the old Container instance, dist and pri differ, which
+Our value data type called [.type]#Container# has two fields: a reference to a [.type]#Vertex# instance, and a [.var]#pri#
+field, which is initially identical to [.var]#dist# of the Vertex. When distances change,
+we update the [.var]#dist# field of our vertex and add a new [.type]#Container# instance to
+the priority queue. Then for the old [.type]#Container# instance, [.var]#dist# and [.var]#pri# differ, which
 is an indication that the container instance is invalid and has to be ignored.
 
 [source, nim]
@@ -17400,22 +17394,22 @@ proc main =
 main()
 ----
 
-Before we can use the heap-queue, we have to define a < relation
-for our Container data type. We populate the Delaunay instance with our random points.
-At the beginning of our [.func]#createForest()# proc, we pick a random start point from the cdt
+Before we can use the heap-queue, we have to define a [.op]#<# relation
+for our [.type]#Container# data type. We populate the Delaunay instance with our random points.
+At the beginning of our [.func]#createForest()# proc, we pick a random start point from the [.var]#cdt#
 instance -- actually not one of the first four, as that are points of the outer rectangle, which we intend to ignore.
 Then we use the iterator [.func]#last.neighbors()# to iterate over the neighbors of the point that we added last
-to our forest. After the distances have been updated, we can use hq.pop
+to our forest. After the distances have been updated, we can use [.func]#hq.pop#
 to extract an element with the lowest priority from the heap-queue, and add that vertex to
-our forest. You may wonder why we need the done field in the Vertex object. Well, without
+our forest. You may wonder why we need the [.var]#done# field in the [.type]#Vertex# [.key]#object#. Well, without
 it, we would modify the existing forest, destroying the existing neighborship relations!
-You may compile the above code with the option -d:release for the default 50, and for 500 points.
+You may compile the above code with the option [.term]#-d:release for the default 50, and for 500 points.
 The runtime should be approximately 30 and 300 microseconds on modern hardware, which is not bad, and
 shows that the runtime increases linearly with the number of points, so the algorithm is
 nearly O(n) in big O notation. Note also that for all the presented MST algorithms, we may modify
 the cost- or distance-function, to tune the resulting graph shape. For instance, instead of the (squared) Euclidean
 distance, we may use an expression like
-let d = (v.point.x - last.point.x) ^ 2 + (v.point.y - last.point.y) ^ 2 + max((500 - v.point.x).abs, (500 - v.point.y).abs) ^ 2.
+[.code]#let d = (v.point.x - last.point.x) ^ 2 + (v.point.y - last.point.y) ^ 2 + max((500 - v.point.x).abs, (500 - v.point.y).abs) ^ 2#.
 Here, we add to the Euclidean distance the distance of the new point from the center of the graph (500), so that
 points close to the center are preferred, resulting in a star-shaped graph. For some applications, like
 power supply traces (on a PCB) such a layout may be preferred.
@@ -17489,6 +17483,8 @@ nodesnim:: The Nim GUI/2D framework, based on OpenGL and SDL2 (https://github.co
 neel:: A Nim library for making Electron-like HTML/JS GUI apps (https://github.com/Niminem/Neel)
 
 mui:: microui, a tiny immediate-mode ui library (https://github.com/Angluca/mui)
+
+Nimforms:: A simple gui library for Nim programming language based on Windows API (https://github.com/kcvinker/Nimforms)
 
 Some of these bindings may currently not compile with the latest Nim compiler or may
 not support the new [.ndef]#ARC# memory management.
@@ -17591,7 +17587,8 @@ There you can also learn how you can create [.name]#Nimble# packages yourself, a
 your own packages in [.name]#Nimble's# database so that other people can find them easier. While [.name]#Nimble# is
 [.nim]#Nim's# default package manager, which is currently used by the majority of the user base, there exists
 also the alternative implementation https://github.com/disruptek/nimph, and some lesser-known
-ones like [.name]#Nimp#, [.name]#Slim# or [.name]#Nifty#.footnote:[Currently, the appendix of this book has
+ones like [.name]#Nimp#, [.name]#Slim# or [.name]#Nifty#. And there are rumors, that A. Rumpf has also started developing
+one more package manager called [.ndef]#Atlas#.footnote:[Currently, the appendix of this book has
 a short introduction to Nimble, similar to the one from the Manning book. But it may get removed later again, and
 the GitHub Readme is a much more detailed description.]
 
@@ -17683,7 +17680,11 @@ Because these two predicates can use an arbitrarily complex sub-expression to [.
 [.name]#NPeg# is a pure [.nim]#Nim# pattern-matching library. It provides [.mac]#macros# to compile patterns and grammars (PEGs)
 to Nim procedures, which will parse a [.str]#string# and collect selected parts of the input.
 In this way, [.var]#npeg# is an alternative to the use of the [.mod]#regex# module, but [.var]#npeg# does not support
-the optional replacement of matched patterns.
+the optional replacement of matched patterns. You can install the [.mod]#npeg# package with the command
+
+----
+nimble install npeg
+----
 
 As understanding and using the PEG is really not that easy, and as most readers may never have heard about PEG
 at all, we will start with a few very simple examples. First, let us parse just a few decimal digits:
@@ -17810,7 +17811,7 @@ When a grammar rule ends with a colon [.code]#:#, the next indented block in the
 original [.str]#string#.
 
 The total sub-string matched by the code block rule is available as [.var]#capture[0]#, and the individual
-captured [.str]#strings# are available with indices > [.lit]#0#. In the indented code block, we can also use [.var]#$n# instead of
+captured [.str]#strings# are available with indices [.op]#># [.lit]#0#. In the indented code block, we can also use [.var]#$n# instead of
 [.var]#capture[n].s# and [.var]#@n# instead of [.var]#capture[n].si#.
 
 We could use the [.type]#seq# of captures to print the captured [.str]#strings# or to copy them into some global variable.
@@ -17823,7 +17824,7 @@ to enter textual commands like [.term]#moveTo(x, y)#.
 
 [source, nim]
 ----
-import npeg, tables
+import npeg, std/tables
 
 type T = Table[string, string]
 
@@ -17865,6 +17866,7 @@ For example, the pattern below splits a [.str]#string# by white space:
 
 [source, nim]
 ----
+import npeg
 let parser = patt *(*' ' * > +(1-' '))
 echo parser.match("   one two three ").captures
 ----
@@ -17970,7 +17972,7 @@ Printing file2.pdf ...
 ----
 
 Long and short option names, with and without values, are supported, you can use [.lit]#=# or [.lit]#:# to separate option
-names from their values, and leaf out the separator as in [.term]#-p12#, when there is no ambiguity.
+names from their values, and leave out the separator as in [.term]#-p12#, when there is no ambiguity.
 Long options can be abbreviated, if there is no ambiguity, i.e. we could call our app like
 [.term]#./fancyprint --p12 --qual:high --verb file.pdf#.
 
@@ -18066,7 +18068,7 @@ does not impact the performance of the final executable -- in some cases, the us
 improve the performance of our final program.
 
 ****
-[.mac]#Macros# are by far the most difficult part of the Nim programming language. While in languages like Lisp [.mac]#macros# integrate very well into the language,
+[.mac]#Macros# are by far the most difficult part of the Nim programming language. While in languages like [.ndef]#Lisp# [.mac]#macros# integrate very well into the language,
 for Nim the meta-programming with [.mac]#macros# is very different from the use of the language itself. Nim's [.mac]#macros# are very powerful -- the current
 Nim [.italic]#async# implementation is based on Nim [.mac]#macros#, and some advanced libraries for threading, parallel processing, or data serialization
 using JSON or YAML file formats, make heavy use of Nim [.mac]#macros#. And many modules of the Nim standard library provide some [.mac]#macros#,
@@ -18086,7 +18088,7 @@ the code of existing [.mac]#macros#, study the [.mod]#macros# module, to see wha
 at the end of this section. And finally, you would have to ask for help in the Nim forum, on IRC, or on the other Nim help channels.
 ****
 
-To verify that [.mac]#macros# are really executed at compile time, we will start with a tiny [.mac]#macro#, that contains only an echo statement in its body:
+To verify that [.mac]#macros# are really executed at compile time, we will start with a tiny [.mac]#macro#, that contains only an [.func]#echo# statement in its body:
 
 [source, nim]
 ----
@@ -18417,7 +18419,7 @@ But in some situations, it is necessary to use [.type]#typed# parameters, e.g. w
 the parameter type in the [.mac]#macro# body.
 
 === Quote and the quote do: construct
-
+//puh
 In the section before, we learned about the [.func]#parseStmt()# function, which is used in a [.mac]#macro# body to compile
 Nim code represented as a multi-line [.type]#string#
 to an abstract syntax tree representation. [.mac]#Macros# use as a return type the [.type]#"untyped"# data type, which is compatible with the [.type]#NimNode# type

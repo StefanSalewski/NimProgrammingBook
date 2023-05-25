@@ -56,8 +56,9 @@ h1, h2, h3, h4, h5, h6, #toctitle,
 .obj{font-family: monospace} /* object type, object is indeed a keyword */
 
 
-.func{}
+/*.func{background: #FF0 !important; color: #000 }*/
 
+.func{}
 
 .var{font-family: monospace; font-style: italic}
 .mod{font-family: monospace; font-variant: small-caps}
