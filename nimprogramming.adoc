@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-25
+//v0.1, 2023-MAI-28
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -18052,7 +18052,16 @@ simple parameterized expressions like the [.func]#sqr()# from above, avoiding th
 The C pre-processor would substitute each occurrence of the symbol [.const]#PI# in the C source file with the [.type]#float# literal
 [.lit]#3.1415#, and the term [.code]#sqr(1{plus}2)# with [.code]#(1{plus}2){asterisk}(1{plus}2)#.
 
+Self-modifying assembly code, which was used in a few games on home computers in the 1980s, computer viruses and related malicious code with
+the ability to modify itself at runtime,
+and JIT-Compilers (Just-In-Time) are a very special
+variant of metaprogramming. Nim allows the use of macros and metaprogramming only at compile-time, so unpredictable
+and possibly dangerous code modifications at program runtime can not occur. But as Nim's macros and metaprogramming capacities are very
+powerful, they can make it more difficult to understand and reason about the source code. So metaprogramming should be used with some care, and
+in some very sensitive areas, metaprogramming may be restricted. 
+
 A Nim [.mac]#macro# is a code block, that is executed at compile-time, and transforms a Nim syntax tree into a different tree.
+The transformation is supported by Nim's type introspection abilities, e.g. to examine the type or properties of objects and other entities.
 This can be used to add custom language features and implement domain-specific languages (DSL).
 While [.mac]#macros# enable advanced compile-time code transformations, they cannot change Nim's syntax.
 
@@ -18115,7 +18124,7 @@ us the exact same results.
 
 ****
 We said, that [.mac]#macros# have always to return an [.type]#untyped# result. This is true, but as [.type]#untyped# is the only possible
-result type, that type can currently be omitted. So you may see in the code of the Nim standard lib a few [.mac]#macros#,
+result type, that type can currently be omitted. So you may see in the code of the Nim standard library a few [.mac]#macros#,
 which seem to return nothing. For our own [.mac]#macros#, we really should always use [.type]#untyped# as the result. And sometimes
 you may even see [.mac]#macros#, where for parameters no data type is specified at all. In that case, the data type has the
 default [.type]#untyped# type.
@@ -18140,8 +18149,8 @@ main()
 
 But with the current compiler version 1.5.1 that code compiles, and prints the message [.lit]#"str"#, which is a bit surprising.
 To fix this, we can change the parameter type to [.type]#static[string]#, which guarantees that we can indeed pass only compile-time constants.
-Our last example would give a compile error in this case, while the one before with the
-[.str]#string# constant would work as expected.
+//Our last example would give a compile error in this case, while the one before with the
+//[.str]#string# constant would work as expected.
 
 Now, let us create [.mac]#macros#, which actually create an AST, which is returned by the [.mac]#macro# and executed when we run our program.
 For creating an AST in the [.mac]#macro# body, we have various options: we can use the [.func]#parseStmt()# function or the [.code]#"quote do:"# notation,
@@ -18237,7 +18246,7 @@ And when we run it, we get:
 ----
 
 Well, not a really great result for this concrete use case: We have replaced three [.func]#echo()# commands with a five-lines [.mac]#macro#.
-But at least, you got a feeling of what [.mac]#macros# can do for use.
+But at least, you got a feeling of what [.mac]#macros# can do for us.
 
 The [.func]#parseStmt()# function is actually not used that often, as the string construction is inconvenient, and avoiding some
 issues like namespace collisions can be difficult. In the following sections, we will introduce the [.code]#quote do:# construct and
@@ -18419,7 +18428,7 @@ But in some situations, it is necessary to use [.type]#typed# parameters, e.g. w
 the parameter type in the [.mac]#macro# body.
 
 === Quote and the quote do: construct
-//puh
+
 In the section before, we learned about the [.func]#parseStmt()# function, which is used in a [.mac]#macro# body to compile
 Nim code represented as a multi-line [.type]#string#
 to an abstract syntax tree representation. [.mac]#Macros# use as a return type the [.type]#"untyped"# data type, which is compatible with the [.type]#NimNode# type
@@ -18485,13 +18494,26 @@ at compile-time and the quoted [.type]#NimNodes# in the block are interpolated a
 actual [.func]#echo()# statement in the block is then finally executed at program runtime. To prove how this final [.func]#echo()# statement looks, we may
 add as the last line of our [.mac]#macro# the statement [.code]#"echo result.repr"# and we would then get the [.str]#string# "echo "a {asterisk} sqrt(b)", ": ", a {asterisk} sqrt(b)", when we compile our program again.
 
+You may wonder, why the construct "quote do:" is used, instead of only "quote:".
+The "do notation" is an overloaded feature of the Nim language and offers two things:footnote:[https://forum.nim-lang.org/t/8259#53165]
+* A different way to pass anonymous procs/closures to a procedure
+* A way to pass two code blocks to a template.
+
+We will not try to explain the magic of "do" here in more detail, because there have been suggestions to modify its use and meaning, and
+because modern Nim provides the new [.func]#genAst()# [.mac]#macro#, which can replace "quote do" and is preferred by many people now.
+We will present that [.mac]#macro# in the next section. When you are really interested in the details of the "do" notation, you
+may read these two forum posts:
+
+* https://forum.nim-lang.org/t/8259#53154
+* https://forum.nim-lang.org/t/8279#53301
+
 === The genast() macro as a replacement for quote do:
 
-The [.mod]#genasts# module provides with the [.func]#genAstOpt()# macro and the [.func]#genAst()# template
+The [.mod]#genasts# module provides with the [.func]#genAstOpt()# [.mac]#macro# and the [.func]#genAst()# template
 a drop-in replacement for the "quote do:" construct.
 Like [.code]#quote do:#, [.func]#genAst()# accepts an expression or a code block and returns the AST that represents it.
 Within the quoted AST, we are able to interpolate NimNode expressions from the surrounding scope.
-While for [.code]#quote do:# quoting is done using backticks (or other user-defined operators), we pass to [.func]#genAst()# a list of the variable to capture,
+While for [.code]#quote do:# quoting is done using backticks (or other user-defined delimiters), we pass to [.func]#genAst()# a list of the variables to capture,
 and can then use these variables in the body of [.func]#genAst()# without explicit quoting. Our [.func]#show()#
 macro from above becomes with [.func]#genAst()#:
 
@@ -18510,8 +18532,8 @@ var b = 9.0
 show(a * sqrt(b))
 ----
 
-[.func]#GenAst()# captures (interpolates) parameters of the surrounding macro and local macro variables when we
-specify them as parameters to genAst(). A macro local proc is automatically captured and does not have
+[.func]#GenAst()# captures (interpolates) parameters of the surrounding [.mac]#macro# and local [.mac]#macro# variables when we
+specify them as parameters to [.func]#genAst()#. A [.mac]#macro# local procedure is automatically captured and does not have
 to be included in the capture list explicitly. This behavior can be modified, when
 instead of the plain genAst(), the [.func]#genAstOpt()# [.mac]#macro# is used, which has a set of options
 as a first parameter. You can find some more details about the [.mod]#genasts# module and
@@ -18707,7 +18729,7 @@ a + b: 0
 ----
 
 The next step to create our actual [.func]#dump()# [.mac]#macro# is again easy -- we pass the expression to [.func]#dump()#
-as an [.type]#untyped# [.mac]#macro# parameter to the [.mac]#macro#, convert it to a [.type]#NimNode# of [.str]#string# type, and use that
+as an [.type]#untyped# parameter to the [.mac]#macro#, convert it to a [.type]#NimNode# of [.str]#string# type, and use that
 instead of the [.code]#newLit("a {plus} b")# from above. In our second [.mac]#macro#, where we used the [.code]#quote do:# construct,
 we applied already [.func]#toStrLit()# on an [.type]#untyped# [.mac]#macro# parameter, so we should be able to reuse that
 to get the [.str]#string# [.type]#NimNode#. Instead, we would have to apply the stringify operator additionally
@@ -18803,7 +18825,7 @@ expression which evaluated to [.lit]#false# and then terminate the program execu
 This is basically what the [.func]#assert()# [.mac]#macro# in the Nim standard library already does,
 and the official Nim [.mac]#macros# tutorial contains such an [.func]#assert()# [.mac]#macro# as well.
 
-Arguments for our [.func]#assert()# [.mac]#macro# may look like [.code]#"x == 1 {plus}2"#, containing one infix
+Arguments for our [.func]#assert()# [.mac]#macro# may look like [.code]#"x == 1 {plus} 2"#, containing one infix
 operator, and one left-hand, and one right-hand operand. We will show how we can use
 subscript [.op]#[]# operators on the [.type]#NimNode# argument to access each operand.
 
@@ -18914,14 +18936,14 @@ main()
 We start with the [.func]#dumpAstGen()# [.mac]#macro# applied to a [.func]#test()# [.proc]#{proc}#, which contains an [.func]#echo()# statement.
 So when we compile that code, we get an initial idea of how a [.type]#NimNode#, that shall print the
 [.proc]#{proc}# name, should look. To use pragma [.mac]#macros#, we annotate the [.proc]#{proc}# with the [.mac]#macro# name enclosed
-in the pragma symbols {..}. The annotated [.proc]#{proc}# is then passed to the pragma with that name in the form
+in the pragma symbols [.code]#{..}#. The annotated [.proc]#{proc}# is then passed to the pragma with that name in the form
 of a syntax tree. Our goal is to add a [.type]#NimNode# to this tree, that prints the [.proc]#{proc}# name of the passed AST.
 To do that, we have to know two important points: For the [.proc]#{proc}# that is passed as an [.type]#untyped# data type to our
 [.mac]#macro#, we can use the function [.func]#body()# to get the AST representation of the body of the passed [.proc]#{proc}#,
 and we can use [.func]#name()# to get the name of that [.proc]#{proc}#. The functions [.func]#body()# and [.func]#name()# are provided
 by the [.mod]#macros# module of Nim's standard library. In our [.mac]#macro# [.func]#pm()#, we first verify, that the passed
 argument is really of node kind ProcDef. Then we create a new [.type]#NimNode#, which calls the [.func]#echo()# function
-with the [.proc]#{proc}# name as a parameter. And we insert that node at position 0 into the body of the passed [.proc]#{proc}#.
+with the [.proc]#{proc}# name as a parameter. And we insert that node at position [.lit]#0# into the body of the passed [.proc]#{proc}#.
 Finally, we return the modified AST.
 
 When we run our program, we get this output in the terminal window:
@@ -19068,7 +19090,7 @@ When we run this [.mac]#macro# or the one before, we get
 
 === Macros for generating data types
 
-As one more exercise for the use of macros, we will create some data types in this section.
+As one more exercise for the use of [.mac]#macros#, we will create some data types in this section.
 In the previous section, we had a data type like
 
 [source, nim]
@@ -19088,7 +19110,7 @@ type
 
 Here, the individual fields have a well-defined shape -- all members are
 sequences of other data types, and the field names are derived from the type names.
-So we may wonder if creating the fields with some form of a macro would make some sense.
+So we may wonder if creating the fields with some form of a [.mac]#macro# would make some sense.
 So let us investigate it.footnote:[You may wonder why we have separate sequences for
 the geometric shapes at all here, as we could put all the shapes in a single seq
 when the shape types are reference types. Well, the shapes types could be value types,
@@ -19100,12 +19122,12 @@ the base types [.type]#int#, [.type]#float#, and [.type]#string#. Again, we star
 We don't have to understand its output in detail. It is enough to recognize that
 the three actual fields of our [.obj]#ref object# were created by [.func]#nnkIdentDefs.newTree()# statements each and
 that these three statements are surrounded by a [.func]#nnkRecList.newTree()# call.
-So we start by producing an empty RecList with a call of [.func]#nnkRecList.newTree()#, and
-then iterate over an [.type]#array# with the three type names, create the IdentDefs with [.func]#nnkIdentDefs.newTree()#
-and add them to the RecList. Finally, we call [.func]#nnkStmtList.newTree()# passing our RecList as a parameter.
+So we start by producing an empty [.type]#RecList# with a call of [.func]#nnkRecList.newTree()#, and
+then iterate over an [.type]#array# with the three type names, create the [.type]#IdentDefs# with [.func]#nnkIdentDefs.newTree()#
+and add them to the [.type]#RecList#. Finally, we call [.func]#nnkStmtList.newTree()# passing our [.type]#RecList# as a parameter.
 Mostly this is just copy&paste, with the only exception that we have to remember that our
 [.var]#rfn# variable, which we use to iterate over the type names, is not a [.type]#string#, but a [.type]#NimNode#
-inside the macro, so we have to apply the stringify operator [.op]#$# on it when we pass it as an argument to
+inside the [.mac]#macro#, so we have to apply the [.func]#stringify# operator [.op]#$# on it when we pass it as an argument to
 [.func]#newIdentNode()#:
 
 [source, nim]
@@ -19205,7 +19227,8 @@ In this section, we will learn how we can create a [.mac]#macro#, that does not
 only create an operator that can work on existing variables, but that can be used
 to create new variables. In Nim, we use the [.key]#var# or [.key]#let# keyword to
 create new variables. Some other languages allow creating new variables on the fly
-by using just "=", ":=", or "!=" to create new variables.
+by using just "=", ":=", or "!=" for the assignment.
+//to create new variables.
 
 [source, nim]
 ----
@@ -19404,6 +19427,7 @@ show how we can send data from one thread to another by use of the [.mod]#channe
 ****
 Note: Whenever we intend to use threads in Nim, that is when we import the [.var]#threadpool#
 or the [.mod]#threads# module, we have to compile our program with the option [.term]#--threads:on#.
+This will be the default for Nim v2.0.
 ****
 
 === Module threadpool
@@ -19415,7 +19439,7 @@ of threads, which we then can use to execute parts of our program.
 
 As a first, very simple example, we will show how we can use the [.func]#spawn#
 procedure of the [.mod]#threadpool# module to request the execution of a regular
-proc. This way, we create not really a new thread, but we add our [.proc]#{proc}# to a list of
+procedure. This way, we create not really a new thread, but we add our [.proc]#{proc}# to a list of
 [.proc]#{procs}# to execute. When one of the threads in the pool is idle, then our [.proc]#{proc}# is
 immediately executed by a thread, otherwise, the execution of our [.proc]#{proc}# is delayed
 until a thread is ready to execute it. All the threads of the pool are distributed
@@ -19566,10 +19590,12 @@ instead of a fixed-sized [.type]#array#, and to use more than two threads. For a
 of the [.mod]#threadpool# module, you should consult its documentation.
 
 As a direct replacement for the [.mod]#threadpool# module, you may also try the external [.mod]#taskpools#
-package. Or you may try the much more advanced [.mod]#weave# package:
+package. Or you may try the much more advanced [.mod]#weave# package. Recently two more modules for
+threading support arrived, called Malebogia and Constantine.
 
 * https://github.com/status-im/nim-taskpools
 * https://github.com/mratsim/weave
+* https://github.com/Araq/malebolgia
 
 === Using the threads module to create new threads
 
@@ -19794,7 +19820,7 @@ Nim's [.type]#Locks# are generally used together with the [.var]#guard# pragma, 
 we can attach to a global variable, that is accessed from more than one thread. With
 the guard pragma attached, each thread has to first acquire the lock, before it is
 allowed to access that variable. If the lock is already acquired by another thread,
-acquire blocks until that other thread releases the lock to indicate that it is done
+[.func]#acquire()# blocks until that other thread releases the lock to indicate that it is done
 with its access. Of course, this possible blocking can decrease the total
 performance, so each thread should acquire the lock only, when it really needs access
 to the protected data, and release the lock as soon as possible.
@@ -20084,7 +20110,7 @@ But that module has some restrictions, which can make its use difficult or impos
 some parsing tasks. The provided [.func]#scan()# [.key]#macro# supports, with the parameter types [.var]#$i#, [.var]#$f#, and [.var]#$w#,
 the processing of integers, floats, and ASCII identifiers. Here, ASCII identifier stands for
 valid Nim symbols, indicating that the [.var]#$w# identifier is not allowed to start with a digit or contain
-spaces. But actually, we intentionally designed our generator program that generated our test CSV file so that
+spaces. But actually, we intentionally designed our generator program that generated our test CSV file so, that
 it may insert spaces in the name [.str]#strings# in rare cases to make the data more realistic. To allow us to experiment with
 the [.mod]#strscans# module, we can patch our generator program from <<Generate the input file>> to use an expression like [.code]#if false:# instead of [.code]#if rand(7) == 7:#.
 After doing that and compiling and running that generator program to get a test data set without spaces, we can test
@@ -20122,7 +20148,7 @@ proc main =
 main()
 ----
 
-As described in Part 3 of the book (<<Module strscans>>), we use the [.func]#scanf()# [.key]#macro# to process each line.
+As described in {part}III of the book (<<Module strscans>>), we use the [.func]#scanf()# [.key]#macro# to process each line.
 The [.var]#$w# parameters parse an identifier each; the [.lit]#','# character in the format [.str]#string#
 stands for itself; and [.var]#$f# and [.var]#$i# parse a floating-point number and an integer number, respectively.
 Compiling the program with the option [.term]#-d:release# and executing it results in run-times of
@@ -20260,7 +20286,7 @@ used as a reference for item access. The API documents also describe how we can 
 or how we can apply custom quoting characters. Quoting is needed when the fields may contain the separator character
 or newlines. Note that currently only single separator characters are allowed, so separator [.str]#strings# like [.code]#"; "# are not supported.
 One reason why the reading performance of this module is very high is that it avoids [.str]#string# allocations.
-Each row of the CSV file is read into a pre-allocated row field of the [.str]#string# data type.
+Each row of the CSV file is read into a pre-allocated [.var]#row# field of the [.str]#string# data type.
 For our test of the pure file read performance, we set the constant [.var]#Debug# to [.lit]#false# to avoid
 slow output operations. To test if our program actually does what we expect, we can set [.var]#Debug# to [.lit]#true#
 and run the program with terminal output.
@@ -20424,7 +20450,9 @@ main()
 
 This first attempt takes only 8 ms to read the file in. But the obvious issue is, that
 the chunks of [.lit]#1024# bytes contain fractional lines. To fix that, we can just do a backward
-search for the line end marker [.lit]#'\n'# in the buffer:
+search for the line end marker [.lit]#'\n'# in the buffer:footnote:[A forward search for the start of
+the next line would be an option as well, but then we would need special care for the last block. And with
+backward search, we have a motivation to introduce the setFilePos() function.]
 
 [source, nim]
 ----
@@ -20597,7 +20625,7 @@ the [.key]#parallel# construct. Or we may experiment with so-called [.ndef]#memo
 
 NOTE: These fixes are no longer necessary for Nim V 2.0!
 
-As we found out, the performance is currently disappointing, when we compile with [.term]#--mm: arc# or [.term]#--mm:orc#.
+As we found out, the performance is currently disappointing, when we compile with [.term]#--mm:arc# or [.term]#--mm:orc#.
 One easy way to fix that is when we use additional the compiler option [.term]#-d:useMalloc#. This avoids
 the use of Nim's own memory allocator, which seems to be slow when we compile with [.term]#--threads:on#.
 The issue becomes very obvious due to the fact, that the current implementation of the [.func]#splitLines()#
@@ -20806,7 +20834,7 @@ synchronous and asynchronous data transfers.
 
 Nim's async/await framework is not part of the language itself but is implemented with
 [.mac]#macros# and meta-programming, and the use of Nim's [.key]#iterators#. The underlying
-implementation is based on [.func]#epoll# on Linux, IO Completion Ports on Windows,
+implementation is based on [.func]#epoll# on Linux, [.ndef]#IO Completion Ports# on Windows,
 and [.func]#select# on other operating systems.
 
 Currently, Nim's async/await uses only one single thread on its own, but applications
@@ -20887,17 +20915,17 @@ continues with the code execution.
 import std/[asyncdispatch, times]
 from std/os import sleep
 
-let to = epochTime()
+let t0 = epochTime()
 
 proc tick(t: string): Future[void] {.async.} =
   for i in 0 .. 1:
     os.sleep(100) # sleep 100 ms
-    echo "tick ", t, ((epochTime() - to) * 1000).int, "ms"
+    echo "tick ", t, ((epochTime() - t0) * 1000).int, "ms"
 
 let f1: Future[void] = tick(" AAA ")
 let f2 = tick(" BBB ")
 
-echo "total time elapsed: ", epochTime() - to
+echo "total time elapsed: ", epochTime() - t0
 ----
 
 In the code example above, we import the [.mod]#asyncdispatch# module and have
@@ -20927,24 +20955,24 @@ ordinary [.func]#sleep()# function the function [.func]#sleepAsync()# provided b
 import std/[asyncdispatch, times]
 from std/os import sleep
 
-let to = epochTime()
+let t0 = epochTime()
 
 proc tick(t: string): Future[void] {.async.} =
   for i in 0 .. 1:
     await sleepAsync(100) # suspend code execution for 100 ms
-    echo "tick ", t, ((epochTime() - to) * 1000).int, "ms"
+    echo "tick ", t, ((epochTime() - t0) * 1000).int, "ms"
 
 let f1: Future[void] = tick(" AAA ")
 let f2 = tick(" BBB ")
 
 echo f1.finished, ' ', f2.finished
-echo "time: ", epochTime() - to
+echo "time: ", epochTime() - t0
 
 waitFor f1
 # waitFor f1 and f2 # wait for both futures to finish
 
 echo f1.finished, ' ', f2.finished
-echo "total time elapsed: ", epochTime() - to
+echo "total time elapsed: ", epochTime() - t0
 ----
 
 ----
@@ -21014,24 +21042,24 @@ asynchronous [.proc]#{procs}# are executed:
 ----
 import std/[asyncdispatch, times]
 
-let to = epochTime()
+let t0 = epochTime()
 
 proc numbers() {.async.} =
   for i in 1 .. 3:
     await sleepAsync(250)
-    echo i, ' ', ((epochTime() - to) * 1000).int, " ms"
+    echo i, ' ', ((epochTime() - t0) * 1000).int, " ms"
 
 proc letters() {.async.} =
   for i in 'a' .. 'e':
     await sleepAsync(400)
-    echo i, ' ', ((epochTime() - to) * 1000).int, " ms"
+    echo i, ' ', ((epochTime() - t0) * 1000).int, " ms"
 
 var
   n = numbers()
   l = letters()
-echo "start: ", ((epochTime() - to) * 1000).int, " ms"
+echo "start: ", ((epochTime() - t0) * 1000).int, " ms"
 waitFor sleepAsync(1500)
-echo "done: ", ((epochTime() - to) * 1000).int, " ms"
+echo "done: ", ((epochTime() - t0) * 1000).int, " ms"
 ----
 
 As both asynchronous [.proc]#{procs}# use different arguments when they call
@@ -21051,7 +21079,7 @@ done: 1501 ms
 
 In this example, we do not call [.func]#waitFor()# directly on our actual asynchronous
 [.proc]#{procs}#, but on [.func]#sleepAsync()# from [.var]#asyncdispatch#. As the [.proc]#{procs}#
-[.func]#numbers()# and [.fiunc]#letters()# got registered by the dispatcher, they are
+[.func]#numbers()# and [.func]#letters()# got registered by the dispatcher, they are
 executed by the dispatcher loop, but only as long as determined by [.code]#waitFor
 sleepAsync(1500)#. So the execution of the dispatcher loops stops already before
 [.func]#letters()# is really done, and letters [.lit]#d# and [.lit]#e# got never
@@ -21658,7 +21686,7 @@ Expected one of (first mismatch at position [#]):
 Actually, the compiler error messages are very clear in this case already. And the
 [.op]#<# predicate could not be a really good example for the use of concepts, as [.op]#<# is typically defined for most of Nim's data
 types, even for sets and tables. But [.key]#concepts#
-allow us to express the constraints more clearly, already visible in the proc definition
+allow us to express the constraints more clearly, already visible in the procedure definition
 and resulting in even more clear compiler error messages.
 
 So let us define a [.type]#Comparable# data type, which we then can use for our [.func]#mx()# proc.footnote:[We
@@ -22067,7 +22095,7 @@ proofread the first dozen pages of the book and gave some advice on English gram
 and spelling. Thanks go also to Mr. Marek Ľach (https://github.com/marek-lach), for fixing many more spelling and grammar
 errors. Finally, a lot of missing commas and some more grammar errors have been detected by the use of the
 languagetool.org software, used from the command line with the pyLanguagetool application.
-Some longer prose sections have been also checked by use of the free Firefox grammar check browser extension of
+Some longer prose sections have been also checked by use of the free Firefox grammar-check browser extension of
 https://www.grammarly.com/ and the online grammar checker from https://quillbot.com.
 
 //== Strange Questions
@@ -22108,10 +22136,10 @@ high-level programming languages do. For time-critical or resource-limited syste
 have some serious disadvantages like fully blocking the system for a few milliseconds, or releasing resources late
 and needing a lot of memory. Early Java implementations suffered from this, and for this reason,
 some modern high-performance languages like Rust, Zig, or Jai do not use automatic memory management at all.
-Languages like Nim and VLang tried to find automatic memory strategies that avoided the disadvantages
+Languages like Nim and VLang tried to find automatic memory management strategies that avoided the disadvantages
 of traditional garbage collectors. And Nim was successful already, while Vlang seems to have some miles to go still.
 ARC is a deterministic, destructor-based memory management system: As soon as referenced, heap-allocated objects go
-out of scope, so that they can no longer be accessed by any reference, and the heap object is immediately freed.
+out of scope, so that they can no longer be accessed by any reference, the heap object is immediately freed.
 This works very well, as long as the referenced objects build no cyclic structures, e.g. in graphs like the triangulation of
 a surface, where all the vertices and edges may have neighbor references. To handle cycles, the ORC memory handler
 was created and is now the default. For many applications, it is not really important if the traditional refc
@@ -22177,7 +22205,6 @@ the red value is also from the TrafficLigth data type, so we do not have
 to use the type name prefix. The {.pure.} pragma is not needed anymore, and the compiler
 is really smart: Only a statement like "var caution = {red, blue}" would obviously not
 compile without type prefixes for one of the values.
-
 
 === CString limitations
 
@@ -22277,17 +22304,17 @@ Compiling the above code results in this warning:
 Warning: Cannot prove that 'i' is initialized. This will become a compile-time error in the future. [ProveInit]
 ----
 
-The reason is obviously that proc p does not assign a value to the out parameter i.
+The reason is obviously that proc [.proc]#p# does not assign a value to the [.key]#out# parameter [.var]#i#.
 
 === StrictFuncs
 
 When we pass parameters to procs and functions that should be modified
-in the proc body, we have to use the var keyword to make the parameter mutable.
+in the proc body, we have to use the [.key]#var# keyword to make the parameter mutable.
 For beginners, it was sometimes surprising that when we passed reference parameters
-to a proc, it was allowed to modify fields of ref objects, also when the ref object was not passed as
-a var parameter. So the var keyword was only needed to change the ref itself, e.g., to exchange
-or initialize a ref to an object. With the new definition of the StrictFuncs pragma in Nim 2.0,
-we can ensure for functions that fields of ref objects cannot be mutated in a function.
+to a [.proc]#proc#, it was allowed to modify fields of [.type]#ref objects#, also when the [.type]#ref object# was not passed as
+a [.key]#var# parameter. So the [.key]#var# keyword was only needed to change the [.key]#ref# itself, e.g., to exchange
+or initialize a [.key]#ref# to an [.obj]#object#. With the new definition of the StrictFuncs pragma in Nim 2.0,
+we can ensure for functions that fields of [.key]#ref objects# cannot be mutated in a function.
 
 [source, nim]
 ----
@@ -22601,7 +22628,7 @@ We see immediately a tiny issue: Nimble accepts the package name with upper case
 it for the module name. But by convention, module names should be all lowercase for Nim. We can manually fix that,
 or use a package name with all lowercase letters.
 For most packages, names with only lowercase letters should be OK, but sometimes
-we may like to have package names like RTtree. Note, that the package name itself
+we may like to have package names like RTree. Note, that the package name itself
 and all the file and folder names of the package should not contain hyphens or the [.italic]#at# symbols ('-', '@') --
 the minus sign is generally not allowed for Nim symbols, and the [.lit]#@# has a special meaning for Nimble.
 
