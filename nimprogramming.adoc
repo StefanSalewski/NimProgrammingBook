@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-28
+//v0.1, 2023-MAI-29
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -21105,10 +21105,12 @@ accurate timings.
 
 The module [.mod]#std/httpclient# of Nim's standard library provides procedures for
 synchronous and asynchronous file transfer. Let us start with this simple synchronous
-example to download two small text files from a URI:
+example to download two small text files from a URI. You may have to compile the example with
+option [.code]#-d:ssl#:
 
 [source, nim]
 ----
+# nim r -d:ssl t.nim
 import std/httpclient
 let client = newHttpClient()
 echo client.getContent("http://ssalewski.de/tmp/texttestpage1.txt")
@@ -21131,6 +21133,7 @@ download in an asynchronous way -- at least for one single file:
 
 [source, nim]
 ----
+# nim r -d:ssl t.nim
 import std/[asyncdispatch, httpclient]
 proc asyncProc(): Future[string] {.async.} =
   let client = newAsyncHttpClient()
@@ -21148,6 +21151,7 @@ we can easily modify the above code to download two files asynchronously:
 
 [source, nim]
 ----
+# nim r -d:ssl t.nim
 import std/[asyncdispatch, httpclient]
 proc asyncProc(url: string): Future[string] {.async.} =
   return await newAsyncHttpClient().getContent(url)
@@ -21746,12 +21750,13 @@ example of a [.type]#Stack# [.key]#concept#:
 
 [source, nim]
 ----
-Stack[T] = concept s, var v
-  s.pop() is T
-  v.push(T)
-  s.len is Ordinal
-  for value in s:
-    value is T
+type
+  Stack[T] = concept s, var v
+    s.pop() is T
+    v.push(T)
+    s.len is Ordinal
+    for value in s:
+      value is T
 ----
 
 A generic [.type]#Stack# for data of type [.type]#T# needs a [.func]#pop()# and a [.func]#push()#
