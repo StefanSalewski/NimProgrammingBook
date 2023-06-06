@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-MAI-29
+//v0.1, 2023-JUNE-06
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -39,6 +39,9 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :runtime: run-time
 :part: Part{nbsp}
 :cdefine: #define
+//
+//:if: [.key]#if#
+:if: pass:q[[.key]#if#]
 
 ////
 
@@ -14553,6 +14556,164 @@ References:
 = Some Programming Tasks
 
 In this section, we will present a few simple programming exercises.
+
+== Permutations
+
+A collection of [.var]#n# distinguishable elements can be grouped in [.var]#n!# (factorial) distinct
+arrangements. (We can take an arbitrary element from the collection and put it
+on one from [.var]#n# possible positions, then we take the next element and can choose
+among the [.var]#(n-1)# still unoccupied positions, and so on. For the three letters
+A, B, and C, this gives these 6 possible permutations:
+
+----
+'A', 'B', 'C'
+'A', 'C', 'B'
+'B', 'A', 'C'
+'B', 'C', 'A'
+'C', 'A', 'B'
+'C', 'B', 'A'
+----
+
+A simple strategy to create all the possible permutations is the
+[.ndef]#Steinhaus–Johnson–Trotter# algorithm: We assume that we know already
+all the possible permutations of [.var]#n - 1# elements. Then we can just
+insert the next new element at all possible positions. As an example, let us
+create all possible permutations of the numbers 1, 2, and 3. The set of numbers
+1 and 2 allow obviously only arrangements 12 and 21. For both of them, we can add the
+next item at the beginning, in the middle, and at the end, resulting in
+
+----
+312
+132
+123
+321
+231
+213
+----
+
+For practical purposes, this method is not that useful, as it is only simple when we 
+really store all the permutations, so that we can easily add new elements at all possible positions.
+The algorithm can be used without storing all arrangements, but then it is not that simple.
+Another very simple algorithm to generate all possible permutations is [.ndef]#Heap's algorithm#,
+which exchanges only two elements in a clever order to generate the next permutation.
+You can find detailed explanations of these two and many more algorithms for the generation of
+permutations on the Internet and in textbooks.
+
+The Steinhaus–Johnson–Trotter algorithm and Heap's algorithm generate the permutations
+without following a special order. But often we have a set of orderable items, like
+numbers, characters, or strings. And in this case, we may want to create the permutation
+in ascending or descending lexicographic order. The linked Wikipedia article describes
+in the informal textual form how we may create the next ordered permutation from an existing one:
+
+. Find the largest index [.var]#k# such that [.code]#a[k] < a[k + 1]#. If no such index exists, the permutation is the last permutation.
+. Find the largest index [.var]#l# greater than [.var]#k# such that [.code]#a[k] < a[l]#.
+. Swap the value of [.var]#a[k]# with that of [.var]#a[l]#.
+. Reverse the sequence from [.var]#a[k + 1]# up to and including the final element [.var]#a[n]#.
+
+This description is enough to create a Nim procedure for this purpose, but let us 
+first try to really understand why this algorithm actually works. We will investigate the strategy
+for the 4 decimal digits 1, 2, 3, and 4. Our task is, starting with an arbitrary existing order, to find
+the next permutation of these digits that present the next larger number. We start by investigating the existing digits from the
+right, that is with increasing power of decimal places. Remember, the value of a decimal number like [.lit]#56# is [.code]#5 * 10^1 + 6 * 10^0#.
+When we regard the decimals starting from the right, then we move to the left, until we detect a digit that is smaller than the
+right neighbor. We call this position [.var]#k#. When we have found such a position [.var]#k#, then we select the rightmost digit that is larger than
+the digit at position [.var]#k#, and we swap the two digits. The result is a larger number, and we are nearly done. But actually, this is not yet the smallest
+possible larger number. We have still to sort all the digits at positions greater than [.var]#k# in ascending order. Note, that sorting a group of digits in ascending order
+gives the smallest numerical value. Actually, sorting is not really necessary, just reversing that sub-range suffices. The reason for this is, that
+we know, that all the digits right to position [.var]#k# are in descending order, so reversing them gives us the desired ascending order.
+Let us investigate as an example the start value [.lit]#4231#. The leftmost digit, at position [.lit]#0#, has a value of [.lit]#4#, and the rightmost digit, at position [.lit]#3#, has a value of [-lit]#1#.
+Starting from the right, we discover that digit [.lit]#2# at position [.var]#k == 1# is the first that is smaller than the right neighbor. Starting again at the right,
+we find that digit [.lit]#3# at position [.lit]#2# is the rightmost one that has a value greater than the digit at position [.var]#k#. So we exchange the digits at
+positions [.var]#k == 1# and position [.lit]#2# and get the number [.lit]#4321#. Sorting or reversing the positions [.var]#k + 1# and [.var]#k + 2# gives us the final result of [.lit]#4312#.
+
+Creating a Nim proc from our informal description is an interesting, not-too-difficult task, which teaches
+us some details about the construction of loops used to iterate over containers.
+Below is one possible solution, which we will discuss in the next paragraph:  
+
+[source, nim]
+----
+proc nextPermutation*[T](a: var openArray[T]): bool =
+  var k = a.high - 1
+  while k >= 0 and a[k] >= a[k + 1]:
+    dec(k)
+  if k >= 0:
+    var l = a.high
+    while a[k] >= a[l]:
+      dec(l)  
+    swap(a[k], a[l])
+    a.reverse(k + 1, a.high)
+    return true
+----
+
+We created a generic procedure with the name [.func]#nextPermutation()# and a single argument [.var]#a# of type
+[.type]#openArray[T]#. We made the proc generic, to allow us to use it with all orderable
+base types, that is with types for which the [.op]#<# operator is defined, like various numeric types,
+as well as enumeration types, characters, or strings. We use the parameter type [.type]#openArray[T]#, which allows
+us to pass [.type]#arrays#, [.type]#strings#, and sequences. The proc has a boolean result type, which indicates
+if creating a permutation with a larger value is possible. For the number [.lit]#4321#, this is not the case, as that is already the permutation with
+the largest numeric value.
+Our proc starts by investigating digits at positions [.var]#k# and [.var]#k + 1#, starting at the rightmost position
+[.var]#a.high#. As we are looking for the condition [.code]#a[k] < a[k+1]#, we execute the while loop as long, as
+the condition [.code]#not (a[k] < a[k+1])# is true, which is identical to  [.code]#a[k] >= a[k + 1]#.
+Additionally, we have to ensure that [.var]#k# is always greater or equal to zero, otherwise, we would access
+an invalid [.type]#array# position. If this loop is terminated by the condition [.code]#k < 0#, then no larger
+permutation is possible, and the proc would return the default result [.lit]#false#.
+Otherwise, we use the second [.key]#while# loop, again starting at the right at position [.var]#a.high#, to find
+a position [.var]#l# with a digit that is larger than the digit at position [.var]#k#. Note that 
+such a position always exists. Finally, we swap the digits at positions [.var]#k# and [.var]#l# and
+reverse the [.type]#array# positions [.var]#k + 1# up to [.var]#a.high#. For the reversal, we use the proc [.func]#reverse()# from
+the module [.mod]#algorithm# of Nim's standard library. Of course, doing that reversal with a plain [.key]#while# or [.key]#for# loop
+is possible also -- you may try that as a small exercise. Actually, using a custom loop for reversal may
+increase the performance a tiny bit, as calling [.func]#reverse()# may have a small overhead. But in most cases,
+the actual creation of the permutations is not a critical operation, as we typically use the generated values for something, and that may
+take much longer.
+
+As an exercise, you may create a proc with signature [.code]#prevPermutation*[T](a: var openArray[T]): bool#
+that creates the permutations in descending order so that calling first [.func]#nextPermutation()# and then
+[.func]#prevPermutation()# cancel each other. That proc will look very similar to our example. You may start
+with a number like our value 4312 and investigate how you can find the next smaller permutation, which should be our
+4231 from above.
+
+.Click to see a possible solution
+[%collapsible]
+====
+[source, nim]
+----
+proc prevPermutation*[T](a: var openArray[T]): bool =
+  var k = a.high - 1
+  while k >= 0 and a[k] <= a[k + 1]:
+    dec(k)
+  if k >= 0:
+    var l = a.high
+    while a[k] <= a[l]:
+      dec(l)  
+    swap(a[k], a[l])
+    a.reverse(k + 1, a.high)
+    return true
+----
+====
+
+We can use our functions directly, or we can use them to create an [.key]#iterator# like
+
+[source, nim]
+---- 
+iterator orderedPermutation*[T](input: openArray[T]): seq[T] =
+  var a = input.sorted
+  while true:
+    yield a
+    if not nextPermutation(a):
+      break
+----
+
+That [.key]#iterator# starts by sorting the [.var]#input# argument to get the smallest arrangement and [.key]#yields#
+that value and all the available permutations. Note that a very similar [.func]#nextPermutation()#
+proc is available in Nim's [.mod]#algorithm# standard library. And you may find the procs from above
+and some related procedures and [.key]#iterators# in a Nim GitHub package called [.var]#combinatorics# at
+https://github.com/StefanSalewski/combinatorics.
+
+References:
+
+* https://en.wikipedia.org/wiki/Permutation  
 
 == Sorting
 
