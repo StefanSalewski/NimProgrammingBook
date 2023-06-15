@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
-A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUNE-06
+A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
+//v0.1, 2023-JUNE-15
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -44,6 +44,8 @@ A gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :if: pass:q[[.key]#if#]
 
 ////
+
+Please list 7 grammar or spelling errors for the following website using WebPilot plugin. Show the correction, and explain what is wrong:  https://ssalewski.de/nimprogramming.html
 
 asciidoctor -a stylesheet=adoc.css nimprogramming.adoc
 
@@ -91,7 +93,7 @@ ____
 == About this book
 
 In the year 1970, {wirth} invented the [.ndef]#Pascal# programming language to teach
-his students the fundamentals of computer programming. While the initial core Pascal
+his students the fundamentals of computer programming. Although the initial core Pascal
 language was designed for teaching purposes only, it was soon expanded by commercial
 vendors and gained some popularity. Later, Wirth presented the language [.ndef]#Modula-2#
 with improved syntax and the module concept for larger projects, and the
@@ -104,23 +106,25 @@ but at the same time is not restricted in any way. Nim offers all the concepts o
 modern and powerful programming languages in combination with high performance and
 some sort of universality -- Nim can be used to create programs for tiny {uc}s as well
 as large desktop apps and web applications.
-
-Most books about programming languages concentrate on the language itself and assume
-that the reader is familiar with the foundations of computer hardware and
-already has some programming experience. This is generally a valid approach, as today
-most people are taught this fundamental knowledge, sometimes called [.ndef]#Computer
-Science# (CS) in school. But still, there are people who missed this introduction in
-school for various reasons and decide later that they need some programming skills,
-maybe for a technical job. And there may exist some children that are not satisfied
-with the introduction to computer science taught at school. So we have decided to
-start this book with a short introduction to fundamental concepts -- most people may
+Most books about programming languages focus on the language itself and assume that the reader
+is already familiar with the foundations of computer hardware and has some programming experience.
+This is generally a valid approach, as
+most people are taught this fundamental knowledge, sometimes referred to as [.ndef]#Computer
+Science# (CS), in school today.
+However, there are people who, for various reasons, missed this introduction in school and later decide that
+they need some programming skills, perhaps for a technical job.
+Moreover, some children may not be satisfied
+with the introduction to computer science taught at school. Therefore, we decided to
+start this book with a short introduction to fundamental concepts. Most people may
 skip that part, but you should be really sure that you know these foundations.
-This book is divided into six parts. It is possible to read the parts independently of each other in arbitrary
+This book is divided into six parts.
+It is possible to read the parts independently of each other in any
 order, but for Nim beginners, it is recommended to read them mostly in ascending order,
-maybe while looking already early at some interesting sections in the second half of the book.
+perhaps while previewing some interesting sections in the second half of the book early on.
+//maybe while looking already early at some interesting sections in the second half of the book.
 In {part}II, we explain the basics of computer programming step by step
 in a way that should enable even children to learn independently. In this part, we may repeat
-some of the stuff which we already mentioned in {part}I. We do that by intent, as some
+some of the material that we already mentioned in {part}I. We do that by intent, as some
 people may skip {part}I, and because it is generally not a bad idea to support the learning
 process of the reader with some repetitions.
 {part}III will give
@@ -142,11 +146,14 @@ Some sections, that do not integrate well into the other six parts, or that are 
 Nim users, have been moved to the Appendix and may not be part of a printed copy of the book.
 This includes currently a short introduction to Nim's standard package manager, Nimble.
 
-This book is basically a traditional textbook, a very simple one with detailed
-explanations, so that kids from 14 years upwards can read and understand it
-on their own, with no, or only minimal help from adults. The English language
+//This book is basically a traditional textbook, a very simple one with detailed
+//explanations, so that kids from 14 years upwards can read and understand it
+//on their own, with no, or only minimal help from adults.
+This book is essentially a traditional textbook, simple yet detailed, designed so that
+kids aged 14 and above can read and understand it independently, with little or no help from adults.
+Unfortunately, the English language
 may still be a problem for many kids not born in a country with a good
-English language tradition, unfortunately. But luckily automatic
+English language tradition. But luckily automatic
 translations are already supported for some languages, and perhaps we
 will be able to offer some translated editions of the book later, possibly a Chinese
 and a German translation?
@@ -161,26 +168,40 @@ learned the first steps of computer programming themselves. And of course,
 watching videos does not improve the reading and concentration issues that people have.
 "Crash course" and "Learning by doing"
 books may give you a good start, but for that, we already have a lot of textual tutorials.
-The concern with these kinds of books is, that they may help you with solving some common tasks, but they do not
-really support a deeper understanding. The idea of a "Crash course" and "Learning by doing" may not be that bad in general. But in computer
-science, starting with a larger example application can be an overwhelming process, as you have to learn
-a lot stuff in parallel. It may work for you, but there is the danger that you forget all the details very quickly again.
+//The concern with these kinds of books is that they may help you solve some common tasks, but they do not
+//really support a deeper understanding.
+The issue with these types of books is that while they may help you solve common tasks,
+they don't necessarily foster a deeper understanding.
+The idea of a "Crash course" and "Learning by doing" may not be that bad in general.
+//But in computer
+//science, starting with a larger example application can be an overwhelming process, as you have to learn
+//a lot stuff in parallel.
+However, in computer science, starting with a larger example application can be overwhelming,
+as you have to learn a lot of things simultaneously.
+It may work for you, but there is the danger that you forget all the details very quickly again.
 And these kinds of books are not very helpful when you have to look up something.
 The other concern with "Learning by doing" in computer science is, that learning materials
 may have only examples which you may not really be interested in: Of course, we can create
 a simple chat application, a simple Twitter clone, and do some basic web scraping using
 async/await. Or create a basic game or a simple GUI with one of the dozen available toolkits.
 But what when you are not interested in chatting and twittering, and that single selected toolkit?
-We think that for such a case, reading the detailed examples can be very frustrating. So we
-would recommend that after reading the first tutorial, and maybe a few pages of this book, you just start
-coding with stuff you are interested in. Perhaps together with some friends? Whenever you should
+We think that for such a case, reading the detailed examples can be very frustrating.
+//Therefore, we
+//recommend that after reading the first tutorial, and perhaps a few pages of this book, you start
+//coding with topics you are interested in.
+Therefore, we recommend that you start coding with topics you are interested in after reading
+the first tutorial and perhaps a few pages of this book.
+Perhaps together with some friends? Whenever you should
 need some concrete help, you should find it on the Internet, using search engines, Wikipedia, or
 a discussion platform of your choice.
 And if you have really no idea whatsoever of a project with which you can start,
 then potentially computer programming is just not the right profession for you.
 
-While Nim has a JavaScript backend and so supports web-related development well, this
-book concentrates on native code generation using the C and {cpp} backends. We will
+//While Nim has a JavaScript backend and so supports web-related development well, this
+//book concentrates on native code generation using the C and {cpp} backends.
+Although Nim has a JavaScript backend and thus supports web-related development well,
+this book focuses on native code generation using the C and {cpp} backends.
+We will
 discuss some peculiarities of the JavaScript backend in the second half of the book,
 and we may give some examples of the use of the JavaScript backend in the
 Appendix. If you are strongly interested in web development and the
@@ -193,7 +214,7 @@ the tutorials and manuals of Nim web packages like [.ndef]#Karax#,
 
 This book will not try to explain things that are already explained well elsewhere, or
 that should have been explained well elsewhere -- at least not in this first edition, where
-we still have so much other essential stuff. So what we will leave out, for now, is the installation
+we still have many other essential topics to cover. So what we will leave out, for now, is the installation
 of the compiler, installing and using text editors or IDEs with special Nim support, using
 Nim package managers like Nimble, Nimph, or others, using the foreign function interface (FFI)
 to create bindings to C libraries, and internal compiler details like the various
@@ -261,10 +282,16 @@ https://nim-lang.org/
 An alternative Nim implementation, which may later develop into another language, is available at
 https://github.com/nim-works/nimskull
 
-The source code for the book is hosted at https://github.com/StefanSalewski/NimProgrammingBook.
-You may use the GitHub issue tracker to point us to mistakes or unclear explanations; we will try to
-fix that. Please note that we are more interested in comments on the content of the book currently, not that much
-in typos or grammar issues. Before the book will be officially published or a printed
+//The source code for the book is hosted at
+You can find the source code for the book at https://github.com/StefanSalewski/NimProgrammingBook.
+//The source code for the book can be found at https://github.com/StefanSalewski/NimProgrammingBook.
+//You may use the GitHub issue tracker to point us to mistakes or unclear explanations; we will try to
+//fix that.
+You can use the GitHub issue tracker to point out mistakes or unclear explanations; we will try to address them.
+//Please note that we are more interested in comments on the content of the book currently, not that much
+//in typos or grammar issues.
+Please note that we are currently more interested in comments on the content of the book, rather than typos or grammar issues.
+Before the book will be officially published or a printed
 version will be created, we will run it through some correction software or hire a professional
 proofreader.
 
@@ -286,12 +313,15 @@ projects at https://github.com/StefanSalewski.
 
 .ChatGPT and GPT-4
 ****
-You may have already heard about ChatGPT, an AI (artificial intelligence) chatbot developed by OpenAI.
+You might have already heard about ChatGPT, an AI (artificial intelligence) chatbot developed by OpenAI.
 ChatGPT was launched as a prototype on November 30, 2022, and quickly garnered attention for its detailed
 responses and articulate answers across many domains of knowledge.footnote:[https://en.wikipedia.org/wiki/ChatGPT]
-While this book was still written by a real human, parts of it could have been created
-by GPT, perhaps with a more fluent sound and fewer spelling errors
-and grammar issues. So this book, or at least parts of it, could be considered
+//While this book was still written by a real human, parts of it could have been created
+//by GPT, perhaps with a more fluent sound and fewer spelling errors
+//and grammar issues.
+While this book was written by a real human, parts of it could have been created by GPT,
+perhaps with a more fluent tone and fewer spelling and grammar errors.
+So this book, or at least parts of it, could be considered
 obsolete now :-(. While ChatGPT has some serious issues still (better not ask it about
 the author of this book, the creator of the Nim language, or other Nim core devs) it
 can provide very valuable information about some topics. We were really surprised at how much it
@@ -627,7 +657,7 @@ Small {uc}s and embedded devices often do not need to use an {os}, as they gener
 run only one single-user program and because they usually do not have a large variety
 of hardware components to support.
 
-== What is a User Interface
+== What Is a User Interface?
 
 To interact with the OS and with application programs running on the
 computer, we need some form of a user interface. Traditional user interfaces
@@ -1391,7 +1421,7 @@ it reached version {curnim} with some stability guarantees and a new determinist
 management system was introduced, which will improve support of parallel processing
 and the use of Nim in the area of embedded systems development.
 
-=== Nim is not a virus
+=== Nim Is Not a Virus
 
 As Nim is a powerful but simple systems programming language, in the last years a few
 people wrote some malware in it, and now a bunch of Nim programs, including the compiler and other official tools, often get falsely flagged as viruses
@@ -1538,7 +1568,7 @@ they want to learn some JavaScript to make some visual effects or whatever easil
 is hard to teach another language that may not be immediately available on the PC at home or
 their smartphone.
 
-=== So is Nim really the best start for me?
+=== So, is Nim really the best start for me?
 
 Maybe not. When you intend to learn a programming language today
 and make a great video game tomorrow, then definitely not. This
@@ -2104,7 +2134,7 @@ is also easy and is described here: https://github.com/nim-lang/Nim. But before 
 can follow those instructions, you have to ensure that the git software and a working
 C compiler are available on your computer.
 
-== Creation of Source Code Files
+== Creation of Source-Code Files
 
 Nim source code, as most source code of other programming languages, is based on text
 files. Text files are documents saved on your computer that contain only ordinary
@@ -2164,7 +2194,7 @@ if you press ordinary keys in your editor, then that key is inserted and the cur
 moves one position to the right. And when you press the return key, then an invisible
 newline character is inserted and the cursor moves to the start of the next line.
 
-== Launching the compiler and running the program
+== Launching the Compiler and Running the Program
 
 If you are working from a Linux terminal, then you can type
 
@@ -2283,7 +2313,7 @@ compiler invocation. You may find more explanations for all the compiler options
 the Nim manual, or in later sections of this book, this includes the options for the
 JavaScript backend.
 
-== Stropping for keywords and operators
+== Stropping for Keywords and Operators
 
 ////
 // we use single quote insted of backtick for now, as asciidoctor has issues with it
