@@ -8746,6 +8746,119 @@ dispatching itself needs some time, and as the [.key]#ref# [.obj]#objects# are n
 single block of memory, but are distributed in the whole RAM, which is not cache
 friendly.
 
+=== Inheritance for Value-Objects
+
+[source, nim]
+----
+type
+  Person = object of RootObj # or Person {.inheritable.} = object 
+    name: string
+  Student = object of Person
+    id: int
+
+var s1: Student
+s1.name = "Alice"
+s1.id = 123
+var s2 = Student(name: "Bob", id: 124)
+----
+
+Inheritance can be used for value-objects as well, to express some form of parent-child relation.
+To enable inheritance, we have to start with the [.type]#RootObj# data type, or we could use the [.code]#{.inheritable.}#
+pragma to mark the base type as inheritable. Inheritance is typically not used that much with
+value [.obj]#objects#, but it might be useful when a set of [.obj]#objects# have some common fields.
+
+==== Copying Value-Objects with subtypes
+
+Assignments between parent and child value types are not often needed, but
+it is good to know how these assignments behave. With the two data types
+[.type]#Person# and [.type]#Student# from above, these assignments are possible:
+
+[source, nim]
+----
+var s1: Student
+s1.name = "Alice"
+s1.id = 123
+var s2 = Student(name: "Bob", id: 124)
+
+var s: Person
+s = s1 # copy only the name
+
+#s2 = s # not allowed
+s2 = Student(s) # s2.id will get default value zero
+s2.id = 3
+Person(s2) = s # id field will keep it value!
+----
+
+Remember, that assignments for value types copy the content, the source object does not change.
+A direct assignment like [.code]#s = s1# from a subtype to a parent type copies the common fields only.
+On the other hand, a direct assignment of a parent type to a subtype is not allowed, as in that case
+the new content of the additional fields of the subtype would be undefined.
+But we can use type conversions, to enable these types of assignments:
+We can convert the source to the subtype before the content is copied  -- in this case,
+the common fields are copied, and the other fields
+get the default binary zero values. Or we can convert the destination to the parent type before the
+copy operation is executed. Then the common fields get copied, and the other fields of the
+subtype are kept.
+
+==== Contents copy of Ref-Objects
+
+As we already learned, assignments for reference- and pointer types gives us only
+an alias to access the data, but the content is not copied.
+But in some cases, we may actually need to copy the content. Assume, that you have a CAD tool,
+which shows various objects on the screen -- lines, rectangles, circles, and many more.
+The user should be able to copy a shape to the clipboard and paste it later again.
+This is in principle a difficult operation, as we would have to determine the
+concrete runtime type of the selected entity first, then we would need to allocate the destination instance and
+finally copy the actual runtime content. 
+Nim provides the [.func]#deepCopy()# procedure for this purpose, which simplifies this use case.
+When we use inheritance, then deepCopy() proc determines the concrete runtime type of the [.obj]#object#,
+allocates the destination memory, and copies the content.
+Let us try that with the geometric [.key]#ref# types from the earlier example:
+
+[source, nim]
+----
+type
+  Shape = ref object of RootRef
+
+  Rectangle = ref object of Shape
+    x, y, width, height: float
+
+  Circle = ref object of Shape
+    x, y, radius: float
+
+  LineSegment = ref object of Shape
+    x1, y1, x2, y2: float
+
+proc main =
+  var x, z: Shape
+  var c = Circle(x: 60, y: 20, radius: 50)
+
+  deepCopy(x, c)
+  echo x of Circle
+  Circle(x).radius = 33
+  echo c[]
+  echo Circle(x)[]
+
+  deepCopy(z, x)
+  echo z of Circle
+  Circle(z).radius = 19
+  echo Circle(x)[]
+  echo Circle(z)[]
+  
+main()
+---- 
+
+We have defined two variables [.var]#x# and [.var]#z# of the base [.type]#Shape# type, and one more
+variable of the [.type]#Circle# subtype. We pass to [.func]#deepCopy()# the target parameter as the first, and the
+source parameter as the second argument. The call of [.code]#deepCopy(x, c)#
+allocates memory for [.var]#x# and copies the actual [.type]#Circle# content. While [.var]#x# has the
+static [.type]#Shape# base type, it gets the actual [.type]#Circle# type, which we can prove in type tests with the [.key]#of# keyword.
+And we can use more [.func]#deepCopy()# calls like [.code]#deepCopy(z, x)# between base types, and get again the
+correct runtime types. That this is possible is indeed a bit surprising, because serialization modules like
+the [.mod]#JSON# module from Nim's standard library are not able to determine the correct runtime types automatically.
+
+Note, that currently the compiler-option [.term]#--deepCopy:on# is needed for ARC and ORC. 
+
 == Other Builtin Data Types
 
 === Tuple Types
