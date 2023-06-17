@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUNE-15
+//v0.1, 2023-JUNE-17
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -102,12 +102,19 @@ Programming#.
 
 The [.ndef]#Nim# programming language can be seen in this tradition, as it is
 basically an easy language suited for beginners with no prior programming experience,
-but at the same time is not restricted in any way. Nim offers all the concepts of
-modern and powerful programming languages in combination with high performance and
-some sort of universality -- Nim can be used to create programs for tiny {uc}s as well
-as large desktop apps and web applications.
-Most books about programming languages focus on the language itself and assume that the reader
-is already familiar with the foundations of computer hardware and has some programming experience.
+but at the same time is not restricted in any way.
+//Nim offers all the concepts of
+//modern and powerful programming languages in combination with high performance and
+//some sort of universality -- Nim can be used to create programs for tiny {uc}s as well
+//as large desktop apps and web applications.
+Nim offers all the concepts of modern and powerful programming languages, combined with high performance and
+a certain level of universality.
+//Nim offers all the concepts of modern and powerful programming languages, combining them with high performance and a certain level of universality.
+Nim can be used to create programs for tiny microcontrollers, large desktop apps, and web applications.
+//Most books about programming languages focus on the language itself and assume that the reader
+//is already familiar with the foundations of computer hardware and has some programming experience.
+Most books about programming languages focus on the language itself, assuming that the reader is already familiar
+with the foundations of computer hardware and has some programming experience
 This is generally a valid approach, as
 most people are taught this fundamental knowledge, sometimes referred to as [.ndef]#Computer
 Science# (CS), in school today.
@@ -117,20 +124,26 @@ Moreover, some children may not be satisfied
 with the introduction to computer science taught at school. Therefore, we decided to
 start this book with a short introduction to fundamental concepts. Most people may
 skip that part, but you should be really sure that you know these foundations.
-This book is divided into six parts.
+This book is divided into seven parts -- part VII is the Appendix.
 It is possible to read the parts independently of each other in any
 order, but for Nim beginners, it is recommended to read them mostly in ascending order,
 perhaps while previewing some interesting sections in the second half of the book early on.
 //maybe while looking already early at some interesting sections in the second half of the book.
-In {part}II, we explain the basics of computer programming step by step
-in a way that should enable even children to learn independently. In this part, we may repeat
-some of the material that we already mentioned in {part}I. We do that by intent, as some
-people may skip {part}I, and because it is generally not a bad idea to support the learning
-process of the reader with some repetitions.
-{part}III will give
-you an overview of Nim's standard library, which contains many useful functions and data types,
-that we can use in our programs to solve common tasks like input and output operations, using the file
-system, or sorting of data.
+//In {part}II, we explain the basics of computer programming step by step
+//in a way that should enable even children to learn independently.
+In {part}II, we explain the basics of computer programming step by step in a way that should enable even those with no prior experience to learn independently.
+In this part, we might repeat
+some of the material that we already mentioned in {part}I.
+//We do that by intent, as some
+//people may skip {part}I, and because it is generally not a bad idea to support the learning
+//process of the reader with some repetitions.
+We do that intentionally, as some people might skip {partI}, and because it is generally not a bad idea to reinforce
+the learning process of the reader with some repetition.
+//{part}III will give
+//you an overview of Nim's standard library, which contains many useful functions and data types,
+//that we can use in our programs to solve common tasks like input and output operations, using the file
+//system, or sorting of data.
+{part}III will give you an overview of Nim’s standard library, which contains many useful functions and data types that we can use in our programs to solve common tasks like input and output operations, using the file system, or sorting data.
 In {part}IV, we will apply what we have learned
 by solving some common programming tasks, like sorting, searching, or converting numbers from
 the internal computer format to displayable text.
@@ -149,8 +162,12 @@ This includes currently a short introduction to Nim's standard package manager, 
 //This book is basically a traditional textbook, a very simple one with detailed
 //explanations, so that kids from 14 years upwards can read and understand it
 //on their own, with no, or only minimal help from adults.
-This book is essentially a traditional textbook, simple yet detailed, designed so that
-kids aged 14 and above can read and understand it independently, with little or no help from adults.
+//This book is essentially a traditional textbook, simple yet detailed, designed so that
+//kids aged 14 and above can read and understand it independently, with little or no help from adults.
+//This book is essentially a traditional textbook, simple yet detailed, designed so that individuals aged 14
+//and above can read and understand it independently, with little or no help from adults.
+This book is essentially a traditional textbook—simple yet detailed. It is designed so that individuals aged 14
+and above can read and understand it independently, with little or no help from adults.
 Unfortunately, the English language
 may still be a problem for many kids not born in a country with a good
 English language tradition. But luckily automatic
@@ -158,9 +175,12 @@ translations are already supported for some languages, and perhaps we
 will be able to offer some translated editions of the book later, possibly a Chinese
 and a German translation?
 
-In the last decades in the area of computer programming,
-traditional textbooks have partly been replaced by videos and "Crash course" and "Learning
-by doing" books. Well, maybe a good video may indeed help you start with a new
+//In the last decades in the area of computer programming,
+//traditional textbooks have partly been replaced by videos and "Crash course" and "Learning
+//by doing" books.
+In the last few decades in the area of computer programming, traditional textbooks have been partly replaced by
+videos, "Crash course" books, and "Learning by doing" books.
+Well, maybe a good video may indeed help you start with a new
 language, and a video may enable people with problems reading printed texts or with
 difficulties concentrating on a topic for a few minutes to learn a programming language.
 Unfortunately, the quality of most videos is very bad; some are made by kids just having
@@ -170,9 +190,10 @@ watching videos does not improve the reading and concentration issues that peopl
 books may give you a good start, but for that, we already have a lot of textual tutorials.
 //The concern with these kinds of books is that they may help you solve some common tasks, but they do not
 //really support a deeper understanding.
-The issue with these types of books is that while they may help you solve common tasks,
+The issue with these types of books is that, while they may help you solve common tasks,
 they don't necessarily foster a deeper understanding.
-The idea of a "Crash course" and "Learning by doing" may not be that bad in general.
+//The idea of a "Crash course" and "Learning by doing" may not be that bad in general.
+The idea of a "Crash course" or "Learning by doing" may not be that bad in general.
 //But in computer
 //science, starting with a larger example application can be an overwhelming process, as you have to learn
 //a lot stuff in parallel.
@@ -185,11 +206,14 @@ may have only examples which you may not really be interested in: Of course, we 
 a simple chat application, a simple Twitter clone, and do some basic web scraping using
 async/await. Or create a basic game or a simple GUI with one of the dozen available toolkits.
 But what when you are not interested in chatting and twittering, and that single selected toolkit?
-We think that for such a case, reading the detailed examples can be very frustrating.
+//We think that for such a case, reading the detailed examples can be very frustrating.
+We believe that in such cases, reading the detailed examples can be very frustrating.
 //Therefore, we
 //recommend that after reading the first tutorial, and perhaps a few pages of this book, you start
 //coding with topics you are interested in.
-Therefore, we recommend that you start coding with topics you are interested in after reading
+//Therefore, we recommend that you start coding with topics you are interested in after reading
+//the first tutorial and perhaps a few pages of this book.
+Therefore, we recommend that you start coding with topics in which you are interested after reading
 the first tutorial and perhaps a few pages of this book.
 Perhaps together with some friends? Whenever you should
 need some concrete help, you should find it on the Internet, using search engines, Wikipedia, or
@@ -214,50 +238,76 @@ the tutorials and manuals of Nim web packages like [.ndef]#Karax#,
 
 This book will not try to explain things that are already explained well elsewhere, or
 that should have been explained well elsewhere -- at least not in this first edition, where
-we still have many other essential topics to cover. So what we will leave out, for now, is the installation
-of the compiler, installing and using text editors or IDEs with special Nim support, using
-Nim package managers like Nimble, Nimph, or others, using the foreign function interface (FFI)
-to create bindings to C libraries, and internal compiler details like the various
-memory management options, all the pragmas and similar. Also, we do not intend to
+we still have many other essential topics to cover.
+//So what we will leave out, for now, is the installation
+//of the compiler, installing and using text editors or IDEs with special Nim support, using
+//Nim package managers like Nimble, Nimph, or others, using the foreign function interface (FFI)
+//to create bindings to C libraries, and internal compiler details like the various
+//memory management options, all the pragmas and similar.
+So, for now, we will leave out the following: the installation of the compiler, the process of installing and using
+text editors or IDEs with special Nim support, the use of Nim package managers like Nimble and Nimph, the use of the
+foreign function interface (FFI) to create bindings to C libraries, and internal compiler details like the various
+memory management options and all the pragmas.
+Also, we do not intend to
 fill the book up with redundant stuff, like tables listing all the Nim keywords or Nim's
 primitive data types and such, as you can find all that in the Nim language manual easily.
 
-While creating graphical user interfaces (GUIs) is an important topic, we can not
-give many details for that due to various reasons: Nim has not yet the one and only
+//While creating graphical user interfaces (GUIs) is an important topic, we can not
+//give many details for that due to various reasons:
+//While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details for various reasons:
+While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details due to various reasons:
+Nim has not yet the one and only
 accepted GUI library, but more than 20 attempts -- from pure Nim ones like NimX or Fidget, over
 wrapped libraries like GTK or QML, or GUIs that try to provide a native look for various {os}s like XWidgets or NiGui,
 to web-based GUIs. And for each of these, at least for the more
-serious ones, we could write a separate GUI book. So we will give only a few minimal examples
+serious ones, we could write a separate GUI book. So, we will only provide a few minimal examples
 for some of them in parts IV or V of the book.
 
-Also, we will not explain game programming, as game programming is
-a broad area, and there are already a lot of tutorials available. Maybe in later editions of the
+//Also, we will not explain game programming because game programming is
+//a broad area and there are already many tutorials available.
+Also, we will not delve into game programming, as it is a broad area and there are already numerous tutorials available.
+Maybe in later editions of the
 book, we will add some of these topics, e.g. game programming, as so many people like it.
 But we will always have to ensure that a possible printed book version will not get
 more than 500 pages, so we may then leave out some other stuff in the printed version.
 
-Generally, when learning a new programming language, people start with some short
-tutorials before really learning the language following a book. This way is indeed a good start.
-So we recommend you to read the short official tutorials, parts 1 and 2, and perhaps also
-some other tutorials freely available online. Tutorials generally only scratch the topics, so you may not be able to understand them all
+//Generally, when learning a new programming language, people start with some short
+//tutorials before really learning the language following a book.
+Generally, when learning a new programming language, people start with some short tutorials before delving deeper into the language by following a book.
+This way is indeed a good start.
+//So we recommend you to read the short official tutorials, parts 1 and 2, and perhaps also
+//some other tutorials freely available online.
+So we recommend that you read the short official tutorials, parts 1 and 2, and perhaps also some other tutorials freely available online.
+Tutorials generally only scratch the topics, so you may not be able to understand them all
 really well, but this way you get already a feeling for the language.
 There exist also
 some video tutorials, in case you have problems reading, but in that case,
 this book will not be of much use to you at all.
-When you know already some computer science and have already experience
-with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim language manual
-may be fully sufficient for you, and you may not need this book at all. Or you may prefer the
+//When you know already some computer science and have already experience
+//with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim language manual
+//may be fully sufficient for you, and you may not need this book at all.
+If you already know some computer science and have experience with other languages like {cpp}, Haskell, or Rust, then the tutorials
+and the Nim language manual may be fully sufficient for you, and you may not need this book at all.
+Or you may prefer the
 recently published book of Mr. Rumpf, called "Mastering Nim: A complete guide to the programming language"
 available at Amazon.com.
 
-This book is based on the Nim reference implementation of //the team around
+This book is based on the Nim reference implementation of
+//the team around
 Mr. A. Rumpf.
-While the first pages of this book were written already in the spring of 2020, it should be mostly up-to-date
-with the latest stable version 1.6 of the Nim 1.x series. Most explanations and examples should
+//While the first pages of this book were written already in the spring of 2020, it should be mostly up-to-date
+//with the latest stable version 1.6 of the Nim 1.x series.
+While the first pages of this book were written in the spring of 2020, it should be mostly up-to-date with the latest stable version 1.6 of the Nim 1.x series.
+Most explanations and examples should
 be valid also for other implementations like the https://github.com/nim-works/nimskull variant.
-Mr. Rumpf has announced the Nim 2.0 release for early 2023. The v2.0 release brings a lot of improvements
-but has no serious breaking changes that would invalidate old code -- only a few small modifications may be
-needed for old code to make it compile and run again. In this book, we may use and discuss a few Nim 2.0
+Mr. Rumpf has announced the Nim 2.0 release for early 2023.
+//The v2.0 release brings many improvements but has no serious breaking changes that would invalidate old code.
+The v2.0 release brings many improvements but does not include serious breaking changes that would invalidate old code.
+Only a few small modifications may be needed for old code to compile and run again.
+//The v2.0 release brings a lot of improvements
+//but has no serious breaking changes that would invalidate old code -- only a few small modifications may be
+//needed for old code to make it compile and run again.
+In this book, we may use and discuss a few Nim 2.0
 features, but all code should be compilable with the 1.x series of the compiler or with nimskull (cyo) with no
 or only tiny changes. The most important change for Nim 2.0 is that ORC memory management is now the default,
 indicating that it is considered ready for use in production. ORC gives us GC-like, fully deterministic memory management
@@ -266,8 +316,10 @@ avoids GC-generated delays, and may increase the performance of our programs. Ad
 should bring serious advantages for the creation and performance of threaded and parallel code.
 We have summarized the most important new features of Nim 2.0 in the appendix: <<Changes for Nim 2.0>>
 
-Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
-by Nim v2.0 yet. And for parallel and threaded code execution, it may be useful to consider high-quality external
+//Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
+//by Nim v2.0 yet.
+Note that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not yet fully supported by Nim v2.0.
+And for parallel and threaded code execution, it may be useful to consider high-quality external
 libraries rather than the ones in Nim's standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. The same may apply to
 modules for asynchronous code execution and a few other libraries.footnote:[https://github.com/status-im/nim-chronos]
 
@@ -319,12 +371,21 @@ responses and articulate answers across many domains of knowledge.footnote:[http
 //While this book was still written by a real human, parts of it could have been created
 //by GPT, perhaps with a more fluent sound and fewer spelling errors
 //and grammar issues.
-While this book was written by a real human, parts of it could have been created by GPT,
-perhaps with a more fluent tone and fewer spelling and grammar errors.
-So this book, or at least parts of it, could be considered
-obsolete now :-(. While ChatGPT has some serious issues still (better not ask it about
-the author of this book, the creator of the Nim language, or other Nim core devs) it
-can provide very valuable information about some topics. We were really surprised at how much it
+//While this book was written by a real human, parts of it could have been created by GPT,
+//perhaps with a more fluent tone and fewer spelling and grammar errors.
+//While this book was written by a human, parts of it could have been created by GPT,
+//potentially with a more fluent tone and fewer spelling and grammar errors.
+While this book was written by a human, parts of it could have been created by GPT,
+potentially resulting in a more fluent tone and fewer spelling and grammar errors.
+//So this book, or at least parts of it, could now be considered
+//obsolete :-(.
+Therefore, this book, or at least parts of it, could now be considered obsolete.
+//While ChatGPT has some serious issues still (better not ask it about
+//the author of this book, the creator of the Nim language, or other Nim core devs) it
+//can provide very valuable information about some topics.
+While ChatGPT still has some serious issues (it's better not to ask it about the author of this book, the creator of the Nim
+language, or other Nim core developers), it can provide very valuable information on various topics.
+We were really surprised at how much it
 already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
 languages. To use ChatGPT, you would have to register with your real name and phone number.
 We think that is OK to prevent misuse. The basic service is still free. A professional
@@ -351,16 +412,20 @@ one to 10 each on its own line.
 
 Of course, you should not really trust the advice of ChatGPT. Currently (early 2023),
 it thinks that the echo command automatically adds spaces between the printed values.
-Of course, that is wrong, and we can convince ChatGPT of that. But ChatGPT
-can currently not remember what it has learned in a user dialog, so next time
-it makes the same errors again. Note that ChatGPT was trained with data only up to 2021,
+Of course, that is wrong, and we can convince ChatGPT of that.
+//But ChatGPT
+//can currently not remember what it has learned in a user dialog, so next time
+//it makes the same errors again.
+However, ChatGPT currently cannot remember what it has learned in a user dialog, so it repeats the same errors next time.
+Note that ChatGPT was trained with data only up to 2021,
 so it may not know about Nim 2.0 and other recent changes.
 
 Below is a complete dialog with ChatGPT from early 2023:
 ****
 
 ----
-One more question about the Nim programming language. The following code to convert a string to an integer number does not compile. Can you fix it?
+//One more question about the Nim programming language. The following code to convert a string to an integer number does not compile. Can you fix it?
+I have one more question about the Nim programming language. The following code, which is supposed to convert a string to an integer, does not compile. Can you fix it?
 `var s: string = "123"; var i: int = int(s)`
 
 Yes, the code you provided is not valid Nim syntax. In order to convert a string to an integer in Nim, you can use the parseInt procedure from the strutils module.
@@ -382,9 +447,11 @@ In this example, we import the strutils module, which provides the parseInt proc
 with the value "123", and use parseInt to convert it to an integer, which we store in the variable i. Finally, we use echo to print the value of i.
 ----
 
-Since spring 2023, GPT-4 has been available for paying subscribers and provides more helpful information and less nonsense.
+//Since spring 2023, GPT-4 has been available for paying subscribers and provides more helpful information and less nonsense.
+Since spring 2023, GPT-4 has been available to paying subscribers and provides more helpful information and less irrelevant content.
 
-We recently created a short Nim info page with GPT-4:  https://nimprogramming.com/
+//We recently created a short Nim info page with GPT-4:  https://nimprogramming.com/
+We recently used GPT-4 to create a short Nim info page: https://nimprogramming.com/
 
 = Introduction
 
@@ -393,8 +460,10 @@ ____
 Give me a video, I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
 ____
 
-For using computers and writing computer programs, you initially do not have to know
-many details. It is basically like driving a car: Although a car is a powerful and
+//For using computers and writing computer programs, you initially do not have to know
+//many details.
+To use computers and write computer programs, you initially do not need to know many details.
+It is basically like driving a car: Although a car is a powerful and
 complicated tool, kids generally can drive it after a 3-minute introduction. Still,
 good racing drivers typically need a much broader insight into the inner working of
 all the technical components, and finally, a lot of practice.
@@ -422,7 +491,7 @@ like adding two numbers or deciding if a number is larger or smaller than anothe
 number. Most computer CPUs can only store very few numbers internally, and forget
 the numbers when the power is switched off. So the CPU is typically electrically
 connected to a [.ndef]#RAM# module, a [.ndef]#Random Access Memory#, which can store
-many more numbers and allow fast access to these numbers, and to a [.ndef]#Hard disk#
+many more numbers and allows fast access to these numbers, and to a [.ndef]#Hard disk#
 or [.ndef]#SSD# device, which can permanently store the numbers but does not allow
 such fast access. The stored numbers are most often called just [.ndef]#data# --
 basically, that data is nothing more than numbers, but it can be interpreted in many
@@ -14590,9 +14659,13 @@ In this section, we will present a few simple programming exercises.
 == Permutations
 
 A collection of [.var]#n# distinguishable elements can be grouped in [.var]#n!# (factorial) distinct
-arrangements. (We can take an arbitrary element from the collection and put it
-on one from [.var]#n# possible positions, then we take the next element and can choose
-among the [.var]#(n-1)# still unoccupied positions, and so on. For the three letters
+arrangements.
+//(We can take an arbitrary element from the collection and put it
+//on one from [.var]#n# possible positions, then we take the next element and can choose
+//among the [.var]#(n-1)# still unoccupied positions, and so on.
+(We can select an arbitrary element from the collection and place it in any of the [.var]#n# possible positions. Then, we choose the
+next element and can select from the remaining [.var]#(n-1)# unoccupied positions, and so forth.)
+For the three letters
 A, B, and C, this gives these 6 possible permutations:
 
 ----
@@ -14608,8 +14681,11 @@ A simple strategy to create all the possible permutations is the
 [.ndef]#Steinhaus–Johnson–Trotter# algorithm: We assume that we know already
 all the possible permutations of [.var]#n - 1# elements. Then we can just
 insert the next new element at all possible positions. As an example, let us
-create all possible permutations of the numbers 1, 2, and 3. The set of numbers
-1 and 2 allow obviously only arrangements 12 and 21. For both of them, we can add the
+create all possible permutations of the numbers 1, 2, and 3.
+//The set of numbers
+//1 and 2 allow obviously only arrangements 12 and 21.
+Obviously, the set of numbers 1 and 2 allows only the arrangements 12 and 21.
+For both of them, we can add the
 next item at the beginning, in the middle, and at the end, resulting in
 
 ----
@@ -14641,8 +14717,11 @@ in the informal textual form how we may create the next ordered permutation from
 . Reverse the sequence from [.var]#a[k + 1]# up to and including the final element [.var]#a[n]#.
 
 This description is enough to create a Nim procedure for this purpose, but let us 
-first try to really understand why this algorithm actually works. We will investigate the strategy
-for the 4 decimal digits 1, 2, 3, and 4. Our task is, starting with an arbitrary existing order, to find
+first try to really understand why this algorithm actually works.
+//We will investigate the strategy
+//for the 4 decimal digits 1, 2, 3, and 4.
+We will investigate the strategy using the four decimal digits: 1, 2, 3, and 4.
+Our task is, starting with an arbitrary existing order, to find
 the next permutation of these digits that present the next larger number. We start by investigating the existing digits from the
 right, that is with increasing power of decimal places. Remember, the value of a decimal number like [.lit]#56# is [.code]#5 * 10^1 + 6 * 10^0#.
 When we regard the decimals starting from the right, then we move to the left, until we detect a digit that is smaller than the
@@ -14693,14 +14772,19 @@ a position [.var]#l# with a digit that is larger than the digit at position [.va
 such a position always exists. Finally, we swap the digits at positions [.var]#k# and [.var]#l# and
 reverse the [.type]#array# positions [.var]#k + 1# up to [.var]#a.high#. For the reversal, we use the proc [.func]#reverse()# from
 the module [.mod]#algorithm# of Nim's standard library. Of course, doing that reversal with a plain [.key]#while# or [.key]#for# loop
-is possible also -- you may try that as a small exercise. Actually, using a custom loop for reversal may
-increase the performance a tiny bit, as calling [.func]#reverse()# may have a small overhead. But in most cases,
+is possible also -- you may try that as a small exercise.
+//Actually, using a custom loop for reversal may increase the performance a tiny bit, as calling [.func]#reverse()# may have a small overhead.
+Indeed, using a custom loop for reversal might slightly enhance the performance, as invoking [.func]#reverse()# could incur a small overhead.
+But in most cases,
 the actual creation of the permutations is not a critical operation, as we typically use the generated values for something, and that may
 take much longer.
 
 As an exercise, you may create a proc with signature [.code]#prevPermutation*[T](a: var openArray[T]): bool#
 that creates the permutations in descending order so that calling first [.func]#nextPermutation()# and then
-[.func]#prevPermutation()# cancel each other. That proc will look very similar to our example. You may start
+[.func]#prevPermutation()# cancel each other.
+//That proc will look very similar to our example.
+That procedure will look quite similar to our example.
+You may start
 with a number like our value 4312 and investigate how you can find the next smaller permutation, which should be our
 4231 from above.
 
@@ -21802,23 +21886,33 @@ We can use trait bounds to specify that a generic type can be any type that has 
 
 Nim's [.key]#concepts# have been redefined in 2019 and are now sometimes referred to as "new concepts".
 They are described in the "experimental" part of the Nim language manual, and may still have some issues.
-Maybe syntax and semantics may change in the future a bit, but it is expected that they remain part of the language.
+//Maybe syntax and semantics may change in the future a bit, but it is expected that they remain part of the language.
+The syntax and semantics may potentially change a bit in the future, but it is expected that they will remain part of the language.
+
 
 In this section, we will try to give an easily understandable introduction to Nim's [.key]#concepts#. If you have already some
 experience with concepts, interfaces, or traits in other programming languages, you may read the section in the
 Nim language manual instead. And of course, you should consult that section later, when you really intend to use [.key]#concepts#,
-to learn about all the details and possible future changes. The following explanations are based on the experimental section of
-the Nim language manual for Nim 1.9.1, which does not explicitly refers to the term "new concepts" and does not already use
-the new [.type]#Self# data type introduced for the "new concepts". At the end of this section, we will cite the actual RFC (Request for Comments)
-for the "new concept" implementation.
+to learn about all the details and possible future changes.
+//The following explanations are based on the experimental section of
+//the Nim language manual for Nim 1.9.1, which does not explicitly refers to the term "new concepts" and does not already use
+//the new [.type]#Self# data type introduced for the "new concepts".
+The following explanations are based on the experimental section of the Nim language manual for Nim 1.9.1, which does not explicitly
+refer to the term 'new concepts' and does not yet use the new Self data type introduced for the 'new concepts'.
+At the end of this section, we will cite the actual RFC (Request for Comments)
+for the "new concepts" implementation.
 
 === Purpose of concepts
 
 Modern programming languages care a lot for abstractions and code reuse. Functions like [.func]#sort()#, [.func]#max()#, or iterator variants should
 work on as many data types as possible. So [.func]#sort()# or [.func]#max()# may work on all data for which a [.func]#cmp()# or a [.op]#<# predicate is defined, and
-iterators like [.func]#items# should work on all container types. People sometimes say that they try to write [.italic]#DRY# code:
-"Don't repeat yourself" (DRY) is a principle of software development aimed at reducing the repetition of software patterns,
-replacing it with abstractions or using data normalization to avoid redundancy.footnote:[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself]
+iterators like [.func]#items# should work on all container types.
+//People sometimes say that they try to write [.italic]#DRY# code:
+//"Don't repeat yourself" (DRY) is a principle of software development aimed at reducing the repetition of software patterns,
+//replacing it with abstractions or using data normalization to avoid redundancy.footnote:[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself]
+People often aim to write [.italic]#DRY# code. "Don’t Repeat Yourself" (DRY) is a principle of software development aimed at reducing the repetition
+of software patterns, replacing them with abstractions, or using data normalization to avoid redundancy.footnote:[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself]
+
 Some dynamic languages like Python or Ruby use the term [.italic]#Duck Typing#
 for these kinds of abstractions: [.italic]#Duck typing in computer programming is an application of the duck test—"If it walks like a duck
 and it quacks like a duck, then it must be a duck"—to determine whether an object can be used for a particular
@@ -21841,11 +21935,16 @@ proc max[T](a, b: T): T =
     return a
 ----
 
-The proc above works for all data types that have a [.op]#<# predicate defined. We could restrict that proc
-to numeric parameters using a proc header like [.code]#proc max(a, b: float or int): auto#. But this way it is not
-possible to allow just all data types as parameters that have a [.op]#<# predicate defined. And when we use the
-fully generic proc from above, the user may pass invalid parameters, like an [.type]#array# or an [.type]#object# type
-with unspecified [.op]#<# predicate, and then may get a not very helpful compiler error message:
+The procedure above works for all data types for which a [.op]#<# predicate is defined. We could restrict that procedure
+to numeric parameters using a proc header like [.code]#proc max(a, b: float or int): auto#.
+//But this way it is not
+//possible to allow just all data types as parameters that have a [.op]#<# predicate defined.
+However, this method doesn't allow all data types with a '<' predicate defined to be used as parameters.
+//And when we use the
+//fully generic proc from above, the user may pass invalid parameters, like an [.type]#array# or an [.type]#object# type
+//with unspecified [.op]#<# predicate, and then may get a not very helpful compiler error message:
+And when we use the fully generic procedure from above, the user may pass invalid parameters, such as an array or an object type with
+an unspecified '<' predicate, which could result in an unhelpful compiler error message:
 
 [source, nim]
 ----
@@ -21878,18 +21977,20 @@ Expected one of (first mismatch at position [#]):
 ...
 ----
 
-Actually, the compiler error messages are very clear in this case already. And the
-[.op]#<# predicate could not be a really good example for the use of concepts, as [.op]#<# is typically defined for most of Nim's data
-types, even for sets and tables. But [.key]#concepts#
+//Actually, the compiler error messages are very clear in this case already.
+In fact, the compiler error messages in this case are already very clear.
+And the
+[.op]#<# predicate might not be a really good example for the use of concepts, as [.op]#<# is typically defined for most of Nim's data
+types, including sets and tables. But [.key]#concepts#
 allow us to express the constraints more clearly, already visible in the procedure definition
 and resulting in even more clear compiler error messages.
 
-So let us define a [.type]#Comparable# data type, which we then can use for our [.func]#mx()# proc.footnote:[We
+So let us define a [.type]#Comparable# data type that we can then use for our [.func]#mx()# procedure.footnote:[We
 called the proc mx() instead of max(), to ensure that there is no namespace conflict with the system module.
 Just to be absolutely sure for this test...]
 
 The fundamental idea of Nim's [.key]#concepts# is that we define a set of expressions for variables or types:
-A data type then matches the [.key]#concept# when all the expressions compile and all boolean expressions evaluate to [.lit]#true#.
+A data type matches the [.key]#concept# when all the expressions compile successfully and all boolean expressions evaluate to [.lit]#true#.
 So we can
 define a [.type]#Comparable# [.key]#concept# this way:
 
@@ -21906,8 +22007,8 @@ The identifiers that follow the [.key]#concept# keyword represent instances
 of data types that may or may not match this concept type.
 For the match test we employ two instance variables x and y,
 on which we try to apply an infix [.op]#<# operator. When that expression compiles, and has a result of a boolean type, then
-we say that a candidate data type matches this concept. We can use this [.type]#Comparable# [.key]#concept# data type
-for the parameter types of our [.func]#mx()# proc and see what happens when we try to pass matching or non-matching parameter types:
+we say that a candidate data type matches this concept. We can apply this [.type]#Comparable# [.key]#concept# data type
+to the parameter types of our [.func]#mx()# procedure and observe the results when we attempt to pass either matching or non-matching parameter types:
 
 [source, nim]
 ----
@@ -21932,9 +22033,11 @@ echo h
 let o = mx(o1, o2) # no match, as we have not defined a < for O
 ----
 
-The last line would not compile, as the object data type [.type]#O# has no
-[.op]#<# predicate defined. From the [.type]#Comparable# type definition or from
-the error message, it may now be easier to understand the concrete issue.
+The last line would not compile because the object data type [.type]#O# doesn't have a
+[.op]#<# predicate defined.
+//From the [.type]#Comparable# type definition or from
+//the error message, it may now be easier to understand the concrete issue.
+By referencing the [.type]#Comparable# type definition or the error message, it may now be easier to understand the specific issue.
 
 We can also define more complicated [.key]#concepts#. The language manual has an
 example of a [.type]#Stack# [.key]#concept#:
@@ -21952,8 +22055,8 @@ type
 
 A generic [.type]#Stack# for data of type [.type]#T# needs a [.func]#pop()# and a [.func]#push()#
 function, both working on the [.type]#T# data type, and a [.func]#len()# function
-that returns an ordinal result. Additionally, it has to define
-an [.func]#items()# [.key]#iterator#, which [.key]#yields# instances of the [.type]#T# data type.
+that returns an ordinal result. Additionally, it must define
+an [.func]#items()# [.key]#iterator# that [.key]#yields# instances of the [.type]#T# data type.
 
 A [.key]#concept# matches if:
 
@@ -21981,10 +22084,10 @@ type
     s.write(string) # test if the matched type has a write() proc with string parameter
 ----
 
-In a [.key]#concept# body, we can also use and test for types.
-We can use directly the named type instances following the [.key]#concept# keyword [.code]#(concept x, y, type T)#
-and we can explicitly prefix data types with the [.key]#type# modifier. The following example is from
-the experimental section of the Nim language manual:
+In a [.key]#concept# body, we can also utilize and test for types.
+We can directly use the named type instances following the [.key]#concept# keyword [.code]#(concept x, y, type T)#,
+and we can explicitly prefix data types with the [.key]#type# modifier. The following example is taken from
+the 'Experimental' section of the Nim language manual:
 
 [source, nim]
 ----
@@ -22007,13 +22110,13 @@ type
     x - y is T
 ----
 
-We suppose, that actually [.code]#x.to(type string)# and [.code]#x.to(type JSonValue)# should be [.code]#x.to(string)# and [.code]#x.to(JSonValue)# instead.
+We suppose that [.code]#x.to(type string)# and [.code]#x.to(type JSonValue)# should actually be [.code]#x.to(string)# and [.code]#x.to(JSonValue)# instead.
 Please note that the [.op]#is# operator allows one to easily verify the precise type signatures of the required operations,
 but since type inference and default parameters are still applied in the [.key]#concept# body, it's also possible to describe usage protocols that do not reveal implementation details.
 
 Much like generics, [.key]#concepts# are instantiated exactly once for each tested type, and any static code included within the body is executed only once.
 
-Note, that in the same way, as generic procs are instantiated for each used type, this also holds for [.key]#concept# data types.
+Note, that in the same way, as generic procedures are instantiated for each used type, this also holds for [.key]#concept# data types.
 So the use of [.key]#concepts# with many different matching types may produce many proc instances and a large executable.
 
 With the old [.key]#concepts# implementation, it was possible to test directly for the existence of
@@ -22045,8 +22148,8 @@ how we can even define constants and types inside a [.key]#concept# body.
 The above descriptions are based on the experimental section of the Nim compiler
 manual for Nim 1.9.1 (RC 2.0) as available in early 2023. An RFC (Request for Comments) from 2019 suggested a
 [.key]#concept# redesign, which is not explicitly mentioned in the Nim language manual, but
-seems to be partly implemented already. The most noticeable change for these "new concepts" is,
-that now a [.type]#Self# data type can be used to refer to the [.key]#concept# type instance.
+seems to be partly implemented already. The most noticeable change for these "new concepts" is
+that a [.type]#Self# data type can now be used to refer to the [.key]#concept# type instance.
 The [.key]#concept# body consists now mostly of a set of procs, which may use the [.type]#Self# data type.
 So we can
 now define a [.type]#Comparable# type this way:
@@ -22058,7 +22161,7 @@ type
     proc `<`(a, b: Self): bool
 ----
 
-We will cite the full RFC verbatim here for reference, including the
+We will quote the complete RFC verbatim here for reference, including the
 suggested [.code]#each T# and [.code]#either orelse# constructs, which are still unimplemented:
 
 ==== Atoms and containers
@@ -22070,8 +22173,8 @@ parameter (as in [.type]#Comparable#).
 Syntactically, a [.key]#concept# consists of a list of proc- and [.key]#iterator#
 declarations. There are 3 syntactic additions:
 
-* [.type]#Self# is a built-in type within the concept's body and stands for the
-current [.key]#concept#. (Or the data type that is matched?)
+* [.type]#Self# is a built-in type within the concept's body, representing the
+current [.key]#concept#. (Or perhaps the data type that is being matched?)
 
 * [.key]#each# is used to introduce a generic parameter [.type]#T# within the
 concept's body that is not listed within the concept's generic
@@ -22101,14 +22204,17 @@ type
     proc swap(x, y: var Self)
 ----
 
-Self stands for the currently defined [.key]#concept# itself. It is used to avoid
-a recursion, [.code]#proc cmp(a, b: Comparable): int# is invalid.
+Self represents the currently defined [.key]#concept# itself. It is used to prevent
+recursion because [.code]#proc cmp(a, b: Comparable): int# is invalid.
 
 ==== Containers
 
-A container has at least one generic parameter (most often called [.type]#T#). The
-first syntactic usage of the generic parameter specifies how to infer and bind [.type]#T#.
-Other usages of [.type]#T# are then checked to match what it was bound to.
+//A container has at least one generic parameter (most often called [.type]#T#). The
+//first syntactic usage of the generic parameter specifies how to infer and bind [.type]#T#.
+//Other usages of [.type]#T# are then checked to match what it was bound to.
+
+A container has at least one generic parameter, typically called [.type]#T#. The first syntactic use of the generic parameter determines
+how [.type]#T# is inferred and bound. Subsequent uses of [.type]#T# are then checked to ensure they match its bound value.
 
 [source, nim]
 ----
@@ -22120,7 +22226,8 @@ type
     proc len(a: Self): int
 ----
 
-Nothing interesting happens when we use multiple generic parameters:
+//Nothing interesting happens when we use multiple generic parameters:
+No significant changes occur when we use multiple generic parameters:
 
 [source, nim]
 ----
@@ -22145,9 +22252,12 @@ type
 
 Note: [.code]#each T# is currently not implemented.
 
-[.code]#each T# allows introducing generic parameters that are not part of a
-concept's generic parameter list. It is furthermore a special case to
-allow for the common "every field has to fulfill property P" scenario:
+//[.code]#each T# allows introducing generic parameters that are not part of a
+//concept's generic parameter list. It is furthermore a special case to
+//allow for the common "every field has to fulfill property P" scenario:
+
+[.code]#each T# allows the introduction of generic parameters that are not part of a concept’s generic parameter list. Furthermore, it is
+a special case designed to handle the common scenario where 'every field must fulfill property P':
 
 [source, nim]
 ----
@@ -22167,8 +22277,9 @@ proc writeStuff[T: Serializable](x: T) =
 
 Note: [.code]#either orelse# is currently not implemented.
 
-In generic code, it's often desirable to specialize the code in an ad-hoc manner.
-[.func]#system.addQuoted# is an example of this:
+//In generic code, it's often desirable to specialize the code in an ad-hoc manner.
+//[.func]#system.addQuoted# is an example of this:
+In generic code, it is often desirable to specialize the code in an ad-hoc manner. An example of this is [.func]#system.addQuoted#:
 
 [source, nim]
 ----
@@ -22179,7 +22290,7 @@ proc addQuoted[T](dest: var string; x: T) =
     dest.add($x)
 ----
 
-If we want to describe [.type]#T# with a [.key]#concept# we need some way to describe optional
+If we want to describe [.type]#T# with a [.key]#concept#, we need some way to describe optional
 aspects. [.code]#either orelse# can be used:
 
 [source, nim]
@@ -22263,7 +22374,7 @@ names do not have to match and it can have additional default parameters.
 ==== Escape hatch
 
 Generic routines that have at least one [.key]#concept# parameter are type-checked at declaration time.
-To disable type-checking in certain code sections, an untyped block can be used:
+To disable type-checking in certain code sections, an 'untyped block' can be used:
 
 [source, nim]
 ----
