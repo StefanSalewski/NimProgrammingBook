@@ -8800,6 +8800,12 @@ get the default binary zero values. Or we can convert the destination to the par
 copy operation is executed. Then the common fields get copied, and the other fields of the
 subtype are kept.
 
+NOTE: Actually, there may still be some issues for this type of partially copied value objects:
+With a Compiler version 1.9.3 (RC for 2.0) we got random content for field id after the statement
+s2 = Student(s), instead of the expected binary zero. And when compiling with --mm:refc
+the statements s = s1 and s2 = Student(s) gave runtime errors. We will fix this example, when the final
+compiler version 2.0 is available.
+
 ==== Contents copy of Ref-Objects
 
 As we already learned, assignments for reference- and pointer types gives us only
