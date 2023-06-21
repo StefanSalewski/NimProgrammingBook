@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUNE-17
+//v0.1, 2023-JUNE-21
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -47,6 +47,8 @@ A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 
 Please list 7 grammar or spelling errors for the following website using WebPilot plugin. Show the correction, and explain what is wrong:  https://ssalewski.de/nimprogramming.html
 
+Please list the grammar and spelling errors for the following text segment. Show the correction, and explain what is wrong:
+
 asciidoctor -a stylesheet=adoc.css nimprogramming.adoc
 
 We are using these custom roles for clean semantic markup:
@@ -87,7 +89,8 @@ Intern references:
 [quote]
 ____
 When you are not able to explain it with words, you may have to add pictures.
-And when you even do not manage it with pictures, you can still make a video.
+//And when you even do not manage it with pictures, you can still make a video.
+And if you still can't manage it with pictures, you could always make a video.
 ____
 
 == About this book
@@ -114,7 +117,7 @@ Nim can be used to create programs for tiny microcontrollers, large desktop apps
 //Most books about programming languages focus on the language itself and assume that the reader
 //is already familiar with the foundations of computer hardware and has some programming experience.
 Most books about programming languages focus on the language itself, assuming that the reader is already familiar
-with the foundations of computer hardware and has some programming experience
+with the foundations of computer hardware and has some programming experience.
 This is generally a valid approach, as
 most people are taught this fundamental knowledge, sometimes referred to as [.ndef]#Computer
 Science# (CS), in school today.
@@ -137,7 +140,7 @@ some of the material that we already mentioned in {part}I.
 //We do that by intent, as some
 //people may skip {part}I, and because it is generally not a bad idea to support the learning
 //process of the reader with some repetitions.
-We do that intentionally, as some people might skip {partI}, and because it is generally not a bad idea to reinforce
+We do that intentionally, as some people might skip {part}I, and because it is generally not a bad idea to reinforce
 the learning process of the reader with some repetition.
 //{part}III will give
 //you an overview of Nim's standard library, which contains many useful functions and data types,
@@ -149,7 +152,7 @@ by solving some common programming tasks, like sorting, searching, or converting
 the internal computer format to displayable text.
 {part}V will introduce some useful
 external packages, which can be easily installed with one of Nim's package managers.
-Nim has already a few thousand external packages -- some of them may support or replace
+Nim already has a few thousand external packages -- some of them may support or replace
 the standard library, and others offer special or advanced functionalities.
 {part}VI of the book
 will finally introduce advanced concepts like [.ndef]#asynchronous
@@ -201,8 +204,8 @@ However, in computer science, starting with a larger example application can be 
 as you have to learn a lot of things simultaneously.
 It may work for you, but there is the danger that you forget all the details very quickly again.
 And these kinds of books are not very helpful when you have to look up something.
-The other concern with "Learning by doing" in computer science is, that learning materials
-may have only examples which you may not really be interested in: Of course, we can create
+The other concern with "Learning by doing" in computer science is that learning materials
+may have only examples in which you may not be really interested: Of course, we can create
 a simple chat application, a simple Twitter clone, and do some basic web scraping using
 async/await. Or create a basic game or a simple GUI with one of the dozen available toolkits.
 But what when you are not interested in chatting and twittering, and that single selected toolkit?
@@ -218,8 +221,11 @@ the first tutorial and perhaps a few pages of this book.
 Perhaps together with some friends? Whenever you should
 need some concrete help, you should find it on the Internet, using search engines, Wikipedia, or
 a discussion platform of your choice.
-And if you have really no idea whatsoever of a project with which you can start,
-then potentially computer programming is just not the right profession for you.
+//And if you have really no idea whatsoever of a project with which you can start,
+//then potentially computer programming is just not the right profession for you.
+//And if you really have no idea whatsoever of a project to start with, then potentially
+//computer programming is just not the right profession for you.
+And if you really have no idea what project to start with, then computer programming might not be the right profession for you.
 
 //While Nim has a JavaScript backend and so supports web-related development well, this
 //book concentrates on native code generation using the C and {cpp} backends.
@@ -230,9 +236,12 @@ discuss some peculiarities of the JavaScript backend in the second half of the b
 and we may give some examples of the use of the JavaScript backend in the
 Appendix. If you are strongly interested in web development and the
 JavaScript backend, then you may also consult the book [.ndef]#Nim in Action# by
-Dominik Picheta, which gives some detailed examples for the development of web-based
-software with the Nim programming language, including a simple chat application and
-the skeleton of a microblogging and social networking service. And you may consult
+Dominik Picheta, which gives some detailed examples for the development
+//of web-based
+//software with the Nim programming language, including a simple chat application and
+//the skeleton of a microblogging and social networking service.
+of web-based software using the Nim programming language, including a simple chat application and the foundation of a microblogging and social networking service.
+And you may consult
 the tutorials and manuals of Nim web packages like [.ndef]#Karax#,
 [.ndef]#Jester#, or [.ndef]#Basolato#.
 
@@ -255,7 +264,7 @@ primitive data types and such, as you can find all that in the Nim language manu
 //While creating graphical user interfaces (GUIs) is an important topic, we can not
 //give many details for that due to various reasons:
 //While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details for various reasons:
-While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details due to various reasons:
+While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details for various reasons:
 Nim has not yet the one and only
 accepted GUI library, but more than 20 attempts -- from pure Nim ones like NimX or Fidget, over
 wrapped libraries like GTK or QML, or GUIs that try to provide a native look for various {os}s like XWidgets or NiGui,
@@ -297,13 +306,15 @@ This book is based on the Nim reference implementation of
 Mr. A. Rumpf.
 //While the first pages of this book were written already in the spring of 2020, it should be mostly up-to-date
 //with the latest stable version 1.6 of the Nim 1.x series.
-While the first pages of this book were written in the spring of 2020, it should be mostly up-to-date with the latest stable version 1.6 of the Nim 1.x series.
+//While the first pages of this book were written in the spring of 2020, it should be mostly up-to-date with the latest stable version 1.6 of the Nim 1.x series.
+Although the first pages of this book were written in the spring of 2020, it should mostly be up-to-date with the latest stable version 1.6 of the Nim 1.x series.
 Most explanations and examples should
 be valid also for other implementations like the https://github.com/nim-works/nimskull variant.
 Mr. Rumpf has announced the Nim 2.0 release for early 2023.
 //The v2.0 release brings many improvements but has no serious breaking changes that would invalidate old code.
 The v2.0 release brings many improvements but does not include serious breaking changes that would invalidate old code.
-Only a few small modifications may be needed for old code to compile and run again.
+//Only a few small modifications may be needed for old code to compile and run again.
+Only a few small modifications may be necessary for old code to compile and run again.
 //The v2.0 release brings a lot of improvements
 //but has no serious breaking changes that would invalidate old code -- only a few small modifications may be
 //needed for old code to make it compile and run again.
@@ -311,16 +322,16 @@ In this book, we may use and discuss a few Nim 2.0
 features, but all code should be compilable with the 1.x series of the compiler or with nimskull (cyo) with no
 or only tiny changes. The most important change for Nim 2.0 is that ORC memory management is now the default,
 indicating that it is considered ready for use in production. ORC gives us GC-like, fully deterministic memory management
-with minimal overhead compared to fully manual memory handling. It reduces the maximal memory consumption of apps,
+with minimal overhead compared to manual memory handling. It reduces the maximal memory consumption of apps,
 avoids GC-generated delays, and may increase the performance of our programs. Additionally, ARC and ORC memory management
 should bring serious advantages for the creation and performance of threaded and parallel code.
-We have summarized the most important new features of Nim 2.0 in the appendix: <<Changes for Nim 2.0>>
+We have summarized the most important new features of Nim 2.0 in the appendix titled <<Changes for Nim 2.0>>.
 
 //Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
 //by Nim v2.0 yet.
 Note that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not yet fully supported by Nim v2.0.
 And for parallel and threaded code execution, it may be useful to consider high-quality external
-libraries rather than the ones in Nim's standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. The same may apply to
+libraries rather than the ones in Nim's standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. This may also apply to
 modules for asynchronous code execution and a few other libraries.footnote:[https://github.com/status-im/nim-chronos]
 
 ****
@@ -343,10 +354,10 @@ You can use the GitHub issue tracker to point out mistakes or unclear explanatio
 //Please note that we are more interested in comments on the content of the book currently, not that much
 //in typos or grammar issues.
 Please note that we are currently more interested in comments on the content of the book, rather than typos or grammar issues.
-Before the book will be officially published or a printed
-version will be created, we will run it through some correction software or hire a professional
-proofreader.
-
+//Before the book will be officially published or a printed
+//version will be created, we will run it through some correction software or hire a professional
+//proofreader.
+Before the book is officially published or a printed version is created, we will run it through some correction software or hire a professional proofreader.
 //[.new]#New sections and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
 //not that new stuff is still marked with a light yellow.# For details, you may see the change log in the appendix.
 ****
@@ -385,10 +396,12 @@ Therefore, this book, or at least parts of it, could now be considered obsolete.
 //can provide very valuable information about some topics.
 While ChatGPT still has some serious issues (it's better not to ask it about the author of this book, the creator of the Nim
 language, or other Nim core developers), it can provide very valuable information on various topics.
-We were really surprised at how much it
-already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
-languages. To use ChatGPT, you would have to register with your real name and phone number.
-We think that is OK to prevent misuse. The basic service is still free. A professional
+//We were really surprised at how much it
+//already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
+//languages.
+We were really surprised by how much it already knows about the Nim language, despite the fact that Nim is relatively small compared to the current mainstream languages.
+To use ChatGPT, you would have to register with your real name and phone number.
+We think that's OK to prevent misuse. The basic service is still free. A professional
 version with a monthly payment (called GPT-4) is now also available, but the free basic version still works.
 When you log in to the OpenAI homepage (https://chat.openai.com/auth/login?next=/chat) you can
 ask the bot questions, ask it to create a simple Nim program for you, fix errors in your program, or
@@ -406,7 +419,8 @@ separated with a space?
 command 'nim r t.nim' and it prints "12", so there is no space involved!
 * Please create a Nim program, that prints the numbers
 one to 10 each on its own line.
-* I will insert a small Nim program with issues in the prompt; please fix it.
+//* I will insert a small Nim program with issues into the prompt; please fix it.
+* I will insert a small Nim program with issues into the prompt. Please fix it.
 * [insert code here]
 * Can you please add some comments to the source code?
 
@@ -423,14 +437,14 @@ so it may not know about Nim 2.0 and other recent changes.
 Below is a complete dialog with ChatGPT from early 2023:
 ****
 
-----
 //One more question about the Nim programming language. The following code to convert a string to an integer number does not compile. Can you fix it?
+----
 I have one more question about the Nim programming language. The following code, which is supposed to convert a string to an integer, does not compile. Can you fix it?
 `var s: string = "123"; var i: int = int(s)`
 
 Yes, the code you provided is not valid Nim syntax. In order to convert a string to an integer in Nim, you can use the parseInt procedure from the strutils module.
 
-Here's an example of how to use it:
+Here is an example of how to use it:
 ----
 
 [source, nim]
@@ -448,6 +462,7 @@ with the value "123", and use parseInt to convert it to an integer, which we sto
 ----
 
 //Since spring 2023, GPT-4 has been available for paying subscribers and provides more helpful information and less nonsense.
+//Since spring 2023, GPT-4 has been available to paying subscribers and provides more helpful information and less irrelevant content.
 Since spring 2023, GPT-4 has been available to paying subscribers and provides more helpful information and less irrelevant content.
 
 //We recently created a short Nim info page with GPT-4:  https://nimprogramming.com/
@@ -457,14 +472,14 @@ We recently used GPT-4 to create a short Nim info page: https://nimprogramming.c
 
 [quote]
 ____
-Give me a video, I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
+Give me a video. I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
 ____
 
 //For using computers and writing computer programs, you initially do not have to know
 //many details.
 To use computers and write computer programs, you initially do not need to know many details.
 It is basically like driving a car: Although a car is a powerful and
-complicated tool, kids generally can drive it after a 3-minute introduction. Still,
+complicated tool, children can generally drive it after a 3-minute introduction. Still,
 good racing drivers typically need a much broader insight into the inner working of
 all the technical components, and finally, a lot of practice.
 
@@ -488,8 +503,11 @@ The most important part of a digital computer is the [.ndef]#CPU#, the
 [.ndef]#Central Processing Unit#. That tiny device is built of digital electronic
 circuits and can perform very basic mathematical and logical operations on numbers,
 like adding two numbers or deciding if a number is larger or smaller than another
-number. Most computer CPUs can only store very few numbers internally, and forget
-the numbers when the power is switched off. So the CPU is typically electrically
+number.
+//Most computer CPUs can only store very few numbers internally, and forget
+//the numbers when the power is switched off.
+Most computer CPUs can only store a very limited number of values internally, and these values are lost when the power is switched off.
+So the CPU is typically electrically
 connected to a [.ndef]#RAM# module, a [.ndef]#Random Access Memory#, which can store
 many more numbers and allows fast access to these numbers, and to a [.ndef]#Hard disk#
 or [.ndef]#SSD# device, which can permanently store the numbers but does not allow
@@ -506,16 +524,21 @@ Before use, each partition is generally formatted and a file system (FS) is crea
 create an internal structure on the storage device, which allows us to store and retrieve individual data
 blocks like programs, text files, or pictures.
 
-Nearly all of today's desktop computers, and even most notebooks and cellphones
-contain not only a single CPU, but multiple CPUs, also called "Cores", so they can
-run different programs in parallel, or a single program can run parts of it on
-different CPUs, to increase performance or reduce total execution time. The so-called
+//Nearly all of today's desktop computers, and even most notebooks and cellphones
+//contain not only a single CPU, but multiple CPUs, also called "Cores", so they can
+//run different programs in parallel, or a single program can run parts of it on
+//different CPUs, to increase performance or reduce total execution time.
+Nearly all of today's desktop computers, as well as most notebooks and cellphones, contain not just a single CPU, but multiple CPUs, also known as 'cores'. This enables them to run different programs in parallel, or to run parts of a single program on different CPUs, in order to increase performance and reduce total execution time.
+The so-called
 supercomputers can contain thousands of CPUs. Besides CPUs, most computers have also
 at least one [.ndef]#GPU#, a [.ndef]#Graphic Processing Unit#, that can be used to
 display data on a screen or monitor, maybe for doing animations in games or for
-playing video. The distinction between CPU and GPU is not really sharp; usually, a
-CPU can also display data on screens and monitors, and GPUs can do also some data
-processing that CPUs can do. But GPUs are optimized for the data display task.
+playing video.
+//The distinction between CPU and GPU is not really sharp; usually, a
+//CPU can also display data on screens and monitors, and GPUs can do also some data
+//processing that CPUs can do.
+The distinction between CPUs and GPUs is not clear-cut. Usually, a CPU can also display data on screens and monitors, and GPUs can also perform some data processing tasks that CPUs can handle.
+But GPUs are optimized for the data display task.
 
 More visible to the ordinary computer user are the peripheral devices like a keyboard,
 mouse, screen, and perhaps a printer. These enable human interaction with the computer,
@@ -537,16 +560,19 @@ often the {uc}s can already communicate with each other by RF (Radio-Frequency),
 access by WLAN the Internet, which is sometimes called the [.ndef]#Internet of Things#
 (IoT).
 
-Another class of large and very powerful digital computers is called
-[.ndef]#mainframe computers# or [.ndef]#supercomputers#, which are optimized to
-process large amounts of data very fast. The key to their gigantic computing power is
+//Another class of large and very powerful digital computers is called
+//[.ndef]#mainframe computers# or [.ndef]#supercomputers#, which are optimized to
+//process large amounts of data very fast.
+Another class of large and very powerful digital computers comprises [.ndef]#mainframe computers# or [.ndef]#supercomputers#. These are optimized to process large amounts of data very quickly.
+The key to their gigantic computing power is
 that many fast CPUs work in parallel -- the problem or task is split into many small
 parts that are solved by one CPU each, and the final result is then the combination
 of all the solved sub-tasks. Unfortunately, it is not always possible to split large
 problems into smaller sub-tasks.
 
-Digital computers are usually driven by a clock signal that pulses at a certain
-frequency. The CPU can do simple operations like the addition of two integers at
+//Digital computers are usually driven by a clock signal that pulses at a certain frequency.
+Digital computers usually operate based on a clock signal that pulses at a certain frequency.
+The CPU can do simple operations like the addition of two integers at
 each pulse of the clock signal. For more complicated operations like a multiplication
 or a division, it may need more clock pulses.
 
@@ -8806,7 +8832,7 @@ s2 = Student(s), instead of the expected binary zero. And when compiling with --
 the statements s = s1 and s2 = Student(s) gave runtime errors. We will fix this example, when the final
 compiler version 2.0 is available.
 
-==== Contents copy of Ref-Objects
+=== Contents copy of Ref-Objects
 
 As we already learned, assignments for reference- and pointer types gives us only
 an alias to access the data, but the content is not copied.
@@ -8861,7 +8887,7 @@ allocates memory for [.var]#x# and copies the actual [.type]#Circle# content. Wh
 static [.type]#Shape# base type, it gets the actual [.type]#Circle# type, which we can prove in type tests with the [.key]#of# keyword.
 And we can use more [.func]#deepCopy()# calls like [.code]#deepCopy(z, x)# between base types, and get again the
 correct runtime types. That this is possible is indeed a bit surprising, because serialization modules like
-the [.mod]#JSON# module from Nim's standard library are not able to determine the correct runtime types automatically.
+the [.mod]#json# module from Nim's standard library are not able to determine the correct runtime types automatically.
 
 Note, that currently the compiler-option [.term]#--deepCopy:on# is needed for ARC and ORC. 
 
@@ -22523,6 +22549,7 @@ errors. Finally, a lot of missing commas and some more grammar errors have been 
 languagetool.org software, used from the command line with the pyLanguagetool application.
 Some longer prose sections have been also checked by use of the free Firefox grammar-check browser extension of
 https://www.grammarly.com/ and the online grammar checker from https://quillbot.com.
+To further improve the text, we have asked GPT-4 to check grammar and spelling of a few text segments.
 
 //== Strange Questions
 
