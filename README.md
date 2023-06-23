@@ -6,9 +6,9 @@ Computer Programming with the Nim Programming Language -- A gentle Introduction
 This repository contains the english source code
 of the book.
 
-The asciidoctor generated HTML is available at
+Electronic versions of the book in HTML and PDF format are available at
 
-http://ssalewski.de/nimprogramming.html
+https://nimprogrammingbook.com
 
 For a short overview of the Nim Programming language, you may
 consult

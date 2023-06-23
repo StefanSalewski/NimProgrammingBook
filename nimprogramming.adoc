@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUNE-21
+//v0.1, 2023-JUNE-23
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -335,7 +335,10 @@ libraries rather than the ones in Nim's standard library.footnote:[https://forum
 modules for asynchronous code execution and a few other libraries.footnote:[https://github.com/status-im/nim-chronos]
 
 ****
-For a short overview of the Nim programming language, you may also consult the page
+Electronic versions of the book in HTML and PDF format are available at
+https://nimprogrammingbook.com
+
+For a short overview of the Nim programming language, you may also consult the website
 https://nimprogramming.com/.
 
 For the latest news about the language, installation instructions, and much more useful information, visit
@@ -353,11 +356,11 @@ You can find the source code for the book at https://github.com/StefanSalewski/N
 You can use the GitHub issue tracker to point out mistakes or unclear explanations; we will try to address them.
 //Please note that we are more interested in comments on the content of the book currently, not that much
 //in typos or grammar issues.
-Please note that we are currently more interested in comments on the content of the book, rather than typos or grammar issues.
+//Please note that we are currently more interested in comments on the content of the book, rather than typos or grammar issues.
 //Before the book will be officially published or a printed
 //version will be created, we will run it through some correction software or hire a professional
 //proofreader.
-Before the book is officially published or a printed version is created, we will run it through some correction software or hire a professional proofreader.
+//Before the book is officially published or a printed version is created, we will run it through some correction software or hire a professional proofreader.
 //[.new]#New sections and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
 //not that new stuff is still marked with a light yellow.# For details, you may see the change log in the appendix.
 ****
