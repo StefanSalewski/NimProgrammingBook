@@ -482,8 +482,11 @@ ____
 //many details.
 To use computers and write computer programs, you initially do not need to know many details.
 It is basically like driving a car: Although a car is a powerful and
-complicated tool, children can generally drive it after a 3-minute introduction. Still,
-good racing drivers typically need a much broader insight into the inner working of
+complicated tool, children can generally drive it after a 3-minute introduction.footnote:[Interesting GPT-4 comment: This sentence
+is incorrect and potentially dangerous as it suggests that children can drive cars after a very short introduction.
+In many countries, it's illegal for children to drive. It's also unrealistic to suggest that anyone could learn to drive properly in 3 minutes.]
+Still,
+professional racing drivers typically require a much broader insight into the inner workings of
 all the technical components, and finally, a lot of practice.
 
 == What is a Computer?
@@ -491,10 +494,13 @@ all the technical components, and finally, a lot of practice.
 A computer is primarily a device that can run computer programs, by following
 instructions about how to manipulate data.
 
-Nearly all the
-computers currently in use, from the tiny ones integrated into electronic gadgets, the
-well-known desktop computers (PCs), to large and powerful supercomputers filling out
-entire rooms, work internally with digital data only.footnote:[In the past, some forms
+//Nearly all the
+//computers currently in use, from the tiny ones integrated into electronic gadgets, the
+//well-known desktop computers (PCs), to large and powerful supercomputers filling out
+//entire rooms, work internally with digital data only.
+Nearly all the computers currently in use, from the tiny ones integrated into electronic gadgets to the well-known
+desktop computers (PCs) and large, powerful supercomputers filling entire rooms,
+work internally with digital data only.footnote:[In the past, some forms
 of analog computers existed, some worked mechanically, and some used analog voltages or
 currents as input and output signals. Indeed, one important device, which is still very
 common in analog electronics, is the summing amplifier, which can sum up multiple
@@ -510,16 +516,16 @@ number.
 //Most computer CPUs can only store very few numbers internally, and forget
 //the numbers when the power is switched off.
 Most computer CPUs can only store a very limited number of values internally, and these values are lost when the power is switched off.
-So the CPU is typically electrically
+So, the CPU is typically electrically
 connected to a [.ndef]#RAM# module, a [.ndef]#Random Access Memory#, which can store
-many more numbers and allows fast access to these numbers, and to a [.ndef]#Hard disk#
+many more numbers and allows fast access to these numbers, and to a [.ndef]#hard disk#
 or [.ndef]#SSD# device, which can permanently store the numbers but does not allow
 such fast access. The stored numbers are most often called just [.ndef]#data# --
 basically, that data is nothing more than numbers, but it can be interpreted in many
 ways, such as pictures, sounds, and much more.
 
-The traditional hard disk drives (HDD), which store data electromechanical on rotating magnetic disks, as
-well as the more modern variants, the solid-state-devices (SSD), which store data using modern semiconductor
+The traditional hard disk drives (HDDs), which store data electromechanically on rotating magnetic disks, as
+well as the more modern variants, the solid-state-devices (SSDs), which store data using modern semiconductor
 technologies, can store data persistently for longer time periods, even when no electric power
 supply is available. Both, SSDs and HDDs, can be optionally split into multiple partitions, e.g. one or multiple OS partitions
 for executable programs or pure data partitions for passive data, like text files or pictures.
@@ -555,18 +561,20 @@ A less visible but also very important class of computers are [.ndef]#{uc}s# and
 so-called [.ndef]#embedded devices#, tiny pieces with typically a hull of black plastic
 with some electrical contacts. The devices can contain all necessary elements,
 that is the CPU, some RAM, and persistent storage that can store programs and data when no
-electric power supply is available. These devices may be restricted in computing
-power and the amount of data that they can store and process, but they are contained
+electric power supply is available. These devices may be limeted in computing
+power and the amount of data that they can store and process, but they are incorporated
 in many consumer devices. They control your washing machine, refrigerator, television,
 radio, and much more. Some devices in your home may even contain multiple {uc}s and
 often the {uc}s can already communicate with each other by RF (Radio-Frequency), or
 access by WLAN the Internet, which is sometimes called the [.ndef]#Internet of Things#
 (IoT).
 
-//Another class of large and very powerful digital computers is called
-//[.ndef]#mainframe computers# or [.ndef]#supercomputers#, which are optimized to
+Another class of large and very powerful digital computers is called
+[.ndef]#mainframe computers# or [.ndef]#supercomputers#, which are optimized to
 //process large amounts of data very fast.
-Another class of large and very powerful digital computers comprises [.ndef]#mainframe computers# or [.ndef]#supercomputers#. These are optimized to process large amounts of data very quickly.
+//Another class of large and very powerful digital computers comprises [.ndef]#mainframe computers# or [.ndef]#supercomputers#.
+//These are optimized to
+process large amounts of data very quickly.
 The key to their gigantic computing power is
 that many fast CPUs work in parallel -- the problem or task is split into many small
 parts that are solved by one CPU each, and the final result is then the combination
@@ -593,14 +601,14 @@ computer can use.
 A totally different kind of computers are [.ndef]#Quantum Computers#, large,
 expensive high-tech devices, which use the rules of [.ndef]#quantum mechanics# to
 calculate many computations in parallel. Today only a few of them exist, for research
-at universities and some large commercial institutes. Quantum computers may at some
-time in the future fundamentally change computing and our whole world, but they are
+at universities and some large commercial institutes. Quantum computers may someday
+fundamentally change computing and our entire world, but they are
 not the topic of this book.
 
 == Analog and Digital
 
-Whenever we measure a quantity based on some tiny base unit, then we work in the
-digital area, and we measure with some granularity. Our ordinary money is digital in some
+Whenever we measure a quantity based on some tiny base unit, we work in the
+digital realm, and we measure with some granularity. Our ordinary money is digital in some
 way, as the cent is the smallest base unit; you will never pay a fraction of a cent
 for something. Time can be seen as a digital quantity as long as we accept the
 second as the smallest unit. Even on so-called analogue watches, the second hand will
@@ -627,8 +635,10 @@ have a granularity. Physically, quantities like energy or momentum are indeed a
 multiple of the tiny [.ndef]#Planck constant#. Or consider electric charge, which
 is always a multiple of the [.ndef]#elementary charge unit# of one electron. Whenever
 an electrical current is flowing through an electrically conducting wire, an ionized
-gas, or an electrolyte like saltwater, there are flowing multiple of the elementary
-charge only, never fractions of it. And of course, light and electromagnetic radiation
+gas, or an electrolyte like saltwater,
+//there are flowing multiple of the elementary charge only, never fractions of it.
+multiples of the elementary charge are flowing, never fractions of it.
+And of course, light and electromagnetic radiation
 also have some form of granularity, which the photoelectric effect, as well as Compton
 scattering, proves.
 
@@ -636,16 +646,16 @@ An important and useful property of digital signals, and digital data, is that t
 directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
-values. When you use a mechanical switch to turn the light bulb in your house on, or
-of, you change the binary state of the bulb. And your neighbor, when watching your
+values. When you use a mechanical switch to turn the light bulb in your house on or
+off, you change the binary state of the bulb. And your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
 notice that the signal is not really digital -- when we switch on, the filament may
-take a few milliseconds to heat up, and when we switch off, the filament takes again
-a few milliseconds to cool down.]
+take a few milliseconds to heat up, and when we switch off, it takes the filament
+a few milliseconds again to cool down.]
 
 Digital computers are generally using binary electric states internally -- voltage or
 current [.term]#on# or [.term]#off#. Such an on/off state is called a bit. We will
-learn more about bits and binary logic later. One bit can store obviously only two
+learn more about bits and binary logic later. One bit can obviously store only two
 states, which we may map to the numbers [.term]#0# and [.term]#1#. Larger integer
 numbers can be represented by a sequence of multiple bits.
 
@@ -658,8 +668,8 @@ well-defined clean state, there is no noise that overlays the data and may
 accumulate when the data is copied multiple times. Well, that statement is not really
 true -- under bad conditions, the noise can become so large that it changes the binary
 state of signals. Imagine we try to transfer some whole numbers encoded in binary
-form, maybe by binary states encoded as voltage level [.term]#0 Volt# and [.term]#5
-Volts#, over an electric wire and a long distance. It is clear that the long wire can
+form, perhaps by binary states encoded as voltage level [.term]#0 Volt# and [.term]#5
+Volts#, over an electric wire across a long distance. It is clear that the long wire can
 pick up some electromagnetic noise that can change the true [.lit]#0# Volt data to a voltage
 that is closer to [.lit]#5# Volts than to the true [.lit]#0# Volt level, so it is received
 incorrectly. To catch such types of transmission errors, [.ndef]#checksums# are added
@@ -673,18 +683,18 @@ requested.
 //But the field of data transmission and its error detection is not the topic of this book.
 
 The opposite of digital is generally called analogue, a term that is used for data
-that have or seems to have no granularity. For example, we speak of an analogue
+that has or seems to have no granularity. For example, we speak of an analogue
 voltage when the voltage can have each value in a given range and when the voltage
 does not "jump" but change continuously.footnote:[Of course, even digital electric
-signals can not really "jump" from one digital state to another, but the transition
+signals cannot really "jump" from one digital state to another, but the transition
 time is much shorter than the time duration of the steady state, so the signal has a
-rectangular shape when we watch it on an oscilloscope, it looks like +__--__--__+.]
+rectangular shape when we watch it on an oscilloscope; it looks like +__--__--__+.]
 For observing analogue voltages or currents, one can use a moving coil meter, a device
 where the current flows through a coil in a magnetic field and the magnetic force
 moves the hand/pointer.
 
 We said in the previous section that nearly all of our current computers work with
-digital data only. Basically, that is that they work internally with integer numbers,
+digital data only. Basically, this means that they work internally with integer numbers,
 stored in sequences of binary bits. All input for computers must have the form of
 integer numbers and all output has the form of integer numbers. Whenever we want to
 feed computers with some sort of analogue data, like an analogue voltage, we have to
