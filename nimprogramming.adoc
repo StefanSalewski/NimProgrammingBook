@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUNE-23
+//v0.1, 2023-JUNE-24
 :doctype: book
 :part-signifier: Part
 :partnums:
@@ -527,7 +527,7 @@ ways, such as pictures, sounds, and much more.
 The traditional hard disk drives (HDDs), which store data electromechanically on rotating magnetic disks, as
 well as the more modern variants, the solid-state-devices (SSDs), which store data using modern semiconductor
 technologies, can store data persistently for longer time periods, even when no electric power
-supply is available. Both, SSDs and HDDs, can be optionally split into multiple partitions, e.g. one or multiple OS partitions
+supply is available. Both SSDs and HDDs can be optionally split into multiple partitions, e.g., one or multiple OS partitions
 for executable programs or pure data partitions for passive data, like text files or pictures.
 Before use, each partition is generally formatted and a file system (FS) is created. These two steps
 create an internal structure on the storage device, which allows us to store and retrieve individual data
@@ -561,12 +561,12 @@ A less visible but also very important class of computers are [.ndef]#{uc}s# and
 so-called [.ndef]#embedded devices#, tiny pieces with typically a hull of black plastic
 with some electrical contacts. The devices can contain all necessary elements,
 that is the CPU, some RAM, and persistent storage that can store programs and data when no
-electric power supply is available. These devices may be limeted in computing
+electric power supply is available. These devices may be limited in computing
 power and the amount of data that they can store and process, but they are incorporated
 in many consumer devices. They control your washing machine, refrigerator, television,
 radio, and much more. Some devices in your home may even contain multiple {uc}s and
 often the {uc}s can already communicate with each other by RF (Radio-Frequency), or
-access by WLAN the Internet, which is sometimes called the [.ndef]#Internet of Things#
+access the Internet by WLAN, which is sometimes called the [.ndef]#Internet of Things#
 (IoT).
 
 Another class of large and very powerful digital computers is called
@@ -593,7 +593,7 @@ or a division, it may need more clock pulses.
 //integers for each (upwards) transition of the clock signal, for more complicated
 //operations like a multiplication or a division it may need more clock periods.
 
-So a rough measure for the performance of a computer is the clock rate, that is the
+So, a rough measure for the performance of a computer is the clock rate, that is the
 number of clock pulses per second, divided by the number of pulses that the CPU needs
 to perform a basic operation, multiplied by the number of CPUs or Cores that the
 computer can use.
@@ -612,7 +612,7 @@ digital realm, and we measure with some granularity. Our ordinary money is digit
 way, as the cent is the smallest base unit; you will never pay a fraction of a cent
 for something. Time can be seen as a digital quantity as long as we accept the
 second as the smallest unit. Even on so-called analogue watches, the second hand will
-generally jump forwards in steps of a second, so you can not measure fractions of a
+generally jump forward in steps of a second, so you cannot measure fractions of a
 second with that watch.
 
 An obvious analogue property is the thermodynamic temperature and its classic
@@ -647,13 +647,13 @@ directly to integral numbers.
 
 The simplest form of digital data is binary data, which can have only two distinct
 values. When you use a mechanical switch to turn the light bulb in your house on or
-off, you change the binary state of the bulb. And your neighbor, when watching your
+off, you change the binary state of the bulb. Your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
 notice that the signal is not really digital -- when we switch on, the filament may
 take a few milliseconds to heat up, and when we switch off, it takes the filament
 a few milliseconds again to cool down.]
 
-Digital computers are generally using binary electric states internally -- voltage or
+Digital computers generally use binary electric states internally -- voltage or
 current [.term]#on# or [.term]#off#. Such an on/off state is called a bit. We will
 learn more about bits and binary logic later. One bit can obviously store only two
 states, which we may map to the numbers [.term]#0# and [.term]#1#. Larger integer
@@ -665,8 +665,8 @@ binary form.
 A very important property of digitally encoded numbers (data) is that they can be
 copied and transmitted exactly without loss of precision. The reason for this is that digital numbers have a
 well-defined clean state, there is no noise that overlays the data and may
-accumulate when the data is copied multiple times. Well, that statement is not really
-true -- under bad conditions, the noise can become so large that it changes the binary
+accumulate when the data is copied multiple times. Well, that statement isn't entirely
+true -- under poor conditions, the noise can become so significant that it changes the binary
 state of signals. Imagine we try to transfer some whole numbers encoded in binary
 form, perhaps by binary states encoded as voltage level [.term]#0 Volt# and [.term]#5
 Volts#, over an electric wire across a long distance. It is clear that the long wire can
@@ -693,8 +693,8 @@ For observing analogue voltages or currents, one can use a moving coil meter, a 
 where the current flows through a coil in a magnetic field and the magnetic force
 moves the hand/pointer.
 
-We said in the previous section that nearly all of our current computers work with
-digital data only. Basically, this means that they work internally with integer numbers,
+We mentioned in the previous section that nearly all of our current computers work exclusively with digital data.
+Essentially, this means they work internally with integer numbers,
 stored in sequences of binary bits. All input for computers must have the form of
 integer numbers and all output has the form of integer numbers. Whenever we want to
 feed computers with some sort of analogue data, like an analogue voltage, we have to
@@ -705,7 +705,7 @@ computer plays music: The computer output in form of digital data is then conver
 by a device called [.ndef]#digital to analog converter# (DAC) into an analogue
 voltage, that generates an analogue current flowing through a coil in the speakers of our
 soundbox, and that electric current in the coil generates a magnetic field which
-exercises mechanical forces and moves the membrane of the speaker, resulting in
+exerts mechanical forces and moves the membrane of the speaker, resulting in
 oscillating motions, which generates air pressure variations that our ear can detect
 and that we finally hear as sound.
 
@@ -713,7 +713,7 @@ and that we finally hear as sound.
 
 Most computers, from cellphones to large supercomputers, use an [.ndef]#{os}# (OS).
 A well-known OS is the GNU/Linux kernel. Operating systems can be seen as the initial
-program, that is loaded and started when we switch the computer on and that works as
+program that is loaded and started when we switch the computer on and that works as
 some kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
 often another tiny program called a [.ndef]#Boot Manager# is launched. Boot managers
 are used to select different {os}s to boot, maybe Linux or Windows, or to pass
@@ -730,28 +730,32 @@ work on a higher level of abstraction, so they do not need to know much about th
 low-level hardware details.
 
 An important ability of most modern {os}s is to run multiple system- and user-programs
-concurrent or parallel. Concurrent execution of programs means, that
+concurrent or parallel. Concurrent execution of programs means that
 the execution switches very fast between all the active programs. That way the user
 does not notice when programs do pause for a short time interval, and all of them
 seem to be running all the time, but not at full speed.
-True parallel execution of programs indicates, that all of them can
+True parallel execution of programs indicates that all of them can
 permanently run at full speed -- this is only possible when the computer
 has multiple CPUs or a CPU with multiple physical cores.
 
-Computer operating systems have generally a close relation to software libraries, which
-are collections of data types and functions working with that data types. Libraries can
+//Computer operating systems have generally a close relation to software libraries, which
+//are collections of data types and functions working with that data types.
+Computer operating systems generally have a close relation to software libraries, which are collections of data types and functions working with these data types.
+Libraries can
 be a part of the OS or can be more or less independent of the OS. Libraries are software
 components that provide data types and functions with a well-defined interface
 (API, Application Programming Interface) and {behav}.
 
-Libraries can be used as shared libraries, which are single binary files stored on the file system of a computer,
-often with the file extension [.term]#.so# or [.term]#.dll#, which can be accessed from different computer programs simultaneously,
-or as static libraries, which are part of single programs. Shared libraries have some advantages: we need only one
+//Libraries can be used as shared libraries, which are single binary files stored on the file system of a computer,
+//often with the file extension [.term]#.so# or [.term]#.dll#, which can be accessed from different computer programs simultaneously,
+//or as static libraries, which are part of single programs.
+Libraries can be used as shared libraries -- single binary files stored on a computer's file system, often with the file extension [.term]#.so# or [.term]#.dll#, that can be accessed by different computer programs simultaneously -- or as static libraries, which are part of individual programs.
+Shared libraries have some advantages: we need only one
 instance on the file system of the computer, and the library is loaded only once into the computer memory (RAM), even when
 it is used by different apps simultaneously. This saves space, and when the library has serious errors, it is in principle possible to
 replace the library with a corrected version, which is then used by all the software on the computer. Shared libraries often come in
-numbered versions, where a higher number denotes a newer, improved, or extended library version. Sometimes some of the
-programs we use may need still an older library version, while other software needs already a newer one. In that case,
+numbered versions, where a higher number denotes a newer, improved, or extended library version. Sometimes, some of the
+programs we use may still need an older library version, while other software already needs a newer one. In that case,
 our file system has to provide multiple versions of a shared library, which can be used independently.
 On the other hand, statically linked libraries are directly glued with a single computer program.
 That makes the distribution of the program easier, as it can be shipped as a single entity,
@@ -772,7 +776,7 @@ computer, we need some form of a user interface. Traditional user interfaces
 are text-centric and often provided directly by the OS as one single text screen
 filling the whole display: The user has to enter textual commands and the computer
 reacts with textual messages.
-For entering commands and data, a keyboard is used, which layout was heavily
+For entering commands and data, a keyboard is used, whose layout was heavily
 inspired by the classical mechanical typewriter.
 For desktop computers, the textual user interfaces
 have been mostly replaced or at least supported by graphical user interfaces (GUIs)
@@ -781,14 +785,16 @@ gadgets now use some form of a GUI for user interaction. For large mainframe
 computers, the textual user interface is still common. Graphical user interfaces
 present the user with a set of icons or widgets, often arranged in rectangular graphical
 boxes called windows. These windows can be moved around, resized, and can partly or fully overlap
-other windows. A special type of window is called a terminal-, shell- or console-window,
-which behaves like the traditional full-screen textual user interfaces.
-Graphical user interfaces allow it to interact with the computer
-by simple actions like clicking on buttons or by drag or wipe gestures, performed
+other windows.
+//A special type of window is called a terminal-, shell- or console-window,
+//which behaves like the traditional full-screen textual user interfaces.
+A special type of window, known as a terminal, shell, or console window, behaves like the traditional full-screen textual user interfaces.
+Graphical user interfaces allow users to interact with the computer
+through simple actions like clicking on buttons or using drag or swipe gestures, performed
 directly on a touch-sensitive display or with a device called a mouse, which mirrors
 its mechanical movement on the table to a graphical cursor on the computer display, and provides
 a set of pushbuttons that are used to initiate a click action when the mouse pointer hovers
-over an icon or widget. The main advantage of graphical user interfaces is, that the user does not have to
+over an icon or widget. The main advantage of graphical user interfaces is that the user does not have to
 remember and type in long command sequences.
 A set of on-screen buttons labeled with single letters can even simulate a traditional keyboard,
 but when the input of longer textual data is required, the physical keyboard is still used.
@@ -796,10 +802,10 @@ Graphical user interfaces are sometimes even supported by speech recognition
 systems, which are used to enter commands or textual messages vocally.
 //Graphical user interfaces may be very strongly coupled with the OS but are
 //basically still system programs executed by the OS.
-Graphical user interfaces may appear very strongly coupled with the OS but are
+Graphical user interfaces may appear very strongly coupled with the OS, but they are
 still system programs executed by the OS.
 For the Microsoft Windows
-OS or the {macos}, this distinction is not that obvious, as the same GUI
+OS and the {macos}, this distinction is not very obvious, as the same GUI
 is running permanently. For other {os}s like Linux, it is more obvious, as
 these {os}s are sometimes used without a GUI, and because various
 GUI tool kits like Gnome, KDE, and many more are available.
@@ -811,17 +817,17 @@ programs.
 
 == What is a Computer Program?
 
-A computer program is basically a sequence of numbers, which make some sense to a
-computer CPU, in such a way that the CPU recognizes the numbers as so-called
-[.ndef]#instructions# or [.ndef]#numeric machine code#, maybe the instruction to add
+A computer program is essentially a sequence of numbers, which make some sense to a
+computer CPU, in such a way that the CPU recognizes these numbers as so-called
+[.ndef]#instructions# or [.ndef]#numeric machine code#, such as the instruction to add
 two numbers.
 
 The first computers, built in the 1950s, were indeed programmed by feeding sequences
 of plain numbers to the device. The numbers were stored on so-called [.ndef]#punch
 cards#, consisting of strong paper, where the numbers were encoded by holes in the
 cards. The holes could be recognized by electrical contacts to feed the numbers into
-the CPU. As plain numbers do not match well with human thinking, soon more abstract codes
-were used. A very direct code, which matches numerical instructions to symbols, is
+the CPU. As plain numbers do not match well with human thinking, more abstract codes
+were soon used. A very direct code that matches numerical instructions to symbols is known as
 the [.ndef]#assembly language#. In that language, for example, the character sequence
 "add A0, $8" may map directly to a sequence of numbers which instructs the CPU to add
 the constant integer number 8 to CPU register A0, where A0 is a storage area in the
@@ -838,9 +844,9 @@ well-defined assembly instruction.
 //perform can be expressed in a sequence of assembly instructions.
 Thus, any operation that a computer can potentially execute can be represented as a
 series of assembly instructions.footnote:[Reformulated by GPT-4.]
-But complicated
-tasks may require millions of assembly instructions, which would take humans very
-long to write, and even much longer to modify, proof, and debug.footnote:[The search
+However, complicated
+tasks may require millions of assembly instructions, which would take a long time for humans
+to write, and an even longer time to modify, proofread, and debug.footnote:[The search
 for the reason why a program does not do exactly what was hoped for by its creators
 is called debugging. That term is still a legacy from the very first computers in the
 50s, where logical circuits were built by mechanical relays, for example, a logical
@@ -853,7 +859,7 @@ kept.]
 
 Just a few years after the invention of the first computers, people recognized that
 they would need even more abstract instruction sets, like repeated execution,
-composed conditionals, or other data types than plain numbers as operands. So higher-level
+composed conditionals, or other data types than plain numbers as operands. As a result, higher-level
 programming languages like Algol, Fortran, C, Pascal, or Basic were created.
 
 //Simple C program here, with its assembly code from godbolt.org.
