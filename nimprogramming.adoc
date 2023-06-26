@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUNE-24
+//v0.1, 2023-JUNE-25
 :doctype: book
 :part-signifier: Part
 // mobi does not work with SVG!
@@ -38,6 +38,7 @@ A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :dhashtag: ##
 :pp: ++
 :behav: behavior
+:analog: analogue
 :runtime: run-time
 :part: Part{nbsp}
 :cdefine: #define
@@ -118,7 +119,7 @@ a certain level of universality.
 Nim can be used to create programs for tiny microcontrollers, large desktop apps, and web applications.
 //Most books about programming languages focus on the language itself and assume that the reader
 //is already familiar with the foundations of computer hardware and has some programming experience.
-Most books about programming languages focus on the language itself, assuming that the reader is already familiar
+Most books about programming languages focus on the language itself, often assuming that the reader is already familiar
 with the foundations of computer hardware and has some programming experience.
 This is generally a valid approach, as
 most people are taught this fundamental knowledge, sometimes referred to as [.ndef]#Computer
@@ -162,7 +163,7 @@ operations#, [.ndef]#threading# and [.ndef]#parallel processing#, [.ndef]#macros
 and [.ndef]#meta-programming#, and last but not least, Nim's concept implementation.
 Some sections, that do not integrate well into the other six parts, or that are boring or useful only for a minority of
 Nim users, have been moved to the Appendix and may not be part of a printed copy of the book.
-This includes currently a short introduction to Nim's standard package manager, Nimble.
+This currenly includes a short introduction to Nim's standard package manager, Nimble.
 
 //This book is basically a traditional textbook, a very simple one with detailed
 //explanations, so that kids from 14 years upwards can read and understand it
@@ -175,10 +176,12 @@ This book is essentially a traditional textbook—simple yet detailed. It is des
 and above can read and understand it independently, with little or no help from adults.
 Unfortunately, the English language
 may still be a problem for many kids not born in a country with a good
-English language tradition. But luckily automatic
-translations are already supported for some languages, and perhaps we
-will be able to offer some translated editions of the book later, possibly a Chinese
-and a German translation?
+English language tradition.
+//But luckily automatic
+//translations are already supported for some languages, and perhaps we
+//will be able to offer some translated editions of the book later, possibly a Chinese
+//and a German translation?
+Fortunately, automatic translations are already supported for some languages, and we might be able to offer translated editions of the book later, possibly in Chinese and German.
 
 //In the last decades in the area of computer programming,
 //traditional textbooks have partly been replaced by videos and "Crash course" and "Learning
@@ -205,7 +208,8 @@ The idea of a "Crash course" or "Learning by doing" may not be that bad in gener
 However, in computer science, starting with a larger example application can be overwhelming,
 as you have to learn a lot of things simultaneously.
 It may work for you, but there is the danger that you forget all the details very quickly again.
-And these kinds of books are not very helpful when you have to look up something.
+//And these kinds of books are not very helpful when you have to look up something.
+Moreover, these types of books are not very helpful when you need to look something up.
 The other concern with "Learning by doing" in computer science is that learning materials
 may have only examples in which you may not be really interested: Of course, we can create
 a simple chat application, a simple Twitter clone, and do some basic web scraping using
@@ -276,7 +280,8 @@ for some of them in parts IV or V of the book.
 
 //Also, we will not explain game programming because game programming is
 //a broad area and there are already many tutorials available.
-Also, we will not delve into game programming, as it is a broad area and there are already numerous tutorials available.
+//Also, we will not delve into game programming, as it is a broad area and there are already numerous tutorials available.
+Furthermore, we will not delve into game programming, as it is a broad area with numerous existing tutorials.
 Maybe in later editions of the
 book, we will add some of these topics, e.g. game programming, as so many people like it.
 But we will always have to ensure that a possible printed book version will not get
@@ -291,9 +296,10 @@ This way is indeed a good start.
 So we recommend that you read the short official tutorials, parts 1 and 2, and perhaps also some other tutorials freely available online.
 Tutorials generally only scratch the topics, so you may not be able to understand them all
 really well, but this way you get already a feeling for the language.
-There exist also
-some video tutorials, in case you have problems reading, but in that case,
-this book will not be of much use to you at all.
+//There exist also
+//some video tutorials, in case you have problems reading, but in that case,
+//this book will not be of much use to you at all.
+There also exist some video tutorials, in case you have problems reading. However, in that case, this book might not be of much use to you.
 //When you know already some computer science and have already experience
 //with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim language manual
 //may be fully sufficient for you, and you may not need this book at all.
@@ -351,11 +357,14 @@ An alternative Nim implementation, which may later develop into another language
 https://github.com/nim-works/nimskull
 
 //The source code for the book is hosted at
-You can find the source code for the book at https://github.com/StefanSalewski/NimProgrammingBook.
+//You can find the source code for the book at https://github.com/StefanSalewski/NimProgrammingBook.
 //The source code for the book can be found at https://github.com/StefanSalewski/NimProgrammingBook.
 //You may use the GitHub issue tracker to point us to mistakes or unclear explanations; we will try to
 //fix that.
-You can use the GitHub issue tracker to point out mistakes or unclear explanations; we will try to address them.
+//You can use the GitHub issue tracker to point out mistakes or unclear explanations; we will try to address them.
+The source code for the book can be found at https://github.com/StefanSalewski/NimProgrammingBook.
+The GitHub issue tracker may be used to point out mistakes or unclear explanations, which we will strive to address.
+
 //Please note that we are more interested in comments on the content of the book currently, not that much
 //in typos or grammar issues.
 //Please note that we are currently more interested in comments on the content of the book, rather than typos or grammar issues.
@@ -405,7 +414,8 @@ language, or other Nim core developers), it can provide very valuable informatio
 //already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
 //languages.
 We were really surprised by how much it already knows about the Nim language, despite the fact that Nim is relatively small compared to the current mainstream languages.
-To use ChatGPT, you would have to register with your real name and phone number.
+//To use ChatGPT, you would have to register with your real name and phone number.
+To utilize ChatGPT, registration with your real name and phone number is required.
 We think that's OK to prevent misuse. The basic service is still free. A professional
 version with a monthly payment (called GPT-4) is now also available, but the free basic version still works.
 When you log in to the OpenAI homepage (https://chat.openai.com/auth/login?next=/chat) you can
@@ -477,24 +487,28 @@ We recently used GPT-4 to create a short Nim info page: https://nimprogramming.c
 
 [quote]
 ____
-Give me a video. I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
+Give me a video; I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
 ____
 
 //For using computers and writing computer programs, you initially do not have to know
 //many details.
-To use computers and write computer programs, you initially do not need to know many details.
-It is basically like driving a car: Although a car is a powerful and
-complicated tool, children can generally move it after a 3-minute introduction.footnote:[Interesting GPT-4 comment: This sentence
+//To use computers and write computer programs, you initially do not need to know many details.
+Initially, you do not need to know many details to use computers and write computer programs.
+//It is basically like driving a car: Although a car is a powerful and
+//complicated tool, children can generally move it after a 3-minute introduction.
+It is much like driving a car. Even though a car is a complex machine, children can generally manage to move it after a brief, 3-minute introduction.
+footnote:[Interesting GPT-4 comment: This sentence
 is incorrect and potentially dangerous as it suggests that children can drive cars after a very short introduction.
 In many countries, it's illegal for children to drive. It's also unrealistic to suggest that anyone could learn to drive properly in 3 minutes.]
-Still,
-professional racing drivers typically require a much broader insight into the inner workings of
-all the technical components, and finally, a lot of practice.
+//Still,
+//professional racing drivers typically require a much broader insight into the inner workings of
+//all the technical components, and finally, a lot of practice.
+Nevertheless, professional racing drivers typically require a much deeper understanding of the inner workings of all the technical components, as well as extensive practice.
 
 == What is a Computer?
 
-A computer is primarily a device that can run computer programs, by following
-instructions about how to manipulate data.
+A computer is primarily a device that runs computer programs by following
+instructions on how to manipulate data.
 
 //Nearly all the
 //computers currently in use, from the tiny ones integrated into electronic gadgets, the
@@ -506,11 +520,13 @@ instructions about how to manipulate data.
 Nearly all the computers currently in use -- from the tiny ones integrated into electronic gadgets, to the well-known
 desktop computers (PCs), and large, powerful supercomputers filling
 entire rooms -- work internally with digital data only.footnote:[In the past, some forms
-of analog computers existed, some worked mechanically, and some used analog voltages or
+of {analog} computers existed, some worked mechanically, and some used {analog} voltages or
 currents as input and output signals. Indeed, one important device, which is still very
-common in analog electronics, is the summing amplifier, which can sum up multiple
-electric voltages.] Digital data are basically integer (whole) numbers encoded in
-binary form, which are represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.
+common in {analog} electronics, is the summing amplifier, which can sum up multiple
+electric voltages.]
+//Digital data are basically integer (whole) numbers encoded in binary form,
+Digital data essentially comprises integer (whole) numbers encoded in binary form,
+which are represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.
 //We will discuss the term digital in the next section in more detail.
 We will discuss the term [.ndef]#digital# in more detail in the next section.
 
@@ -520,21 +536,24 @@ circuits and can perform very basic mathematical and logical operations on numbe
 such as adding two numbers or deciding if a number is larger or smaller than another number.
 //Most computer CPUs can only store very few numbers internally, and forget
 //the numbers when the power is switched off.
-Most computer CPUs can only store a very limited number of values internally, and these values are lost when the power is switched off.
-So, the CPU is typically electrically
+//Most computer CPUs can store only a very limited number of values internally, and these values are lost when the power is switched off.
+Most computer CPUs can only store a limited number of values internally, which are lost when the power is switched off.
+Therefore, the CPU is typically electrically
 connected to a [.ndef]#RAM# module, a [.ndef]#Random Access Memory#, which can store
 many more numbers and allows fast access to these numbers, and to a [.ndef]#hard disk#
 or [.ndef]#SSD# device, which can permanently store the numbers but does not allow
-such fast access. The stored numbers are most often called just [.ndef]#data# --
-basically, that data is nothing more than numbers, but it can be interpreted in many
-ways, such as pictures, sounds, and much more.
+such fast access.
+//The stored numbers are most often called just [.ndef]#data# --
+//basically, that data is nothing more than numbers, but it can be interpreted in many
+//ways, such as pictures, sounds, and much more.
+The stored numbers are most often simply called [.ndef]#data#; in essence, this data is nothing more than numbers, but it can be interpreted in many ways, such as pictures, sounds, and more.
 
 The traditional hard disk drives (HDDs), which store data electromechanically on rotating magnetic disks, as
 well as the more modern variants, the solid-state-devices (SSDs), which store data using modern semiconductor
 technologies, can store data persistently for longer time periods, even when no electric power
 supply is available. Both SSDs and HDDs can be optionally split into multiple partitions; for example, one or multiple OS partitions
 for executable programs or pure data partitions for passive data such as text files or pictures.
-Before use, each partition is generally formatted and a file system (FS) is created. These two steps
+Before use, each partition is generally formatted, and a file system (FS) is created. These two steps
 create an internal structure on the storage device, which allows us to store and retrieve individual data
 blocks like programs, text files, or pictures.
 
@@ -554,10 +573,12 @@ playing video.
 The distinction between CPUs and GPUs is not clear-cut. Usually, a CPU can also display data on screens and monitors, and GPUs can also perform some data processing tasks that CPUs can handle.
 But GPUs are optimized for the data display task.
 
-More visible to the ordinary computer user are the peripheral devices like a keyboard,
-mouse, screen, and perhaps a printer. These enable human interaction with the computer,
-but are in no way a core component of it; the computer can run well without them. In
-notebooks or laptop computers or in cell phones, the peripheral devices are closely
+More visible to the average computer user are the peripheral devices such as a keyboard,
+mouse, screen, and perhaps a printer.
+//These enable human interaction with the computer,
+//but are in no way a core component of it; the computer can run well without them.
+These enable human interaction with the computer, but they are not core components; the computer can run well without them.
+In notebooks, laptop computers, or cell phones, the peripheral devices are closely
 integrated with the core components. All the physical parts of a computer are also
 called [.ndef]#hardware#, while the programs running on that hardware are called
 [.ndef]#software#.
@@ -565,11 +586,11 @@ called [.ndef]#hardware#, while the programs running on that hardware are called
 A less visible but also very important class of computers are [.ndef]#{uc}s# and
 so-called [.ndef]#embedded devices#, tiny pieces with typically a hull of black plastic
 with some electrical contacts. The devices can contain all necessary elements,
-that is the CPU, some RAM, and persistent storage that can store programs and data when no
+i.e., the CPU, some RAM, and persistent storage that can store programs and data when no
 electric power supply is available. These devices may be limited in computing
 power and the amount of data that they can store and process, but they are incorporated
 in many consumer devices. They control your washing machine, refrigerator, television,
-radio, and much more. Some devices in your home may even contain multiple {uc}s and
+radio, among others. Some devices in your home may even contain multiple {uc}s and
 often the {uc}s can already communicate with each other by RF (Radio-Frequency), or
 access the Internet by WLAN, which is sometimes called the [.ndef]#Internet of Things#
 (IoT).
@@ -580,10 +601,12 @@ Another class of large and very powerful digital computers is called
 //Another class of large and very powerful digital computers comprises [.ndef]#mainframe computers# or [.ndef]#supercomputers#.
 //These are optimized to
 process large amounts of data very quickly.
-The key to their gigantic computing power is
-that many fast CPUs work in parallel -- the problem or task is split into many small
-parts that are solved by one CPU each, and the final result is then the combination
-of all the solved sub-tasks. Unfortunately, it is not always possible to split large
+//The key to their gigantic computing power is
+//that many fast CPUs work in parallel -- the problem or task is split into many small
+//parts that are solved by one CPU each, and the final result is then the combination
+//of all the solved sub-tasks.
+The key to their enormous computing power lies in many fast CPUs working in parallel; problems or tasks are split into many small parts that are solved by individual CPUs, and the final result is the combination of all these solved sub-tasks.
+Unfortunately, it is not always possible to split large
 problems into smaller sub-tasks.
 
 //Digital computers are usually driven by a clock signal that pulses at a certain frequency.
@@ -603,22 +626,24 @@ number of clock pulses per second -- divided by the number of pulses that the CP
 to perform a basic operation, multiplied by the number of CPUs or Cores that the
 computer can use.
 
-A totally different kind of computers are [.ndef]#Quantum Computers#, large,
-expensive high-tech devices, which use the rules of [.ndef]#quantum mechanics# to
-calculate many computations in parallel. Today only a few of them exist, for research
-at universities and some large commercial institutes. Quantum computers may someday
-fundamentally change computing and our entire world, but they are
+A totally different kind of computer is the [.ndef]#quantum computer#, a large,
+expensive high-tech device, which uses the rules of [.ndef]#quantum mechanics# to
+calculate many computations in parallel. Only a few of them exist today, for research
+at universities and some large commercial institutes. Quantum computers may
+fundamentally change computing and our entire world someday, but they are
 not the topic of this book.
 
-== Analog and Digital
+== Analogue and Digital
 
 Whenever we measure a quantity based on some tiny base unit, we work in the
-digital realm, and we measure with some granularity. Our ordinary money is digital in some
-way, as the cent is the smallest base unit; you will never pay a fraction of a cent
-for something. Time can be seen as a digital quantity as long as we accept the
-second as the smallest unit. Even on so-called analogue watches, the second hand
-generally jump forward in steps of a second, so you cannot measure fractions of a
-second with that watch.
+digital realm, and we measure with some granularity. Our ordinary money is digital,
+as the cent is the smallest base unit; you will never pay a fraction of a cent
+for something. Time can be considered as a digital quantity as long as we accept the
+second as the smallest unit.
+//Even on so-called analogue watches, the second hand
+//generally jumps forward in steps of a second, so you cannot measure fractions of a
+//second with that watch.
+Even on so-called analogue watches, the second hand generally moves forward in one-second increments, making it impossible to measure fractions of a second with such a watch.
 
 An obvious analogue property is the thermodynamic temperature and its classic
 measurement device is the well-known capillary thermometer consisting of a glass
@@ -626,12 +651,13 @@ capillary filled with alcohol or liquid mercury. When temperature increases, the
 liquid in a reservoir expands more than the surrounding glass and partly fills the
 capillary. That filling rate is an analogue measure for the temperature.
 
-While the hourglass works digitally (you can count the tiny sand grains), the sundial
-does not.
+While the hourglass is considered digital (as you can count the tiny sand grains), the sundial
+is not.
 
-Most of the quantities in our real world seem analog, and digital quantities seem to
-be some sort of arbitrary approximation.
-
+//Most of the quantities in our real world seem {analog}, with digital quantities seem to
+//be some sort of arbitrary approximation.
+//Most of the quantities in our real world seem analogue, with digital quantities appearing to be some sort of arbitrary approximation.
+Most quantities in the real world seem analogue, with digital quantities often perceived as an arbitrary approximation.
 //All the quantities in our real world seems to be not digital or granular,
 //so digital quantities seems to be some sort of arbitrary approximation.
 
@@ -647,12 +673,13 @@ And of course, light and electromagnetic radiation
 also have some form of granularity, which the photoelectric effect, as well as Compton
 scattering, proves.
 
-An important and useful property of digital signals and digital data is that they map
-directly to integral numbers.
+//An important and useful feature of digital signals and digital data is that they map
+//directly to integral numbers (also called integers).
+An important and useful feature of digital signals and data is their direct correlation to integers (integral numbers).
 
-The simplest form of digital data is binary data, which can have only two distinct
+The simplest form of digital data is binary data, which can only have two distinct
 values. When you use a mechanical switch to turn the light bulb in your house on or
-off, you change the binary state of the bulb. Your neighbor, when watching your
+off, you change the binary state of the light. Your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
 notice that the signal is not really digital -- when we switch on, the filament may
 take a few milliseconds to heat up, and when we switch off, it takes the filament
@@ -660,25 +687,36 @@ a few milliseconds again to cool down.]
 
 Digital computers generally use binary electric states internally -- voltage or
 current [.term]#on# or [.term]#off#. Such an on/off state is called a bit. We will
-learn more about bits and binary logic later. One bit can obviously store only two
+discuss more details about bits and binary logic later. One bit can obviously store only two
 states, which we may map to the numbers [.term]#0# and [.term]#1#. Larger integer
 numbers can be represented by a sequence of multiple bits.
 
 The [.ndef]#Morse code# was an early application used to transmit messages encoded in
 binary form.
 
-A very important property of digitally encoded numbers (data) is that they can be
-copied and transmitted exactly without loss of precision. The reason for this is that digital numbers have a
+//A very important property of digitally encoded data is that it can be
+//copied and transmitted exactly without loss of precision.
+A crucial characteristic of digitally encoded data is its ability to be copied and transmitted without loss of precision.
+The reason for this is that digital numbers have a
 well-defined clean state, there is no noise that overlays the data and may
-accumulate when the data is copied multiple times. Well, that statement isn't entirely
-true -- under poor conditions, the noise can become so significant that it changes the binary
-state of signals. Imagine we try to transfer some whole numbers encoded in binary
+accumulate when the data is copied multiple times.
+//Well, that statement isn't entirely
+//true -- under poor conditions, the noise can become significant enough that it changes the binary
+//state of signals.
+Well, this statement isn’t entirely accurate - under poor conditions, noise can become significant enough to alter the binary state of signals.
+Imagine we try to transfer some whole numbers encoded in binary
 form, perhaps by binary states encoded as voltage level [.term]#0 Volt# and [.term]#5
-Volts#, over an electric wire across a long distance. It is clear that the long wire can
-pick up some electromagnetic noise that can change the true [.lit]#0# Volt data to a voltage
-that is closer to [.lit]#5# Volts than to the true [.lit]#0# Volt level, so it is received
-incorrectly. To catch such types of transmission errors, [.ndef]#checksums# are added
-to the actual data. A checksum is derived by a special mathematical formula from the
+Volts#, over an electric wire across a long distance.
+//It is clear that the long wire can
+//pick up some electromagnetic noise that can change the true [.lit]#0# Volt data to a voltage
+//that is closer to [.lit]#5# Volts than to the true [.lit]#0# Volt level, so it is received
+//incorrectly.
+//It's clear that the long wire can pick up electromagnetic noise, potentially altering the true [.lit]#0# Volt data to a voltage closer to [.lit]#5# Volts than to the true [.lit]#0# Volt level, resulting in incorrect reception.
+Clearly, the long wire can pick up electromagnetic noise, which could potentially shift the true 0 Volt data to a voltage closer to 5 Volts, leading to incorrect reception.
+//To catch such types of transmission errors, [.ndef]#checksums# are added
+//to the actual data.
+To detect these types of transmission errors, checksums are added to the actual data.
+A checksum is derived by a special mathematical formula from the
 original data and transferred with it. The receiver applies the same formula to the
 received data and compares the result with the received checksum. If it does not
 match, then it is clear that the data transmission is corrupted, and a resend is
@@ -690,52 +728,64 @@ requested.
 The opposite of digital is generally called analogue, a term that is used for data
 that has or seems to have no granularity. For example, we speak of an analogue
 voltage when the voltage can have each value in a given range and when the voltage
-does not "jump" but change continuously.footnote:[Of course, even digital electric
+does not "jump" but changes continuously.footnote:[Of course, even digital electric
 signals cannot really "jump" from one digital state to another, but the transition
 time is much shorter than the time duration of the steady state, so the signal has a
 rectangular shape when we watch it on an oscilloscope; it looks like +__--__--__+.]
 For observing analogue voltages or currents, one can use a moving coil meter, a device
-in which the current flows through a coil in a magnetic field and the magnetic force
-moves the hand/pointer.
+in which current flows through a coil in a magnetic field, causing the magnetic force to move the hand/pointer.
+//in which the current flows through a coil in a magnetic field and the magnetic force
+//moves the hand/pointer.
 
 We mentioned in the previous section that nearly all of our current computers work exclusively with digital data.
 Essentially, this means they work internally with integer numbers,
 stored in sequences of binary bits. All input for computers must have the form of
-integer numbers and all output has the form of integer numbers. Whenever we want to
-feed computers with some sort of analogue data, like an analogue voltage, we have to
-convert it into a digital approximation. For that task, special devices called
-[.ndef]#analog to digital converters# (ADC) exist. And in some cases, we have to
+integer numbers and all output takes the form of integer numbers.
+//Whenever we want to
+//feed computers with some sort of analogue data, like an analogue voltage, we have to
+//convert it into a digital approximation.
+Whenever we need to input analogue data into computers, such as analogue voltage, we must convert it into a digital approximation.
+For that task, special devices called
+[.ndef]#analogue to digital converters# (ADC) exist. And in some cases, we have to
 convert the digital output data of computers to analogue signals, like when a
 computer plays music: The computer output in form of digital data is then converted
-by a device called [.ndef]#digital to analog converter# (DAC) into an analogue
+by a device called [.ndef]#digital to analogue converter# (DAC) into an analogue
 voltage, that generates an analogue current flowing through a coil in the speakers of our
 soundbox, and that electric current in the coil generates a magnetic field which
 exerts mechanical forces and moves the membrane of the speaker, resulting in
 oscillating motions, which generates air pressure variations that our ear can detect
-and that we finally hear as sound.
+and that we perceive as sound.
 
 == What is an Operating System?
 
 Most computers, from cellphones to large supercomputers, use an [.ndef]#{os}# (OS).
-A well-known OS is GNU/Linux. Operating systems can be seen as the initial
-program that is loaded and started when we switch the computer on and that works as
-some kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
+A well-known OS is GNU/Linux.
+//Operating systems can be seen as the initial
+//program that is loaded and started when we switch the computer on and that works as
+//some kind of supervisor:
+//footnote:[Well, before the OS is loaded and starts execution,
+//often another tiny program called a [.ndef]#Boot Manager# is launched. Boot managers
+//are used to select different {os}s to boot, maybe Linux or Windows, or to pass
+//parameters as the hard disk boot partition number to the OS.] it can load and execute other
+//programs, distributing resources like CPU cores or RAM between multiple running
+//programs.
+Operating systems can be seen as the initial program that is loaded and started when we switch the computer on, working as a kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
 often another tiny program called a [.ndef]#Boot Manager# is launched. Boot managers
 are used to select different {os}s to boot, maybe Linux or Windows, or to pass
-parameters as the hard disk boot partition number to the OS.] it can load and execute other
-programs, and it distributes resources like CPU cores or RAM between multiple running
-programs. It also controls user input by keyboard and mouse, displays output data on
-the screen -- as text or graphics, controls how data is loaded and stored to
+parameters as the hard disk boot partition number to the OS.] it can load and execute other programs, distributing resources like CPU cores or RAM among multiple running programs.
+It also controls user input by keyboard and mouse, displays output data on
+the screen, whether as text or graphics, controls how data is loaded and stored to
 nonvolatile storage media like hard disk or SSD, manages all the network traffic, and
-many more tasks. An important task of the OS is to allow user programs to access all
+many more tasks. An important task of the OS is to enable user programs to access all
 the various hardware components from different vendors in a uniform, high-level
 manner. An OS can be seen as an intermediate layer between user programs, like a text
 processor or a game, and the hardware of the computer. The OS allows user programs to
 work on a higher level of abstraction, so they do not need to know much about the
 low-level hardware details.
 
-An important ability of most modern {os}s is to run multiple system- and user-programs
-concurrently or in parallel.
+//An important ability of most modern {os}s is to run multiple system- and user-programs
+//concurrently or in parallel.
+An important feature of most modern operating systems is their ability to run multiple system and user programs concurrently or in parallel.
 //Concurrent execution of programs means that
 //the execution switches very fast between all the active programs.
 Concurrent execution of programs means that the execution swiftly switches between all active programs.
@@ -745,12 +795,13 @@ seem to be running all the time, but not at full speed.
 //True parallel execution of programs indicates that all of them can
 //permanently run at full speed -- this is only possible when the computer
 //has multiple CPUs or a CPU with multiple physical cores.
-True parallel execution of programs means that they can all run continuously at full speed -- this is only possible
-when the computer has multiple CPUs or a CPU with multiple physical cores.
+//True parallel execution of programs means that they can all run continuously at full speed -- this is only possible
+//when the computer has multiple CPUs or a CPU with multiple physical cores.
+True parallel execution of programs, meaning they can all run continuously at full speed, is only possible when the computer has multiple CPUs or a CPU with multiple physical cores.
 
 //Computer operating systems have generally a close relation to software libraries, which
 //are collections of data types and functions working with that data types.
-Computer operating systems generally have a close relation to software libraries, which are collections of data types and functions working with these data types.
+Computer operating systems generally have a close relation to software libraries, which are collections of data types and functions that work with these data types.
 //Libraries can be a part of the OS or can be more or less independent of the OS.
 Libraries can be part of the OS or they can be largely independent of it.
 Libraries are software
@@ -760,14 +811,15 @@ components that provide data types and functions with a well-defined interface
 //Libraries can be used as shared libraries, which are single binary files stored on the file system of a computer,
 //often with the file extension [.term]#.so# or [.term]#.dll#, which can be accessed from different computer programs simultaneously,
 //or as static libraries, which are part of single programs.
-Libraries can be used as shared libraries -- single binary files stored on a computer's file system, often with the file extension [.term]#.so# or [.term]#.dll#, that can be accessed by different computer programs simultaneously -- or as static libraries, which are part of individual programs.
+//Libraries can be used as shared libraries -- single binary files stored on a computer's file system, often with the file extension [.term]#.so# or [.term]#.dll#, that can be accessed by different computer programs simultaneously -- or as static libraries, which are part of individual programs.
+Libraries can be utilized as shared libraries -- single binary files stored on a computer’s file system, often with the [.term]#.so# or [.term]#.dll# file extension, accessible by different computer programs simultaneously -- or as static libraries, which are part of individual programs.
 Shared libraries have some advantages: we need only one
 instance on the file system of the computer, and the library is loaded only once into the computer memory (RAM), even when
 it is used by different apps simultaneously. This saves space, and when the library has serious errors, it is in principle possible to
 replace the library with a corrected version, which is then used by all the software on the computer. Shared libraries often come in
 numbered versions, where a higher number denotes a newer, improved, or extended library version. Sometimes, some of the
 programs we use may still need an older library version, while other software already needs a newer one. In that case,
-our file system has to provide multiple versions of a shared library, which can be used independently.
+our file system has to provide multiple versions of a shared library, each of which can be used independently.
 On the other hand, statically linked libraries are directly glued with a single computer program.
 That makes the distribution of the program easier, as it can be shipped as a single entity,
 and we do not have to ensure that all the needed dynamic libraries are available on the destination computer.
@@ -776,9 +828,12 @@ statically with that corrupted library.
 
 //Current Linux kernel version 5.15 has 32 million lines of source code!
 
-Small {uc}s and embedded devices often do not need to use an {os}, as they generally
-run only one single-user program and because they usually do not have a large variety
-of hardware components to support.
+//Small {uc}s and embedded devices often do not need to use an {os} because they generally
+//run only one single-user program and
+//and typically lack a variety of hardware components to support.
+Small microcontrollers and embedded devices often do not require an operating system because they generally run only one single-user program and typically lack a large variety of hardware components to support.
+//because they usually do not have a large variety
+//of hardware components to support.
 
 == What Is a User Interface?
 
@@ -792,12 +847,17 @@ inspired by the classical mechanical typewriter.
 //For desktop computers, the textual user interfaces
 //have been mostly replaced or at least supported by graphical user interfaces (GUIs)
 //for about a half-century now,
-For about a half-century now, textual user interfaces for desktop computers have been mostly replaced or at least supplemented with graphical user interfaces (GUIs)
-and even cellphones and other electronic
-gadgets now use some form of a GUI for user interaction. For large mainframe
-computers, the textual user interface is still common. Graphical user interfaces
-present the user with a set of icons or widgets, often arranged in rectangular graphical
-boxes called windows. These windows can be moved around, resized, and can partially or fully overlap
+//For about a half-century now, textual user interfaces for desktop computers have been mostly replaced or at least supplemented with graphical user interfaces (GUIs)
+//and even cellphones and other electronic
+//gadgets now use some form of a GUI for user interaction.
+For about half a century now, textual user interfaces for desktop computers have been mostly replaced, or at least supplemented, with graphical user interfaces (GUIs). Even cellphones and other electronic gadgets now use a form of GUI for user interaction.
+For large mainframe
+computers, the textual user interface is still common.
+//Graphical user interfaces
+//present the user with a set of icons or widgets, often arranged in rectangular graphical
+//boxes called windows.
+Graphical user interfaces display sets of icons or widgets to the user, often arranged within rectangular graphical boxes known as windows.
+These windows can be moved around, resized, and can partially or fully overlap
 other windows.
 //A special type of window is called a terminal-, shell- or console-window,
 //which behaves like the traditional full-screen textual user interfaces.
@@ -809,14 +869,15 @@ its mechanical movement on the table to a graphical cursor on the computer displ
 a set of pushbuttons that are used to initiate a click action when the mouse pointer hovers
 over an icon or widget. The main advantage of graphical user interfaces is that the user does not have to
 remember and type in long command sequences.
-A set of on-screen buttons labeled with single letters can even simulate a traditional keyboard,
-but when the input of longer textual data is required, the physical keyboard is still used.
+//A set of on-screen buttons labeled with single letters can even simulate a traditional keyboard,
+//but when the input of longer textual data is required, the physical keyboard is still used.
+A set of on-screen buttons labeled with single letters can simulate a traditional keyboard, but a physical keyboard is still used when the input of longer textual data is required.
 //Graphical user interfaces are sometimes even enhanced by speech recognition
 //systems, which are used to enter commands or textual messages vocally.
-Graphical user interfaces are sometimes even enhanced by speech recognition systems, which allow users to enter commands or textual messages vocally.
+Graphical user interfaces are sometimes enhanced by speech recognition systems, which allow users to enter commands or textual messages vocally.
 //Graphical user interfaces may be very strongly coupled with the OS but are
 //basically still system programs executed by the OS.
-Graphical user interfaces may appear very strongly coupled with the OS, but they are
+Graphical user interfaces may appear strongly coupled with the OS, but they are
 still system programs executed by the OS.
 For the Microsoft Windows
 OS and the {macos}, this distinction is not very obvious, as the same GUI
@@ -824,12 +885,13 @@ is running permanently.
 //For other {os}s like Linux, it is more obvious, as
 //these {os}s are sometimes used without a GUI, and because various
 //GUI tool kits like Gnome, KDE, and many more are available.
-For other operating systems like Linux, the distinction is more obvious, as these systems are sometimes used without a GUI,
-and there are various available GUI tool kits such as Gnome, KDE, and many others.
+//For other operating systems like Linux, the distinction is more obvious, as these systems are sometimes used without a GUI,
+//and there are various available GUI tool kits such as Gnome, KDE, and many others.
+For other operating systems like Linux, the distinction is more apparent. These systems are sometimes used without a GUI, and various GUI toolkits, such as Gnome, KDE, and many others, are available.
 
 == What is Computer Programming?
 
-Computer programming includes the creation, testing, and optimization of computer
+Computer programming involves the creation, testing, and optimization of computer
 programs.
 
 == What is a Computer Program?
@@ -845,8 +907,11 @@ The first computers, built in the 1950s, were indeed programmed by feeding seque
 of plain numbers to the device. The numbers were stored on so-called [.ndef]#punch
 cards#, consisting of strong paper, where the numbers were encoded by holes in the
 cards. The holes could be recognized by electrical contacts to feed the numbers into
-the CPU. As plain numbers do not match well with human thinking, more abstract codes
-were soon used. A very direct code that matches numerical instructions to symbols is known as
+the CPU.
+//As plain numbers do not match well with human thinking, more abstract codes
+//were soon used.
+As plain numbers do not align well with human cognition, more abstract codes were soon used.
+A very direct code that matches numerical instructions to symbols is known as
 the [.ndef]#assembly language#. In that language, for example, the character sequence
 "add A0, $8" may map directly to a sequence of numbers which instructs the CPU to add
 the constant integer number 8 to CPU register A0, where A0 is a storage area in the
@@ -856,16 +921,18 @@ sets, with similar, but not identical instructions. The rules that describe how 
 basic instructions have to look are called the [.ndef]#syntax# of the assembly
 language.
 
-The numerical machine code, or the corresponding assembly language, is the most basic
-instruction set for a CPU. Every instruction that a CPU can execute maps to a
-well-defined assembly instruction.
+//The numerical machine code, or the corresponding assembly language, is the most basic
+//instruction set for a CPU. Each instruction that a CPU can execute corresponds to a
+//well-defined assembly instruction.
+The numerical machine code, or the equivalent assembly language, represents the most basic instruction set for a CPU. Each command that a CPU can execute aligns with a well-defined assembly instruction.
 //So, each operation that a computer may be able to
 //perform can be expressed in a sequence of assembly instructions.
 Thus, any operation that a computer can potentially execute can be represented as a
 series of assembly instructions.footnote:[Reformulated by GPT-4.]
-However, complicated
-tasks may require millions of assembly instructions, which would take a long time for humans
-to write, and an even longer time to modify, proofread, and debug.footnote:[The search
+//However, complicated
+//tasks may require millions of assembly instructions, which would take a long time for humans
+//to write, and an even longer time to modify, proofread, and debug.
+However, complicated tasks may require millions of assembly instructions, which would take humans a significant amount of time to write, modify, proofread, and debug.footnote:[The search
 for the reason why a program does not do exactly what was hoped for by its creators
 is called debugging. That term is still a legacy from the very first computers in the
 50s, where logical circuits were built by mechanical relays, for example, a logical
@@ -879,41 +946,47 @@ kept.]
 //Just a few years after the invention of the first computers, people recognized that
 //they would need even more abstract instruction sets, like repeated execution,
 //composed conditionals, or other data types than plain numbers as operands.
-Just a few years after the invention of the first computers, it was recognized that more abstract instruction sets were needed, such as repeated execution,
-composed conditionals, or other data types beyond plain numbers as operands.
+//Just a few years after the invention of the first computers, it was recognized that more abstract instruction sets were needed, such as repeated execution,
+//composed conditionals, or other data types beyond plain numbers as operands.
+Just a few years after the invention of the first computers, it was recognized that more abstract instruction sets were necessary. These would include features such as repeated execution, composed conditionals, and the ability to use data types beyond plain numbers as operands.
 As a result, higher-level
 programming languages such as Algol, Fortran, C, Pascal, and Basic were created.
 
 //Simple C program here, with its assembly code from godbolt.org.
 
 == What is an Algorithm?
+An [.ndef]#algorithm# is a detailed sequence of instructions, often abstract, designed to solve a specific task or to reach a goal.
+//An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
+//solve a specific task or to reach a goal.
 
-An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
-solve a specific task or to reach a goal.
 //Cooking recipe books and car repair instructions are examples of algorithms.
 Recipes from cooking books and car repair instructions are examples of algorithms.
 
 //They are a generalized, only symbolically
 //representative pattern of all the necessary steps required to perform a certain task.
-The basic math operations kids learn in
-school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
-too.
+//The basic math operations kids learn in
+//school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
+//too.
+The basic math operations children learn in school, such as adding, multiplying, or dividing two numbers with paper and pencil, also exemplify algorithms.
 //Even starting a car follows an algorithm -- when the temperature is below zero,
 //and snow covers the vehicle, then you first have to clean the windows and lights. And
 //when you first drive again after a long break, you would have to check the tires
 //before you start the engine.
-Even starting a car follows an algorithm. For instance, if the temperature is below zero and snow covers the vehicle,
-then you first have to clean the windows and lights. Similarly, if you're driving again after a long break,
+//Even starting a car follows an algorithm. For instance, if the temperature is below zero and snow covers the vehicle,
+//then you first have to clean the windows and lights.
+For instance, if the temperature is below freezing and your vehicle is covered in snow, your first step would be to clean the windows and lights.
+Similarly, if you're driving again after a long break,
 you would have to check the tires before you start the engine.
-The algorithm can be carried out by strictly following the
-instructions -- it is not necessary to really understand how and why it works.
+//The algorithm can be carried out by strictly following the
+//instructions -- it is not necessary to really understand how and why it works.
+You can execute an algorithm by strictly following its instructions, without necessarily understanding its underlying principles.
 
 So an algorithm is a perfect fit for a computer, as computers are excellent at
 following instructions without really understanding what they are trying to
 accomplish.
 
 //A math algorithm to sum up the first 100 natural numbers may look like this:
-An algorithm to calculate the sum of the first 100 natural numbers might look something like this:
+An algorithm for calculating the sum of the first 100 natural numbers might look something like this:
 
 [source]
 ----
@@ -931,7 +1004,7 @@ optionally print the final value of sum
 
 Most traditional programming languages were created to map algorithms to elementary
 CPU instructions. Algorithms typically contain nested conditionals, repetition, math
-operations, recovery from errors, and maybe plausibility checks.
+operations, recovery from errors, and potentially plausibility checks.
 //A more complicated algorithm
 //generally can be split into various separate logical parts, which may include reading in data at one point,
 //multiple processing steps at another, and storing, or displaying data as plain text, graphics, or
@@ -939,7 +1012,7 @@ operations, recovery from errors, and maybe plausibility checks.
 A more complicated algorithm can generally be split into various separate logical parts. These may include reading in data
 at one point, performing multiple processing steps at another, and storing or displaying data as plain text, graphics, or animation at yet another point.
 This splitting into parts is mapped to programming languages by grouping
-tasks into subroutines, functions, or procedures which accept a set of input
+tasks into subroutines, functions, or procedures, which accept a set of input
 parameters and can return a result.
 
 // Propose of
@@ -956,9 +1029,11 @@ programming language too.
 //And all the data types can be grouped in various ways, for
 //example, as sequences of multiple data of the same type, like lists of numbers or
 //names.
-Data types can also be grouped in various ways. For example, sequences of multiple data of the same type, like lists of numbers or names.
-Or as collections of different types, like name, age, and profession of a
-citizen in an income tax database. For all these use cases, programming languages
+Data types can also be grouped in various ways. For example, as sequences of multiple data of the same type, like lists of numbers or names.
+//Or as collections of different types, like name, age, and profession of a
+//citizen in an income tax database.
+Alternatively, collections of different types can be created, such as the name, age, and profession of a citizen in an income tax database.
+For all these use cases, programming languages
 provide some sort of support.
 
 == Compilers and Interpreters
@@ -966,18 +1041,22 @@ provide some sort of support.
 We already learned that the CPU in the computer can execute only simple instructions,
 which we call numeric machine code or assembly instructions.
 
-To run a program written in a high-level language with many abstractions, we need some
-sort of converter to transform that program into the basic instructions that the CPU can
-execute.
+//To run a program written in a high-level language with many abstractions, we need some
+//sort of converter to transform that program into the basic instructions that the CPU can
+//execute.
+//To run a program written in a high-level language with many abstractions, we need a converter of some sort to transform that program into the basic instructions that the CPU can execute.
+To run a program written in a high-level language that includes many abstractions, we need some kind of converter to transform that program into the basic instructions that the CPU can execute.
 //For the conversion process, we have basically two options: We can convert the
 //entire program into machine code, store it on disk, and then run it on the CPU.
 For the conversion process, we essentially have two options: we can either convert the entire program into machine code, store it on disk, and then run it on the CPU.
 Or we
 can convert it in small portions, maybe line by line, and run each portion whenever
 we have converted it. Tools that convert the whole program first are called
-compilers. [.ndef]#Compilers# process the program that we have written, include other
-source code like needed library modules, check the code for obvious errors, and then
-generate and store the machine code that we then can run.
+compilers.
+//[.ndef]#Compilers# process the program that we have written, include other
+//source code like necessary library modules, check the code for obvious errors, and then
+//generate and store the machine code that we then can run.
+[.ndef]#Compilers# process the program that we have written, incorporate necessary library modules from other source codes, check the code for obvious errors, and then generate and store the machine code that we can then run.
 
 Tools that process the
 source code in small portions, like single statements, are called
@@ -993,38 +1072,48 @@ languages and large programs, it may take much longer.
 //That can make the software
 //development process slow because as you add or change code, you have to compile it
 //before you can execute and test your program.
-This can slow down the software development process because as you add or change code, you must compile it before you can execute and test your program.
-That can be inconvenient for unskilled
-programmers, as they may have to do much testing. Some use a programming style that
-is: change a tiny bit of the source code, then run it and see what it does.
+This can slow down the software development process because, as you add or change code, you must compile it before you can execute and test your program.
+That can be inconvenient for beginner
+programmers, as they may have to do much testing.
+//Some use a programming style that
+//is: change a tiny bit of the source code, then run it and see what it does.
+Some adopt a programming style that involves changing a tiny bit of the source code, running it, and observing the results.
 //But more common practice is that you think about the problem first and then write the
 //code, which then in most cases does nearly that of what you intended.
-A more common practice, however, is to think about the problem first and then write the code, which, in most cases, does nearly what you intended.
-For this style of
-programming, you do not have to compile and execute your code that often. Compilers
-have one important benefit: they can detect many bugs, mostly typing errors, already
-in the compile phase, and they give you a detailed error message. Interpreters have
+A more common practice, however, is to think about the problem first and then write the code, which, in most cases, does almost what you intended.
+//For this style of
+//programming, you do not have to compile and execute your code that often.
+With this style of programming, you don't need to compile and execute your code as frequently.
+//Compilers
+//have one important benefit: they can detect many bugs, mostly typing errors, already
+//in the compile phase, and they give you a detailed error message.
+Compilers have one significant benefit: they can detect many bugs, primarily typing errors, during the compilation phase and provide detailed error messages.
+Interpreters have
 the advantage that you can modify your code and immediately execute it without delay.
-That is nice for learning a new language and for some fast tests, but even simple
-typing errors can only be detected when they are encountered while running the
-program.
+//That is nice for learning a new language and for some fast tests, but even simple
+//typing errors can only be detected when they are encountered while running the
+//program.
+This feature is beneficial for learning a new language and for conducting quick tests; however, even simple typing errors can only be detected when encountered during program execution.
 //If your test does not try to run a faulty statement, there will be no error,
 //but it may occur later.
 If your test does not attempt to run a faulty statement, there will be no error, but it may surface later.
 Generally, interpreted program execution is much slower than
 running compiled executables, as the interpreter has to continually process the
-source code in real-time as it's being run, while the compiler does it only once before the program is run. At the
-end of this section, a few additional notes:
+source code in real-time as it's being run, while the compiler does it only once before the program is run.
+//At the end of this section, a few additional notes:
+To conclude this section, here are a few additional notes:
 
 Compilers are sometimes supported by
 so-called linkers. In that case, the compiler converts the source code, which can be
 stored in multiple text files, each in a sequence of machine code instructions, and
-finally, the linker joins all these machine code files to the final executable. Some
-compilers either do not need the linking step or they automatically call the linker. And some
-interpreters convert the textual source code in one very fast, initial pre-processing
-step ("on the fly") to a so-called [.ndef]#byte code#, that can then be interpreted faster. The
-languages Ruby and Python do that. Some languages, like Java, can compile and optimize
-the source code while the program is running. For that process, a so-called [.ndef]#virtual
+finally, the linker joins all these machine code files into the final executable. Some
+compilers either do not require the linking step or automatically invoke the linker.
+//And some
+//interpreters convert the textual source code in one very fast, initial pre-processing
+//step ("on the fly") to a so-called [.ndef]#byte code#, that can then be interpreted faster.
+Moreover, some interpreters convert the textual source code into so-called bytecode in a very fast, initial preprocessing step ("on the fly"), which can then be interpreted faster.
+The languages Ruby and Python do that. Some languages, like Java, can compile and optimize
+the source code while the program is running. For this process, a so-called [.ndef]#virtual
 machine# is used, which builds an intermediate layer between the hardware and the user
 program.
 
@@ -1036,13 +1125,15 @@ Software can be written in many different styles.
 //is a fundamental style of writing software, and each programming language supports
 //a different set of paradigms.
 A programming paradigm is a fundamental style of writing software, with each programming language supporting a unique set of paradigms.
-You’re probably already familiar with one, or more
+You’re probably already familiar with one or more
 of them, and at the very least, you know what [.ndef]#object-oriented programming# (OOP) is
 because it’s taught as part of many introductory computer science courses.
 
 We already mentioned the assembly languages, which provide only the basic operations
-that the CPU can perform. Assembly languages provide no abstractions, so maybe we
-should not even call them programming languages at all.
+that the CPU can perform.
+//Assembly languages provide no abstractions, so maybe we
+//should not even call them programming languages at all.
+Assembly languages provide no abstractions, so perhaps we should not even categorize them as programming languages.
 //Then there are low-level
 //languages like Fortran or C, with some basic abstractions, which still work close to
 //the hardware and which are mostly designed for high performance and low resource
@@ -1064,14 +1155,15 @@ tables (maps) or support textual pattern matching by regular expressions (regex)
 //Another way to differentiate programming languages is if they are statically or
 //dynamically typed.
 Another way to differentiate programming languages is by whether they are statically or dynamically typed.
-Ruby, Python, and JavaScript are all examples of dynamically typed languages,
-that is, they use variables that can store any data type, so the variable's type
-of data that it accepts can therefore dynamically change during program execution.
+//Ruby, Python, and JavaScript are all examples of dynamically typed languages,
+//that is, they use variables that can store any data type, so the variable's type
+//of data that it accepts can therefore dynamically change during program execution.
+Ruby, Python, and JavaScript are all examples of dynamically typed languages, meaning they use variables that can store any data type. Therefore, the data type that a variable accepts can dynamically change during program execution.
 //That seems comfortable for the user, and
 //sometimes it is, especially for short programs, which may be written for one-time use
 //only and are sometimes called scripts.
-This appears to be user-friendly, and often it is, particularly for brief programs intended
-for single-use and occasionally referred to as scripts.footnote:[Grammar improved by GPT-4.]
+This appears to be user-friendly and often it is, particularly for brief programs intended
+for single-use, occasionally referred to as scripts.
 But dynamic typing makes the discovery of logical
 errors harder -- an illegal addition of a number to a letter may be detected only at
 run-time.
@@ -1093,27 +1185,34 @@ when processing the program source code, a process called type inference. In thi
 In this way, the compiler can check for logical
 errors early in the compile process, and the compiler can reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
-consumption and performance can be optimized. Referring again to our boxes example,
-statically typing is like using customized boxes for all your goods.
+consumption and performance can be optimized.
+//Referring again to our boxes example,
+//statically typing is like using customized boxes for all your goods.
+Referring again to our boxes example, static typing is akin to using customized boxes for all your goods
 
 //All these types of programming languages are often called [.ndef]#imperative programming
 //languages#, as the program describes detailed what to do.
 All these types of programming languages are often called [.ndef]#imperative programming languages#, as the program specifies exactly what the computer has to do.
-There are other types of
-programming languages too, for example, languages like Prolog, which try to give only
-a set of rules and then let the computer try to solve a problem with these rules. And
-of course, there are the new concepts of [.ndef]#artificial intelligence# (AI) and
-[.ndef]#machine learning# (ML), which are less based on algorithms and more on neural
-nets, which are trained with a lot of data until they can provide the desired results. Nim,
-the computer language this book is about, is an imperative language, so we will focus
+//There are other types of
+//programming languages too, for example, languages like Prolog, which try to give only
+//a set of rules and then let the computer try to solve a problem with these rules.
+There are also other types of programming languages, such as Prolog, which primarily provide a set of rules and then allow the computer to solve problems using these rules.
+
+//And of course, there are the new concepts of [.ndef]#artificial intelligence# (AI) and
+//[.ndef]#machine learning# (ML), which are less based on algorithms and more on neural
+//nets, which are trained with a lot of data until they can provide the desired results.
+Moreover, there are the emerging concepts of [.ndef]#artificial intelligence# (AI) and [.ndef]#machine learning# (ML). They rely less on algorithms and more on neural networks, which are trained with extensive data until they can yield the desired results.
+Nim, the computer language this book is about, is an imperative language, so we will focus
 on the imperative programming style in this book. But of course, Nim can be used to
 create AI applications.
 
-Further still, we can differentiate between languages like C, {cpp}, Rust, Nim, and many more
-that compile to native executables and can run directly on the hardware of the
-computer, contrasted with languages like Java, Scala, Julia, and some more, that use a large
-[.ndef]#Virtual Machine# (VM) as an intermediate layer between the program and the
-hardware, and interpreted languages like Ruby and Python. Languages using a virtual
+//Further still, we can differentiate between languages like C, {cpp}, Rust, Nim, and many more
+//that compile to native executables and can run directly on the hardware of the
+//computer, contrasted with languages like Java, Scala, Julia, and some more, that use a large
+//[.ndef]#Virtual Machine# (VM) as an intermediate layer between the program and the
+//hardware, and interpreted languages like Ruby and Python.
+Additionally, we can distinguish between languages such as C, {cpp}, Rust, Nim, and many more that compile to native executables and can run directly on the computer's hardware. This is in contrast to languages like Java, Scala, Julia, and others that use a large [.ndef]#Virtual Machine# (VM) as an intermediary between the program and the hardware, as well as interpreted languages like Ruby and Python.
+Languages using a virtual
 machine generally need some startup time when a program is invoked, as the VM must be
 loaded and initialized, and interpreted languages are generally not very
 fast.footnote:[Exactly speaking, Ruby and Python do not really interpret the source
@@ -1129,7 +1228,7 @@ An important class of programming languages is the group of so-called [.ndef]#{o
 languages, which use classes with attached methods, and typically reference semantics,
 inheritance and dynamic dispatch. OOP languages became very popular in the
 1990s. For some time, it was assumed that {oop} was the ultimate solution to manage
-and structure really large programs. Java was the most prominent example of the OOP
+and structure really large programs. Java was the most prominent example of OOP
 languages. Java forces the programmer to use OOP design, and languages like {cpp},
 Python, or Ruby strongly push the programmer to use the OOP design. Practice has shown that
 OOP design is not the ultimate solution for all computing problems, and OOP design
@@ -1148,13 +1247,13 @@ Finally, perhaps the most important criterion for choosing a language for a prog
 task is the handling of memory and other resources. Allocating memory blocks, and releasing
 them again when they are not needed anymore, can be a serious effort, and doing it wrong
 can lead to various bugs, like free-after-use or memory leaks. The original Pascal
-compiler had no function to release memory at all, which may have been a simple strategy to just avoid this
+compiler had no function to release memory at all, which may have been a simple strategy to avoid this
 difficult matter. C does all the memory- and resource-handling manually, which is one reason why C
-programming is difficult, and C programs often have serious bugs. The C++ language
-handles most memory- and resource management by scope-based destructors, but still
+programming is difficult, and C programs often have serious bugs. The {cpp} language
+handles most memory and resource management by scope-based destructors, but still
 supports manual memory- and resource handling like C. Rust is similar to C++ in this regard,
 but has advanced features like the borrow-checker. Fully automatic memory management
-is a difficult topic and can generate overhead or delay in program execution. This is the reason
+is a difficult topic and can generate overhead or delay in program execution. This is why
 some modern languages, like Zig, Odin, and Jai, avoid automatic memory handling. Other languages
 like Python, Java, JavaScript, C#, Julia, Go, and D use some form of garbage collector, which makes life for
 the programmers much easier and avoids all the memory-management-related bugs.
@@ -1164,7 +1263,7 @@ manual memory handling for critical areas. But since version 1.0, Nim supports t
 memory handling, which is some form of scope- and destructor-based automatic memory management.
 ARC can be used when our memory blocks have no cycles, which is often the case. And ORC
 can handle additional cyclic structures.
-ARC and ORC may not yet provide the optimum throughput compared to the older, REFC called Garbage Collector. However, they avoid
+ARC and ORC may not yet provide the optimum throughput compared to the older Garbage Collector,  referred to as REFC. However, they avoid
 delayed deallocation and delays in program execution, making them good choices for critical code like device drivers and games.
 //ARC and ORC may not yet provide the optimum throughput, compared
 //to the older REFC called Garbage-Collector, but avoid delayed deallocation, and delays in
@@ -1269,7 +1368,7 @@ delayed deallocation and delays in program execution, making them good choices f
 |===
 
 ****
-Sometimes source code written in one programming language is converted into another
+Sometimes, source code written in one programming language is converted into another
 one. A prominent target for such conversions is JavaScript, as JavaScript enables the
 execution of programs in web browsers. Another important target language is C or
 {cpp}. Creating intermediate C code, which is then compiled by a C compiler to native
@@ -1282,7 +1381,7 @@ development, C compilers generally can do better code optimizations than young
 languages may manage to do. Some people fear that intermediate C code carries the
 problems of the C language, like verbosity, confusing and error-prone code, or
 undefined {behav}, to the source languages. But these well-known concerns of C occur
-only when humans write C code directly, in the same way as when humans write assembly
+only when humans write C code directly, just as when they write assembly
 code directly. Automatic conversions are well-defined and well-tested, which means
 these conversions are free of errors to the same degree as direct machine code generation would
 be. But indeed there are some small drawbacks when C or {cpp} is used as a backend for a
@@ -1295,13 +1394,13 @@ decision to enable web development, the C and {cpp} backends are a more pragmati
 decision and could be later replaced or at least supported by direct native code
 generation or use of the popular LLVM backend. footnote:[Indeed, an experimental LLVM
 backend is already available by third-party contributors.] When computer languages
-are converted from one language to another, then sometimes the term
-[.ndef]#transpiler# is used to differentiate the translation process from a direct
+are converted from one to another, the term
+[.ndef]#transpiler# is sometimes used to differentiate the translation process from direct
 compilation to a binary executable. When program code is converted between very
 similar languages with nearly the same level of abstraction, then the term
 transpiler may be justified. But Nim is very different from C and has a higher
 abstraction level, and the Nim compiler performs many advanced optimizations. So it
-should not be called a transpiler, even when compiling to JavaScript or to the {cpp}
+should not be reffered to as a transpiler, even when compiling to JavaScript or to the {cpp}
 backend.
 ****
 
