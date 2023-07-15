@@ -1,0 +1,61 @@
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url("//fonts.googleapis.com/css?family=Noto+Sans:300,600italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700");
+@import url(https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#2c3e50;
+--secondarycolor:#ba3925;
+--tertiarycolor: #186d7a;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+/* Text styles */
+h1{color:var(--primarycolor) !important;}
+h2,h3,h4,h5,h6{color:var(--secondarycolor) !important;}
+.title{color:var(--tertiarycolor) !important; font-family:"Noto Sans",sans-serif !important;font-style: normal !important; font-weight: normal !important;}
+p{font-family: "Noto Sans",sans-serif !important}
+
+/* Table styles */
+th{font-family: "Noto Sans",sans-serif !important}
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
+
+.new{background-color: #FF0; color: #000}
+.recent{background-color: #FFA}
+.ndef{font-style: italic}
+.italic{font-style: italic}
+.op{font-family: monospace; font-weight: bold}
+.key{font-weight: bold}
+.type{font-family: monospace}
+.str{font-family: monospace} /* string type */
+.array{font-family: monospace} /* array type */
+.tup{font-family: monospace} /* tuple type, tuple is indeed a keyword */
+.obj{font-family: monospace} /* object type, object is indeed a keyword */
+.var{font-family: monospace; font-style: italic}
+.mod{font-family: monospace; font-variant: small-caps}
+.lit{font-family: monospace; font-style: italic}
+.const{font-family: monospace; font-style: italic}
+.code{font-family: monospace; background-color: #EEE; color: #000}
+.term{font-family: monospace; background-color: #EEE; color: #000}
+
+
+

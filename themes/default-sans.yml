@@ -1,0 +1,74 @@
+# ~/bin/asciidoctor-pdf --theme theme1.yml nimprogramming.adoc
+extends: default-sans
+#base:
+#  font_size: 8
+#  line_height_length: 10
+#  font-color: #ff0000
+
+role:    
+  new:
+    font-color: #000
+    background-color: #FF0
+    
+  recent:
+    background-color: #FFA
+    
+  ndef:
+    font-style: italic
+    
+  italic:
+    font-style: italic
+    
+  op:
+    font-family: Courier
+    font_style: bold
+    
+  key:
+    font_style: bold
+    
+  type:
+    font-family: Courier
+
+  str:
+    font-family: Courier
+
+  array:
+    font-family: Courier
+    
+  tup:
+    font-family: Courier
+    
+  obj:
+    font-family: Courier
+        
+  var:
+    font-family: Courier
+    font-style: italic
+    
+  mod:
+    #font-family: Courier
+    text-transform: smallcaps
+    
+  lit:
+    font-family: Courier
+    font-style: italic
+    
+  const:
+    font-family: Courier
+    font-style: italic
+    
+  code:
+    font-family: Courier
+    font-color: #000
+    background-color: #EEE
+    #border-color: #33FF33
+    #border-radius: 2
+    #border-width: 0.5
+    #border-offset: .0
+    
+  term:
+    font-family: Courier
+    font-color: #000
+    background-color: #EEE
+    
+

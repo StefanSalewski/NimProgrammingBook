@@ -1,0 +1,45 @@
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url(//fonts.googleapis.com/css?family=Galada|Lato);
+@import url(https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#b71c1c;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+--grey:#212121;
+}
+
+body{font-family: "Lato",sans-serif;background-color: var(--maincolor);color:var(--black);}
+
+h1,h2,h3,h4,h5,h6{color:var(--primarycolor) !important;font-family:"Galada",sans-serif;}
+.title{color:var(--black) !important;font-family:"Galada",sans-serif;font-style: normal; font-weight: normal;}
+p{font-family: "Lato",sans-serif ! important;color:var(--grey)}
+#toc.toc2 a:link{color:var(--linkcolor);}
+
+
+/* Table styles */
+th{background-color: var(--primarycolor);color:var(--black) !important;color:var(--white) !important}
+td{color: var(--black)}
+tr:nth-child(even) {background-color: #FFF !important}
+tr:nth-child(odd) {background: #CCC !important}
+
+#toc.toc2{background-color:var(--sidebarbackground);}
+#toctitle{color:var(--white);}
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}

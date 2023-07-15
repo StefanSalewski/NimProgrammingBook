@@ -1,0 +1,42 @@
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro");
+@import url(https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#000000;
+--secondarycolor:#000000;
+--tertiarycolor: #000000;
+--sidebarbackground:#CCC;
+--linkcolor:#000000;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+body{font-family: "Source Code Pro",sans-serif;}
+
+/* Text styles */
+h1{color:var(--primarycolor) !important; font-family: "Source Code Pro",sans-serif;}
+h2,h3,h4,h5,h6{color:var(--secondarycolor) !important; font-family: "Source Code Pro",sans-serif;}
+.title{color:var(--tertiarycolor) !important; font-family:"Source Code Pro",sans-serif !important;font-style: normal !important; font-weight: normal !important;}
+
+/* Sidebar */
+#toctitle{font-family: "Source Code Pro",sans-serif;}
+.sectlevel1{font-family: "Source Code Pro",sans-serif!important;}
+.sectlevel2{font-family: "Source Code Pro",sans-serif!important;}
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}

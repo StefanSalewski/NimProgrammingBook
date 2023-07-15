@@ -1,0 +1,148 @@
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url(//fonts.googleapis.com/css?family=Source+Serif+Pro|UnifrakturMaguntia|Source+Sans+Pro);
+@import url(https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@2.0/data/stylesheets/asciidoctor-default.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#000000;
+--secondarycolor:#AAAAAA;
+--tertiarycolor:#CCCCCC;
+--sidebarbackground:#FFFFFF;
+--linkcolor:#0D47A1;
+--linkcoloralternate:#B71C1C;
+}
+
+/* Text styles */
+
+body {
+  font-family: "Source Serif Pro", serif;
+  background-color: var(--maincolor);
+  color: black;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  color: var(--primarycolor) !important;
+}
+h1 {
+  font-family: "UnifrakturMaguntia", serif;
+}
+#header h1 {
+  border-bottom: 2px solid black!important;
+}
+h2 {
+  font-family: "Source Serif Pro", serif;
+  font-style: italic;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+h3 {
+  font-family: "Source Serif Pro", serif;
+  font-style: italic;
+  font-weight: bold;
+}
+h4 {
+  font-family:'Times New Roman',Times,serif;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+h5 {
+  font-family:'Times New Roman',Times,serif;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+h6 {
+  font-family: "Source Serif Pro", serif;
+  font-weight: bold;
+}
+hr {
+  border-color: black;
+}
+
+.title {
+  color: black !important;
+  font-family: "Source Serif Pro", serif;
+  font-style: normal;
+  font-weight: normal;
+}
+a {
+  text-decoration: none;
+  color: #5A5A5A!important;
+}
+p {
+  font-family: "Source Serif Pro", serif !important;
+}
+#toc.toc2 a:link {
+  color: var(--linkcolor);
+  font-family: "Source Serif Pro", serif;
+}
+blockquote {
+  color: var(--primarycolor) !important;
+}
+.quoteblock {
+  color: black;
+}
+.quoteblock blockquote:before {
+  color: black;
+}
+code {
+  color: white;
+  background-color: var(--secondarycolor) !important;
+}
+mark {
+  background-color: var(--tertiarycolor);
+} /* Text highlighting color */
+
+cite {
+  color: var(--primarycolor)!important;
+}
+
+pre {
+  background-color: var(--maincolor)!important;
+}
+code {
+/*   background-color: var(--maincolor)!important; */
+}
+
+img {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+video {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
+/* Table styles */
+th {
+  background-color: var(--maincolor);
+  color: black !important;
+}
+td {
+  background-color: var(--maincolor);
+  color: black !important;
+}
+
+
+#toc.toc2 {
+  background-color: var(--sidebarbackground);
+}
+#toctitle {
+  color: black;
+  font-family: "Source Serif Pro", serif;
+  font-weight: bold;
+  padding-top: 20px;
+}
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}

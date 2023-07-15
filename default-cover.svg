@@ -1,0 +1,53 @@
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 1050 1600">
+ <defs>
+  <filter id="filter3874" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="0.01 5" in="SourceGraphic"/>
+  </filter>
+  <filter id="filter4056" color-interpolation-filters="sRGB">
+   <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="result6"/>
+   <feColorMatrix in="SourceGraphic" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 " result="result7"/>
+   <feComposite operator="in" result="fbSourceGraphic" in2="result7" in="result6"/>
+   <feColorMatrix values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0" result="fbSourceGraphicAlpha" in="fbSourceGraphic"/>
+   <feGaussianBlur in="fbSourceGraphic" stdDeviation="3" result="result6"/>
+   <feColorMatrix in="fbSourceGraphic" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 " result="result7"/>
+   <feComposite operator="in" in2="result7" in="result6"/>
+  </filter>
+  <filter id="filter4098" color-interpolation-filters="sRGB">
+   <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="result6"/>
+   <feColorMatrix in="SourceGraphic" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 " result="result7"/>
+   <feComposite operator="in" result="fbSourceGraphic" in2="result7" in="result6"/>
+   <feColorMatrix values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0" result="fbSourceGraphicAlpha" in="fbSourceGraphic"/>
+   <feGaussianBlur in="fbSourceGraphic" stdDeviation="3" result="result6"/>
+   <feColorMatrix in="fbSourceGraphic" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 " result="result7"/>
+   <feComposite operator="in" in2="result7" in="result6"/>
+  </filter>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <rect style="enable-background:accumulate;fill-rule:nonzero;color:#000000;fill:#333332;" height="1600" width="1050" y="0" x="0"/>
+ <rect style="enable-background:accumulate;fill-rule:nonzero;color:#000000;fill:#264e2e;" height="20" width="1050" y="468" x="0"/>
+ <path style="filter:url(#filter4056);fill:#264e2e;" d="m525,349.3-495,25c127.6,50,67.95,230,40,240l455-10,455,10c-27.95-10-87.65-190,40-240l-495-25z"/>
+ <path style="filter:url(#filter4098);fill:#57ad68;" d="m525,379.3-460,5c93.17,34.67,55,190,40,205h420,420c-15-15-53.17-170.3,40-205l-460-5z"/>
+ <path style="fill:#333332;" d="m95,394.3c55.42,25.11,45.36,131.3,35,165l395,15,395-15c-10.36-33.66-20.42-139.9,35-165l-430,5-430-5z"/>
+ <rect style="enable-background:accumulate;fill-rule:nonzero;color:#000000;filter:url(#filter3874);fill:#264e2e;" height="169.5" width="1050" y="1435" x="0"/>
+ <rect style="enable-background:accumulate;fill-rule:nonzero;color:#000000;fill:#57ad68;" height="6" width="1050" y="1453" x="0"/>
+ <g transform="translate(1.2573242e-5,-10)">
+  <text style="font-size:86px;stroke-width:3;writing-mode:lr-tb;fill:#b3b3b1;letter-spacing:-4px;text-anchor:start;line-height:100%;word-spacing:0px;stroke:#b3b3b1;font-stretch:normal;stroke-miterlimit:4;font-family:&apos;M+ 1p&apos;;font-variant:normal;stroke-dasharray:none;font-weight:bold;font-style:normal;text-align:start;" y="529.82001" x="162.99142" xml:space="preserve"><tspan y="529.82001" x="162.99142">Asciidoctor</tspan></text>
+  <text style="font-size:86px;stroke-width:3;writing-mode:lr-tb;fill:#b3b3b1;letter-spacing:-4px;text-anchor:start;line-height:100%;word-spacing:0px;stroke:#b3b3b1;font-stretch:normal;stroke-miterlimit:4;font-family:&apos;M+ 1p&apos;;font-variant:normal;stroke-dasharray:none;font-weight:bold;font-style:normal;text-align:start;" xml:space="preserve" y="529.82001" x="632.99139"><tspan x="632.99139" y="529.82001">EPUB3</tspan></text>
+ </g>
+ <g transform="translate(1.2573242e-5,-10)">
+  <text style="font-size:86px;font-family:&apos;M+ 1p&apos;;writing-mode:lr-tb;fill:#ffffff;letter-spacing:-4px;text-anchor:start;line-height:100%;word-spacing:0px;font-stretch:normal;font-variant:normal;font-weight:bold;font-style:normal;text-align:start;" xml:space="preserve" y="529.82001" x="162.99142"><tspan x="162.99142" y="529.82001">Asciidoctor</tspan></text>
+  <text style="font-size:86px;font-family:&apos;M+ 1p&apos;;writing-mode:lr-tb;fill:#ffffff;letter-spacing:-4px;text-anchor:start;line-height:100%;word-spacing:0px;font-stretch:normal;font-variant:normal;font-weight:bold;font-style:normal;text-align:start;" y="529.82001" x="632.99139" xml:space="preserve"><tspan y="529.82001" x="632.99139">EPUB3</tspan></text>
+ </g>
+ <g transform="translate(0,547.6378)">
+  <path style="stroke-linejoin:miter;stroke:#122616;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:32;fill:none;" d="m11.87,3098,1021,0"/>
+ </g>
+</svg>
