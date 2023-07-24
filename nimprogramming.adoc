@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-JUL-14
+//v0.1, 2023-JUL-24
 :doctype: book
 :part-signifier: Part
 // mobi does not work with SVG!
@@ -66,7 +66,7 @@ A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :continue: pass:q[[.key]#continue#]
 :converter: pass:q[[.key]#converter#]
 :converters: pass:q[[.key]#converters#]
-:defer: pass:q[[.key]#defer#]
+:defer: pass:q[[.defer]#concepts#]
 :discard: pass:q[[.key]#discard#]
 :distinct: pass:q[[.key]#distinct#]
 :div: pass:q[[.key]#div#]
@@ -224,10 +224,6 @@ ____
 
 == About this book
 
-//This is a test.footnote:[In Nim [.key]#while# is a keyword. [.line-through]#not that#]
-
-//In Nim [.key]#while# is a keyword. And {if} is one more keyword and an {asterix}. [.line-through]#not that#
-
 In the year 1970, {wirth} invented the [.ndef]#Pascal# programming language as a way to teach
 his students the fundamentals of computer programming. Although the initial core Pascal
 language was designed for teaching purposes only, it was soon expanded by commercial
@@ -239,16 +235,9 @@ Programming#.
 The [.ndef]#Nim# programming language can be seen in this tradition, as it is
 basically an easy language suited for beginners with no prior programming experience,
 but at the same time is not restricted in any way.
-//Nim offers all the concepts of
-//modern and powerful programming languages in combination with high performance and
-//some sort of universality -- Nim can be used to create programs for tiny {uc}s as well
-//as large desktop apps and web applications.
 Nim offers all the concepts of modern and powerful programming languages, combined with high performance and
 a certain level of universality.
-//Nim offers all the concepts of modern and powerful programming languages, combining them with high performance and a certain level of universality.
 Nim can be used to create programs for tiny microcontrollers, large desktop apps, and web applications.
-//Most books about programming languages focus on the language itself and assume that the reader
-//is already familiar with the foundations of computer hardware and has some programming experience.
 Most books about programming languages focus on the language itself, often assuming that the reader is already familiar
 with the foundations of computer hardware and has some programming experience.
 This is generally a valid approach, as
@@ -256,9 +245,7 @@ most people are taught this fundamental knowledge, sometimes referred to as [.nd
 Science# (CS), in school today.
 However, there are people who, for various reasons, may have missed this introduction in school and later decide that
 they need some programming skills, perhaps for a technical job.
-//Moreover, some children may not be satisfied
-//with the introduction to computer science taught at school.
-Moreover, some children may not be satisfied with the computer science introduction taught at school.
+Moreover, some children may not be satisfied with the introduction to computer science taught at school.
 Therefore, we decided to
 start this book with a short introduction to fundamental concepts. Most people may
 skip that part, but you should be really sure that you know these foundations.
@@ -266,28 +253,14 @@ This book is divided into seven parts -- part VII is the Appendix.
 It is possible to read the parts independently of each other in any
 order, but for Nim beginners, it is recommended to read them mostly in ascending order,
 perhaps while previewing some interesting sections in the second half of the book early on.
-//maybe while looking already early at some interesting sections in the second half of the book.
-//In {part}II, we explain the basics of computer programming step by step
-//in a way that should enable even children to learn independently.
 In {part}II, we explain the basics of computer programming step by step in a way that should enable even those with no prior experience to learn independently.
 In this part, we might repeat
 some of the material that we already mentioned in {part}I.
-//We do that by intent, as some
-//people may skip {part}I, and because it is generally not a bad idea to support the learning
-//process of the reader with some repetitions.
-//We do that intentionally, as some people might skip {part}I, and because it is generally not a bad idea to reinforce
-//the learning process of the reader with some repetition.
 We do that intentionally, as some people might skip {part}I, and because it is generally beneficial to reinforce the reader's learning process through repetition.
-//{part}III will give
-//you an overview of Nim's standard library, which contains many useful functions and data types,
-//that we can use in our programs to solve common tasks like input and output operations, using the file
-//system, or sorting of data.
 {part}III will give you an overview of Nim’s standard library, which contains many useful functions and data types that we can use in our programs to solve common tasks like input and output operations, using the file system, or sorting data.
 In {part}IV, we will apply what we have learned
 by solving some common programming tasks, like sorting, searching, or converting numbers from
 the internal computer format to displayable text.
-//{part}V will introduce some useful
-//external packages, which can be easily installed with one of Nim's package managers.
 {part}V will introduce some useful external packages that can be easily installed using one of Nim’s package managers.
 Nim already has a few thousand external packages -- some of them may support or replace
 the standard library, and others offer special or advanced functionalities.
@@ -297,89 +270,45 @@ operations#, [.ndef]#threading# and [.ndef]#parallel processing#, [.ndef]#macros
 and [.ndef]#meta-programming#, and, last but not least, Nim's concept implementation.
 Some sections, that do not integrate well into the other six parts, or that are boring or useful only for a minority of
 Nim users, have been moved to the Appendix and may not be part of a printed copy of the book.
-//This currently includes a short introduction to Nim's standard package manager, Nimble.
 This currently includes a short introduction to Nim’s standard package manager: Nimble.
 
-//This book is basically a traditional textbook, a very simple one with detailed
-//explanations, so that kids from 14 years upwards can read and understand it
-//on their own, with no, or only minimal help from adults.
-//This book is essentially a traditional textbook, simple yet detailed, designed so that
-//kids aged 14 and above can read and understand it independently, with little or no help from adults.
-//This book is essentially a traditional textbook, simple yet detailed, designed so that individuals aged 14
-//and above can read and understand it independently, with little or no help from adults.
-This book is essentially a traditional textbook--simple yet detailed.
-//It is designed so that individuals aged 14
-//and above can read and understand it independently, with little or no help from adults.
+This book is essentially a traditional textbook -- simple yet detailed.
 It is designed such that individuals aged 14 and above can read and understand it independently, with little or no help from adults.
 Unfortunately, the English language
 may still be a challenge for many kids not born in a country with a strong
 English language tradition.
-//But luckily automatic
-//translations are already supported for some languages, and perhaps we
-//will be able to offer some translated editions of the book later, possibly a Chinese
-//and a German translation?
 Fortunately, automatic translations are already supported for some languages, and we might be able to offer translated editions of the book later, possibly in Chinese and German.
 
-//In the last decades in the area of computer programming,
-//traditional textbooks have partly been replaced by videos and "Crash course" and "Learning
-//by doing" books.
 In the last few decades in the area of computer programming, traditional textbooks have been partly replaced by
 videos, "Crash course" books, and "Learning by doing" books.
-//Well, maybe a good video may indeed help you start with a new
-//language, and a video may enable people with problems reading printed texts or with
-//difficulties concentrating on a topic for a few minutes to learn a programming language.
 Indeed, a good video may help you start with a new language, and it can enable people who have difficulties reading printed texts or concentrating on a topic for a few minutes to learn a programming language.
 Unfortunately, the quality of most videos is very bad; some are made by kids just having
 learned the first steps of computer programming themselves.
-//And of course,
-//watching videos does not necessarily improve the reading and concentration issues that people might have.
-Of course, watching videos does not necessarily improve the reading and concentration issues that people might have.
+Furthermore, watching videos does not necessarily improve the reading and concentration issues that people might have.
 "Crash course" and "Learning by doing"
 books may give you a good start, but for that, we already have a lot of textual tutorials.
-//The concern with these kinds of books is that they may help you solve some common tasks, but they do not
-//really support a deeper understanding.
-The issue with these types of books is that, while they may help you solve common tasks,
+The concern with these types of books is that, while they may help you solve common tasks,
 they don't necessarily foster a deeper understanding.
-//The idea of a "Crash course" and "Learning by doing" may not be that bad in general.
-//The idea of a "Crash course" or "Learning by doing" may not be that bad in general.
 Generally, the idea of a "Crash course" or "Learning by doing" is not bad.
-//But in computer
-//science, starting with a larger example application can be an overwhelming process, as you have to learn
-//a lot stuff in parallel.
 However, in computer science, starting with a larger example application can be overwhelming,
 as you have to learn a lot of things simultaneously.
 It may work for you, but there is the danger that you forget all the details very quickly again.
-//And these kinds of books are not very helpful when you have to look up something.
 Moreover, these types of books are not very helpful when you need to look something up.
 The other concern with "Learning by doing" in computer science is that learning materials
 may have only examples in which you may not be really interested: Of course, we can create
 a simple chat application, a simple Twitter clone, and do some basic web scraping using
 async/await. Or create a basic game or a simple GUI with one of the dozen available toolkits.
-//But what when you are not interested in chatting and twittering, and that single selected toolkit?
 But what if you are not interested in chatting and twittering, and that single selected toolkit?
-//We think that for such a case, reading the detailed examples can be very frustrating.
 We believe that in such cases, reading the detailed examples can be very frustrating.
-//Therefore, we
-//recommend that after reading the first tutorial, and perhaps a few pages of this book, you start
-//coding with topics you are interested in.
-//Therefore, we recommend that you start coding with topics you are interested in after reading
+Therefore, we
+recommend that after reading the first tutorial, and perhaps a few pages of this book, you start
+coding with topics you are interested in.
+//Therefore, we recommend that you start coding with topics in which you are interested after reading
 //the first tutorial and perhaps a few pages of this book.
-Therefore, we recommend that you start coding with topics in which you are interested after reading
-the first tutorial and perhaps a few pages of this book.
-//Perhaps together with some friends?
 Perhaps you could do it together with some friends?
-//Whenever you should
-//need some concrete help, you should find it on the Internet, using search engines, Wikipedia, or
-//a discussion platform of your choice.
 Whenever you need concrete help, you can find it on the Internet, using search engines, Wikipedia, or a discussion platform of your choice.
-//And if you have really no idea whatsoever of a project with which you can start,
-//then potentially computer programming is just not the right profession for you.
-//And if you really have no idea whatsoever of a project to start with, then potentially
-//computer programming is just not the right profession for you.
 And if you really have no idea what project to start with, then computer programming might not be the right profession for you.
 
-//While Nim has a JavaScript backend and so supports web-related development well, this
-//book concentrates on native code generation using the C and {cpp} backends.
 Although Nim has a JavaScript backend and thus well supports web-related development,
 this book focuses on native code generation using the C and {cpp} backends.
 We will
@@ -388,107 +317,43 @@ and we may provide some examples of the use of the JavaScript backend in the
 Appendix. If you are strongly interested in web development and the
 JavaScript backend, then you may also consult the book [.ndef]#Nim in Action# by
 Dominik Picheta, which gives some detailed examples for the development
-//of web-based
-//software with the Nim programming language, including a simple chat application and
-//the skeleton of a microblogging and social networking service.
 of web-based software using the Nim programming language, including a simple chat application and the foundation of a microblogging and social networking service.
-//And you may consult
-//the tutorials and manuals of Nim web packages like [.ndef]#Karax#,
-//[.ndef]#Jester#, or [.ndef]#Basolato#.
 You may also consult the tutorials and manuals of Nim web packages like [.ndef]#Karax#, [.ndef]#Jester#, or [.ndef]#Basolato#.
 
-//This book will not try to explain things that are already explained well elsewhere, or
-//that should have been explained well elsewhere -- at least not in this first edition, where
-//we still have many other essential topics to cover.
 This book will not attempt to explain things that are already well-explained elsewhere, or that should have been well-explained elsewhere -- at least not in this first edition, where we have many other essential topics to cover.
-//So what we will leave out, for now, is the installation
-//of the compiler, installing and using text editors or IDEs with special Nim support, using
-//Nim package managers like Nimble, Nimph, or others, using the foreign function interface (FFI)
-//to create bindings to C libraries, and internal compiler details like the various
-//memory management options, all the pragmas and similar.
 So, for now, we will leave out the following: the installation of the compiler, the process of installing and using
-text editors or IDEs with special Nim support, the use of Nim package managers like Nimble and Nimph, the use of the
+text editors or IDEs with special Nim support, the use of Nim package managers such as Nimble and Nimph, the use of the
 foreign function interface (FFI) to create bindings to C libraries, and internal compiler details like the various
-memory management options and all the pragmas.
-//Also, we do not intend to
-//fill the book up with redundant stuff, like tables listing all the Nim keywords or Nim's
-//primitive data types and such, as you can find all that in the Nim language manual easily.
+memory management options and all the pragmas.footnote:[Actually, the Appendix contains a short introduction to Nimble, Nim's most used package manager.]
 Also, we do not intend to fill the book with redundant information, such as tables listing all the Nim keywords or Nim’s primitive data types, as you can easily find all of that in the Nim language manual.
 
-//While creating graphical user interfaces (GUIs) is an important topic, we can not
-//give many details for that due to various reasons:
-//While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details for various reasons:
-//While creating graphical user interfaces (GUIs) is an important topic, we cannot provide many details for various reasons:
-//Nim has not yet the one and only
-//Nim does not have a singularly accepted GUI library, but it does have more than 20 attempts -- from pure Nim ones like NimX or Fidget, to
-//wrapped libraries like GTK or QML, to GUIs that try to provide a native look for various {os}s like XWidgets or NiGui,
-//and even web-based GUIs.
 While the creation of graphical user interfaces (GUIs) is an important topic, we cannot provide many details for various reasons. Nim does not have a singularly accepted GUI library, but there are more than 20 attempts -- from pure Nim ones like NimX or Fidget, to wrapped libraries like GTK or QML, to GUIs that try to provide a native look for various operating systems like XWidgets or NiGui, and even web-based GUIs.
-
 And for each of these, at least for the more
 serious ones, we could write a separate GUI book.
-//So, we will only provide a few minimal examples
-//for some of them in parts IV or V of the book.
-//Therefore, we will only provide a few minimal examples for some of them in {part}VI or V of the book.
 Therefore, we will only provide a few minimal examples for some of them in Parts IV or V of the book.
 
-//Also, we will not explain game programming because game programming is
-//a broad area and there are already many tutorials available.
-//Also, we will not delve into game programming, as it is a broad area and there are already numerous tutorials available.
 Furthermore, we will not delve into game programming, as it is a broad area with numerous existing tutorials.
+
 Maybe in later editions of the
-book, we will add some of these topics, e.g. game programming, as so many people like it.
-//But we will always have to ensure that a possible printed book version will not get
-//more than 500 pages, so we may then leave out some other stuff in the printed version.
+book, we will add some more topics, e.g. game programming, as so many people like it.
 However, we will always have to ensure that a potential printed version of the book does not exceed 500 pages, which may require us to exclude some content in the printed version.
 
-//Generally, when learning a new programming language, people start with some short
-//tutorials before really learning the language following a book.
 Generally, when learning a new programming language, people start with some short tutorials before delving deeper into the language by following a book.
-//This way is indeed a good start.
 This approach is indeed a good start.
-//So we recommend you to read the short official tutorials, parts 1 and 2, and perhaps also
-//some other tutorials freely available online.
 So we recommend that you read the short official tutorials, parts 1 and 2, and perhaps also some other tutorials freely available online.
-//Tutorials generally only scratch the topics, so you may not be able to understand them all
-//really well, but this way you get already a feeling for the language.
-Tutorials generally only scratch the surface of the topics, so you may not fully understand them all, but this approach gives you a feel for the language.
-//There exist also
-//some video tutorials, in case you have problems reading, but in that case,
-//this book will not be of much use to you at all.
+Tutorials typically only scratch the surface of the topics, so you may not fully understand them all, but this approach gives you a feel for the language.
 There also exist some video tutorials, in case you have problems reading. However, if that's the case, this book might not be of much use to you.
-//When you know already some computer science and have already experience
-//with other languages like {cpp}, Haskell, or Rust, then the tutorials and the Nim language manual
-//may be fully sufficient for you, and you may not need this book at all.
-//If you already know some computer science and have experience with other languages like {cpp}, Haskell, or Rust, then the tutorials
-//and the Nim language manual may be fully sufficient for you, and you may not need this book at all.
-If you already have a background in computer science and experience with other languages such as C++, Haskell, or Rust, the tutorials and the Nim language manual might be fully sufficient for you; thus, you may not need this book at all.
+If you already have a background in computer science and experience with other languages such as {cpp}, Haskell, or Rust, the tutorials and the Nim language manual might be fully sufficient for you; thus, you may not need this book at all.
 Or you may prefer the
 recently published book of Mr. Rumpf, called "Mastering Nim: A complete guide to the programming language"
 available at Amazon.com.
 
-//This book is based on the Nim reference implementation of
-//the team around
-//Mr. A. Rumpf.
-This book is based on Mr. A. Rumpf's Nim reference implementation.
-//While the first pages of this book were written already in the spring of 2020, it should be mostly up-to-date
-//with the latest stable version 1.6 of the Nim 1.x series.
-//While the first pages of this book were written in the spring of 2020, it should be mostly up-to-date with the latest stable version 1.6 of the Nim 1.x series.
-//Although the first pages of this book were written in spring of 2020, it should be mostly up-to-date with the latest stable version 1.6 of the Nim 1.x series.
-Although the initial pages of this book were written in the spring of 2020, they should be mostly up-to-date with the latest stable version, 1.6, of the Nim 1.x series.
-//Most explanations and examples should
-//be valid also for other implementations like the https://github.com/nim-works/nimskull variant.
+This book is based on the Nim reference implementation of Mr. A. Rumpf.
+Although the initial pages of this book were written in the spring of 2020, the book should be mostly up-to-date with the latest stable version, 1.6, of the Nim 1.x series.
 Most explanations and examples should also be valid for other implementations, like the one at https://github.com/nim-works/nimskull.
-//Mr. Rumpf has announced the Nim 2.0 release for early 2023.
 Mr. Rumpf has announced the release of Nim 2.0 for early 2023.
-//The v2.0 release brings many improvements but has no serious breaking changes that would invalidate old code.
 The v2.0 release brings many improvements but does not include any serious breaking changes that would invalidate old code.
-//Only a few small modifications may be needed for old code to compile and run again.
-//Only a few small modifications may be necessary for old code to compile and run again.
 Only a few minor modifications might be necessary for old code to compile and run again.
-//The v2.0 release brings a lot of improvements
-//but has no serious breaking changes that would invalidate old code -- only a few small modifications may be
-//needed for old code to make it compile and run again.
 In this book, we may use and discuss a few Nim 2.0
 features, but all code should be compatible with the 1.x series of the compiler or with nimskull (cyo) with no
 or only minor changes. The most important change for Nim 2.0 is that ORC memory management is now the default,
@@ -498,12 +363,8 @@ avoids GC-generated delays, and may increase the performance of our programs. Ad
 should bring serious advantages for the creation and performance of threaded and parallel code.
 We have summarized the most important new features of Nim 2.0 in the appendix titled <<Changes for Nim 2.0>>.
 
-//Note, that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not fully supported
-//by Nim v2.0 yet.
-Note that incremental compilation (IC) or CPS task scheduling (Continuation-passing style) is still in development and not yet fully supported by Nim v2.0.
-//And for parallel and threaded code execution, it may be useful to consider high-quality external
-//libraries rather than those in Nim's standard library.
-For parallel and threaded code execution, it may be useful to consider high-quality external libraries rather than those in Nim’s standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. This may also apply to
+Note that [.ndef]#incremental compilation# (IC) or [.ndef]#CPS task scheduling# (Continuation-passing style) is still in development and not yet fully supported by Nim v2.0.
+And for parallel and threaded code execution, it may be useful to consider high-quality external libraries rather than those in Nim’s standard library.footnote:[https://forum.nim-lang.org/t/9768#64336]. This may also apply to
 modules for asynchronous code execution and a few other libraries.footnote:[https://github.com/status-im/nim-chronos]
 
 == Disclaimer & legal notice
@@ -511,38 +372,20 @@ modules for asynchronous code execution and a few other libraries.footnote:[http
 For all the details please refer to the corresponding section in the Appendix: <<Disclaimer and legal notice>> 
 
 ****
-//Electronic versions of the book in HTML and PDF format are available at
-//https://nimprogrammingbook.com
 Electronic versions of the book in HTML and PDF formats are available at https://nimprogrammingbook.com.
 
-//For a short overview of the Nim programming language, you may also consult the website
-//https://nimprogramming.com/.
 For a short overview of the Nim programming language, you may also consult the website at https://nimprogramming.com/.
 
-For the latest news about the language, installation instructions, and much more useful information, visit
+For the latest news about the Nim language, installation instructions, and much more useful information, visit
 the official homepage at
 https://nim-lang.org/
 
-//An alternative Nim implementation, which may later develop into another language, is available at
-//https://github.com/nim-works/nimskull
 An alternative Nim implementation, which may later develop into another language, is available at https://github.com/nim-works/nimskull.
 
-//The source code for the book is hosted at
-//You can find the source code for the book at https://github.com/StefanSalewski/NimProgrammingBook.
-//The source code for the book can be found at https://github.com/StefanSalewski/NimProgrammingBook.
-//You may use the GitHub issue tracker to point us to mistakes or unclear explanations; we will try to
-//fix that.
-//You can use the GitHub issue tracker to point out mistakes or unclear explanations; we will try to address them.
 The source code for the book can be found at https://github.com/StefanSalewski/NimProgrammingBook.
-//The GitHub issue tracker may be used to point out mistakes or unclear explanations, which we will strive to address.
 You can use the GitHub issue tracker to point out mistakes or unclear explanations, which we will strive to address.
 
-//Please note that we are more interested in comments on the content of the book currently, not that much
-//in typos or grammar issues.
 //Please note that we are currently more interested in comments on the content of the book, rather than typos or grammar issues.
-//Before the book will be officially published or a printed
-//version will be created, we will run it through some correction software or hire a professional
-//proofreader.
 //Before the book is officially published or a printed version is created, we will run it through some correction software or hire a professional proofreader.
 //[.new]#New sections and serious content changes are now (end of 2021) marked with a yellow background#, [.recent]#and
 //not that new stuff is still marked with a light yellow.# For details, you may see the change log in the appendix.
@@ -550,11 +393,9 @@ You can use the GitHub issue tracker to point out mistakes or unclear explanatio
 
 .About the author
 ****
-//Dr. S. Salewski studied Physics, Mathematics, and Computer Science at Hamburg
-//University (Germany), where he got his Ph.D. in 2005 in the area of laser physics.
 Dr. S. Salewski studied Physics, Mathematics, and Computer Science at the University of Hamburg (Germany), where he earned his Ph.D. in 2005 in the field of laser physics.
 He has worked
-in the field of fiber laser physics, electronics, and software development, using languages like
+in the field of fiber laser physics, electronics, and software development, using languages such as
 Pascal, Modula-2, Oberon, C, Ruby, and Nim.
 Some of his software projects, including the
 Nim GTK GUI bindings and Nim implementations of an N-dimensional RTree and a fully
@@ -564,52 +405,23 @@ projects at https://github.com/StefanSalewski.
 
 .ChatGPT and GPT-4
 ****
-//You might have already heard about ChatGPT, an AI (artificial intelligence) chatbot developed by OpenAI.
 You might have already heard about ChatGPT, an AI (Artificial Intelligence) chatbot developed by OpenAI.
 ChatGPT was launched as a prototype on November 30, 2022, and it quickly garnered attention for its detailed
 responses and articulate answers across various domains of knowledge.footnote:[https://en.wikipedia.org/wiki/ChatGPT]
-//While this book was still written by a real human, parts of it could have been created
-//by GPT, perhaps with a more fluent sound and fewer spelling errors
-//and grammar issues.
-//While this book was written by a real human, parts of it could have been created by GPT,
-//perhaps with a more fluent tone and fewer spelling and grammar errors.
-//While this book was written by a human, parts of it could have been created by GPT,
-//potentially with a more fluent tone and fewer spelling and grammar errors.
-//While this book was written by a human, parts of it could have potentially been created by GPT,
-//resulting in a more fluent tone and fewer spelling and grammar errors.
-Although this book was written by a human, parts of it could have potentially been created by GPT, resulting in a more fluent tone and fewer spelling and grammar errors.footnote:[Actually, we feed the complete final book content to GPT-4 asking to comment on possible grammar and spelling issues, and give additional advice to improve the text structure.
-//These hints has been very helpful to fix a few remaining mistakes, and to make the text more fluent and easier to read and understand.]
+Although this book was written by a human, parts of it could have potentially been created by GPT, resulting in a more fluent tone and fewer spelling and grammar errors.footnote:[Actually, we feed the complete final book content to GPT-4 asking for comment on possible grammar and spelling issues, and additional advice to improve the text structure.
 These hints have been very helpful in fixing a few remaining mistakes and making the text more fluent, easier to read, and understand.]
-//So this book, or at least parts of it, could now be considered
-//obsolete :-(.
-//Therefore, this book, or at least parts of it, could now be considered obsolete.
 As such, this book, or at least parts of it, could now be considered obsolete.
-//While ChatGPT has some serious issues still (better not ask it about
-//the author of this book, the creator of the Nim language, or other Nim core devs) it
-//can provide very valuable information about some topics.
 While ChatGPT still has some serious issues (it's better not to ask it about the author of this book, the creator of the Nim
 language, or other Nim core developers), it can provide very valuable information on various topics.
-//We were really surprised at how much it
-//already knows about the Nim language, despite the fact that Nim is tiny compared to the current mainstream
-//languages.
-//We were really surprised by how much it already knows about the Nim language, despite the fact that Nim is relatively small compared to the current mainstream languages.
 Despite Nim being relatively small compared to the current mainstream languages, we were really surprised by how much ChatGPT already knows about it.
-//To use ChatGPT, you would have to register with your real name and phone number.
 To utilize ChatGPT, registration with your real name and phone number is required.
-//We think that's OK to prevent misuse.
 We think that's acceptable to prevent misuse.
 The basic service is still free.
-//A professional version with a monthly payment (called GPT-4) is now also available, but the free basic version still works.
-//A professional version with a monthly payment, now also known as GPT-4, is available, but the free basic version still functions.
 A professional version, now also known as GPT-4, is available with a monthly payment, but the free basic version still functions.
-//When you log in to the OpenAI homepage (https://chat.openai.com/auth/login?next=/chat) you can
-//ask the bot questions,
 When you log in to the OpenAI homepage (https://chat.openai.com/auth/login?next=/chat), you can ask the bot questions,
 have it create a simple Nim program for you, fix errors in your program, or
 add comments. The bot might even be able to convert source code from other languages to Nim.
 Or it can rephrase text,
-//so you could provide it with a section of this book and then ask it
-//to rewrite it with better grammar or perhaps extend the content.
 so you could feed ChatGPT a section from this book, and then request a rewrite for improved grammar or even expanded content.
 Some possible tasks you can ask ChatGPT to do:
 
@@ -622,18 +434,13 @@ separated with a space?
 command 'nim r t.nim' and it prints "12", so there is no space involved!
 * Please create a Nim program, that prints the numbers
 one to 10 each on its own line.
-//* I will insert a small Nim program with issues into the prompt; please fix it.
 * I will insert a small Nim program with issues into the prompt. Please fix it.
 * [insert code here]
 * Can you please add some comments to the source code?
 
 Of course, you should not really trust the advice of ChatGPT.
-//Currently (early 2023), it thinks that the echo command automatically adds spaces between the printed values.
 Currently, as of early 2023, it thinks that the echo command automatically adds spaces between the printed values.
 Of course, that is wrong, and we can convince ChatGPT of that.
-//But ChatGPT
-//can currently not remember what it has learned in a user dialog, so next time
-//it makes the same errors again.
 However, ChatGPT currently cannot remember what it has learned in a user dialog, so it repeats the same errors next time.
 Note that ChatGPT was trained with data only until 2021,
 so it may not be aware of Nim 2.0 and other recent changes.
@@ -641,7 +448,6 @@ so it may not be aware of Nim 2.0 and other recent changes.
 Below is a complete dialog with ChatGPT from early 2023:
 ****
 
-//One more question about the Nim programming language. The following code to convert a string to an integer number does not compile. Can you fix it?
 ----
 I have one more question about the Nim programming language. The following code, which is supposed to convert a string to an integer, does not compile. Can you fix it?
 `var s: string = "123"; var i: int = int(s)`
@@ -661,18 +467,11 @@ echo i # Output: 123
 ----
 
 ----
-//In this example, we import the strutils module, which provides the `parseInt` procedure for parsing integers from strings. Then, we define a string `s`
-//with the value "123", and use parseInt to convert it to an integer, which we store in the variable i. Finally, we use echo to print the value of i.
 In this example, we import the strutils module, which provides the `parseInt` procedure for parsing integers from strings. Then, we define a string `s` with the value "123", and use `parseInt` to convert it to an integer, which we store in the variable `i`. Finally, we use `echo()` to print the value of `i`.
 ----
 
-//Since spring 2023, GPT-4 has been available for paying subscribers and provides more helpful information and less nonsense.
-//Since spring 2023, GPT-4 has been available to paying subscribers and provides more helpful information and less irrelevant content.
-//Since spring 2023, GPT-4 has been available to paying subscribers and provides more helpful information and less irrelevant content.
-//Since Spring 2023, GPT-4 has been available to paying subscribers, offering more helpful information and less irrelevant content.
 Since spring 2023, GPT-4 has been available to paying subscribers, offering more helpful information and less irrelevant content.
 
-//We recently created a short Nim info page with GPT-4:  https://nimprogramming.com/
 We recently used GPT-4 to create a short Nim info page: https://nimprogramming.com/
 
 = Introduction
@@ -683,19 +482,11 @@ Give me a video; I get a headache from reading.footnote:[https://irclogs.nim-lan
 //Give me a video; reading gives me a headache..footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
 ____
 
-//For using computers and writing computer programs, you initially do not have to know
-//many details.
-//To use computers and write computer programs, you initially do not need to know many details.
 Initially, you do not need to know many details to use computers and write computer programs.
-//It is basically like driving a car: Although a car is a powerful and
-//complicated tool, children can generally move it after a 3-minute introduction.
 It's much like driving a car. Even though a car is a complex machine, children can generally manage to move it after a brief introduction.
 footnote:[Interesting GPT-4 comment: This sentence
 is incorrect and potentially dangerous as it suggests that children can drive cars after a very short introduction.
 In many countries, it's illegal for children to drive. It's also unrealistic to suggest that anyone could learn to drive properly in 3 minutes.]
-//Still,
-//professional racing drivers typically require a much broader insight into the inner workings of
-//all the technical components, and finally, a lot of practice.
 Nevertheless, professional racing drivers typically require a much deeper understanding of the inner workings of all the technical components, along with extensive practice.
 
 == What is a computer?
@@ -703,51 +494,25 @@ Nevertheless, professional racing drivers typically require a much deeper unders
 A computer is primarily a device that runs computer programs by following
 instructions on how to manipulate data.
 
-//Nearly all the
-//computers currently in use, from the tiny ones integrated into electronic gadgets, the
-//well-known desktop computers (PCs), to large and powerful supercomputers filling out
-//entire rooms, work internally with digital data only.
-//Nearly all the computers currently in use, from the tiny ones integrated into electronic gadgets to the well-known
-//desktop computers (PCs) and large, powerful supercomputers filling entire rooms,
-//work internally with digital data only.
-//Nearly all the computers currently in use -- from the tiny ones integrated into electronic gadgets, to the well-known
-//desktop computers (PCs), and large, powerful supercomputers filling
-//entire rooms -- work internally with digital data only.
-//Nearly all the computers currently in use -- from the tiny ones integrated into electronic gadgets, to the well-known desktop computers (PCs), and large, powerful supercomputers filling entire rooms -- work internally with digital data only.
-Nearly all computers currently in use -- from tiny ones integrated into electronic gadgets, to well-known desktop computers (PCs), and large, powerful supercomputers filling entire rooms -- work internally with only digital data.footnote:[In the past, some forms
+Nearly all computers currently in use -- from tiny ones integrated into electronic gadgets, to well-known desktop computers (PCs), and large, powerful supercomputers filling entire rooms -- work internally with digital data only.footnote:[In the past, some forms
 of {analog} computers existed.
-//, some worked mechanically, and some used {analog} voltages or
-//currents as input and output signals.
 Some worked mechanically, while others used analogue voltages or currents as input and output signals.
 Indeed, one important device that is still very
 common in {analog} electronics is the summing amplifier, which can sum up multiple
 electric voltages.]
-//Digital data are basically integer (whole) numbers encoded in binary form,
 Digital data essentially comprises integer (whole) numbers encoded in binary form,
 which are represented by sequences of the symbols [.ndef]#0# and [.ndef]#1#.
-//We will discuss the term digital in the next section in more detail.
 We will discuss the term [.ndef]#digital# in more detail in the next section.
 
 The most important part of a digital computer is the [.ndef]#CPU#, the
 [.ndef]#Central Processing Unit#.
-//That tiny device is built of digital electronic
-//circuits and can perform very basic mathematical and logical operations on numbers,
-//such as adding two numbers or deciding if a number is larger or smaller than another number.
-//That tiny device, built of digital electronic circuits, can perform very basic mathematical and logical operations on numbers, such as adding two numbers or deciding if a number is larger or smaller than another number.
 This tiny device, built of digital electronic circuits, can perform very basic mathematical and logical operations on numbers, such as adding two numbers or determining whether one number is larger or smaller than another.
-//Most computer CPUs can only store very few numbers internally, and forget
-//the numbers when the power is switched off.
-//Most computer CPUs can store only a very limited number of values internally, and these values are lost when the power is switched off.
 Most computer CPUs can only store a limited number of values internally, which are lost when the power is switched off.
 Therefore, the CPU is typically electrically
 connected to a [.ndef]#RAM# module, a [.ndef]#Random Access Memory#, which can store
 many more numbers and allows fast access to these numbers, and to a [.ndef]#hard disk#
 or [.ndef]#SSD# device, which can permanently store the numbers but does not allow
 such fast access.
-//The stored numbers are most often called just [.ndef]#data# --
-//basically, that data is nothing more than numbers, but it can be interpreted in many
-//ways, such as pictures, sounds, and much more.
-//The stored numbers are most often simply called [.ndef]#data#; in essence, this data is nothing more than numbers, but it can be interpreted in many ways, such as pictures, sounds, and more.
 The stored numbers are most often simply referred to as [.ndef]#data#; in essence, this data is nothing more than numbers, but it can be interpreted in various ways, such as pictures, sounds, and more.
 
 The traditional hard disk drives (HDDs), which store data electromechanically on rotating magnetic disks, as
@@ -755,55 +520,33 @@ well as the more modern variants, the solid-state devices (SSDs), which store da
 technologies, can store data persistently for longer time periods, even when no electric power
 supply is available. Both SSDs and HDDs can be optionally split into multiple partitions; for example, one or multiple OS partitions
 for executable programs or pure data partitions for passive data such as text files or pictures.
-//Before use, each partition is generally formatted, and a file system (FS) is created.
 Before use, each partition is generally formatted, at which point a file system (FS) is created.
 These two steps
 create an internal structure on the storage device, which allows us to store and retrieve individual data
 blocks like programs, text files, or pictures.
 
-//Nearly all of today's desktop computers, and even most notebooks and cellphones
-//contain not only a single CPU, but multiple CPUs, also called "Cores", so they can
-//run different programs in parallel, or a single program can run parts of it on
-//different CPUs, to increase performance or reduce total execution time.
-Nearly all of today's desktop computers, as well as most notebooks and cellphones, contain not just a single CPU, but multiple CPUs, also known as 'cores'.
-//This enables them to run different programs in parallel, or to run parts of a single program on different CPUs, in order to increase performance and reduce total execution time.
+Nearly all of today's desktop computers, as well as most notebooks and cellphones, contain not just a single CPU, but multiple CPUs, also known as [.ndef]#cores#.
 This enables them to run different programs in parallel or parts of a single program on different CPUs to increase performance and reduce total execution time.
-//The so-called
-//supercomputers can contain thousands of CPUs.
 So-called supercomputers can contain thousands of CPUs.
 Besides CPUs, most computers also have
 at least one [.ndef]#GPU#, a [.ndef]#Graphic Processing Unit#, that can be used to
 display data on a screen or monitor, maybe for doing animations in games or for
 playing video.
-//The distinction between CPU and GPU is not really sharp; usually, a
-//CPU can also display data on screens and monitors, and GPUs can do also some data
-//processing that CPUs can do.
 The distinction between CPUs and GPUs is not clear-cut. Usually, a CPU can also display data on screens and monitors, and GPUs can also perform some data processing tasks that CPUs can handle.
-//But GPUs are optimized for the data display task.
 However, GPUs are optimized for the data display task.
 
 More visible to the average computer user are the peripheral devices such as a keyboard,
 mouse, screen, and perhaps a printer.
-//These enable human interaction with the computer,
-//but are in no way a core component of it; the computer can run well without them.
-//These enable human interaction with the computer, but they are not core components; the computer can run well without them.
 These enable human interaction with the computer, but they are not core components -- the computer can function effectively without them.
 In notebooks, laptop computers, or cell phones, the peripheral devices are closely
 integrated with the core components. All the physical parts of a computer are also
 called [.ndef]#hardware#, while the programs running on that hardware are called
 [.ndef]#software#.
 
-//A less visible but also very important class of computers are [.ndef]#{uc}s# and
-//so-called [.ndef]#embedded devices#, tiny pieces with typically a hull of black plastic
-//with some electrical contacts.
-//A less visible but equally important class of computers consists of [.ndef]#{uc}s# and so-called [.ndef]#embedded devices#, which are typically tiny pieces encased in black plastic with some electrical contacts.
 A less visible, but equally important, class of computers consists of [.ndef]#{uc}s# and so-called [.ndef]#embedded devices#. These are typically tiny units encased in black plastic with some electrical contacts.
 The devices can contain all necessary elements,
 i.e., the CPU, some RAM, and persistent storage that can store programs and data when no
 electric power supply is available.
-//These devices may be limited in computing
-//power and the amount of data that they can store and process, but they are incorporated
-//in many consumer devices.
 Although these devices may be limited in computing power and the amount of data they can store and process, they are incorporated in many consumer devices.
 They control your washing machine, refrigerator, television,
 radio, and others. Some devices in your home may even contain multiple {uc}s and
@@ -811,47 +554,16 @@ often the {uc}s can already communicate with each other by RF (Radio-Frequency),
 access the Internet by WLAN, which is sometimes called the [.ndef]#Internet of Things#
 (IoT).
 
-//Another class of large and very powerful digital computers is called
-//[.ndef]#mainframe computers# or [.ndef]#supercomputers#, which are optimized to
-//process large amounts of data very quickly.
-Another class of large, very powerful digital computers--known as [.ndef]#mainframe computers# or [.ndef]#supercomputers#--is optimized to process large amounts of data very quickly.
-//process large amounts of data very fast.
-//Another class of large and very powerful digital computers comprises [.ndef]#mainframe computers# or [.ndef]#supercomputers#.
-//These are optimized to
-//The key to their gigantic computing power is
-//that many fast CPUs work in parallel -- the problem or task is split into many small
-//parts that are solved by one CPU each, and the final result is then the combination
-//of all the solved sub-tasks.
+Another class of large, very powerful digital computers -- known as [.ndef]#mainframe computers# or [.ndef]#supercomputers# -- is optimized to process large amounts of data very quickly. 
 The key to their enormous computing power lies in many fast CPUs working in parallel; problems or tasks are split into many small parts that are solved by individual CPUs, and the final result is the combination of all these solved sub-tasks.
-//Unfortunately, it is not always possible to split large
-//problems into smaller sub-tasks.
 However, it is not always possible to split large problems into smaller sub-tasks.
 
-//Digital computers are usually driven by a clock signal that pulses at a certain frequency.
-Digital computers usually operate based on a clock signal that pulses at a certain frequency.
-//The CPU can do simple operations like the addition of two integers at
-//each pulse of the clock signal.
+Digital computers usually operate based on a clock signal that pulses at a certain frequency;
+the number of clock pulses per second is called the clock rate.
 The CPU can perform simple operations, such as the addition of two integers, at each pulse of the clock signal.
-//For more complicated operations like a multiplication
-//or a division, it may need more clock pulses.
 For more complicated operations, such as multiplication or division, it may need more clock pulses.
+Therefore, a rough measure of a computer's performance is the clock rate divided by the number of pulses that the CPU needs to perform a basic operation, multiplied by the number of CPUs or cores that the computer can use.
 
-//Digital computers are generally driven by a rectangular shaped binary clock signal, that is
-//an electrical voltage that jumps continuously from maybe a level of 0 Volt to a level
-//of 1 Volt and back. The CPU can do simple operations like the addition of two
-//integers for each (upwards) transition of the clock signal, for more complicated
-//operations like a multiplication or a division it may need more clock periods.
-
-//Therefore, a rough measure of the performance of a computer is the clock rate -- that is the
-//number of clock pulses per second -- divided by the number of pulses that the CPU needs
-//to perform a basic operation, multiplied by the number of CPUs or Cores that the
-//computer can use.
-//Therefore, a rough measure of a computer's performance is the clock rate, or the number of clock pulses per second, divided by the number of pulses that the CPU needs to perform a basic operation and multiplied by the number of CPUs or cores that the computer can use.
-Therefore, a rough measure of a computer's performance is the clock rate -- that is the number of clock pulses per second -- divided by the number of pulses that the CPU needs to perform a basic operation, multiplied by the number of CPUs or cores that the computer can use.
-
-//A totally different kind of computer is the [.ndef]#quantum computer#, a large,
-//expensive high-tech device, which uses the rules of [.ndef]#quantum mechanics# to
-//calculate many computations in parallel.
 A completely different type of computer is the quantum computer. This is a large, expensive high-tech device that uses the principles of quantum mechanics to execute many computations simultaneously.
 Only a few of them exist today, for research
 at universities and some large commercial institutes. Quantum computers may
@@ -860,16 +572,11 @@ not the topic of this book.
 
 == Analogue and digital
 
-//Whenever we measure a quantity based on some tiny base unit, we work in the
-//digital realm, and we measure with some granularity.
 Whenever we measure a quantity using a base unit, thus providing a certain level of granularity, we operate within the digital realm.
 Our ordinary money is digital,
 as the cent is the smallest base unit; you will never pay a fraction of a cent
 for something. Time can be considered as a digital quantity as long as we accept the
 second as the smallest unit.
-//Even on so-called analogue watches, the second hand
-//generally jumps forward in steps of a second, so you cannot measure fractions of a
-//second with that watch.
 Even on so-called analogue watches, the second hand generally moves forward in one-second increments, making it impossible to measure fractions of a second with such a watch.
 
 An obvious analogue property is the thermodynamic temperature, and its classic
@@ -881,38 +588,21 @@ capillary. That filling rate is an analogue measure of the temperature.
 While the hourglass is considered digital (as you can count the tiny sand grains), the sundial
 is not.
 
-//Most of the quantities in our real world seem {analog}, with digital quantities seem to
-//be some sort of arbitrary approximation.
-//Most of the quantities in our real world seem analogue, with digital quantities appearing to be some sort of arbitrary approximation.
-//Most quantities in the real world seem analogue, with digital quantities often perceived as an arbitrary approximation.
 Most quantities in the real world appear to be analogue, and digital quantities are often perceived as an arbitrary approximation.
-//All the quantities in our real world seems to be not digital or granular,
-//so digital quantities seems to be some sort of arbitrary approximation.
-
 However, [.ndef]#quantum mechanics# has taught us that many quantities in our world do
 have a granularity.
-//Physically, quantities like energy or momentum are indeed a
-//multiple of the tiny [.ndef]#Planck constant#.
-In physical terms, quantities such as energy or momentum are multiples of the tiny Planck constant.
+In physical terms, quantities such as energy or momentum are multiples of the tiny [.ndef]#Planck constant#.
 Or consider electric charge, which
-is always a multiple of the [.ndef]#elementary charge unit# of one electron.
-//Whenever
-//an electrical current is flowing through an electrically conducting wire, an ionized
-//gas, or an electrolyte like saltwater,
-//there are flowing multiple of the elementary charge only, never fractions of it.
-//multiples of the elementary charge are flowing, never fractions of it.
+is always a multiple of the [.ndef]#elementary charge unit# of a single electron.
 Whenever electrical current flows through a conductor such as a wire, an ionized gas, or an electrolyte like saltwater, it does so in multiples of the elementary charge, not in fractions of it.
 And of course, light and electromagnetic radiation
 also have some form of granularity, which the photoelectric effect, as well as Compton
 scattering, proves.
 
-//An important and useful feature of digital signals and digital data is that they map
-//directly to integral numbers (also called integers).
 An important and useful feature of digital signals and data is their direct correlation to integers (integral numbers).
 
-//The simplest form of digital data is binary data, which can only have two distinct
-//values.
-Binary data, which can have only two distinct values, is the simplest form of digital data.
+The simplest form of digital data is binary data, which can only have two distinct values.
+//Binary data, which can have only two distinct values, is the simplest form of digital data.
 When you use a mechanical switch to turn the light bulb in your house on or
 off, you change the binary state of the light. Your neighbor, when watching your
 house, receives binary signals.footnote:[Well, when we watch very carefully, we will
@@ -929,176 +619,76 @@ numbers can be represented by a sequence of multiple bits.
 The [.ndef]#Morse code# was an early application used to transmit messages encoded in
 binary form.
 
-//A very important property of digitally encoded data is that it can be
-//copied and transmitted exactly without loss of precision.
 A crucial characteristic of digitally encoded data is its ability to be copied and transmitted without loss of precision.
 The reason for this is that digital numbers have a
 well-defined clean state,
-//there is no noise that overlays the data and may accumulate when the data is copied multiple times.
 there is no noise overlaying the data that could accumulate when the data is copied multiple times.
-//Well, that statement isn't entirely
-//true -- under poor conditions, the noise can become significant enough that it changes the binary
-//state of signals.
 Well, this statement isn’t entirely accurate -- under poor conditions, noise can become significant enough to alter the binary state of signals.
-//Imagine we try to transfer some whole numbers encoded in binary
-//form, perhaps by binary states encoded as voltage level [.term]#0 Volt# and [.term]#5
-//Volts#, over an electric wire across a long distance.
 Imagine trying to transfer some whole numbers encoded in binary form, perhaps by binary states represented as voltage levels [.term]#0 Volt# and [.term]#5 Volts#, over an electric wire across a long distance.
-//It is clear that the long wire can
-//pick up some electromagnetic noise that can change the true [.lit]#0# Volt data to a voltage
-//that is closer to [.lit]#5# Volts than to the true [.lit]#0# Volt level, so it is received
-//incorrectly.
-//It's clear that the long wire can pick up electromagnetic noise, potentially altering the true [.lit]#0# Volt data to a voltage closer to [.lit]#5# Volts than to the true [.lit]#0# Volt level, resulting in incorrect reception.
-Clearly, the long wire can pick up electromagnetic noise, which could potentially shift the true 0 Volt data to a voltage closer to 5 Volts, leading to incorrect reception.
-//To catch such types of transmission errors, [.ndef]#checksums# are added
-//to the actual data.
-To detect these types of transmission errors, checksums are added to the actual data.
-//A checksum is derived by a special mathematical formula from the
-//original data and transferred with it.
+Clearly, the long wire can act as an antenna and pick up electromagnetic noise, which could potentially shift the true [.lit]#0# Volt data to a voltage closer to [.lit]#5# Volts, leading to incorrect reception.
+To detect these types of transmission errors, [.ndef]#checksums# are added to the actual data.
 A checksum, derived from the original data using a special mathematical formula, is transferred with it.
 The receiver applies the same formula to the
 received data and compares the result with the received checksum.
-//If it does not
-//match, then it is clear that the data transmission is corrupted, and a resend is
-//requested.
 If they do not match, it is clear that the data transmission is corrupted, and a resend is requested.
-
-// I think you should leave the following statement out, or omit the whole paragraph. -Jim
-//But the field of data transmission and its error detection is not the topic of this book.
 
 The opposite of digital is generally called analogue, a term that is used for data
 that has or seems to have no granularity.
-//For example, we speak of an analogue
-//voltage when the voltage can have each value in a given range and when the voltage
-//does not "jump" but changes continuously.
 For example, we speak of an analogue voltage when the voltage can assume any value in a given range, and when it does not "jump" but changes continuously.footnote:[Of course, even digital electric
 signals cannot really "jump" from one digital state to another, but the transition
 time is much shorter than the time duration of the steady state, so the signal has a
 rectangular shape when we watch it on an oscilloscope; it looks like +__--__--__+.]
-//For observing analogue voltages or currents, one can use a moving coil meter, a device
-//in which current flows through a coil in a magnetic field, causing the magnetic force to move the hand/pointer.
 To observe analogue voltages or currents, one can use a moving coil meter, a device in which the current flowing through a coil in a magnetic field causes the magnetic force to move the hand/pointer.
-//in which the current flows through a coil in a magnetic field and the magnetic force
-//moves the hand/pointer.
 
-//We mentioned in the previous section that nearly all of our current computers work exclusively with digital data.
 As mentioned in the previous section, nearly all of our current computers work exclusively with digital data.
 Essentially, this means they work internally with integer numbers,
 stored in sequences of binary bits. All input for computers must have the form of
 integer numbers and all output takes the form of integer numbers.
-//Whenever we want to
-//feed computers with some sort of analogue data, like an analogue voltage, we have to
-//convert it into a digital approximation.
 Whenever we need to input analogue data into computers, such as analogue voltage, we must convert it into a digital approximation.
 For that task, special devices called
 [.ndef]#analogue to digital converters# (ADC) exist. And in some cases, we have to
 convert the digital output data of computers to analogue signals, like when a
 computer plays music:
-//The computer output in form of digital data is then converted
-//by a device called [.ndef]#digital to analogue converter# (DAC) into an analogue
-//voltage, that generates an analogue current flowing through a coil in the speakers of our
-//soundbox, and that electric current in the coil generates a magnetic field which
-//exerts mechanical forces and moves the membrane of the speaker, resulting in
-//oscillating motions, which generates air pressure variations that our ear can detect
-//and that we perceive as sound.
-The digital data output from the computer is then converted by a device known as a [.ndef]#digital to analogue converter# (DAC) into an analogue voltage. This generates an analogue current that flows through a coil in our speakers. This electric current in turn generates a magnetic field, which exerts mechanical forces that move the speaker's membrane. The resulting oscillating movements produce variations in air pressure that our ears detect, and that we perceive as sound.
+The digital data output from the computer is then converted by a device known as a [.ndef]#digital to analogue converter# (DAC) into an analogue voltage. This analogue voltage generates a current that flows through a coil in our speakers. This electric current in turn generates a magnetic field, which exerts mechanical forces that move the speaker's membrane. The resulting oscillating movements produce variations in air pressure that our ears detect, and that we perceive as sound.
 
 == What is an operating system?
 
 Most computers, from cellphones to large supercomputers, use an [.ndef]#{os}# (OS).
 A well-known OS is GNU/Linux.
-//Operating systems can be seen as the initial
-//program that is loaded and started when we switch the computer on and that works as
-//some kind of supervisor:
-//footnote:[Well, before the OS is loaded and starts execution,
-//often another tiny program called a [.ndef]#Boot Manager# is launched. Boot managers
-//are used to select different {os}s to boot, maybe Linux or Windows, or to pass
-//parameters as the hard disk boot partition number to the OS.] it can load and execute other
-//programs, distributing resources like CPU cores or RAM between multiple running
-//programs.
-//Operating systems can be seen as the initial program that is loaded and started when we switch the computer on, working as a kind of supervisor
-Operating systems can be seen as the initial program that is loaded and started when we switch the computer on, functioning as a kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
+An operating system can be seen as the initial program that is loaded and started when we switch the computer on, functioning as a kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
 often another tiny program called a [.ndef]#Boot Manager# is launched.
-//Boot managers
-//are used to select different {os}s to boot, maybe Linux or Windows, or to pass
-//parameters as the hard disk boot partition number to the OS.]
 Boot managers are used to select different operating systems to boot, such as Linux or Windows, or to pass parameters like the hard disk boot partition number to the OS.]
 it can load and execute other programs, distributing resources like CPU cores or RAM among multiple running programs.
-//It also controls user input by keyboard and mouse, displays output data on
-//the screen, whether as text or graphics, controls how data is loaded and stored to
-//nonvolatile storage media like hard disk or SSD, manages all the network traffic, and
-//many more tasks.
-It also manages user input via the keyboard and mouse, displays output data on the screen in both text and graphic forms, controls how data is loaded onto and stored in nonvolatile storage media like hard disks or SSDs, oversees all network traffic, among other tasks.
-//An important task of the OS is to enable user programs to access all
-//the various hardware components from different vendors in a uniform, high-level
-//manner.
+It also manages user input via the keyboard and mouse, displays output data on the screen in both textual and graphically forms, controls how data is stored in nonvolatile storage media like hard disks or SSDs, oversees all network traffic, among other tasks.
 An important role of the OS is enabling user programs to access all the various hardware components, regardless of vendor, in a uniform, high-level manner.
-//An OS can be seen as an intermediate layer between user programs, like a text
-//processor or a game, and the hardware of the computer.
 An OS can be seen as an intermediary layer between user programs, such as a text processor or a game, and the computer's hardware.
 The OS allows user programs to
 work on a higher level of abstraction, so they do not need to know much about the
 low-level hardware details.
 
-//An important ability of most modern {os}s is to run multiple system- and user-programs
-//concurrently or in parallel.
 An important feature of most modern operating systems is their ability to run multiple system and user programs concurrently or in parallel.
-//Concurrent execution of programs means that
-//the execution switches very fast between all the active programs.
 Concurrent execution of programs means that the execution swiftly switches between all active programs.
-//That way the user
-//does not notice when programs do pause for a short time interval, and all of them
-//seem to be running all the time, but not at full speed.
 In this way, the user does not notice when programs pause for short time intervals. All programs appear to be running continuously, though not necessarily at full speed.
-//True parallel execution of programs indicates that all of them can
-//permanently run at full speed -- this is only possible when the computer
-//has multiple CPUs or a CPU with multiple physical cores.
-//True parallel execution of programs means that they can all run continuously at full speed -- this is only possible
-//when the computer has multiple CPUs or a CPU with multiple physical cores.
 True parallel execution of programs, meaning they can all run continuously at full speed, is only possible when the computer has multiple CPUs or a CPU with multiple physical cores.
 
-//Computer operating systems have generally a close relation to software libraries, which
-//are collections of data types and functions working with that data types.
-//Computer operating systems generally have a close relation to software libraries, which are collections of data types and functions that work with these data types.
-Computer operating systems generally have a close relationship with software libraries, which are collections of data types and functions that work with these data types.
-//Libraries can be a part of the OS or can be more or less independent of the OS.
-//Libraries can be part of the OS or they can be largely independent of it.
-Libraries can either be part of the OS, or they can function largely independently of it.
-//Libraries are software
-//components that provide data types and functions with a well-defined interface
-//(API, Application Programming Interface) and {behav}.
+Computer operating systems generally have a close relationship with software libraries.
 Libraries are software components that provide data types and functions through a well-defined interface, known as an Application Programming Interface (API), and exhibit specific behaviors.
+Libraries can either be part of the OS, or they can function largely independently of it.
 
-//Libraries can be used as shared libraries, which are single binary files stored on the file system of a computer,
-//often with the file extension [.term]#.so# or [.term]#.dll#, which can be accessed from different computer programs simultaneously,
-//or as static libraries, which are part of single programs.
-//Libraries can be used as shared libraries -- single binary files stored on a computer's file system, often with the file extension [.term]#.so# or [.term]#.dll#, that can be accessed by different computer programs simultaneously -- or as static libraries, which are part of individual programs.
-//Libraries can be utilized as shared libraries -- single binary files stored on a computer’s file system, often with the [.term]#.so# or [.term]#.dll# file extension, accessible by different computer programs simultaneously -- or as static libraries, which are part of individual programs.
-Libraries can be utilized as shared libraries, which are single binary files stored on a computer’s file system--often with the [.term]#.so# or [.term]#.dll# file extension--and are accessible by different computer programs simultaneously. They can also be used as static libraries, which are part of individual programs.
+Libraries can be utilized as shared libraries, which are single binary files stored on a computer’s file system -- often with the [.term]#.so# or [.term]#.dll# file extension -- and are accessible by different computer programs simultaneously. They can also be used as static libraries, which are an integral part of individual programs.
 Shared libraries have some advantages: we need only one
-instance on the file system of the computer, and the library is loaded only once into the computer memory (RAM), even when
+instance of them on the file system of the computer, and the library is loaded only once into the computer memory (RAM), even when
 it is used by different apps simultaneously. This saves space, and when the library has serious errors, it is in principle possible to
 replace the library with a corrected version, which is then used by all the software on the computer. Shared libraries often come in
 numbered versions, where a higher number denotes a newer, improved, or extended library version. Sometimes, some of the
 programs we use may still need an older library version, while other software already needs a newer one. In that case,
 our file system has to provide multiple versions of a shared library, each of which can be used independently.
 On the other hand, statically linked libraries are directly glued with a single computer program.
-//That makes the distribution of the program easier, as it can be shipped as a single entity,
-//and we do not have to ensure that all the needed dynamic libraries are available on the destination computer.
-//This makes the distribution of the program easier, as it can be shipped as a single entity without having to ensure that all the needed dynamic libraries are available on the destination computer.
 This simplifies the distribution of the program, as it can be shipped as a single entity without the need to ensure that all the necessary dynamic libraries are available on the destination computer.
-But if a statically linked library has serious errors, then we have to replace all the programs that are linked
+However, if a statically linked library has serious errors, then we have to replace all the programs that are linked
 statically with that corrupted library.
 
-//Current Linux kernel version 5.15 has 32 million lines of source code!
-
-//Small {uc}s and embedded devices often do not need to use an {os} because they generally
-//run only one single-user program and
-//and typically lack a variety of hardware components to support.
-//Small microcontrollers and embedded devices often do not require an operating system because they generally run only one single-user program and typically lack a large variety of hardware components to support.
 Small microcontrollers and embedded devices often do not require an operating system as they generally run only one single-user program and typically lack a wide variety of hardware components for support.
-//because they usually do not have a large variety
-//of hardware components to support.
 
 == What is a user interface?
 
@@ -1107,30 +697,13 @@ computer, we need some form of user interface. Traditional user interfaces
 are text-centric and often provided directly by the OS as one single text screen
 filling the whole display: The user has to enter textual commands and the computer
 reacts with textual messages.
-//For entering commands and data, a keyboard is used, whose layout was heavily
-//inspired by the classical mechanical typewriter.
 For entering commands and data, a keyboard, whose layout was heavily inspired by the classical mechanical typewriter, is used.
-//For desktop computers, the textual user interfaces
-//have been mostly replaced or at least supported by graphical user interfaces (GUIs)
-//for about a half-century now,
-//For about a half-century now, textual user interfaces for desktop computers have been mostly replaced or at least supplemented with graphical user interfaces (GUIs)
-//and even cellphones and other electronic
-//gadgets now use some form of a GUI for user interaction.
-//For about half a century now, textual user interfaces for desktop computers have been mostly replaced, or at least supplemented, with graphical user interfaces (GUIs).
- For about half a century now, graphical user interfaces (GUIs) have mostly replaced, or at least supplemented, textual user interfaces for desktop computers.
+For about half a century now, graphical user interfaces (GUIs) have mostly replaced, or at least supplemented, textual user interfaces for desktop computers.
 Even cellphones and other electronic gadgets now use a form of GUI for user interaction.
 For large mainframe
 computers, the textual user interface is still common.
-//Graphical user interfaces
-//present the user with a set of icons or widgets, often arranged in rectangular graphical
-//boxes called windows.
-//Graphical user interfaces display sets of icons or widgets to the user, often arranged within rectangular graphical boxes known as windows.
 Graphical user interfaces display sets of icons or widgets to the user. These are often arranged within rectangular graphical boxes, known as windows.
-//These windows can be moved around, resized, and can partially or fully overlap
-//other windows.
 These windows can be moved around, resized, and partially or fully overlapped with other windows.
-//A special type of window is called a terminal-, shell- or console-window,
-//which behaves like the traditional full-screen textual user interfaces.
 A special type of window, known as a terminal, shell, or console window, behaves like the traditional full-screen textual user interfaces.
 Graphical user interfaces allow users to interact with the computer
 through simple actions like clicking on buttons or using drag or swipe gestures, performed
@@ -1139,28 +712,14 @@ its mechanical movement on the table to a graphical cursor on the computer displ
 a set of pushbuttons that are used to initiate a click action when the mouse pointer hovers
 over an icon or widget. The main advantage of graphical user interfaces is that the user does not have to
 remember and type in long command sequences.
-//A set of on-screen buttons labeled with single letters can even simulate a traditional keyboard,
-//but when the input of longer textual data is required, the physical keyboard is still used.
 A set of on-screen buttons labeled with single letters can simulate a traditional keyboard, but a physical keyboard is still used when the input of longer textual data is required.
-//Graphical user interfaces are sometimes even enhanced by speech recognition
-//systems, which are used to enter commands or textual messages vocally.
 Graphical user interfaces are sometimes enhanced by speech recognition systems, which allow users to enter commands or textual messages vocally.
-//Graphical user interfaces may be very strongly coupled with the OS but are
-//basically still system programs executed by the OS.
-//Graphical user interfaces may appear strongly coupled with the OS, but they are
-//still system programs executed by the OS.
 Graphical user interfaces may appear to be strongly coupled with the OS, but they are still system programs executed by the OS.
 For the Microsoft Windows
 OS and the {macos}, this distinction is not very obvious, as the same GUI
 is running permanently.
-//For other {os}s like Linux, it is more obvious, as
-//these {os}s are sometimes used without a GUI, and because various
-//GUI tool kits like Gnome, KDE, and many more are available.
-//For other operating systems like Linux, the distinction is more obvious, as these systems are sometimes used without a GUI,
-//and there are various available GUI tool kits such as Gnome, KDE, and many others.
-//For other operating systems like Linux, the distinction is more apparent.
 For other operating systems, like Linux, the distinction is more apparent.
-These systems are sometimes used without a GUI, and various GUI toolkits, such as Gnome, KDE, and many others, are available.
+Linux systems are sometimes used without a GUI, and various GUI toolkits, such as Gnome, KDE, and many others, are available.
 
 == What is computer programming?
 
@@ -1169,55 +728,26 @@ programs.
 
 == What is a computer program?
 
-//A computer program is essentially a sequence of numbers, which make some sense to a
-//computer CPU, in such a way that the CPU recognizes these numbers as so-called
-//[.ndef]#instructions# or [.ndef]#numeric machine code#, such as the instruction to add
-//two numbers.
 A computer program is essentially a sequence of numbers that are meaningful to a computer CPU. The CPU recognizes these numbers as [.ndef]#instructions# or [.ndef]#numeric machine code#, such as the instruction to add two numbers.
-//A computer program is essentially a sequence of numbers that a computer CPU recognizes as instructions or
-//numeric machine code, such as the instruction to add two numbers.
-
-//The first computers, built in the 1950s, were indeed programmed by feeding sequences
-//of plain numbers to the device.
 The first computers, built in the 1950s, were programmed by feeding sequences of plain numbers to the device.
-//The numbers were stored on so-called [.ndef]#punch
-//cards#, consisting of strong paper, where the numbers were encoded by holes in the
-//cards.
 The numbers were stored on what were known as [.ndef]#punch cards#. These were made of strong paper and the numbers were encoded through holes in the cards.
 The holes could be recognized by electrical contacts to feed the numbers into
 the CPU.
-//As plain numbers do not match well with human thinking, more abstract codes
-//were soon used.
-//As plain numbers do not align well with human cognition, more abstract codes were soon used.
 Since plain numbers do not align well with human cognition, more abstract codes were soon developed and used.
 A very direct code that matches numerical instructions to symbols is known as
 the [.ndef]#assembly language#. In that language, for example, the character sequence
 "add A0, $8" may map directly to a sequence of numbers which instructs the CPU to add
 the constant integer number 8 to CPU register A0, where A0 is a storage area in the
 CPU where numbers can be stored.
-//As there exist many different types of CPUs, all
-//with their own instruction sets, there exist many different assembly instruction
-//sets, with similar, but not identical instructions.
 As many different types of CPUs exist, each with their own instruction sets, there are also many different assembly instruction sets. These have similar, but not identical instructions.
 The rules that describe how these
 basic instructions have to look are called the [.ndef]#syntax# of the assembly
 language.
 
-//The numerical machine code, or the corresponding assembly language, is the most basic
-//instruction set for a CPU. Each instruction that a CPU can execute corresponds to a
-//well-defined assembly instruction.
-//The numerical machine code, or the equivalent assembly language, represents the most basic instruction set for a CPU.
-//Numerical machine code, or the equivalent assembly language, represents the most basic instruction set for a CPU.
 Numerical machine code, and its equivalent assembly language, form the most basic instruction set for a CPU.
-//Each command that a CPU can execute aligns with a well-defined assembly instruction.
 Each command that a CPU can execute corresponds to a well-defined assembly instruction.
-//So, each operation that a computer may be able to
-//perform can be expressed in a sequence of assembly instructions.
 Thus, any operation that a computer can potentially execute can be represented as a
-series of assembly instructions.footnote:[Reformulated by GPT-4.]
-//However, complicated
-//tasks may require millions of assembly instructions, which would take a long time for humans
-//to write, and an even longer time to modify, proofread, and debug.
+series of assembly instructions.
 However, complicated tasks may require millions of assembly instructions, which would take humans a significant amount of time to write, modify, proofread, and debug.footnote:[The search
 for the reason why a program does not do exactly what was hoped for by its creators
 is called debugging. That term is still a legacy from the very first computers in the
@@ -1229,55 +759,27 @@ them. Today, mis{behav} of computer programs is rarely due to hardware faults, b
 the term "bugs" for errors and "debugging" for finding and fixing the errors, was
 kept.]
 
-//Just a few years after the invention of the first computers, people recognized that
-//they would need even more abstract instruction sets, like repeated execution,
-//composed conditionals, or other data types than plain numbers as operands.
-//Just a few years after the invention of the first computers, it was recognized that more abstract instruction sets were needed, such as repeated execution,
-//composed conditionals, or other data types beyond plain numbers as operands.
-//Just a few years after the invention of the first computers, it was recognized that more abstract instruction sets were necessary.
 A few years after the invention of the first computers, the need for more abstract instruction sets was recognized.
 These would include features such as repeated execution, composed conditionals, and the ability to use data types beyond plain numbers as operands.
 As a result, higher-level
 programming languages such as Algol, Fortran, C, Pascal, and Basic were created.
-
 //Simple C program here, with its assembly code from godbolt.org.
 
 == What is an algorithm?
 An [.ndef]#algorithm# is a detailed sequence of instructions, often abstract, designed to solve a specific task or to reach a goal.
-//An [.ndef]#algorithm# is a detailed sequence of more or less abstract instructions to
-//solve a specific task or to reach a goal.
 
-//Cooking recipe books and car repair instructions are examples of algorithms.
-//Recipes from cooking books and car repair instructions are examples of algorithms.
 Recipes from cookbooks and car repair instructions are examples of algorithms.
-
-//They are a generalized, only symbolically
-//representative pattern of all the necessary steps required to perform a certain task.
-//The basic math operations kids learn in
-//school -- to add, multiply or divide two numbers with paper and pencil -- are algorithms
-//too.
-//The basic math operations children learn in school, such as adding, multiplying, or dividing two numbers with paper and pencil, also exemplify algorithms.
 The basic math operations children learn in school, such as adding, multiplying, or dividing two numbers with a paper and pencil, are also examples of algorithms.
-//Even starting a car follows an algorithm -- when the temperature is below zero,
-//and snow covers the vehicle, then you first have to clean the windows and lights. And
-//when you first drive again after a long break, you would have to check the tires
-//before you start the engine.
 Even starting a car follows an algorithm.
-//For instance, if the temperature is below zero and snow covers the vehicle,
-//then you first have to clean the windows and lights.
 For instance, if the temperature is below freezing and your vehicle is covered in snow, your first step would be to clean the windows and lights.
 Similarly, if you're driving again after a long break,
 you would have to check the tires before you start the engine.
-//The algorithm can be carried out by strictly following the
-//instructions -- it is not necessary to really understand how and why it works.
 You can execute an algorithm by strictly following its instructions, without necessarily understanding its underlying principles.
 
 So an algorithm is a perfect fit for a computer, as computers are excellent at
 following instructions without really understanding what they are trying to
 accomplish.
 
-//A math algorithm to sum up the first 100 natural numbers may look like this:
-//An algorithm for calculating the sum of the first 100 natural numbers might look something like this:
 An algorithm for calculating the sum of the first 100 natural numbers might look like this:
 
 [source]
@@ -1294,42 +796,18 @@ optionally print the final value of sum
 
 == What is a programming language?
 
-//Most traditional programming languages were created to map algorithms to elementary
-//CPU instructions.
 Most traditional programming languages were designed to translate algorithms into elementary CPU instructions.
 Algorithms typically contain nested conditionals, repetition, math
 operations, recovery from errors, and potentially plausibility checks.
-//A more complicated algorithm
-//generally can be split into various separate logical parts, which may include reading in data at one point,
-//multiple processing steps at another, and storing, or displaying data as plain text, graphics, or
-//animation at yet another point.
 A complex algorithm can generally be split into various separate logical parts. These may include reading in data
 at one point, performing multiple processing steps at another, and storing or displaying data as plain text, graphics, or animation at yet another point.
-//This splitting into parts is mapped to programming languages by grouping
-//tasks into subroutines, functions, or {promis}, which accept a set of input
-//parameters and can return a result.
 This division into parts is reflected in programming languages through the grouping of tasks into subroutines, functions, or {promis}, which accept a set of input parameters and can return a result.
-
-// Propose of
-//This splitting of the various distinct types of
-//data manipulating structures into parts, an overarching problem into small, single-purposed sequence
-//of actions, ordered according to the nature of the data manipulation operations that they process for
-//the larger program between each-other, is mapped onto programming languages, by grouping tasks
-//into their own subroutines, functions or {promis}, which accept a set of input parameters and can
-//return a result.
 
 As algorithms often work not only with numbers
 but also with text, it makes sense to have a form of textual data type in a
 programming language too.
-//And all the data types can be grouped in various ways, for
-//example, as sequences of multiple data of the same type, like lists of numbers or
-//names.
 Data types can also be grouped in various ways. For example, as sequences of multiple data of the same type, like lists of numbers or names.
-//Or as collections of different types, like name, age, and profession of a
-//citizen in an income tax database.
 Alternatively, collections of different types can be created, such as the name, age, and profession of a citizen in an income tax database.
-//For all these use cases, programming languages
-//provide some sort of support.
 Programming languages provide support for all these use cases.
 
 == Compilers and interpreters
@@ -1337,273 +815,127 @@ Programming languages provide support for all these use cases.
 We already learned that the CPU in the computer can execute only simple instructions,
 which we call numeric machine code or assembly instructions.
 
-//To run a program written in a high-level language with many abstractions, we need some
-//sort of converter to transform that program into the basic instructions that the CPU can
-//execute.
-//To run a program written in a high-level language with many abstractions, we need a converter of some sort to transform that program into the basic instructions that the CPU can execute.
 To run a program written in a high-level language that includes many abstractions, we need some kind of converter to transform that program into the basic instructions that the CPU can execute.
-//For the conversion process, we have basically two options: We can convert the
-//entire program into machine code, store it on disk, and then run it on the CPU.
-//For the conversion process, we essentially have two options: we can either convert the entire program into machine code, store it on disk, and then run it on the CPU.
-//Or we
-//can convert it in small portions, maybe line by line, and run each portion whenever
-//we have converted it.
 For the conversion process, we essentially have two options: we can either convert the entire program into machine code, store it on disk, and then run it on the CPU, or we can convert it in small portions, maybe line by line, and run each portion as soon as we have converted it.
 Tools that convert the whole program first are called
 compilers.
-//[.ndef]#Compilers# process the program that we have written, include other
-//source code like necessary library modules, check the code for obvious errors, and then
-//generate and store the machine code that we then can run.
-//[.ndef]#Compilers# process the program that we have written, incorporate necessary library modules from other sources, check the code for obvious errors, and then generate and store the machine code that we can then run.
 [.ndef]#Compilers# process the program that we have written, incorporate necessary library modules from other sources, check the code for obvious errors, and then generate the machine code, which we can then store and run.
+Typically compilers create executables that are customized for a specific CPU architecture and a single operation system. A program compiled for a x86 CPU and the Windows OS could not be run on a Linux box with an ARM CPU.
+Often, recompiling the source code for another target architecture is possible, but modifications to the source code may be necessary. Program code that has to be compiled can be distributes as textual source code, or as
+precompiled binary. For source code distribution, the targets systems needs a matching compiler, and for binary distribution, the binary has to match the CPU and the OS of the target system. 
 
 Tools that process the
 source code in small portions, like single statements, are called
 [.ndef]#interpreters#. They read a line of source code, investigate it to check if
 it is a valid statement, and then feed the CPU with corresponding instructions to
 execute it.
-//It is similar to picking strawberries: you can pick one and eat it at
-//once, or you can put them all into a basket and eat them later.
 The difference between compilers and interpreters is similar to two methods of picking strawberries: you can either pick one and eat it immediately, or you can collect them all into a basket to eat later.
+Interpreted program code is typically distributes as textual source code and can in principle be run on each system with an matching interpreter. But in practice,
+it is not that easy: The code may use functionality that is only available for a specific OS, or the code may require a specific interpreter version.
+
 Both interpreters and
 compilers have advantages and disadvantages for special use cases.
-//Compilers can
-//already detect errors before the program is run, and compiled programs generally run
-//fast, as all the instructions are already available when the programs run.
 Compilers are capable of detecting errors before the program is run, and compiled programs generally execute quickly, as all the instructions are preprocessed and readily available when the programs run.
 The
 compiling step takes some time, of course, at least a few seconds, but for some
 languages and large programs, it may take much longer.
-//That can make the software
-//development process slow because as you add or change code, you have to compile it
-//before you can execute and test your program.
-This can slow down the software development process because, as you add or change code, you must compile it before you can execute and test your program.
-//That can be inconvenient for beginner
-//programmers, as they may have to do this edit and testing process very often..
+This can slow down the software development process because, as you add or change code, you must compile the whole program before you can execute and test it.
 That can be inconvenient for beginner programmers, as they may have to do this editing and testing process very often.
-//Some use a programming style that
-//is: change a tiny bit of the source code, then run it and see what it does.
 Some adopt a programming style that involves changing a tiny bit of the source code, running it, and observing the results.
-//But more common practice is that you think about the problem first and then write the
-//code, which then in most cases does nearly that of what you intended.
-//A more common practice, however, is to think about the problem first and then write the code, which, in most cases, does almost what you intended.
 A more common practice, however, is to first thoroughly consider the problem, then write the code which, in most cases, performs nearly as intended.
-//For this style of
-//programming, you do not have to compile and execute your code that often.
 With this style of programming, you don't need to compile and execute your code as frequently.
-//Compilers
-//have one important benefit: they can detect many bugs, mostly typing errors, already
-//in the compile phase, and they give you a detailed error message.
 Compilers have one significant benefit: they can detect many bugs, primarily typing errors, during the compilation phase and provide detailed error messages.
-//Interpreters have
-//the advantage that you can modify your code and immediately execute it without delay.
-//Interpreters have the advantage of allowing you to modify your code and immediately execute it without delay.
-//Interpreters have the advantage of allowing modifications to the code and immediate execution without delay.
 Interpreters have the advantage of enabling code modifications and immediate execution without any delay.
-//That is nice for learning a new language and for some fast tests, but even simple
-//typing errors can only be detected when they are encountered while running the
-//program.
 This feature is beneficial for learning a new language and for conducting quick tests; however, even simple typing errors can only be detected when encountered during program execution.
-//If your test does not try to run a faulty statement, there will be no error,
-//but it may occur later.
 If your test does not attempt to run a faulty statement, there will be no error, but it may surface later.
-//Generally, interpreted program execution is much slower than
-//running compiled executables, as the interpreter has to continually process the
-//source code in real-time as it's being run, while the compiler does it only once before the program is run.
+Modern compilers use various techniques to enable also nearly immediate test when a part of the source code has been modified: Fast compilers, often running
+in parallel on all available CPUs, combined with caching and incremental compilation, makes the compilation step extremely fast. Additional, a technique
+called [.ndef]#hot code reloading# enables the exchange of parts of the program code without interrupting the program execution. 
+
 Generally, the execution of interpreted programs is much slower than that of compiled executables, as the interpreter has to continually process the source code in real-time as it’s being run, while the compiler does it only once before the program is run.
-//At the end of this section, a few additional notes:
 To conclude this section, here are a few additional notes:
 
-//Compilers are sometimes supported by
-//so-called linkers.
-//Compilers are sometimes accompanied by so-called linkers.
-//In that case, the compiler converts the source code, which can be
-//stored in multiple text files, each in a sequence of machine code instructions, and
-//finally, the linker joins all these machine code files into the final executable.
-//In that case, the compiler converts the source code, which can be stored in multiple text files, into a sequence of machine code instructions, and finally, the linker joins all these machine code instructions into the final executable.
 Compilers are sometimes paired with entities known as linkers. In such instances, the compiler transforms the source code, which may reside in multiple text files, into a sequence of machine code instructions. Subsequently, the linker amalgamates all these machine code instructions to form the final executable.
 Some
 compilers either do not require the linking step or automatically invoke the linker.
-//And some
-//interpreters convert the textual source code in one very fast, initial pre-processing
-//step ("on the fly") to a so-called [.ndef]#byte code#, that can then be interpreted faster.
-Moreover, some interpreters convert the textual source code into so-called bytecode in a very fast, initial preprocessing step ("on the fly"), which can then be interpreted faster.
-//The languages Ruby and Python do that.
-The languages such as Ruby and Python employ this method.
-//Some languages, like Java, can compile and optimize the source code while the program is running.
-Some languages, like Java, can compile and optimize the source code at runtime.
-//For this process, a so-called [.ndef]#virtual
-//machine# is used, which builds an intermediate layer between the hardware and the user
-//program.
-This process employs a so-called [.ndef]#virtual machine#, which creates an intermediate layer between the hardware and the user program.
+Moreover, some interpreters convert the textual source code into so-called [.ndef]#bytecode# in a very fast, initial preprocessing step ("on the fly"), which can then be interpreted faster.
+Languages such as Ruby and Python employ this method.
+The Java language uses a mix of compilation and interpretation: In a first step, the Java source code is compiled into an intermediate JAR code format. This JAR file can be distributed
+and executed by Java's virtual machine (JVM). The JVM acts as an intermediate layer between the hardware and the user program, and the JVM can even further
+optimize the code while it is run on the target machine.
 
 == Types of programming languages
 
-//There are many different styles that software can be written.
-//Software can be written in many different styles.
 Software can be crafted in numerous styles.
-//A programming paradigm
-//is a fundamental style of writing software, and each programming language supports
-//a different set of paradigms.
-//A programming paradigm is a fundamental style of writing software, with each programming language supporting a unique set of paradigms.
 A programming paradigm is a fundamental style of writing software, and each programming language supports a specific set of these paradigms.
-//You’re probably already familiar with one or more
-//of them, and at the very least, you know what [.ndef]#object-oriented programming# (OOP) is
-//because it’s taught as part of many introductory computer science courses.
-You are likely familiar with one or more of these paradigms, not least of which is [.ndef]#object-oriented programming# (OOP), a concept taught in many introductory computer science courses.
+A popular paradigm is [.ndef]#object-oriented programming# (OOP), a concept taught in many introductory computer science courses.
+Other paradigm are procedural and functional programming.
 
-//We already mentioned the assembly languages, which provide only the basic operations
-//that the CPU can perform.
 We have already mentioned assembly languages, which provide only the basic operations that a CPU can perform.
-//Assembly languages provide no abstractions, so maybe we
-//should not even call them programming languages at all.
-//Assembly languages provide no abstractions, so perhaps we should not even categorize them as programming languages.
 Assembly languages offer no abstractions, so it's debatable whether we should categorize them as programming languages at all.
-//Then there are low-level
-//languages like Fortran or C, with some basic abstractions, which still work close to
-//the hardware and which are mostly designed for high performance and low resource
-//consumption (RAM), but not to detect and prevent programming errors or to make life
-//easy for programmers.
 Then, there are low-level languages like Fortran or C, which, while providing some basic abstractions, still work close to the hardware.
 These languages are primarily designed for high performance and low resource consumption (RAM),
-//but they do not focus on detecting and
-//preventing programming errors, or making life easier for programmers.
 but they don't prioritize detecting and preventing programming errors or simplifying the programming process.
-//These languages already support some higher-order data types,
-//like floating-point numbers or text (strings), homogeneous, fixed-size containers
-//(called {arrays} in C), or heterogeneous fixed-size containers (called structs in C).
 These languages already support some higher-order data types, like floating-point numbers or text (strings), as well as homogeneous, fixed-size containers (called arrays in C), and heterogeneous fixed-size containers (called structs in C).
 
 A different approach is taken by languages like Python or Ruby,
-//which try to make
-//writing code easier by offering many high-level abstractions and which have better
-//protection against errors but are not as efficient.
 which aim to make writing code easier by offering many high-level abstractions. They provide better protection against errors but are not as efficient.
 These languages also support
 dynamic containers, which can grow and shrink, or advanced data structures like hash
 tables (maps) or support textual pattern matching by regular expressions (regex).
 
-//Another way to differentiate programming languages is if they are statically or
-//dynamically typed.
-//Another way to differentiate programming languages is by whether they are statically or dynamically typed.
 Another way to differentiate programming languages is by their typing system, which can either be static or dynamic.
-//Ruby, Python, and JavaScript are all examples of dynamically typed languages,
-//that is, they use variables that can store any data type, so the variable's type
-//of data that it accepts can therefore dynamically change during program execution.
-//Ruby, Python, and JavaScript are all examples of dynamically typed languages, meaning they use variables that can store any data type.
 Ruby, Python, and JavaScript are all examples of dynamically typed languages. This means that they use variables capable of storing any data type.
 Therefore, the data type that a variable accepts can dynamically change during program execution.
-//That seems comfortable for the user, and
-//sometimes it is, especially for short programs, which may be written for one-time use
-//only and are sometimes called scripts.
 This appears to be user-friendly and often it is, particularly for brief programs intended
 for single-use, occasionally referred to as scripts.
-//But dynamic typing makes the discovery of logical
-//errors harder -- an illegal addition of a number to a letter may be detected only at
-//run-time.
-//However, dynamic typing can make the discovery of logical errors more challenging -- for instance, an illegal addition of a number to a letter may only be detected at run-time.
 However, dynamic typing can make discovering logical errors more challenging. For instance, an illegal addition of a number to a letter may only be detected at runtime.
-//And dynamically typed languages generally waste a lot of memory and their
-//performance is not that great.
 Dynamically typed languages generally consume a lot of memory and their performance tends not to be as efficient.
-//It is as if we would own a set of large, equally-sized moving boxes, and we
-//would store all of our goods in it, each piece in one box.
-//It is as if we owned a set of large, equally-sized moving boxes and stored each piece of our goods in separate boxes.
 It's akin to owning a set of large, equally-sized moving boxes and storing each piece of our belongings in separate boxes.
 
-//For statically typed languages, each variable has a well-defined data type like
-//integer number, real number, a single letter, a text element, and many more.
 In statically typed languages, each variable has a well-defined data type such as integer number, real number, a single letter, a text element, and many more.
-//The data
-//type is either assigned by the author of the program with a type declaration, or is detected
-//by the compiler itself when processing the program source code, called [.ndef]#type inference#, and
-//the variable's type does never change.
 The data type is either assigned by the author of the program with a type declaration, or is detected by the compiler itself
-when processing the program source code, a process called type inference. In this context, the variable’s type never changes.
+when processing the program source code, a process called [.ndef]#type inference#. In this context, the variable’s type never changes.
 In this way, the compiler can check for logical
 errors early in the compile process, and the compiler can reserve memory blocks
 exactly customized to the variables that we want to store, so total memory
 consumption and performance can be optimized.
-//Referring again to our boxes example,
-//statically typing is like using customized boxes for all your goods.
-//Referring again to our boxes example, static typing is akin to using customized boxes for all your goods
-//Referring again to our boxes analogy, static typing is akin to using customized boxes for all your belongings.
 Referring again to the box analogy, static typing is akin to using customized boxes for all your belongings.
 
-//All these types of programming languages are often called [.ndef]#imperative programming
-//languages#, as the program describes detailed what to do.
 All these types of programming languages are often called [.ndef]#imperative programming languages#, as the program specifies exactly what the computer has to do.
-//There are other types of
-//programming languages too, for example, languages like Prolog, which try to give only
-//a set of rules and then let the computer try to solve a problem with these rules.
 There are also other types of programming languages, such as Prolog, which primarily provide a set of rules and then allow the computer to solve problems using these rules.
 
-//And of course, there are the new concepts of [.ndef]#artificial intelligence# (AI) and
-//[.ndef]#machine learning# (ML), which are less based on algorithms and more on neural
-//nets, which are trained with a lot of data until they can provide the desired results.
-//Moreover, there are the emerging concepts of [.ndef]#artificial intelligence# (AI) and [.ndef]#machine learning# (ML).
 Moreover, there are emerging concepts like [.ndef]#artificial intelligence# (AI) and [.ndef]#machine learning# (ML).
 They rely less on algorithms and more on neural networks, which are trained with extensive data until they can yield the desired results.
-//Nim, the computer language this book is about, is an imperative language, so we will focus
-//on the imperative programming style in this book.
 Nim, the computer language that this book focuses on, is an imperative language. As such, our focus will be on the imperative programming style.
-//But of course, Nim can be used to create AI applications.
 However, it's worth noting that Nim can be used to create AI applications.
 
-//Further still, we can differentiate between languages like C, {cpp}, Rust, Nim, and many more
-//that compile to native executables and can run directly on the hardware of the
-//computer, contrasted with languages like Java, Scala, Julia, and some more, that use a large
-//[.ndef]#Virtual Machine# (VM) as an intermediate layer between the program and the
-//hardware, and interpreted languages like Ruby and Python.
-Additionally, we can distinguish between languages such as C, {cpp}, Rust, Nim, and many more that compile to native executables and can run directly on the computer's hardware.
-//This is in contrast to languages like Java, Scala, Julia, and others that use a large [.ndef]#Virtual Machine# (VM) as an intermediary between the program and the hardware, as well as interpreted languages like Ruby and Python.
-In contrast, languages like Java, Scala, Julia, among others, use a large Virtual Machine (VM) as an intermediary between the program and the hardware, as do interpreted languages like Ruby and Python.
-//Languages using a virtual
-//machine generally need some startup time when a program is invoked, as the VM must be
-//loaded and initialized, and interpreted languages are generally not very fast.
-Languages that use a virtual machine generally require some startup time when a program is invoked, as the VM needs to be loaded and initialized. Also, interpreted languages are generally slower.footnote:[Exactly speaking, Ruby and Python do not really interpret the source
+Additionally, we can distinguish between languages such as C, {cpp}, Ada, Rust, D, Go, Nim, and many more that compile to native executables and can run directly on the computer's hardware.
+In contrast, languages like Java, Scala, Kotlin, Julia, among others, use a large virtual machine (VM) as an intermediary between the program and the hardware, as do interpreted languages like Ruby and Python.
+Languages that use a virtual machine generally require some startup time when a program is invoked, as the VM needs to be loaded and initialized. Also, interpreted languages are typically slower.footnote:[Exactly speaking, Ruby and Python do not really interpret the source
 code but compile it on the fly to byte-code, which is then interpreted. And there
 exist some variants of Ruby and Python that compile with some success to native
 machine code. Crystal is a variant of Ruby, with some significant differences, that
 compiles to fast native machine code.] The distinction between languages that compile
 to native executables, and those that are executed on a virtual machine, is not really sharp.
-//For example, Kotlin and Julia were executed on a virtual machine initially but now
-//can compile the source code to native executables.
 For instance, Kotlin and Julia initially ran on a virtual machine, but they can now compile source code to native executables.
+And new developments, such as the Mojo languages, claims to be able to execute
+ordinary Python code, as well as to compile code with added type annotations to fast machine code.
 
 An important class of programming languages is the group of so-called [.ndef]#{oop}# (OOP)
-languages, which use classes with attached methods, and typically reference semantics,
-inheritance and dynamic dispatch. OOP languages became very popular in the
+languages, which use classes with attached methods, and typically reference semantics, polymorphism, and
+inheritance with dynamic dispatch. OOP languages became very popular in the
 1990s.
-//For some time, it was assumed that {oop} was the ultimate solution to manage and structure really large programs.
 For some time, it was assumed that {oop} was the ultimate solution for managing and structuring large programs.
-//Java was the most prominent example of OOP languages.
-//Java forces the programmer to use OOP design, and languages like {cpp},
-//Python, or Ruby strongly push the programmer to use the OOP design.
-Java is a prominent example of OOP languages. It requires programmers to use the OOP design, and other languages like {cpp}, Python, and Ruby also strongly encourage the use of this design.
-//Practice has shown that
-//OOP design is not the ultimate solution for all computing problems, and OOP design
-//may hinder optimal performance.
-Experience has shown that the OOP design is not the ultimate solution for all computing problems, as it may hinder optimal performance.
+Java is a prominent example of OOP languages. It requires programmers to use the OOP design, and other languages such as {cpp}, Python, and Ruby also strongly encourage the use of the OOP design.
+Experience has shown that the OOP design is not the ultimate solution for all computing problems, as it can make the code verbose and might hinder optimal performance.
 So newer languages, like Go, Rust, and Nim, support
 some form of OOP programming but use it only as one paradigm among many others.
 
-//Another popular and important class of programming languages is JavaScript and its
-//more modern cousins like TypeScript, and others.
 Another popular and important class of programming languages includes JavaScript and its more modern extensions, like TypeScript, among others.
-//JavaScript was
-//designed to run in web browsers to support interactive web pages and programs and
-//games running in the browser.
 JavaScript was designed to run in web browsers to support interactive web pages, as well as programs and games running in the browser.
-//In this way, the program became nearly independent of
-//the native operating system of the computer.
 In this way, programs become nearly independent of the computer's native operating system.
-//Note that unlike the name may indicate,
-//JavaScript is not closely related to the Java language.
 Note that despite what the name may suggest, JavaScript is not closely related to the Java language.
-//Nim can compile to a
-//JavaScript backend, so it supports web development well.
-//As Nim can compile to a JavaScript backend, it offers robust support for web development.
 Since Nim can compile to a JavaScript backend, it offers robust support for web development.
 
 Finally, perhaps the most important criterion for choosing a language for a programming
@@ -1621,34 +953,12 @@ some modern languages, like Zig, Odin, and Jai, avoid automatic memory handling.
 like Python, Java, JavaScript, C#, Julia, Go, and D use some form of garbage collector, which makes life for
 the programmers much easier and avoids all the memory-management-related bugs.
 
-//Nim was initially designed for use with a garbage collector, with the option for
-//manual memory handling for critical areas.
-//Nim was initially designed to be used with a garbage collector, with the option for manual memory management in critical areas.
-//But since version 1.0, Nim supports the ORC/ARC
-//memory handling, which is some form of scope- and destructor-based automatic memory management.
 Nim was initially designed to use a garbage collector, with an option for manual memory management in critical areas. However, since version 1.0, Nim additional supports ORC/ARC memory handling, a form of scope- and destructor-based automatic memory management.
 ARC can be used when our memory blocks have no cycles, which is often the case. And ORC
 can handle additional cyclic structures.
-//ARC and ORC may not yet provide the optimum throughput compared to the older Garbage Collector,  referred to as REFC.
 ARC and ORC may not yet provide optimal throughput compared to the older Garbage Collector, referred to as REFC.
 However, they avoid
 delayed deallocation and delays in program execution, making them good choices for critical code like device drivers and games.
-//ARC and ORC may not yet provide the optimum throughput, compared
-//to the older REFC called Garbage-Collector, but avoid delayed deallocation, and delays in
-//program execution, making it a good choice for critical code like device drivers and games.
-
-////
-[cols=6*,options="header"]
-|===
-|Language
-|Type System
-|Execution
-|Memory Management
-|Generics
-|Macros/Metaprogramming
-|Modules
-|Syntax
-////
 
 .Overview of popular programming languages. Here we list only languages similar to Nim, and ignore languages with dynamic typing like Python, Ruby, JavaScript, and also Java with its rigid OOP design.
 [cols=9*,options="header"]
@@ -1757,8 +1067,6 @@ programming language: C does not always allow direct access to all CPU instructi
 which may make it difficult to generate optimal code for some special constructs like
 exceptions. And C uses wrap-around arithmetic for unsigned integer types, which may
 not be what modern languages desire.
-//The current Nim implementation provides a
-//JavaScript and a C and {cpp} backend.
 The current Nim implementation provides JavaScript, C, and C++ backends.
 While the JavaScript backend is a design
 decision to enable web development, the C and {cpp} backends are a more pragmatic
@@ -1771,9 +1079,6 @@ compilation to a binary executable. When program code is converted between very
 similar languages with nearly the same level of abstraction, then the term
 transpiler may be justified. However Nim is very different from C and has a higher
 abstraction level, and the Nim compiler performs many advanced optimizations.
-//So it
-//should not be referred to as a transpiler, even when compiling to JavaScript or to the {cpp}
-//backend.
 So, even when compiling to JavaScript or the {cpp} backend, it should not be referred to as a transpiler.
 ****
 
@@ -3658,11 +2963,11 @@ A constant declaration in its simplest form maps a symbolic name to a value, lik
 const Pi = 3.14159
 ----
 
-//We use the reserved keyword [.key]#const# to tell the compiler that we want to declare a
+//We use the reserved keyword {const} to tell the compiler that we want to declare a
 //constant which we have named Pi, and we assign it the numeric decimal value [.lit]#3.14159#.
-//We use the reserved keyword [.key]#const# to tell the compiler that we want to declare a constant, which we name [.var]#Pi#, and to which we assign the numeric decimal value [.lit]#3.14159#.
-We use the reserved keyword [.key]#const# to inform the compiler that we want to declare a constant named [.var]#Pi# and assign it the numeric decimal value [.lit]#3.14159#.
-Nim has a small set of reserved keywords such as [.key]#var#, [.key]#const#, [.key]#proc#, and [.key]#while#, among others,
+//We use the reserved keyword {const} to tell the compiler that we want to declare a constant, which we name [.var]#Pi#, and to which we assign the numeric decimal value [.lit]#3.14159#.
+We use the reserved keyword {const} to inform the compiler that we want to declare a constant named [.var]#Pi# and assign it the numeric decimal value [.lit]#3.14159#.
+Nim has a small set of reserved keywords such as [.key]#var#, {const}, {proc}, and [.key]#while#, among others,
 which tell the compiler that we want to declare a variable, a constant, a
 {promi}, or that we want to use a [.key]#while# loop for some repeated code execution.
 //Reserved keywords in Nim are special symbols that have a special meaning for the compiler, and we should
@@ -4007,10 +3312,10 @@ satisfied, and we would be able to compile and run the program.
 However, the output would be significantly different because the uninitialized value of the variable [.var]#a# would be displayed first and only then would it be assigned a value.
 
 //When we have to declare multiple constants or variables, then we can use a block,
-//that is we write the keyword [.key]#var# or [.key]#const# on its own line, followed by the actual
+//that is we write the keyword [.key]#var# or {const} on its own line, followed by the actual
 //declarations like in
 When we have to declare multiple constants or variables, we can use a block.
-//That is, we write the keyword [.key]#var# or [.key]#const# on its own line, followed by the actual declarations like in:
+//That is, we write the keyword [.key]#var# or {const} on its own line, followed by the actual declarations like in:
 That is, we write the keyword 'var' or 'const' on its own line, followed by the respective declarations as shown:
 
 [source, nim]
@@ -4023,13 +3328,13 @@ var
   age: int
 ----
 
-//These blocks are also called sections, e.g. [.key]#const# section or [.key]#var# section, as known from the Wirthian languages.
-//These blocks are also referred to as sections, for example, [.key]#const# section or [.key]#var# section, as known from the Wirthian languages.
-These blocks are also referred to as sections, for example, [.key]#const# section or [.key]#var# section, as is customary in Wirthian languages.
-//Note the indentation -- the lines after [.key]#const# and [.key]#var# start with some space
+//These blocks are also called sections, e.g. {const} section or [.key]#var# section, as known from the Wirthian languages.
+//These blocks are also referred to as sections, for example, {const} section or [.key]#var# section, as known from the Wirthian languages.
+These blocks are also referred to as sections, for example, {const} section or [.key]#var# section, as is customary in Wirthian languages.
+//Note the indentation -- the lines after {const} and [.key]#var# start with some space
 //characters, so they build a block that allows the compiler to detect where the
 //declaration ends.
-Take note of the indentation -- the lines following [.key]#const# and [.key]#var# begin with a few spaces, forming a block that allows the compiler to identify the end of the declaration.
+Take note of the indentation -- the lines following {const} and [.key]#var# begin with a few spaces, forming a block that allows the compiler to identify the end of the declaration.
 Typically, we use two spaces for each level of indentation.
 //Other numbers would also work, but the indentation scheme should be consistent.
 While other numbers of spaces can be used, it's essential to maintain consistency in the indentation scheme.
@@ -4179,7 +3484,7 @@ There is a variant for variable declarations that uses the [.key]#let# keyword i
 //a value assigned, while [.key]#var# is used when we want to change the content of the
 //variable during program execution.
 [.key]#Let# is used when we need a variable that gets assigned a value only once, while [.key]#var# is used when we anticipate changing the content of the variable during the program execution.
-Let seems to be similar to [.key]#const#, but in [.key]#const#
+Let seems to be similar to {const}, but in {const}
 declarations, we can only use values that are known at compile time.
 //Let allows us to
 //assign values to variables that are only available at program runtime, perhaps because
@@ -4474,7 +3779,7 @@ In Nim and the Wirthian languages, most math operations are not directly allowed
 //some built-in homogeneous container types like {arrays} and [.type]#sequences#, and many built-in derived types
 //like enumeration types, sub-ranges and slices, distinct types, and view types (experimental).
 //Nim also supports several built-in homogeneous container types like arrays and sequences, along with numerous built-in derived types like enumeration types, sub-ranges and slices, distinct types, and view types (experimental).
-Nim also supports several built-in homogeneous container types like arrays and sequences, along with numerous built-in derived types like enumeration types, sub-ranges and slices, distinct types, and view types (experimental).
+Nim also supports several built-in homogeneous container types like arrays and sequences, along with numerous built-in derived types like enumeration types, sub-ranges and slices, {distinct} types, and view types (experimental).
 The built-in inhomogeneous container types {object} and [.tup]#tuple#, which allow
 grouping of other types,
 //are supported by a [.type]#variant# type container, which allows instances of that type to contain different child types at runtime.
@@ -5105,7 +4410,7 @@ References:
 
 === Distinct types
 
-Before we continue with subrange types, we should introduce the distinct types.
+Before we continue with subrange types, we should introduce the {distinct} types.
 //In the
 //real world, there are many quantities for which the set of meaningful math
 //operations is restricted and which should not be mixed with quantities of other
@@ -5119,13 +4424,13 @@ meters is a valid operation, adding seconds to meters makes no sense and would b
 program bug if it should occur in the program code. However, dividing a distance by
 a time period, resulting in the average speed, would be a valid operation.
 //Nim provides
-//the [.key]#distinct# keyword, which allows us to define new data types that are based on
-//existing types, but that are not compatible with them or with other [.key]#distinct# types.
-//Nim provides the [.key]#distinct# keyword, which allows the definition of new data types that are based on existing types, but that are not compatible with them or with other [.key]#distinct# types.
-Nim provides the [.key]#distinct# keyword, which allows the definition of new data types. These new types are based on existing ones but are not compatible with them or with other [.key]#distinct# types.
-//And the newly defined [.key]#distinct# types have no predefined operations, we have to define
+//the {distinct} keyword, which allows us to define new data types that are based on
+//existing types, but that are not compatible with them or with other {distinct} types.
+//Nim provides the {distinct} keyword, which allows the definition of new data types that are based on existing types, but that are not compatible with them or with other {distinct} types.
+Nim provides the {distinct} keyword, which allows the definition of new data types. These new types are based on existing ones but are not compatible with them or with other {distinct} types.
+//And the newly defined {distinct} types have no predefined operations, we have to define
 //all desired operations ourselves.
-The newly defined [.key]#distinct# types have no predefined operations; we have to define all desired operations ourselves.
+The newly defined {distinct} types have no predefined operations; we have to define all desired operations ourselves.
 
 [source, nim]
 ----
@@ -5137,12 +4442,12 @@ var t: Time = 0.2 # not allowed
 var t: Time = Time(0.2)
 ----
 
-For distinct types, we have to define all the allowed operations ourselves. We can
-convert [.key]#distinct# types to the base types and then use operations of the base type, or
+For {distinct} types, we have to define all the allowed operations ourselves. We can
+convert {distinct} types to the base types and then use operations of the base type, or
 we can borrow operations from the base type by use of the {.borrow.} pragma. Using
-[.key]#distinct# types can be complicated when the new type should support many operations,
+{distinct} types can be complicated when the new type should support many operations,
 but it can make our code safer. For some data types with a very limited set of
-operations, distinct types can be used easily. Distinct types are explained in detail
+operations, {distinct} types can be used easily. [.key]#Distinct# types are explained in detail
 in the Nim language manual; we might explain them in more detail in later sections. For now, it
 is enough that we know about their existence.
 
@@ -5215,7 +4520,7 @@ var m: Month = 3
 d = d + m
 ----
 
-Such an operation is generally a bug. To prevent it, we can put the [.key]#distinct# keyword
+Such an operation is generally a bug. To prevent it, we can put the {distinct} keyword
 in front of our ranges.
 //But then again we have to define the allowed operations ourselves
 //or borrow them from the base type.
@@ -5903,7 +5208,7 @@ type
 //wheel when there is no name conflict for pure [.type]#enums#. And with integer constants, we
 //have to combine flags by an [.op]#or# operation like [.code]#(aFlagWheel or aFlagSlider)# instead of
 //clean [.code]#{AxisFlag.wheel, slider}#.
-The first {enum} with ordinal value zero was automatically added by the bindings generator script to ensure type matching. Nim’s developers sometimes recommend using plain (distinct) integer constants for C {enums}. That may appear easier, but integer constants provide no namespaces, so names may be [.var]#aFlagWheel# instead of [.var]#AxisFlag.wheel# or plain [.var]#wheel# when there is no name conflict for pure {enums}. And with integer constants, we have to combine flags by an [.op]#or# operation like [.code]#(aFlagWheel or aFlagSlider)# instead of using the clean [.code]#{AxisFlag.wheel, slider}# syntax.
+The first {enum} with ordinal value zero was automatically added by the bindings generator script to ensure type matching. Nim’s developers sometimes recommend using plain ({distinct}) integer constants for C {enums}. That may appear easier, but integer constants provide no namespaces, so names may be [.var]#aFlagWheel# instead of [.var]#AxisFlag.wheel# or plain [.var]#wheel# when there is no name conflict for pure {enums}. And with integer constants, we have to combine flags by an [.op]#or# operation like [.code]#(aFlagWheel or aFlagSlider)# instead of using the clean [.code]#{AxisFlag.wheel, slider}# syntax.
 
 Can we print [.type]#sets# easily? As [.type]#sets# are an unordered type, it is not fully trivial, but
 we can iterate over the full base type and check if the element is contained in our
@@ -6629,36 +5934,20 @@ If you overlook this aspect and attempt to convert from C to Nim, removing the b
 === Blocks, scopes, visibility, locality, and shadowing
 
 Like most other programming languages, Nim has the concept of [.ndef]#code blocks# or scopes.
-//The body of {promis}, functions, [.key]#iterators#, and [.key]#templates#, as well as the body of various loop constructs
-//or code following conditional statements, builds an indented block and creates a new scope.
-The bodies of {promis}, functions, [.key]#iterators#, and [.key]#templates#, as well as those of various loop constructs or code following conditional statements, build indented blocks and create new scopes.
+The bodies of {promis}, functions, [.key]#iterators#, [.key]#templates#, and {macros} as well as those of various loop constructs or code following conditional statements, build indented blocks and create new scopes.
 In this new scope, we can define variables, named constants, or types
-with the [.key]#var#, [.key]#let#, [.key]#const# and [.key]#type# keywords that
+with the [.key]#var#, [.key]#let#, {const} and [.key]#type# keywords that
 are local to this block.
-//These symbols are only visible in this scope, and
-//local variables that need storage are actually created when the program
-//executes the block and destroyed when the block is left.
 These symbols are only visible in this scope, and local variables that require storage are actually created when the program executes the block and are destroyed when the block is exited.
-//Well, in principle, and at least for
-//ordinary stack-allocated value variables, for references and [.type]#pointer#
-//variables, things are a bit more complicated, we will discuss that in more
-//detail when we introduce references.
-//Well in principle, and at least for ordinary stack-allocated value variables; things are a bit more complicated for references and pointer variables.
 This holds true in principle, and at least for ordinary stack-allocated value variables; however, things are a bit more complicated for references and pointer variables.
 We will discuss this in more detail when we introduce references.
-//Here we have used the term code block, to clearly separate them from the [.key]#const#, [.key]#var#,
-//[.key]#type#, and [.key]#import# sections, which are different forms of indented blocks.
-Here, we have used the term 'code block' to clearly distinguish it from the [.key]#const#, [.key]#var#, [.key]#type#, and [.key]#import# sections, which are different forms of indented blocks.
-//Remember that the compiler processes our program code from the top to the bottom, so
-//we have always to define symbols before we can actually use them.
-/Remember that the compiler processes our program code from the top to the bottom, so we always have to define symbols before we can actually use them.
+Here, we have used the term 'code block' to clearly distinguish it from the {const}, [.key]#var#, [.key]#type#, and [.key]#import# sections, which are different forms of indented blocks.
 Remember that the compiler processes our program code from top to bottom, so we always have to define symbols before we can actually use them.
 When we define an entity
 in a code block, and a symbol with that name was already declared before
 outside this block,
-//then that symbol is shadowed, that is, the prior
-//declaration gets temporarily invisible.
 then that symbol is shadowed, that is, the previous declaration becomes temporarily invisible.
+Let us investigate the following small example program:
 
 [source, nim]
 ----
@@ -6679,33 +5968,20 @@ proc doSomething =
 doSomething()
 ----
 
-//While we have not officially introduced {promis} as units
-//to structure our program code yet, we have put the above code
-//this time by intent into the body of a {proc} called [.func]#doSomething()#.
-//Although we haven't officially introduced {promis} as units to structure our program code yet, we have intentionally put the above code into the body of a {proc} called [.func]#doSomething()# this time.
 Although we haven't officially introduced procedures as units for structuring our program code yet, we have intentionally enclosed the above code in the body of a {proc} called [.func]#doSomething()# this time.
-
-//This way, we can guarantee that the two variables [.var]#a# and [.var]#b# defined
-//in that {proc} are really stack-allocated.
-In this way, we can ensure that the two variables [.var]#a# and [.var]#b# defined in that {proc} are indeed stack-allocated.
 Actually, in real-life programs,
 nearly all the program code is embedded in {procs}. We will discuss
 the peculiarity of global code later.
-//In the {proc} body from above the
-//two variables [.var]#a# and [.var]#b# are local to the {proc} [.func]#doSomething()# -- they are
-//created on the stack when the {promi} is called, that is, when we ask
-//to start its execution by a statement like [.func]#doSomething()#.
-//In the above {promi} body, the two variables [.var]#a# and [.var]#b# are local to the {proc} [.func]#doSomething()# - they are created on the stack when the {promi} is called, that is, when its execution starts with a statement like [.func]#doSomething()#.
-In the body of the procedure above, the two variables [.var]#a# and [.var]#b# are local to the {proc} [.func]#doSomething()#. They are created on the stack when the procedure is called, that is, when its execution starts with a statement like [.func]#doSomething()#.
+By enclosing the program code in a procedure,
+we can ensure that the two variables [.var]#a# and [.var]#b# defined in that {proc} are indeed stack-allocated and local to the scope of that procedure..
+The variables [.var]#a# and [.var]#b# are created on the stack when the procedure is called, that is, when its execution starts with a statement like [.func]#doSomething()#.
 These two variables are never visible in code outside this {promi}, and the
 storage for these two variables is automatically released when the execution
 of that {promi} ends, in this case when the last line of the {proc} is reached.
-//In the body of the {promi}, we define also a new custom type and a named constant --
-//just to show that it is possible.
 In the body of the procedure, we also define a new custom type and a named constant, just to demonstrate that it is possible.
 Both symbols are also local to this {proc} and invisible outside.
 
-The indented block following the [.code]#if b:# statement is sometimes called an [.ndef]#"if then"# block
+The indented code block following the [.code]#if b:# statement is sometimes called an [.ndef]#"if then"# block
 or just [.key]#if# block -- in that block
 we define
 two other variables called [.var]#a# and [.var]#sum# of [.type]#float# type, which are also
@@ -6719,13 +5995,7 @@ as soon as the new symbol is declared.
 Other symbols of outer scopes remain visible.
 In the [.ndef]#if then block# as well as in most other indented code blocks we could also define
 named constants or custom types, these would be visible only in this block.
-//Indented code blocks can be nested -- in one block we can have more indented blocks, for which all
-//declared symbols are again local and invisible outside.
-//Indented code blocks can be nested - within one block, we can have additional indented blocks, in which all declared symbols are again local and invisible outside.
 Indented code blocks can be nested; within one block, we can have additional indented blocks in which all declared symbols are again local and invisible outside.
-//The last [.func]#echo()# statement in our code example from above is already below the [.ndef]#if then
-//block#, so the initial variable [.var]#a# of integer type becomes again visible.
-//The last [.func]#echo()# statement in our code example above is located below the [.ndef]#if-then block#, so the initial variable [.var]#a# of integer type becomes visible again.
 The last [.func]#echo()# statement in our code example above is located after the [.ndef]#if-then block#, so the initial variable [.var]#a# of integer type becomes visible again.
 
 === Global code
@@ -8474,7 +7744,7 @@ echo i, j
 //Here we have 3 assignments, first, we assign the integer literal [.lit]#7# to the variable [.var]#i#, then
 //we assign the content of variable [.var]#i# to the variable [.var]#j#, and finally, we overwrite the old
 //content of variable [.var]#i# with the new literal value [.lit]#3#.
-Here, we have three assignments: first, we assign the integer literal [.lit]#7# to the variable [.var]#i#; next, we assign the content of variable [.var]#i# to variable [.var]#j#; finally, we overwrite the old content of variable [.var]#i# with the new literal value 3[.lit]#3#.
+Here, we have three assignments: first, we assign the integer literal [.lit]#7# to the variable [.var]#i#; next, we assign the content of variable [.var]#i# to variable [.var]#j#; finally, we overwrite the old content of variable [.var]#i# with the new literal value [.lit]#3#.
 The output of the [.func]#echo()# statement
 should be [.term]#3# and [.term]#7# because, in line 3, we copy the content of variable [.var]#i#, which is
 currently the value [.lit]#7#, into variable [.var]#j#. The new assignment in line 4 in no way
@@ -9328,11 +8598,11 @@ In rare instances where a complex constructor call fails to compile, one may res
 
 == Procedures and functions
 
-//({promis} and functions, called [.key]#proc# and [.key]#func# in Nim, are the most common way to
+//({promis} and functions, called {proc} and [.key]#func# in Nim, are the most common way to
 //structure larger programs in smaller parts each with a dedicated task.
 //structure, or break larger programs into smaller, dedicated tasks which are to be performed.
 
-Procedures and functions, called [.key]#proc# and [.key]#func# in Nim, are used to
+Procedures and functions, called {proc} and [.key]#func# in Nim, are used to
 structure the program source code.
 //Functions are a subtype of {promis}, that return a value but
 //do not modify global variables or otherwise change the state of the program.
@@ -9771,7 +9041,7 @@ echo framed("Hello World")
 echo framed("Hello World", '#')
 ----
 
-The above code is one possible solution. We can use the keyword [.key]#func# instead of [.key]#proc# here,
+The above code is one possible solution. We can use the keyword [.key]#func# instead of {proc} here,
 as we only return a result and modify no states. We pass the initial {string} and the
 character for the frame both as plain value parameters and return a newly created
 framed {string}. In the function body, we start with an optimized version of the
@@ -11688,7 +10958,7 @@ by enclosing their field types in round brackets.
 //The fields of [.tup]#tuple# types
 //can be accessed by field names as we do it for [.obj]#objects#, or we can access
 //the fields with constant indices starting at zero.
-The fields of tuple types can be accessed by field names as we do with objects, or we can access the fields with constant indices starting at zero.
+The fields of {tuple} types can be accessed by field names as we do with objects, or we can access the fields with constant indices starting at zero.
 
 [source, nim]
 ----
@@ -12169,7 +11439,7 @@ before the code is processed by the C compiler.
 And as the C pre-processor can recognize some simple form of parameters, it would
 replace [.func]#SQR(a + b)# with [.code]#(a+b)*(a+b)#.
 
-In Nim we would define a [.key]#const# for [.const]#PI# and use a generic {proc} or a [.key]#template# for [.func]#SQR()#:
+In Nim we would define a {const} for [.const]#PI# and use a generic {proc} or a [.key]#template# for [.func]#SQR()#:
 
 [source, nim]
 ----
@@ -12687,11 +11957,11 @@ it was set before, indicating a negative number in the case of a numeric variabl
 Nim prefers to use textual operators instead of cryptic symbols,
 so the logical operators [.op]#and#, [.op]#or# and [op]#not# have overloads to work on the actual bit pattern of integer
 variables instead of on boolean values, and for logical left and right shifts the operators are called
-[.op]#shr# and [.op]#shl#.
-//For [.op]#shl# shifted in bits from the right are always cleared, while
-//[.op]#shr# shifts in cleared bits from the left for unsigned arguments, but preserves the
+{shr} and {shl}.
+//For {shl} shifted in bits from the right are always cleared, while
+//{shr} shifts in cleared bits from the left for unsigned arguments, but preserves the
 //leftmost set bit for signed arguments, which corresponds to an arithmetic shift operation.
-For [.op]#shl#, bits shifted in from the right are always cleared, while [.op]#shr# shifts in cleared bits from the left for unsigned arguments, but preserves the leftmost set bit for signed arguments, which corresponds to an arithmetic shift operation.
+For {shl}, bits shifted in from the right are always cleared, while {shr} shifts in cleared bits from the left for unsigned arguments, but preserves the leftmost set bit for signed arguments, which corresponds to an arithmetic shift operation.
 The Nim standard library also provides an [.func]#ashr()# function for arithmetic shifts, but that
 one seems to be a legacy.
 
@@ -12711,13 +11981,13 @@ echo j.int8.toBin(8)
 The bit-wise operators [.op]#and#, [.op]#or#, and [.op]#not# behave very similarly
 to the boolean ones, but the operation is performed on all the bit values instead of just two boolean operands.
 The shift operators require a right-hand operand specifying how many positions the
-bit pattern of the integer variable on the left should be moved. As the [.op]#shr# operator preserves the leftmost sign bit for
+bit pattern of the integer variable on the left should be moved. As the {shr} operator preserves the leftmost sign bit for
 each individual shift when applied to a signed integer argument, we get a value with the three leftmost bits set in the above example.
 For showing the bit pattern, we used the [.func]#toBin()# function in the above code, the second
 parameter determines how many bits are actually printed.
 //Remember, that for
-//unsigned numbers, [.op]#shl# by one position is a multiplication by two, and shr by one position is a division by two.
-Remember that for unsigned numbers, shifting left ([.op]#shl#) by one position is equivalent to multiplying by two, and shifting right ([.op]#shr#) by one position is equivalent to dividing by two.
+//unsigned numbers, {shl} by one position is a multiplication by two, and shr by one position is a division by two.
+Remember that for unsigned numbers, shifting left ({shl}) by one position is equivalent to multiplying by two, and shifting right ({shr}) by one position is equivalent to dividing by two.
 //Negative numbers are not allowed for the number of bits to shift -- [.code]#i = i shl -1# does compile, but the result is
 //always zero.
 Negative numbers are not allowed for the number of bits to shift. Although [.code]#i = i shl -1# does compile, the result is always zero.
@@ -12785,9 +12055,9 @@ Whenever a procedure returns a reference, the return value [.lit]#nil# can be us
 
 Another popular strategy to handle error states is the use of [.type]#Exceptions#.
 //When somewhere
-//in the code path, an invalid operation is detected, then that code can [.key]#raise# an [.type]#Exception#,
+//in the code path, an invalid operation is detected, then that code can {raise} an [.type]#Exception#,
 //to indicate that a serious error has occurred.
-If an invalid operation is detected somewhere in the code path, that code can [.key]#raise# an [.type]#Exception# to indicate that a serious error has occurred.
+If an invalid operation is detected somewhere in the code path, that code can {raise} an [.type]#Exception# to indicate that a serious error has occurred.
 
 This raised error might be handled elsewhere in the program. If it is not handled at all, the
 raised [.type]#Exception# will finally cause a program termination.
@@ -12816,7 +12086,7 @@ main()
 ----
 
 The [.func]#charToInt()# {proc} [.key]#raises# an [.type]#Exception# when the passed character is not a decimal digit.
-As the main program knows that [.func]#charToInt()# may [.key]#raise# an [.type]#Exception#,
+As the main program knows that [.func]#charToInt()# may {raise} an [.type]#Exception#,
 it encloses the [.func]#charToInt()# call in a [.key]#try/except# block: If code in the try block [.key]#raises#
 an [.type]#Exception#, then the program execution proceeds in the [.key]#except:# block.
 
@@ -12834,7 +12104,7 @@ For this reason, the popular Go programming language was initially released with
 //discuss briefly in the next section.
 In fact, the Nim compiler can help with the management of all exceptions involved by using its effect system, which is described in detail in the Nim language manual and which we will briefly discuss in the next section.
 Nim's [.type]#Exception# tracking is part of Nim's effect system --
-we can annotate each {proc} with all the various types of [.type]#Exceptions# that it may [.key]#raise#, and
+we can annotate each {proc} with all the various types of [.type]#Exceptions# that it may {raise}, and
 the compiler can help us with this annotation and verify that it is correct.
 
 === Defects and catchable errors
@@ -12864,9 +12134,9 @@ These types are further subclassed into [.type]#Defects# like [.type]#OverflowDe
 
 === Raise statement
 
-//Raising an [.type]#Exception# is done with the [.key]#raise# statement.
-An [.type]#Exception# is raised using the [.key]#raise# statement.
-//[.key]#Raise# expects a heap allocated reference to an [.type]#Exception# [key]#object#, as the lifetime of
+//Raising an [.type]#Exception# is done with the {raise} statement.
+An [.type]#Exception# is raised using the {raise} statement.
+//{raise} expects a heap allocated reference to an [.type]#Exception# {object}, as the lifetime of
 //the [.type]#Exception# instance is unknown.
 The {raise} statement expects a heap-allocated reference to an {Exception} {object}, as the lifetime of the {Exception} instance is unknown.
 Generally, we use the [.func]#newException()#
@@ -12888,10 +12158,10 @@ e.msg = "the request to the OS failed"
 raise e
 ----
 
-//If no [.type]#Exception# name is given for a [.key]#raise# call, the current [.type]#Exception# is re-raised.
-If [.key]#raise# is invoked without an [.type]#Exception# argument, the current [.type]#Exception# is re-raised.
+//If no [.type]#Exception# name is given for a {raise} call, the current [.type]#Exception# is re-raised.
+If {raise} is invoked without an [.type]#Exception# argument, the current [.type]#Exception# is re-raised.
 The [.type]#ReraiseDefect# [.type]#Exception# is raised if there is no [.type]#Exception# to re-raise.
-It follows that the [.key]#raise# statement always raises an [.type]#Exception#.
+It follows that the {raise} statement always raises an [.type]#Exception#.
 //Reraising an [.type]#Exception# can be useful in an [.key]#except# block (see below) when the actual
 //[.type]#Exception# type can not be handled.
 Reraising an {Exception} can be useful in an {except} block (see below) when the actual {Exception} type cannot be handled.
@@ -12899,7 +12169,7 @@ Reraising an {Exception} can be useful in an {except} block (see below) when the
 === Custom exceptions
 
 //Instead of raising one of the predefined [.type]#Exceptions# from the [.mod]#system# module, we can
-//create also our own variants and then [.key]#raise# them:
+//create also our own variants and then {raise} them:
 Instead of raising one of the predefined {Exceptions} from the [.mod]#system# module, we can also create our own variants and then {raise} them:
 
 [source, nim]
@@ -12951,7 +12221,7 @@ the following code block is executed.
 The statements following the [.key]#except# clauses are called [.type]#Exception# handlers.
 If there is a [.key]#finally# clause, it is always executed after the [.type]#Exception# handlers.
 
-An [.type]#Exception# is "consumed" in an [.type]#Exception# handler. However, an [.type]#Exception# handler may [.key]#raise# another [.type]#Exception#
+An [.type]#Exception# is "consumed" in an [.type]#Exception# handler. However, an [.type]#Exception# handler may {raise} another [.type]#Exception#
 or re-raise the current one, which then may be caught elsewhere or generate a program termination if it remains uncaught.
 If an [.type]#Exception# is not handled, it is propagated through the call stack. This means that often the rest of the {promi} - that is not within a [.key]#finally# clause - is not executed (if an [.type]#Exception# occurs).
 
@@ -12995,16 +12265,16 @@ except IOError as e:
 
 === Imported exceptions
 
-It is possible to [.key]#raise# and catch imported {cpp} exceptions.
+It is possible to {raise} and catch imported {cpp} exceptions.
 //The Nim language manual has a detailed example of that, see
 For a detailed example, see the Nim language manual:
 https://nim-lang.org/docs/manual.html#exception-handling-imported-exceptions
 
 === Defer statement
 
-The [.key]#defer# statement can be used to ensure that special actions like
+The {defer} statement can be used to ensure that special actions like
 closing a file or freeing resources are always executed.
-//The [.key]#defer# statement is rewritten by the compiler into a [.key]#try/finally# construct.
+//The {defer} statement is rewritten by the compiler into a [.key]#try/finally# construct.
 The {defer} statement is transformed by the compiler into a [.key]#try/finally# construct.
 
 [source, nim]
@@ -13029,12 +12299,12 @@ proc main =
     close(f)
 ----
 
-//Using [.key]#defer# is shorter, but with [.key]#try/finally# it is more obvious
-//what is going on, so some people recommend ignoring the [.key]#defer# statement.
-//Using [.key]#defer# is shorter, but [.key]#try/finally# makes it more obvious what is going on, so some people recommend ignoring the [.key]#defer# statement.
+//Using {defer} is shorter, but with [.key]#try/finally# it is more obvious
+//what is going on, so some people recommend ignoring the {defer} statement.
+//Using {defer} is shorter, but [.key]#try/finally# makes it more obvious what is going on, so some people recommend ignoring the {defer} statement.
 Using {defer} is more concise, but [.key]#try/finally# makes it more obvious what is happening, so some people recommend not using the {defer} statement.
 Actually, tasks like closing files should soon be performed by Nim's destructors
-automatically, so [.key]#defer# may get deprecated.
+automatically, so {defer} may get deprecated.
 
 References:
 
@@ -13165,7 +12435,7 @@ test()
 
 //So using destructors to release data from C libraries directly is not possible.
 Therefore, using destructors to release data directly from C libraries is not possible.
-But at least for Nim >= v1.6 destructors work for distinct [.type]#pointer# types:
+But at least for Nim >= v1.6 destructors work for {distinct} [.type]#pointer# types:
 
 [source, nim]
 ----
@@ -13698,9 +12968,9 @@ But remember, that the use of templates, inline iterators, generics, and inline 
 
 == Include
 
-The [.key]#include# statement should be not confused with the [.key]#import# statement. [.key]#Include# simply
-inserts a text file at the position where the [.key]#include# statement occurs.
-//[.key]#Include# can be
+The {include} statement should be not confused with the [.key]#import# statement. [.key]#Include# simply
+inserts a text file at the position where the {include} statement occurs.
+//{include} can be
 //used to split very large modules into smaller entities.
 The {include} statement can be used to split very large modules into smaller entities.
 
@@ -13817,7 +13087,7 @@ when we call our program on the command line without any arguments, [.func]#para
 will return the value zero. Note that [.func]#paramStr()# is not a global {array} variable, but a {promi}.
 [.func]#ParamStr(0)# gives us the name of our executable, and with arguments greater than zero
 we get the passed arguments as {strings} in ascending order. Using an index number
-for an argument that was not provided will cause [.func]#paramStr()# to raise an exception.
+for an argument that was not provided will cause [.func]#paramStr()# to {raise} an exception.
 
 //An argument evaluation similar to our C program from above may look like
 An argument evaluation similar to the one in our earlier C program could look like this:
@@ -14595,7 +13865,7 @@ to create a new file, mode [.const]#fmWrite# is used.
 Note that [.const]#fmWrite# would clear the content of an existing file, so we cannot use [.const]#fmWrite# to append data to an existing file.
 We would have to use
 [.const]#fmReadWriteExisting# or [.const]#fmAppend# to append data to an already existing file.
-As this [.func]#open()# {proc} can raise an exception, it may make sense to enclose it
+As this [.func]#open()# {proc} can {raise} an exception, it may make sense to enclose it
 in a try/except block, or we could use an [.func]#open()# variant which returns a boolean value to indicate success instead.
 When the file is successfully opened, we can use {procs} like [.func]#write()# or [.func]#writeLine()# to
 write text [.str]#strings# to the file. Both {procs} accept multiple arguments and apply the stringify operator
@@ -14611,7 +13881,7 @@ The operating system will close the file for us when our program terminates, so 
 The [.func]#close()# {proc} receives the file not as a {var} parameter, so it cannot set the file value to [.lit]#nil#.
 When the file has the value [.lit]#nil#, then the [.func]#close()# call is ignored, but when we would call
 [.func]#close()# multiple times with a non-[.lit]#nil# argument, we get a program crash.
-We may use the [.key]#try/finally# or the [.key]#defer# construct to ensure that we really close the file when done.
+We may use the [.key]#try/finally# or the {defer} construct to ensure that we really close the file when done.
 
 The [.mod]#io# module provides some {procs} like [.func]#writeBuffer()#, [.func]#writeBytes()#, or [.func]#writeChars()#, which gives us
 as a return value the actual number of bytes written. This return value should generally match
@@ -15512,7 +14782,7 @@ The overloaded [.func]#count()# functions can be used to count the characters or
 Sometimes, we may need functions like [.func]#formatFloat()#, [.func]#formatBiggestFloat()#, or [.func]#formatEng()# to format {float} numbers for output purposes. You would have to consult the [.mod]#strutils# API docs for all the format details. An [.func]#intToStr()# function with an argument to specify the minimal {string} length is also available. The {string} may have leading zeros for alignment
 
 Finally, some important functions are the parsing functions like [.func]#parseFloat()# or [.func]#parseInt()#, which convert
-[.str]#strings# to [.type]#float# or integer numbers. Both raise an exception when the [.str]#string# does not contain a valid number.
+[.str]#strings# to [.type]#float# or integer numbers. Both {raise} an exception when the [.str]#string# does not contain a valid number.
 
 //The [.mod]#strutils# module contains some more not that often used functions, like functions to
 //convert data to hexadecimal, octal, or binary representation, or to parse numbers back from that
@@ -17074,7 +16344,7 @@ The [.type]#Table# type has value semantics; that is, if you copy a whole table 
 the content is not copied, when you assign one instance of a [.type]#TableRef# to another variable.
 
 In the example above, we called [.func]#hasKey()# to check if a data record is available before we accessed that record.
-Access with the subscript operator [.op]#[]# would raise an exception when an entity is not available in the table.
+Access with the subscript operator [.op]#[]# would {raise} an exception when an entity is not available in the table.
 [.func]#HasKey()# and [.op]#[]# both would have to locate the data record.
 //A faster way to access data records when we are not sure
 //if they exist in the table is the [.func]#getOrDefault()# {proc}:
@@ -17196,7 +16466,7 @@ echo t[5.0 - 3.0]
 ----
 
 For [.type]#floats#, a predefined hash function is available, so the code above should work. But [.type]#floats# as keys are a bit fragile due
-to the fact that [.type]#float# math is not really exact. So the last line in the above code may raise an exception due to
+to the fact that [.type]#float# math is not really exact. So the last line in the above code may {raise} an exception due to
 access of a non-existent entry, as the difference [.lit]#5.0 - 3.0# may not exactly be identical to the value [.lit]#2.0#.
 
 Hash tables can be even useful containers when we already have numeric data as possible keys for indices in a
@@ -23183,7 +22453,7 @@ But at least we have learned how we can access the various parts of a {macro} ar
 
 === Pragma macros
 
-All [.mac]#macros# and [.key]#templates# can also be used as pragmas. They can be attached to routines ([.key]#procs#, [.key]#iterators#, etc.), type names, or type expressions.
+All [.mac]#macros# and [.key]#templates# can also be used as pragmas. They can be attached to routines ({procs}, [.key]#iterators#, etc.), type names, or type expressions.
 In this section, we will show a small example, of how a {proc} pragma can be used to print
 the {proc} name whenever a {proc} annotated with that pragma is called:
 
@@ -25834,7 +25104,7 @@ clients. So the [.func]#serve()# {proc} adds each new client to that seq and {pr
 the connected clients, followed by a [.slit]#"\c\L"# to separate the messages. And
 instead of [.code]#waitFor sleepAsync()# [.func]#runForever()# is used, and instead
 of assigning the results of the {procs} [.func]#serve()# and [.func]#processClient()#
-of [.type]#Future[void]# type to an unused variable, or to discard them, these
+of [.type]#Future[void]# type to an unused variable, or to {discard} them, these
 results are passed to [.func]#asyncCheck#. [.func]#AsyncCheck# is used to provide us
 with some error messages if something goes wrong -- it sets a callback on the future
 argument, which raises an exception if the future should finish with an error state.
@@ -27915,22 +27185,21 @@ footnote:[Actually, Nim relaxes this strict notation a bit, which is called
 Keywords:
 The following keywords are reserved and cannot be used as identifiers:
 
-addr and as asm
-bind block break
+addr and as 
+block break
 case cast concept const continue converter
-defer discard distinct div do
+div do
 elif else end enum except export
 finally for from func
-if import in include interface is isnot iterator
+if import in  is isnot iterator
 let
-macro method mixin mod
+macro method mod
 nil not notin
 object of or out
 proc ptr
-raise ref return
-shl shr static
-template try tuple type
-using
+ ref return
+ static
+template try type
 var
 when while
 xor

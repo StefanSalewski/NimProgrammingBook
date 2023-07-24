@@ -12,7 +12,7 @@
 ~/bin/asciidoctor -D output -a rouge-style=thankful_eyes -a stylesheet=css/adoc.css -o nimprogramming_rouge_thankful_eyes.html nimprogramming.adoc
 ~/bin/asciidoctor -D output -a rouge-style=tulip -a stylesheet=css/adoc.css -o nimprogramming_rouge_tulip.html nimprogramming.adoc
 
-~/bin/asciidoctor -D output -a rouge-style=molokai -a stylesheet=css/adoc.css -o nimprogramming.html nimprogramming.adoc
+~/bin/asciidoctor -D output -a rouge-style=molokai -a stylesheet=css/adoc.css -a attribute-missing=warn -o nimprogramming.html nimprogramming.adoc
 ~/bin/asciidoctor -D output -a rouge-style=molokai -a stylesheet=css/adoc-colony.css -o nimprogramming_adoc-colony.html nimprogramming.adoc
 ~/bin/asciidoctor -D output -a rouge-style=molokai -a stylesheet=css/adoc-foundation.css -o nimprogramming_adoc-foundation.html nimprogramming.adoc
 ~/bin/asciidoctor -D output -a rouge-style=molokai -a stylesheet=css/adoc-foundation-lime.css -o nimprogramming_adoc-foundation-lime.html nimprogramming.adoc
