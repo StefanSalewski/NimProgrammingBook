@@ -8,6 +8,7 @@
 .ndef{font-style: italic}
 .italic{font-style: italic}
 .op{font-family: monospace; font-weight: bold}
+.strop{font-family: monospace; font-weight: bold}
 .key{font-weight: bold}
 .proc{} /* the proc keyword in text */
 .mac{} /* the macro keyword in text */
@@ -20,6 +21,8 @@
 .var{font-family: monospace; font-style: italic}
 .mod{font-family: monospace; font-variant: small-caps}
 .lit{font-family: monospace; font-style: italic}
+.clit{font-family: monospace; font-style: italic} /* the same as .lit, but never enclosed with backticks */
+.slit{font-family: monospace; font-style: italic}
 .const{font-family: monospace; font-style: italic}
 .code{font-family: monospace; background-color: #EEE; color: #000}
 .term{font-family: monospace; background-color: #EEE; color: #000}
@@ -28,4 +31,17 @@
 .unit{} /* GB, nm*/
 .nim{}
 
+/*
+
+.var::before, .term::before, .code::before, .func::before, .const::before, .lit::before, .op::before, .key::before, .type::before, .mod::before, .str::before, .obj::before, .tup::before, .mac::before, .array::before {
+  content: "'";
+  font-weight: normal
+}
+
+.var::after, .term::after, .code::after, .func::after, .const::after, .lit::after, .op::after, .key::after, .type::after, .mod::after, .str::after, .obj::after, .tup::after, .mac::after, .array::after {
+  content: "'";
+  font-weight: normal
+}
+
+*/
 

@@ -649,6 +649,8 @@ ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .olist, .olist .ulist 
 .var{font-family: monospace; font-style: italic}
 .mod{font-family: monospace; font-variant: small-caps}
 .lit{font-family: monospace; font-style: italic}
+.clit{font-family: monospace; font-style: italic} /* the same as .lit, but never enclosed with backticks */
+.slit{font-family: monospace; font-style: italic}
 .const{font-family: monospace; font-style: italic}
 .code{font-family: monospace; background-color: #EEE; color: #000}
 .term{font-family: monospace; background-color: #EEE; color: #000}

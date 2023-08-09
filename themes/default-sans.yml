@@ -53,6 +53,14 @@ role:
     font-family: Courier
     font-style: italic
     
+  clit:
+    font-family: Courier
+    font-style: italic
+    
+  slit:
+    font-family: Courier
+    font-style: italic
+    
   const:
     font-family: Courier
     font-style: italic
