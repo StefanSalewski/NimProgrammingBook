@@ -1,12 +1,13 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-AUG-07
+//v0.1, 2023-SEP-12
 :doctype: book
 :part-signifier: Part
 // mobi does not work with SVG!
 :front-cover-image: image:default-cover.svg[Front Cover,1050,1600]
 //:front-cover-image: image:GPT-4.jpg[Front Cover,1050,1600]
 :partnums:
+:hyphens:
 :toc: left
 :icons: font
 :attribute-missing: warn
@@ -166,6 +167,9 @@ A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
 :bool: pass:q[[.type]#bool#]
 
 ////
+
+I am writing a book about the Nim programming language.
+Please list the grammar and spelling errors for the following text segment. Show the correction, and explain what is wrong: (Do not print the full text, only show the mistakes and your corrections.)
 
 Check for hyphen -- pts -- from use -- from use x from  key—or by 
 
@@ -347,15 +351,22 @@ Or you may prefer the
 recently published book of Mr. Rumpf, called "Mastering Nim: A complete guide to the programming language"
 available at Amazon.com.
 
-This book is based on the Nim reference implementation of Mr. A. Rumpf.
-Although the initial pages of this book were written in the spring of 2020, the book should be mostly up-to-date with the latest stable version, 1.6, of the Nim 1.x series.
+This book is based on the Nim reference implementation by Mr. A. Rumpf.
 Most explanations and examples should also be valid for other implementations, like the one at https://github.com/nim-works/nimskull.
-Mr. Rumpf has announced the release of Nim 2.0 for early 2023.
+
+Although the initial pages of this book were written in the spring of 2020, the book should be mostly up-to-date with
+Nim versions 1.6 and 2.0.
+
+Nim version 1.6.14 was released on 27 June 2023 and includes many bug fixes for the 1.0 branch. Nim 2.0, initially announced for early 2023,
+was finally released on 01 August 2023.
+
 The v2.0 release brings many improvements but does not include any serious breaking changes that would invalidate old code.
 Only a few minor modifications might be necessary for old code to compile and run again.
 In this book, we may use and discuss a few Nim 2.0
-features, but all code should be compatible with the 1.x series of the compiler or with nimskull (cyo) with no
-or only minor changes. The most important change for Nim 2.0 is that ORC memory management is now the default,
+features, but most code should be compatible with the 1.x series of the compiler or with nimskull (cyo) with no
+or only minor changes.
+
+The most significant change in Nim 2.0 is that ORC memory management has become the default
 indicating that it is considered ready for use in production. ORC gives us GC-like, fully deterministic memory management
 with minimal overhead compared to manual memory handling. It reduces the maximal memory consumption of apps,
 avoids GC-generated delays, and may increase the performance of our programs. Additionally, ARC and ORC memory management
@@ -475,6 +486,7 @@ We recently used GPT-4 to create a short Nim info page: https://nimprogramming.c
 
 = Introduction
 
+(((introduction)))
 [quote]
 ____
 Give me a video; I get a headache from reading.footnote:[https://irclogs.nim-lang.org/19-03-2023.html#00:04:26]
@@ -490,7 +502,7 @@ Nevertheless, professional racing drivers typically require a much deeper unders
 
 == What is a computer?
 
-A computer is primarily a device that runs computer programs by following
+A ((computer)) is primarily a device that runs computer programs by following
 instructions on how to manipulate data.
 
 Nearly all computers currently in use -- from tiny ones integrated into electronic gadgets, to well-known desktop computers (PCs), and large, powerful supercomputers filling entire rooms -- work internally with digital data only.footnote:[In the past, some forms
@@ -571,6 +583,7 @@ not the topic of this book.
 
 == Analogue and digital
 
+(((analogue))) (((digital)))
 Whenever we measure a quantity using a base unit, thus providing a certain level of granularity, we operate within the digital realm.
 Our ordinary money is digital,
 as the cent is the smallest base unit; you will never pay a fraction of a cent
@@ -652,6 +665,7 @@ The digital data output from the computer is then converted by a device known as
 
 == What is an operating system?
 
+(((operating system))) (((OS)))
 Most computers, from cellphones to large supercomputers, use an [.ndef]#{os}# (OS).
 A well-known OS is GNU/Linux.
 An operating system can be seen as the initial program that is loaded and started when we switch the computer on, functioning as a kind of supervisor:footnote:[Well, before the OS is loaded and starts execution,
@@ -691,6 +705,7 @@ Small microcontrollers and embedded devices often do not require an operating sy
 
 == What is a user interface?
 
+(((user interface)))
 To interact with the OS and the application programs running on the
 computer, we need some form of user interface. Traditional user interfaces
 are text-centric and often provided directly by the OS as one single text screen
@@ -722,11 +737,13 @@ Linux systems are sometimes used without a GUI, and various GUI toolkits, such a
 
 == What is computer programming?
 
+((("programming, computer")))
 Computer programming involves the creation, testing, and optimization of computer
 programs.
 
 == What is a computer program?
 
+((("program, computer"))) ((("computer, program")))
 A computer program is essentially a sequence of numbers that are meaningful to a computer CPU. The CPU recognizes these numbers as [.ndef]#instructions# or [.ndef]#numeric machine code#, such as the instruction to add two numbers.
 The first computers, built in the 1950s, were programmed by feeding sequences of plain numbers to the device.
 The numbers were stored on what were known as [.ndef]#punch cards#. These were made of strong paper and the numbers were encoded through holes in the cards.
@@ -765,6 +782,8 @@ programming languages such as Algol, Fortran, C, Pascal, and Basic were created.
 //Simple C program here, with its assembly code from godbolt.org.
 
 == What is an algorithm?
+
+((( algorithm)))
 An [.ndef]#algorithm# is a detailed sequence of instructions, often abstract, designed to solve a specific task or to reach a goal.
 
 Recipes from cookbooks and car repair instructions are examples of algorithms.
@@ -795,6 +814,7 @@ optionally print the final value of sum
 
 == What is a programming language?
 
+((("language, programming"))) (((programming language)))
 Most traditional programming languages were designed to translate algorithms into elementary CPU instructions.
 Algorithms typically contain nested conditionals, repetition, math
 operations, recovery from errors, and potentially plausibility checks.
@@ -811,6 +831,7 @@ Programming languages provide support for all these use cases.
 
 == Compilers and interpreters
 
+(((compiler))) (((interpreter)))
 We already learned that the CPU in the computer can execute only simple instructions,
 which we call numeric machine code or assembly instructions.
 
@@ -1111,6 +1132,7 @@ The integration of the "Read/Eval/Print Loop" (REPL), "Hot code reloading", and 
 
 === Some facts about Nim
 
+(((facts, about Nim)))
 * Nim is a multi-paradigm programming language. Unlike some popular programming
 languages, Nim doesn’t predominantly focus on the OOP paradigm.
 It's primarily an imperative and procedural programming language, but it also supports OOP, data-oriented, functional, declarative, concurrent, and various other programming styles.
@@ -1252,6 +1274,7 @@ echo str # "0, 0, 800, 600"
 
 === Nim is efficient
 
+(((efficient)))
 Nim is a compiled, statically-typed language. Unlike interpreted, dynamically-typed languages like Python, where every statement must be run to check for errors, the Nim compiler catches most errors during the compilation process.
 The static typing, in conjunction with Nim's robust type system, allows the compiler to catch a majority of errors, such as undefined operations like adding a number to a letter, during compilation. These errors are reported in the terminal window or directly in the editor or IDE.
 When no errors are found or after all errors have been fixed, the compiler generates highly optimized, dependency-free executables. This compilation process is typically quite fast; for example, the compiler can compile itself in less than 10 seconds on a modern PC.
@@ -1268,6 +1291,7 @@ for embedded systems, hardware drivers, and {os} development.
 
 === Nim is expressive and elegant
 
+(((expressive))) (((elegant)))
 Nim offers a modern type system with [.plain]#templates#, generics, and type inference.
 Built-in advanced data types such as dynamic containers, sets, and strings with full UTF support are complemented by a large collection of library types like hash tables and regular expressions.
 While Nim supports the traditional Object-Oriented Programming style with inheritance and dynamic dispatch, it doesn't enforce this paradigm, instead offering modern concepts such as procedural and functional programming.
@@ -1282,6 +1306,7 @@ meta-programming, as well as many Domain Specific Language (DSL) extensions.
 
 === Nim is open and free
 
+(((open, and free, MIT license)))
 Both the Nim compiler and all modules of the standard library are implemented in Nim.
 All source code is available under the permissive MIT license.
 
@@ -1289,6 +1314,7 @@ All source code is available under the permissive MIT license.
 
 === Nim has a community
 
+(((community, Nim))) (((forum, Nim))) (((IRC, Nim)))
 The Nim forum is hosted at:
 
 https://forum.nim-lang.org/
@@ -1317,6 +1343,7 @@ which will enhance parallel processing support and the utilization of Nim in emb
 
 === Nim is not a virus
 
+(((virus, Nim software)))
 Because Nim is a powerful yet simple systems programming language, it has been exploited by a few individuals to write malware in recent years. As a result, numerous Nim programs, including the compiler and other official tools,
 frequently get falsely flagged as viruses on Windows.
 Unfortunately,
@@ -1335,6 +1362,7 @@ References:
 
 === Why is Nim not a popular mainstream language yet?
 
+(((popularity, Nim)))
 Mr. A. Rumpf initiated the development of Nim in 2008, and since then, he, along with a handful of volunteers, has been diligently advancing its development.
 Finally, in 2018, Nim got some significant monetary support from [.ndef]#Status Corp.#, and in 2019, the stable Nim version 1.0 was released.
 However, Nim is still developed by a small core team and some volunteers, while other languages like Java, C{hashtag}, Go, or Rust are supported by large companies, or, like C and {cpp}, have a very long history and well-trained users.
@@ -1421,6 +1449,7 @@ However, even if the development of Nim were to cease someday, you would still b
 
 === Is Nim a good choice as the first language for a beginner?
 
+(((beginner)))
 When you use C as your first language, you may learn a lot about how computers really work, but the learning experience may not be as enjoyable, progress can be slow, and C lacks many concepts of modern programming languages.
 {cpp}, Rust, and Haskell are often too difficult for beginners.
 So, currently, many beginners start with Python.
@@ -1432,6 +1461,7 @@ Although learning resources for Nim are not yet as developed as those for mainst
 
 === Is Nim really a good teaching language?
 
+(((teaching)))
 Generally yes, in the same way as Pascal was in the 1980s, and Modula/Oberon was
 at the end of the last century.
 However, Nim still faces the same issues as Wirthian languages: it doesn’t necessarily assist in job seeking.
@@ -1442,6 +1472,7 @@ When they are keen to learn JavaScript to create visual effects or similar tasks
 
 === So, is Nim really the best starting point for me?
 
+(((starting, with Nim)))
 Maybe not. If you intend to learn a programming language today and want to make a great video game tomorrow, then Nim is definitely not the best starting point.
 This
 is just not possible. While there are nice libs for making games
@@ -1467,6 +1498,7 @@ However, Nim now has sufficient learning resources, so we indeed recommend start
 
 === Why should I not use Nim?
 
+(((Nim, why not use)))
 Perhaps it is simply not the ideal solution for you.
 Both a racing bicycle and a mountain bike are excellent, but for cycling a few hundred meters to the baker’s shop, neither might be the perfect solution.
 A standard bicycle would be more suitable.
@@ -1481,6 +1513,7 @@ If you require certain important libraries for your project that are currently u
 
 === How long does it take to learn Nim?
 
+(((learning Nim, effort)))
 Some people might tell you that you can learn it in just two weeks.footnote:[Not Nim, but VLang: https://vlang.io/: "You can learn the entire language by going through the documentation over a weekend."]
 Perhaps, when you are very, very bright.
 However, if it were that easy, the world would be filled with Nim experts.
@@ -1504,6 +1537,7 @@ language, having an interesting project for which you intend to use the language
 
 == Our first Nim program
 
+(((Nim, first program)))
 To maintain our motivation, let's now present our first tiny Nim program.
 Ideally, we would delay this section until after installing the Nim compiler on our computer. However, we can already run and test the program by copying it into one of the available Nim online playgrounds like
 
@@ -1686,6 +1720,7 @@ Johann Carl Friedrich Gauss (1777 – 1855), who is said to have used this metho
 
 == Binary numbers
 
+(((numbers, binary))) (((binary numbers)))
 When we write numbers in everyday life, we typically use the decimal system with base 10, which includes the ten available digits 0 through 9.
 To get the value of a decimal number, we
 multiply each digit with powers of 10 depending on the position of the digit and sum
@@ -1862,6 +1897,7 @@ and perhaps a few other invalid math operations like division by zero).
 
 == Hexadecimal numbers
 
+(((numbers, hexadecimal))) (((hexadecimal numbers)))
 Hexadecimal numbers, based on the 16-base numerical system, might seem less prevalent compared to binary numbers and their technical rationale may not be immediately apparent. However, these numbers continue to be relevant and you might come across them occasionally in various contexts. Originally, hexadecimal numbers emerged from the infancy of computer science when programming was primarily conducted through numerical codes rather than sophisticated programming languages. Despite their historical origin, hexadecimal numbers remain integral to modern computing. They serve as a more human-friendly representation of binary numbers, facilitating their comprehension and manipulation. This function has led to their extensive use in different areas of computing, including programming and networking. So, even though hexadecimal numbers are seen as a remnant from the nascent phase of computing, they retain their utility and relevance in contemporary computer science.footnote:[GPT-4 changed the content of this paragraph, as it considers hexadecimal numbers more important than we initially did.]
 To represent the 16 possible values of a hexadecimal digit, the 10 decimal digits [.lit]#0# up to [.lit]#9# are supplemented with the characters [.lit]#A# through [.lit]#F#.
 The most significant characteristic of a hexadecimal digit is that it can represent four bits -- a unit equivalent to half of a byte, sometimes called a nibble.
@@ -1943,6 +1979,7 @@ The only place where we will encounter hexadecimal characters again in this book
 
 == Installation of the compiler
 
+(((installation, compiler))) (((compiler, installation)))
 We will not go into great detail about installing the Nim compiler, as the process largely depends on your operating system, and the installation instructions may change in the future.
 We assume that you have a computer with an installed
 operating system and Internet access, and you are able to do at least very basic
@@ -1969,6 +2006,7 @@ This process is also straightforward and is described here: https://github.com/n
 
 == Creation of source-code files
 
+(((source code, creation))) (((creating source code)))
 Nim source code, like the source code of most other programming languages, is based on text
 files. Text files are documents saved on your computer that contain only ordinary
 letters, which you can type on your keyboard. This means no images or videos, no HTML content
@@ -2024,6 +2062,7 @@ newline character is inserted, and the cursor moves to the start of the next lin
 
 == Launching the compiler and running the program
 
+(((compiler, launching))) (((launcing the compiler))) (((program, run))) (((running the program)))
 If you are working from a Linux terminal, then you can type
 
 ----
@@ -2171,6 +2210,8 @@ The `++`object`++` type ...
 The `pass:c[`object`]` type ...
 
 ////
+
+(((stropping, keywords))) (((keywords, stropping))) (((backticks, keywords)))
 Before concluding this introduction, we should mention that the Nim language supports stropping for keywords and operators by enclosing them in backticks.
 This way, it is possible to use Nim keywords like [.key]#type#, [.key]#from#, or {object} as ordinary symbols, for example, as variable or field names.
 Typically, we avoid using keywords as ordinary symbols.
@@ -2193,6 +2234,7 @@ We will also discuss various basic data types, including the container types: [.
 
 == Declarations
 
+(((declarations))) (((basics, Nim)))
 In the Nim programming language, declarations serve a significant role by allowing us to define constants, variables, {promis}, and even our unique data types.
 Declarations serve to inform both the compiler and the human reader about crucial attributes such as the name and data type of the variable we intend to use. Being a statically and strongly typed language, Nim requires this information for the compiler to function correctly.
 These declarations are not only useful to the compiler but also prove beneficial for us as programmers. They act as compact references, simplifying the process of understanding and managing the code. This is particularly valuable when collaborating with others, as it ensures clear communication and consistency in coding style, fostering a more effective development environment.footnote:[This section was provided by GPT-4.]
@@ -2322,6 +2364,7 @@ For other entities, such as constants, variables, data types, or modules, the di
 
 == Statements
 
+(((statements)))
 Statements, or instructions, are a core component of Nim programs; they tell the
 computer what it shall do.
 //Statements, also known as instructions, are a core component of Nim programs that guide the computer's actions.
@@ -2558,6 +2601,7 @@ Either form would generate identical code in the executable, so it's a matter of
 
 == Input and output
 
+(((input))) (((output)))
 We have already used the [.func]#echo()# {promi} for displaying textual output in the terminal
 window.
 In previous code examples, we passed integer type arguments to the [.func]#echo()# {proc}. This {promi} automatically converted these integers into a textual sequence of decimal digits for display in the terminal window.
@@ -2653,6 +2697,7 @@ character, after all the arguments have been printed.
 
 == Data types
 
+(((data types))) (((types, data)))
 Nim is a statically typed programming language, which means that all variables have a well-defined data type, and this data type does not change during program execution.
 Moreover, we say that Nim is a strongly typed language, meaning that it does nearly no automatic type conversions when variables are assigned to each other or used in expressions or as arguments in function calls.
 Automatic type conversion may seem beneficial at first, but it can easily introduce errors or degrade the performance of our programs.
@@ -2695,9 +2740,11 @@ while others may say that this distinction allows us to differentiate built-in t
 
 At least, we can agree that using capital notation for common types such as [.type]#Int#, [.type]#Float#, or [.type]#String# would be more difficult to type and wouldn’t look as nice.
 
+//=== Integer types (((Integer types, "types, int", int)))
 === Integer types
 
-We've already mentioned the {int} data type, a signed integer that can be either [.lit]#4# or [.lit]#8# bytes depending on the operating system. The reasoning behind Nim's {int} size depending on the OS word size will become clearer as we explore concepts of references and {pointers}. For now, let's provide a brief explanation for readers already familiar with {pointers} and their role in memory addressing. If you're unfamiliar with {pointers}, feel free to skip this section.
+(((integer, types)))(((types, integer)))(((data types, integer)))
+We've already mentioned the (({int})) data type, a signed integer that can be either [.lit]#4# or [.lit]#8# bytes depending on the operating system. The reasoning behind Nim's {int} size depending on the OS word size will become clearer as we explore concepts of references and {pointers}. For now, let's provide a brief explanation for readers already familiar with {pointers} and their role in memory addressing. If you're unfamiliar with {pointers}, feel free to skip this section.
 The reasoning behind Nim's {int} size dependency on the OS lies in memory addressing. A 32-bit OS can generally address [.lit]#2^32# bytes (which equals 4 GBytes), limiting {pointers} and references to [.lit]#32# bits. Having more bits wouldn't be practical. Integers often serve as indices for {arrays} and sequences, interacting with computer memory in ways similar to {pointers} and references. So, in a 32-bit OS with 32-bit pointers, 32-bit integers are sufficient as {array} indices since an {array} cannot have more than [.lit]#2^32# entries.
 In contrast, a 64-bit OS, equipped with 64-bit {pointers}, might require 64-bit integers as indices for larger {arrays} and sequences.
 However, exceptions exist. There could be scenarios where 32-bit integers are sufficient on a 64-bit OS, or situations on a 32-bit OS requiring 64-bit integers, such as for extensive counting tasks.
@@ -2866,9 +2913,10 @@ only for parameter lists of +(C)+ library functions. To match other C integer ty
 front of the name like clong.
 Again, you should consult the Nim language manual if you need more details, for example, when you create bindings to external libraries.
 
-=== Floating-point types
+=== ((Floating-point types))
 
-Another important numeric data type is [.type]#float#, for floating-point numbers. [.type]#Floats# are
+(((floating-point types)))(((types, float)))(((data types, float)))
+Another important numeric data type is [.type]#((float))#, for floating-point numbers. [.type]#Floats# are
 approximations of real numbers. They can also store fractions and are most often
 printed in the decimal system with a decimal point, or in scientific notation with an
 exponent. Examples of the use of variables of the [.type]#float# data type are
@@ -3159,6 +3207,7 @@ References:
 
 === Distinct types
 
+(((distinct, types)))(((types, distinct)))(((data types, distinct)))
 Before we continue with subrange types, we should introduce the {distinct} types.
 In the real world, there are many quantities for which the set of meaningful mathematical operations is restricted, and these should not be mixed with quantities of other types.
 For example, we may have physical quantities such as time and distance, measured in seconds and meters respectively, mapped to the {float} or {int} data type.
@@ -3190,6 +3239,7 @@ is enough that we know about their existence.
 
 === Subrange types
 
+(((subrange, types)))(((types, subrange)))(((data types, subrange)))
 Sometimes it makes sense to limit the range of numeric variables to only a sub-range.
 For this, Nim uses the [.key]#range# keyword with the following notation: [.code]#range[LowVal .. HighVal]#.
 Values of this type can never be smaller than LowVal or larger than
@@ -3247,6 +3297,7 @@ However, we would then have to define the allowed operations ourselves or borrow
 
 === Enumeration types
 
+(((enumeration, types)))(((types, enumeration)))(((data types, enumeration)))
 Enumeration types are shortened as [.key]#enum# in Nim.
 While [.type]#enums# in C are nothing more than integers with some special syntax for
 creation, Nim's [.type]#enums# are more complex.
@@ -3349,6 +3400,7 @@ a BaseColor as well, so we do not need the prefix anymore. For details, see the 
 
 === Boolean types
 
+(((boolean, types)))(((types, boolean)))(((data types, boolean)))
 Boolean types are used to store the result of logical operations. The type is called
 [.type]#bool# in Nim and can store only two values, [.lit]#false# and [.lit]#true#. Although we have only two
 distinct states for a boolean variable and so one single bit would suffice to store a
@@ -3408,6 +3460,7 @@ present a {promi} that actually may get faster by using such a trick.
 
 === Characters
 
+(((character, types)))(((types, character)))(((data types, character)))
 The data type for single characters in Nim is called [.type]#char#. A variable of this type has 8 bits and is used to store individual characters.
 Indeed, it stores 8-bit integers which are
 mapped to characters. The mapping is described by the ASCII table. For example, the
@@ -3580,6 +3633,7 @@ characters of the C language, so you may also consult C literature for more deta
 
 === Ordinal types
 
+(((ordinal, types)))(((types, ordinal)))(((data types, ordinal)))
 In Nim, integers, enumerations, characters, and boolean types are ordinal types.
 Ordinal types are countable and ordered, and for each of these types, a lowest and largest member exists.
 The integer ordinal types support the [.func]#inc()# and [.func]#dec()#
@@ -3592,6 +3646,7 @@ wrap around, instead of generating overflow and underflow errors.
 
 === Sets
 
+(((set, types)))(((types, set)))(((data types, set)))
 In mathematics, sets are considered an unordered collection where we can test membership (x is included in mySet) and perform operations like building the union of multiple sets.
 In Nim, we can have sets of all the ordinal
 types and the unsigned integer types, but due to memory restrictions, integer
@@ -3856,6 +3911,7 @@ corresponding sets.
 
 === Strings
 
+(((string, types)))(((types, string)))(((data types, string)))
 The {string} data type is a sequence of characters. It is used whenever textual input
 or output operations are performed.
 Usually, it is a sequence of ASCII characters, but characters in the {string} can also be interpreted as UTF-8 Unicode characters,
@@ -4010,6 +4066,7 @@ when we introduce the {object} data type.
 
 ==== Entering Unicode characters
 
+(((unicode, characters)))(((characters, unicode)))(((unicode, entering)))
 UTF-8 is a variable-width character encoding. To cite the introduction section from
 https://en.wikipedia.org/wiki/UTF-8:
 
@@ -4044,6 +4101,7 @@ See https://en.wikipedia.org/wiki/Unicode_input for details and other {os}s.
 
 ==== The cstring data type
 
+(((cstring, types)))(((types, cstring)))(((data types, cstring)))
 In the C programming language, [.str]#strings# are [.type]#pointers# to sequences of characters terminated by a null character [.clit]#'\0'#.
 footnote:[We will explain later in this book what [.type]#pointers# are, so if you have
 no idea for what [.type]#pointers# are used in computer programming, then just ignore it for
@@ -4098,6 +4156,7 @@ may contain multiple zero bytes, while Nim {strings} should not.
 
 ==== Escape sequences in strings
 
+(((strings, escape sequences)))(((escape sequences, in strings)))
 We learned about control characters already in the section about characters, and
 earlier in this section, we mentioned that {strings} can also contain control
 characters. As the use of control characters may not be really easy to understand, we
@@ -4163,6 +4222,7 @@ Currently, Nim allows the use of capital letters in place of the lowercase ones 
 
 ==== Raw strings and multi-line strings
 
+(((raw strings, type)))(((types, raw string)))(((data types, raw string))) (((multi-line string, type)))(((types, multi line string)))(((data types, multiline-string)))
 In rare situations, you may want to print exactly what you have typed, so you do not
 want the compiler to replace a [.clit]#'\n'# with a newline character.
 You can do that in two ways: You can [.italic]#escape# the escape character, that is, you put one more backslash in front of the existing backslash.
@@ -4192,6 +4252,7 @@ Both [.func]#echo()# commands above generate the exact same machine code!
 
 === Comments
 
+(((comments)))(((source code, comments)))
 Comments are not a data type, yet they are important.
 Ordinary comments
 start with the hashtag character [.lit]#{hashtag}# and extend to the end of the line. The [.lit]#{hashtag}#
@@ -4236,6 +4297,7 @@ We will learn more about these types in later sections of the book.
 
 == Nim source code
 
+(((source code, Nim)))
 You have already seen a few examples of simple Nim source code.
 The code essentially consists of a plain text file made up of ASCII characters - that is, the ordinary characters that you can type on your keyboard.
 Generally, Nim source code can also contain
@@ -4340,6 +4402,7 @@ If you overlook this aspect and attempt to convert from C to Nim, removing the b
 
 === Blocks, scopes, visibility, locality, and shadowing
 
+(((blocks)))(((scopes)))(((visibility)))(((locality)))(((shadowing)))
 Like most other programming languages, Nim has the concept of [.ndef]#code blocks# or scopes.
 The bodies of {promis}, functions, [.key]#iterators#, [.key]#templates#, and {macros} as well as those of various loop constructs or code following conditional statements, build indented blocks and create new scopes.
 In this new scope, we can define variables, named constants, or types
@@ -4407,6 +4470,7 @@ The last [.func]#echo()# statement in our code example above is located after th
 
 === Global code
 
+(((code, global)))(((source code, global)))(((global, code)))
 In the introductory sections of the book, we generally used program code at a global level, not embedded in a {promi} body.
 We did this for simplicity, as we hadn't yet introduced {promis}.
 Global code is sometimes used in small scripts or for
@@ -4429,6 +4493,7 @@ can increase the executable size, as the BSS segment is a part of the program ex
 
 === Whitespace, punctuation, and operators
 
+(((space, white)))(((whitespace)))(((punctuation)))(((operators)))
 The space character, with decimal ASCII value [.lit]#32#, is used in Nim program code
 to indent code blocks and separate different symbols from each other.
 Nim’s keywords are always separated from other symbols by leading and trailing whitespace, while other symbols are most often separated by punctuation and an additional, optional space character.
@@ -4445,6 +4510,7 @@ We will learn more about {promi} calls and the {tuple} data type later.
 
 === Operators
 
+(((operators)))
 Nim uses the following punctuation characters as operators:
 
 ----
@@ -4470,6 +4536,7 @@ Since version 1.6, Nim also allows the definition and use of a few Unicode opera
 
 === Order of execution
 
+(((execution, order of)))(((order of execution)))
 Global program code, or code enclosed in {promis}, is generally executed from top to bottom and from left to right, unless control structures enforce a different order.
 To demonstrate this, we use here a set of four different {procs}, which contain an [.func]#echo()# statement each, and
 return a numeric expression.
@@ -4532,6 +4599,7 @@ Note that, in Nim as in most other programming languages, the assignment operato
 
 == Control structures
 
+(((structures, control)))(((control structures)))(((control, flow of)))(((flow of cntrol)))
 Larger computer programs generally consist not only of code that is executed linearly but also of code for conditional or repeated execution.
 
 The most important control structures of Nim are the [.key]#if# statement for conditional
@@ -4545,6 +4613,7 @@ including other loops.
 
 === If statement and if expression
 
+(((statement, if)))(((if statement)))(((conditional execution)))
 The [.key]#if# statement with multiple optional [.key]#elif# branches and an optional [.key]#else# branch evaluates a sequence of
 boolean conditions at program runtime.
 As soon as one condition evaluates as [.lit]#true#, the corresponding statement block is executed, and thereafter, the program execution continues after the entire [.key]#if# construct.
@@ -4680,6 +4749,7 @@ a = if b: 1 else: 0.0 # invalid, different types!
 
 === The when statement
 
+(((statement, when)))(((when staement)))(((conditional execution, at compile time)))
 The [.key]#when# statement is syntactically very similar to the [.key]#if# statement,
 but while all the boolean conditions are evaluated during the program runtime for the
 [.key]#if# statement, for the [.key]#when# construct all the when/elif/else conditions have to be
@@ -4725,6 +4795,7 @@ Just like the [.key]#if# construct, [.key]#when# can also be used as an expressi
 
 === The case statement
 
+(((statement, case)))(((case statement)))(((statement, switch)))
 The case statement is not used that often, but it can be useful when we have many
 similar conditions:
 
@@ -4773,6 +4844,7 @@ block after the [.key]#case# keyword if we want.
 
 === The while loop
 
+(((loop, while)))(((while loop)))(((execution, repeated)))
 The [.op]#while# loop is used when we want to implement conditional repetitions, i.e., when we want to check a condition and execute a block of statements only as long as the condition remains [lit]#true#.
 If the condition is [.lit]#false# in advance or becomes [.false]#false#
 after some repetitions, then the program execution proceeds after the indented loop body block.
@@ -4840,6 +4912,7 @@ functionality.
 
 === The block statement
 
+(((statement, block)))(((block statement)))
 The [.key]#block# statement can be used to create a new indented code [.key]#block#, creating a new scope in the same way that an [.code]#if true:# statement would:
 
 [source, nim]
@@ -4873,6 +4946,7 @@ Before Nim 2.0, it was possible to use a [.key]#break# statement in unnamed [.ke
 
 === For loops and iterators
 
+(((loop, for)))(((execution, repeated)))(((iterators)))
 [.key]#For# loops can be used to easily iterate over containers, collections, ranges, and many other entities.
 We have not discussed the
 important {array} and {seq} containers yet, but we know already the {string} container.
@@ -4952,6 +5026,7 @@ We will learn how to create our own [.key]#iterators# later in the book after we
 
 == Objects
 
+(((object, types)))(((types, object)))(((data types, object)))
 We have worked with basic data types like numbers, characters, and [.str]#strings# already.
 Often it makes sense to join some variables of these basic data types to more complex
 entities. Assume you want to build an online store to sell computers and
@@ -5084,6 +5159,7 @@ short {seq} in Nim. In the next section, we will learn how we can do that.
 
 == Arrays and sequences
 
+(((container, types)))(((types, container)))(((data types, container)))(((array, type)))(((types, array)))(((data types, array)))(((sequence, type)))(((types, sequence)))(((data types, sequence)))
 Sequences and {arrays} are homogeneous containers. They can contain multiple elements of the same data type, while a plain variable, such as a {float} or an {int}, only contains a single value.
 In some ways, we can regard {objects} as containers as well because {objects} contain multiple fields.
 The same holds for [.type]#tuples# -- [.type]#tuples# are a
@@ -5506,6 +5582,7 @@ buffer, and so on.
 
 === Multidimensional arrays and sequences
 
+(((matrix, type)))(((types, matrix)))(((data types, matrix)))(((multidimensional, types)))(((types, multidimensional)))(((tensor, types)))(((types, tensor)))(((data types, tensor)))
 Nim does not support multidimensional arrays and sequences (also called matrices or tensors) as default built-in data types.
 However, we can create ordinary one-dimensional {arrays} and sequences, and each container element can be made an {array} or sequence again.
 For a two-dimensional matrix, we would then access an element with two indices like [.code]#m[i][j]#.
@@ -5609,6 +5686,7 @@ Sometimes we can optimize loops for matrix access by altering our iteration meth
 
 == Slices
 
+(((slice, type)))(((types, slice)))(((data types, slice)))
 Nim [.plain]#slices# are {objects} of type [.type]#Slice# with two fields, a lower bound ([.var]#a#) and an upper bound ([.var]#b#).
 The [.mod]#system# module also defines the [.type]#HSlice# {object}, called
 a heterogeneous slice, for which the lower and upper bound can have different data types:
@@ -5745,6 +5823,7 @@ But this is a work in progress, so the situation may improve. See:
 
 == Value objects and references
 
+(((object, value)))(((object, ref)))(((references)))
 We have already used different types of variables -- integers, [.type]#floats#, characters, the custom
 Computer [.obj]#object#, and some more.
 We said that variables are named memory regions or storage locations where the content
@@ -5850,9 +5929,11 @@ the number of the house nor the name of the person and no other unique property 
 that person, then you do have not much luck.
 
 == References and pointers
+(((references)))(((pointers)))(((ref, type)))(((types, ref)))(((data types, references)))(((pointer, type)))(((types, pointer)))(((data types, pointer)))
 
 === Introduction to pointers
 
+(((pointer, introduction)))
 In Nim, references are some form of smart or managed pointers. We will learn more about references later.
 The plain {pointer} data type is nothing more than a memory address. It is similar to an (unsigned) integer number.
 We say that a {pointer} points
@@ -5978,6 +6059,7 @@ Now [.var]#ip[]# stands for exactly the same content as the variable [.var]#numb
 
 === Pointer arithmetic
 
+(((pointer, arithmetic)))(((arithmetic, pointer)))
 In low-level programming languages, {pointer} arithmetic can be useful. For example, old C code often iterates with {pointer} arithmetic over {arrays} using constructs such as [.code]#sum {plus}= {asterisk}(myIntPtr{pp})#. This was done to maximize performance. Modern C compilers generally understand statements like [.code]#sum {plus}= el[i]; i{pp}# and generate very efficient assembly instructions for them. Therefore, {pointer} arithmetic is not as necessary for C as it once was.
 
 Nim does not provide math operations for [.type]#pointers# directly, but we can always cast
@@ -6022,6 +6104,7 @@ References:
 
 === Allocating objects
 
+(((object, allocation)))(((allocation, object)))
 In the previous section, we learned the basics of {pointers}. We used the [.func]#addr()# operator to initialize the {pointer} by assigning the address of an existing entity. However, this approach isn't commonly used in practice and can be somewhat risky, as it's not always guaranteed that the variable we apply [.func]#addr()# to will persist for the lifetime of our {pointer}. As a result, our {pointer} might eventually point to a memory location that's already been freed or is now occupied by a completely different object. For this reason, the use of [.func]#addr()# is generally reserved for experienced programmers who have a firm understanding of its implications. Typically, [.func]#addr()# is unnecessary except in instances of low-level code, such as when interfacing with external libraries written in C.
 Instead of using [.func]#addr()# to assign a valid address to {pointers}, {promis} such as [.func]#alloc()# or [.func]#create()# are often employed to reserve a block of memory:
 
@@ -6128,6 +6211,7 @@ We will try that in the next section.
 
 === References to objects
 
+(((references, to objects)))(((objects, references to)))
 You might still wonder what references are really useful for -- they seem to be only
 a more complicated version of plain value type variables.
 
@@ -6383,6 +6467,7 @@ In rare instances where a complex constructor call fails to compile, one may res
 
 == Procedures and functions
 
+(((procedures)))(((functions)))
 Procedures and functions, called {proc} and [.key]#func# in Nim, are used to
 structure the program source code.
 Functions, a subtype of {promis}, return a value but do not modify global variables or otherwise change the state of the program.
@@ -6585,6 +6670,7 @@ In the examples above, we passed plain integers as parameters to {promis}. But o
 
 ==== Procedure parameters of var type
 
+(((var, procedure type)))
 Our [.func]#sqr()# function above accepts only one parameter, and that parameter is a value
 type, which indicates that we cannot modify it in the {promi} body. That fact is
 useful to know for the caller of a {proc}, as one can be sure that the passed parameter
@@ -6783,6 +6869,7 @@ The output of the above program is
 
 ==== Returning from a {promi} and the implicit result variable
 
+(((result, variable)))(((variable, result)))(((proc, return)))(((return, from proc)))
 The execution of a {promi} terminates once the last statement of the {promi} body
 has been processed. We can also terminate a {promi} earlier when we specify a
 [.key]#return# statement somewhere.
@@ -6840,6 +6927,7 @@ In contrast, compiler designers, such as Mr. Rumpf, prefer to avoid these {retur
 
 ==== Var return type
 
+(((var, return type)))(((return, var type)))
 A {promi}, [.key]#converter#, or [.key]#iterator# may return a [.key]#var# type that can be modified by the caller.
 The Nim language manual provides this basic example:
 
@@ -6864,6 +6952,7 @@ References:
 
 ==== Proc name overloading
 
+(((Proc name overloading)))(((overloading, proc name)))
 Note that we used the {proc} names [.var]#sqr1#, [.var]#sqr2#, and [.var]#sqr3# above. Using the same name with
 the same argument types multiple times would result in a redefinition error, as the
 compiler could not know what {proc} body should be executed when that {proc} name is
@@ -6906,6 +6995,7 @@ echo p(j = 3)
 
 ==== Objects and ref objects as {promi} parameters
 
+(((proc, parameters, object)))(((objects, as proc parameters)))(((ref objects, as proc parameters)))
 In the previous section, we learned that we have to use [.key]#var# parameters when the
 {promi} should be able to mutate the variable permanently.
 This also applies when the parameters are {objects}.
@@ -7015,6 +7105,7 @@ the latest version of the Nim language manual.
 
 === Special argument types: openArray and varargs
 
+(((openArray, as proc argument)))(((varargs, as proc argument)))(((proc arguments, varargs)))(((proc arguments, openArray)))
 The [.type]#openArray# and [.type]#varargs# data types can be used only in parameter lists.footnote:[Hint: Since
 Nim v1.6, the openArray type can be used as result type as well, see below.]
 The [.type]#openArray#
@@ -7088,6 +7179,7 @@ Surprisingly, this does not compile, although it works when we replace [.type]#v
 
 === Procedures bound to a data type
 
+(((Procedure, bound to a data type)))
 In some other programming languages, such as Python or Ruby, we can define class methods or static methods that are bound to a class or type and can be invoked as [.func]#MyType.myProc#.
 In Nim, we can achieve something similar using the [.key]#typedesc# {promi} parameter type:
 
@@ -7108,6 +7200,7 @@ about the [.key]#typedesc# data type later.
 
 === Scoping, visibility, and locality
 
+(((scoping)))(((visibility)))(((locality)))
 Scoping, visibility, and locality are important concepts in computer programming that help to keep the source code clean.
 Imagine if a variable that we declare at some point in our program were visible everywhere.
 This could generate significant confusion, even for medium-sized programs -- whenever we needed a variable, we would have to carefully check which names were already in use.
@@ -7274,6 +7367,7 @@ We can't be sure without reading the compiler source code, but ultimately, it do
 
 === Generics
 
+(((generic)))(((types, generic)))(((data types, generic)))
 In the previous section, we defined a [.func]#sqr()# {proc} for [.type]#ints# and one for [.type]#float# numbers.
 Both {promis} look nearly identical, only the data types differ. In that case, we can
 use so-called generic {promis}.
@@ -7660,6 +7754,7 @@ become smarter every day, so that restriction may disappear in the future.]
 
 === Method call syntax
 
+(((method call syntax)))(((syntax, method call)))(((uniform function call syntax)))
 A useful coding style introduced by Object-Oriented Programming (OOP) languages is the method call syntax. It was initially used in OOP for {objects} and later applied by languages like Ruby to all data types.
 In a way, Ruby regards all data as {objects}.
 Because the method-call syntax is so useful, we've already mentioned it a few times.
@@ -7683,6 +7778,7 @@ Like the D language, Nim generally allows this notation, but in D, it's referred
 
 === Procedure variables
 
+(((procedure variables)))(((variables, procedure)))
 Procedures and functions are not always fully static entities.
 We can assign {promis} and functions to variables, pass them as parameters to other {promis} or functions, and even generate and return new functions.
 Let's investigate how {promi} variables work:
@@ -7768,6 +7864,7 @@ If you were to swap the return values [.lit]#1# and [.lit]#-1# in the [.func]#cm
 
 === Nested {promis} and closures
 
+(((nested {promis} and closures)))(((procedures, nested)))(((closures)))
 While in C, all functions must be defined in the top-level scope and nesting of functions is not permitted, Nim allows {promis} to contain other {promis}.
 A special case occurs when the sub-{promis} access variables of the outer scope.
 In this case, the
@@ -7864,6 +7961,7 @@ currying.
 
 === Anonymous {promis}
 
+(((anonymous {promis})))(((procedures, anonymous)))
 In the section <<Module sequtils>> in {part}III of the book, we will introduce a few functions
 which are often used in the functional programming style, like [.func]#map()# or [.func]#filter()#.
 These functions take {promis} as arguments, which determine how container data types are converted.
@@ -7899,6 +7997,7 @@ In the penultimate line, we specify an anonymous {proc} as a parameter, while in
 
 === Compile-time proc execution
 
+(((compile-time proc execution)))(((proc execution, compile-time)))
 When a function is called with only constant arguments, the compiler can already execute it at compile time:
 
 [source, nim]
@@ -7926,6 +8025,7 @@ global variables from inside the [.func]#genSep()# {promi}.
 
 === Inlining {promis}
 
+(((proc, inlining)))(((inlining, procedures)))
 Calling {promis} and functions always introduces some overhead -- {proc} parameters may need to be put on the stack or loaded into CPU registers, some CPU or FPU registers may need to be saved, the stack {pointer} and the program counter have to be updated, and finally, the instruction cache has to be filled with new instructions.
 
 Thus, for small {promis}, the actual call to the {proc} may take more time than processing the code within the {proc}.
@@ -7953,6 +8053,7 @@ Note that functions from shared libraries cannot be inlined, so calling external
 
 === Recursion
 
+(((recursion)))(((proc, recursive)))
 Procedures and functions can call themselves in a repetitive manner, which is called recursion.
 Clearly, there must be some condition that eventually stops the recursion. Otherwise, the {promi} would continually call itself, storing data on the stack for each call, including at least the {proc} return address. Ultimately, this could lead to a stack overflow and the program would crash.
 In general, recursion should be used only when it significantly simplifies the algorithm.
@@ -7978,6 +8079,7 @@ It's important to note that recursive {promis} cannot be inlined!
 
 === Converters
 
+(((converters)))
 Nim's [.key]#converters# are a special variant of functions that are called automatically by
 the compiler when argument types do not match.
 
@@ -8026,6 +8128,8 @@ converter myIntToBool(i: int): bool =
 
 == Object-oriented programming and inheritance
 
+
+(((OOP)))(((inheritance)))(((object-oriented programming)))
 Object-Oriented Programming and Inheritance became very popular in the early 1990s. Although OOP principles had already been introduced by languages such as Simula, Smalltalk, and many others, Java greatly popularized the OOP paradigm, which is also supported by most other popular languages, such as {cpp}, Ruby, and Python.
 
 The idea of OOP is that [.obj]#objects# and {promis} working on these [.obj]#objects# are grouped into
@@ -8117,6 +8221,7 @@ For maximum performance, OOP code with {ref} [.obj]#objects# is generally not op
 
 === Inheritance for value-objects
 
+(((inheritance, for value-objects)))
 [source, nim]
 ----
 type
@@ -8177,6 +8282,7 @@ We will fix this example when the final version 2.0 of the compiler is available
 
 === Content copy of ref objects
 
+(((content copy of ref objects)))(((ref object, copy)))
 As we already learned, assignments for reference and pointer types give us only
 an alias to access the data, but the content is not copied.
 But in some cases, we may actually need to copy the content. Assume that you have a CAD tool
@@ -8239,6 +8345,7 @@ Note that the compiler option [.term]#--deepCopy:on# is currently required for A
 
 === Tuple types
 
+(((tuple, type)))(((types, tuple)))(((data types, tuple)))
 [.type]#Tuples# are heterogeneous container types similar to
 the struct type in C.
 As Nim’s {object} type creates no overhead and directly corresponds to the C struct type provided we don't use inheritance, tuples are very similar to Nim’s objects.
@@ -8313,6 +8420,7 @@ The last line of above example code uses the command invocation syntax.
 
 === Object variants
 
+(((object variants)))(((variant, type)))(((types, variant)))(((data types, variant)))(((ADT)))(((sum types)))(((types, sum)))(((data types, sum)))
 Nim’s {object} variants, sometimes also called [.ndef]#sum types# or [.ndef]#abstract data types# (ADTs), are advanced and type-safe variants of the [.ndef]#union# type known from C.
 The basic idea is that we can use value types that can store similar but not identical data as elements in containers.
 Dynamically typed languages like Ruby or Python allow that of course, and we can do it in Nim
@@ -8367,6 +8475,7 @@ consult the Nim language manual.
 
 == Iterators
 
+(((iterators)))
 In the section <<For loops and iterators>>, we used a [.key]#for# loop to iterate over the
 individual characters of a {string}. [.key]#For# loops are useful for various
 iteration purposes, e.g. to iterate over container types like {strings},
@@ -8618,6 +8727,7 @@ In contrast, a closure {iterator} can be passed around more freely.
 
 == Templates
 
+(((Templates)))
 ****
 Nim [.key]#templates# are very different from {cpp} [.key]#templates#!
 In {cpp} [.key]#templates# are used for
@@ -8895,6 +9005,7 @@ basic ideas used in that code, but it is still fascinating that it really works.
 
 === Typed vs untyped parameters
 
+(((parameters, types and untyped)))(((typed parameters)))(((untyped parameters)))
 Parameters passed to {templates} can be of any data type that we can use for {procs}, including special types such as [.type]#openarray#, [.type]#varargs# and {typedesc}.
 Additionally, we can use the symbols {untyped} and {typed} as parameter types.
 
@@ -8948,6 +9059,7 @@ We can use the inject pragma to make such ordinary variables visible outside of 
 
 === Passing a code block to a template
 
+(((template, code block parameter)))
 In the [.func]#withFile()# example above, we demonstrated that a block of statements can be passed as the last argument to a {template} using the special [.op]#:# syntax.
 To demonstrate the difference between code blocks of {typed} and {untyped} data types, we will cite the Nim language manual. See https://nim-lang.org/docs/manual.html#templates-passing-a-code-block-to-a-template:
 
@@ -8982,6 +9094,7 @@ t:
 
 === Passing operators to templates
 
+(((templates, passing operators)))
 Another use case for {templates} with {untyped} parameters involves the generation of math operations for custom data types.
 Let us assume that we have created
 a custom [.type]#Vector# {object}, for which we have to define addition and subtraction
@@ -9023,6 +9136,7 @@ It might be more beneficial to consult the manual when you actually encounter pr
 
 == Casts and type conversions
 
+(((casts)))(((type conversion)))
 While we have various types of casts in {cpp}, Nim only supports one type of cast and type conversions.
 In Nim, [.key]#cast# simply reinterprets the same bit pattern for another
 data type.
@@ -9063,6 +9177,7 @@ raise exceptions for invalid input, and the other may return a boolean.
 
 == Bitwise operations
 
+(((bit operations)))(((operations, on bits)))
 All systems programming languages, and most other programming languages, have support for
 bit manipulation operations, which includes querying and setting individual bits
 of variables, and combining the bits of two or more variables. As the CPU hardware
@@ -9133,6 +9248,7 @@ apply these operations as well.
 
 == Exceptions
 
+(((exceptions)))
 When we execute our program code, sometimes things can go wrong: we may be unable to open a file, encounter an unexpected division by zero or an overflow, or receive invalid user input.
 There are various strategies to handle such situations.
 One is to terminate our program. We may
@@ -9191,6 +9307,7 @@ the compiler can help us with this annotation and verify that it is correct.
 
 === Defects and catchable errors
 
+(((defects)))(((catchable errors)))(((errors, catchable)))
 Nim's strategy for the handling of [.type]#Exceptions# has changed a bit in the last few years. Nim differentiates
 now between catchable errors, and defects, which may not be catchable, and are considered to be programming bugs.
 The prototype of a defect is the DivByZeroDefect.
@@ -9211,6 +9328,7 @@ These types are further subclassed into [.type]#Defects# like [.type]#OverflowDe
 
 === Raise statement
 
+(((raise statement)))(((statement, raise)))
 An {Exception} is raised using the {raise} statement.
 The {raise} statement expects a heap-allocated reference to an {Exception} {object}, as the lifetime of the {Exception} instance is unknown.
 Generally, we use the [.func]#newException()#
@@ -9239,6 +9357,7 @@ Reraising an {Exception} can be useful in an {except} block (see below) when the
 
 === Custom exceptions
 
+(((custom exceptions)))(((exceptions, custom)))
 Instead of raising one of the predefined {Exceptions} from the [.mod]#system# module, we can also create our own variants and then {raise} them:
 
 [source, nim]
@@ -9249,6 +9368,7 @@ type
 
 === Try statement
 
+(((try statement)))(((statement, try)))
 In the Nim language manual, we have an example like this one:
 
 [source, nim]
@@ -9293,6 +9413,7 @@ If an {Exception} is not handled, it is propagated through the call stack. This 
 
 === Try expressions
 
+(((try expression)))(((expression, try)))
 Just as we can use the {if} keyword as an expression, we can do the same with the {try} keyword.
 The data types of the [.key]#try# and the [.key]#except# branches have to be compatible in this case, and an
 optional [.key]#finally# branch has to return nothing (void):
@@ -9311,6 +9432,7 @@ echo i # -1
 
 === Except clauses
 
+(((except clauses)))(((clause, except)))
 In an {except} block, we can use the function [.func]#getCurrentException()# to get the raised {Exception}, or [.func]#getCurrentExceptionMsg()# to get only the error message.
 Or, we can access the current
 {Exception} in an [.key]#except# block using the [.key]#as# keyword, as shown below:
@@ -9326,12 +9448,14 @@ except IOError as e:
 
 === Imported exceptions
 
+(((exceptions, imported from {cpp})))
 It is possible to {raise} and catch imported {cpp} exceptions.
 For a detailed example, see the Nim language manual:
 https://nim-lang.org/docs/manual.html#exception-handling-imported-exceptions
 
 === Defer statement
 
+(((defer statement)))(((statement, defer)))
 The {defer} statement can be used to ensure that special actions like
 closing a file or freeing resources are always executed.
 The {defer} statement is transformed by the compiler into a [.key]#try/finally# construct.
@@ -9372,6 +9496,7 @@ References:
 
 == Destructors
 
+(((destructors)))
 Destructors and finalizers are used for automatic resource management.
 For example, files can be closed automatically when a file variable goes out of scope. Similarly, when we create high-level Nim bindings to C libraries, we can use finalizers or destructors to deallocate entities of the C libraries when a corresponding Nim (proxy) [.obj]#object# is freed.
 Libraries like the Gintro GTK bindings make use of this.
@@ -9514,6 +9639,7 @@ So using destructors to destroy data from C libraries should be possible now.
 
 === Destructors and inheritance
 
+(((destructors & inheritance)))(((inheritance, for destructors)))
 When we use an object-oriented programming style with subclassing of {ref} [.obj]#objects#, it's useful to know that for subclassed {ref} [.obj]#objects#, the destructor of the parent class is automatically invoked if we do not define one for our subclassed type.
 This also works when we import the parent
 type from another module, at least since Nim v1.6:
@@ -9614,6 +9740,7 @@ References:
 
 == Finalizers
 
+(((finalizers)))
 In Nim, finalizers are {promis} that we can specify as an optional second parameter
 when we call the system [.func]#new()# {proc} to allocate heap memory for a reference type variable.
 The specified finalizer {promi} is then later called by the Nim memory management system
@@ -9730,6 +9857,7 @@ Whenever we really need a finalizer or a destructor, we should prefer destructor
 
 == Modules
 
+(((modules)))
 Modules are Nim’s way of dividing multiple source code files into clearly separated units and hiding implementation details.
 Nim uses a concept of modules, which is very similar to that of Modula-2 or Oberon.
 All the Nim standard libraries are divided into modules that
@@ -9894,6 +10022,7 @@ Then, a user of [.mod]#gintro# could simply write [.code]#import gtkplus# to hav
 
 === Cyclic imports
 
+(((cyclic imports)))(((import, cyclic)))
 Typically, we try to arrange our own modules in a tree-like bottom-up structure. A module [.var]#x# may define basic
 types and simple functions working with these types, and a higher-level module [.var]#y# may import all symbols
 from module [.var]#x# and extend the functionality.
@@ -9914,6 +10043,7 @@ But remember, that the use of {templates}, inline {iterators}, generics, and inl
 
 == Include
 
+(((include, statement)))(((statement, include)))
 The {include} statement should be not confused with the [.key]#import# statement. [.key]#Include# simply
 inserts a text file at the position where the {include} statement occurs.
 The {include} statement can be used to split very large modules into smaller entities.
@@ -14109,9 +14239,400 @@ References:
 
 * https://en.wikipedia.org/wiki/Permutation
 
+== Combinations
+
+In mathematics and computer science, [.ndef]#combinations# refer to the selection of items from a set without regard to the order in which they are arranged.
+The number of ways to choose [.var]#r# items from a set of [.var]#n# items (with [.code]#r +<=+ n#) without repetition and without order is denoted by (n over r)
+and is calculated using the formula [.code]#n! / (r! * (n - r)!)#, where [.op]#!# denotes the factorial operation.
+
+Creating a {proc} or an iterator to generate all the combinations with [.var]#r# elements from a set of [.var]#n# elements is an interesting task
+which can be solved by various strategies.
+In the previous section about permutations we started with a formal description of an algorithm found at Wikipedia, tried to understand it,
+and finally converted it to Nim code. Of course, we could do the same for creating combinations: search for an algorithm description or code written in C or
+another popular language in text books or the Internet, and convert that to Nim. In this section, we will initially try instead to solve the task
+without a template, as an exercise with medium difficulty. We will develop recursive and iterative solutions, and finally compare them to
+solutions from Rosetta-Code.
+
+We will start our investigation with a concrete example provided by the Wikipedia article (https://en.wikipedia.org/wiki/Combination), which shows all the possible combinations
+of the five digits from 1 to 5 when we select 3 digits each. The columns on the right display a mask built with characters [.clit]#'_'# and [.clit]#'x'# to indicate
+which digits are selected:
+
+.3-element subsets of a 5-element set
+----
+    12345
+123 xxx__
+124 xx_x_
+125 xx__x
+134 x_xx_
+135 x_x_x
+145 x__xx
+234 _xxx_
+235 _xx_x
+245 _x_xx
+345 __xxx
+----
+
+We have a set of [.var]#n# distinct numbers, and select sets of [.var]#r# elements from these. Each selection should contain only unique elements without repetitions,
+and ordering of the elements should not matter.
+Typically we try to generate the combinations in ascending order. Some algorithms for creating combinations might work with all
+data types, while others may work only for numeric data, which provides the [.op]#+# and [.op]#<# operators.
+
+Before you continue reading this section, we suggest you think for a few minutes about the problem and try to create
+at least one solution yourself. You could start with a procedure or iterator called [.func]#combinations()# with three parameters: a [.type]#seq# or [.type]#array# with
+[.var]#n# distinct numbers, and an {int} parameter called [.var]#r# which tells how many elements we should pick each. The iterator would yield a 
+{seq} of [type]#ints#, with [.var]#r# elements, and a {proc} would return a {seq} containing all these sequences, or just print them. To further simplify the task, you may start with 
+constant [.var]#n# and [.var]#r# values, called [.var]#N# and [.var]#R#.
+As a simplified case, you may create an algorithm, which uses always the first [.var]#n# natural numbers as input data, instead of a container data type.
+Of course, the procedures or iterators may use additional parameters, for example for the recursion depth in case of a recursive {proc}, or the
+last created value. Remember that Nim's iterators do not support recursion, so when you start with a recursive function, you would have to convert it
+into a non-recursive entity to be used as an iterator. To solve the task, you may even use some of the {procs} from the preceding sections,
+but you should be able to do without them. To create the algorithm, we might study the two columns of the above example: The scheme shows the three selected digits
+on the left, and the mask structure is displayed on the right. The order in which the printed numbers or the mask layout changes, gives us some hints
+how our algorithm might process the input data.
+
+=== Using mask permutations
+
+We will start with a simple, but slow solution. The mask in the right column has [.code]#n == 5# entries, with three elements of value [.clit]#'x'# indicating a selected number,
+and 2 entries with value [.clit]#'_'# denoting the unselected numbers. When we use for the mask an array of five integers, with value [.lit]#1# indicating a selection
+and [.lit]#0# an omission, we can create the ordered permutations of it and get a representation of the desired mask. For each mask value, we can then select
+a set of [.lit]#3# items from the [.var]#n# input values and print or return it. So we have this first solution:
+
+
+[source, nim]
+----
+import combinatorics
+
+iterator combinations[T](d: openArray[T]; r: int): seq[T] =
+  var res: seq[T]
+  assert(r in 0 .. d.len)
+  var mask = newSeq[int](d.len)
+  for i in 0 ..< r:
+    mask[i] = 1
+  for p in reversedPermutations(mask):
+    res.setLen(0)
+    for i, c in p:
+      if c == 1:
+        res.add(d[i])
+    yield res
+
+for t in combinations([1, 2, 3, 4 , 5], 3):
+  echo t
+----
+
+As our [.func]#combinations()# iterator should return as first result a {seq} with the [.var]#r# leftmost elements, we
+use a mask sequence that starts with [.var]#r# 1's, and default zeros for the other positions.
+Then we use the [.func]#reversedPermutations()# iterator from the [.mod]#combinatorics# module of the previous section
+to permute the mask in descending order. For each iteration, we append an element from the input {array} [.var]#d#
+to the [.var]#res# result variable when the mask contains a [.lit]#1#. The advantage of this solution is that the iterator works
+for all kind of input data. However, it is slow, and we will present better solutions in the next sections.
+Note that instead of the iterator [.func]#reversedPermutations()# we could have used [.func]#orderedPermutations()#, if we had filled
+the mask with [.lit]#-1# values instead of [.lit]#1#. Also note that in our first code listing we used the statement
+[.code]#assert(r in 0 .. d.len)# to ensure that the selection has a valid size. In our further code examples, we will
+leave out this test for brevity. As the set size [.var]#r# has to be always positive, we could have used the data type [.type]#Natural# instead of {int},
+but that would still require the test [.code]#r +<=+ d.len#. Further, for orderable input data, we will assume that our procedure or iterator
+is called with an input sorted in ascending order, so we can avoid an explicit call to [.func]#system.sort()#.
+
+=== Using recursion
+
+When we study the generated sequence of numbers, we can see that the left column starts with six elements each with value [.lit]#1#,
+following with three times value [.lit]#2#, and finally a [.lit]#3#. For each row, the second and third element are combinations of all the other 
+values. So an obvious strategy is to pick one value and keep it, and generate the combinations for all the other possible
+values. This results in a simple recursive procedure, with a few necessary conditions: Each combination has to be ordered,
+and we need a stop condition when no more ordered combinations can be created.
+For the first column in our example, that means that only values [.lit]#1#, [.lit]#2#, and [.lit]#3# are allowed, because for a combination starting with value [.lit]#4#,
+the sequence would need values [.lit]#5# and [.lit]#6# to continue, but value [.lit]#6# is not contained in the input data.
+As Nim does not support recursive iterators, we can only create a {proc} that returns a {seq} containing all the possible
+combinations, or we just print all the possible combinations to the terminal window, as in the following code:
+
+[source, nim]
+----
+proc comb(d: openArray[int]; o: var openArray[int]; ip, op: int) =
+  var ip = ip
+  let r = o.len
+  while ip < d.len:
+    if r - op > d.len - ip:
+      break
+    o[op] = d[ip]
+    inc(ip)
+    if op + 1 == r:
+      echo o
+    else:
+      comb(d, o, ip, op + 1)
+
+proc combinations(d: openArray[int]; r: int) =
+  var o = newSeq[int](r)
+  comb(d, o, 0, 0)
+
+combinations([1, 2, 3, 4, 5], 3)
+----
+
+In the {while} loop body, we use the assignment [.code]#o[op] = d[ip]# to copy
+an entry from the input data to the output. The positions [.var]#ip# and [.var]#op# both start at
+index zero. While [.var]#ip# is explicitly increased in the {while} loop body, [.var]#op# is
+increased by using increased arguments for the recursive {proc} call. The condition
+[.code]#ip < d.len# after the {while} keyword terminates the {proc} when all input
+elements have been used, and the condition [.code]#if op + 1 == r# in the loop body
+prints all selected elements whenever the index has reached the maximum value [.var]#r#.
+Otherwise, the {proc} recurs with the increased variable [.var]#ip# and the value [.code]#op + 1#.
+The test [.code]#r - op > d.len - ip# in the loop is not really necessary, but without
+it we have a few loop iterations, which cannot reach the value [code]#op + 1 == r# and
+so would not generate output.
+
+=== First iterative solution
+
+It is known that recursive functions can be transferred into iterative functions, when
+a stack variable is used to temporarily store further processing steps.
+This transformation is typically easy, when the recursive call is at the end of a {promi},
+which is called [.ndef]#tail recursion#. For tail recursion, often compilers can even do the
+conversion automatically. An example for tail recursion is the recursive [.func]#quicksort()# function, which
+we will discuss in one of the following sections.
+For our above recursive {promi}, the conversion is not that easy, because the recursive
+call is embedded in the {while} loop body.
+
+****
+In computer science, a stack data type is a container with a last-in first-out characteristic.
+A stack data type supports typically a [.func]#push()# operations to add more elements, and a [.func]#pop()# operation
+to remove the last added element. In Nim, we can use a {seq} with its [.func]#add()# and [.func]#pop()# operations as a stack.
+Stacks are often used to delay operations -- instead of processing data immediately, we push them on the stack, and pop them
+later to continue processing. A similar container, with a first-in, first-out characteristic, is called a queue or FIFO, and is used for
+data buffers or wait queues. Computer programs typically use a segment of the RAM as a stack storage automatically to temporarily store
+variables local to functions and procedures, for passing parameters to functions, and to store CPU register content and the return address
+when other functions are called. But in this section, we use the term stack for a data type that we declare explicitly in our program.
+****
+
+Typically, for converting a recursive {proc} to an iterative form, we employ a stack variable, which can store the
+{proc} parameters. We then push the initial parameters to the stack variable, and in a loop
+we pop the topmost parameter from the stack, and push modified parameters onto the stack, as long as we are not done.
+For the recursive procedure from above, we copy one element from the input data to the output and immediately recur
+as long as the output position [.code]#op + 1 == r# is not reached. This is some form of "depth first" recursion.
+A plain substitution of the recursive [.func]#comb()# call with a [.func]#stack.push()# call to push the parameters onto the stack variable
+can not directly simulate this behaviour. But we can use a trick: we push the arguments [.code]#(ip, op + 1)# from the recursive [.func]#comb()#
+call onto the stack, and additional the values [.code]#(op, ip)# to continue the loop. By inverting the order, the outer loop
+pops first the value [.code]#(ip, op + 1)# from the stack and proceeds with that tuple in a depth first manner, and after that
+pops [.code]#(ip, op)# to continue. This leads to the code example below:
+
+[source, nim]
+----
+iterator combinations0(d: openArray[int]; r: int): seq[int] =
+  type El = object
+    ip, op: int
+  var stack: seq[El]
+  var o = newSeq[int](r)
+  stack.add(El(ip: 0, op: 0))
+  while stack.len > 0:
+    var el = stack.pop
+    var op = el.op
+    var ip = el.ip
+    assert op == stack.len # in this case, we don't need the op field
+    while ip < d.len:
+      o[op] = d[ip]
+      inc(ip)
+      if op + 1 == r:
+        yield o
+      else:
+        stack.add(El(ip: ip, op: op))
+        stack.add(El(ip: ip, op: op + 1))
+        break
+
+for el in combinations0([1, 2, 3, 4, 5], 3):
+  echo el
+----
+
+We have used a {seq} variable as a stack, as it supports the [.func]#add()# operation which is our actual [.func]#push()#, and the [.func]#pop()#
+operation to remove the topmost element. As our recursive {proc} comb() used two arguments called [.var]#ip# and [.var]#op#,
+our stack is built of an {object} data type with these fields. The iterator starts with
+a {seq} storing only one element with fields [.code]#ip == 0# and [.code]#op == 0#. The outer {while} loop fetches an element from the stack
+until it is empty, and the inner loop processes all the elements of the input data. When the maximum depth is reached,
+a result is yielded, otherwise the next data set is stored onto the stack.
+
+=== Simplified solution
+
+The code above has the special property that the current stack length is always identical to
+the value [var]#op# stored in the topmost stack element. See the [.func]#assert()# statement in the code above.
+We can use this condition to simplify the code. We have to store only the value [.var]#ip# on the stack, so
+we can use a plain [.type]#seq[int]# as stack, and do not require the {object} type [.type]#El#. This results
+in the following code:  
+
+[source, nim]
+----
+iterator combinations[T](d: openArray[T]; r: int): seq[T] =
+  var stack: seq[T]
+  var o = newSeq[T](r)
+  stack.add(0)
+  while stack.len > 0:
+    var ip = stack.pop
+    var op = stack.len
+    while ip < d.len:
+      o[op] = d[ip]
+      inc(ip)
+      if op + 1 == r:
+        yield o
+      else:
+        stack.add(ip)
+        stack.add(ip)
+        break
+
+for el in combinations([1, 2, 3, 4, 5], 3):
+  echo el
+----
+
+The two identical [.code]#stack.add(ip)# statements look a bit strange, but actually this is only a way
+to pass two different values [.var]#op# encoded by the actual stack size. We will not further discuss
+this solution, but present a similar, better algorithm soon.
+
+=== Counting upwards
+
+Our concrete data example starts with combinations [.clit]#'123'#, [.clit]#'124'#, [.clit]#'125'#. This is some form of upcounting,
+with overflow when at a position the maximum value of the input data is reached, and the additional
+conditions that the output always has to be ordered without repetitions, so values like [.clit]#'132'# would be invalid.  
+A possible solution for such an algorithm is the code below:
+
+[source, nim]
+----
+iterator combinations(i: openArray[int]; r: int): seq[int] =
+  var o = newSeq[int](r + 1)
+  o[0 ..< r] = i[0 ..< r]
+  o[r] = i[^1] + 1
+  dec(o[r - 1])
+  while true:
+    var i: int = r
+    while i > 0:
+      if o[i] - o[i - 1] > 1:
+        inc(o[i - 1])
+        break
+      dec(i)
+    if i < 1:
+      break
+    while i < r:
+      o[i] = o[i - 1] + 1
+      inc(i) 
+    yield o[0 .. (r - 1)]
+
+for el in combinations([1, 2, 3, 4, 5], 3):
+  echo el
+----
+
+We take the leftmost [.var]#r# elements from  the input data, and append a dummy element.
+Then we start from the right, trying to increase an element. After that, we still
+have to fix the elements on the right, to ensure that the output is
+ordered and contains no repetitions. Our solution contains three {while} loops, and has the
+disadvantage that it works only for numeric data. In the next two sections, we will
+finally present two better textbook solutions, which we found at Rosetta Code.
+
+=== Stack-based solution
+
+The website https://rosettacode.org/wiki/Combinations has a nice stack-based algorithm
+provided as C# example, which we can easily understand and translate into the Nim language:
+
+[source, nim]
+----
+# idea based on c# example from https://rosettacode.org/wiki/Combinations#C#
+# see also https://rosettacode.org/wiki/Combinations#Nim
+iterator combinations[T](d: openArray[T]; r: int): seq[T] =
+  var stack: seq[int]
+  var o = newSeq[T](r)
+  stack.add(0)
+  while stack.len > 0:
+    var ip = stack.pop
+    var op = stack.len
+    while ip < d.len:
+      if r - op > d.len - ip: # not necessary, early exit of loop
+        break
+      o[op] = d[ip]
+      inc(ip)
+      inc(op)
+      stack.add(ip)
+      if op == r:
+        yield o
+        break
+
+for el in combinations([1, 2, 3, 4, 5], 3):
+  echo el
+  
+for el in combinations("ABCDE", 3):
+  echo el
+----
+
+This algorithm is similar to our earlier solution, but it avoids the ugly pushing of
+two items on the stack each time. The main difference between this textbook algorithm and our
+own attempt is that in the inner {while} loop the position indices [.var]#op# and [.var]#ip# are both increased.
+This leads to the fact, that for our initial example with [.code]#n == 5# and [.code]#r == 3# the {seq} [.var]#o# is constructed as
+[.clit]#'1'#, [.clit]#'12'#, and [.clit]#'123'#. For [.clit]#'123'#, the condition [.code]#op == r# is [.lit]#true#, so that value is yielded, and the inner loop terminates.
+The outer loop continues with [.code]#ip == 3# and [.code]#op == 2#, generating the value [.clit]#'124'# for [.var]#o#, which is again yielded, and so forth.
+So this stack based solution is a depth-first algorithm as desired. In the inner loop, we use again the optional test
+[.code]#if r - op > d.len - ip:# to exit the loop early when it is clear that we could not reach the condition [.code]#op == r#
+for an yield. This textbook solution is short and simple, and works for all input data, so it may be the best choice.
+
+=== An iterative solution without a stack
+
+Rosetta-Code has another nice solution, which is similar to our own upcounting
+variant, and is available as C code.
+A possible translation to the Nim language is provided below:
+
+[source, nim]
+----
+# idea based on C example from https://rosettacode.org/wiki/Combinations#C
+# see also https://rosettacode.org/wiki/Combinations#Nim
+from std/sequtils import toSeq
+iterator combinations[T](d: openArray[T]; n: int): seq[T] =
+  var res = newSeq[T](n)
+  var c = toSeq(0 ..< n)
+  block comb:
+    while true:
+      for i in 0 ..< n:
+        res[i] = d[c[i]] 
+      yield res
+      var i = n - 1
+      if c[i] < d.high: # optional fast path
+        inc(c[i])
+        continue
+      while c[i] >= d.len + i - n:
+        dec(i)
+        if i < 0:
+          break comb
+      inc(c[i])
+      while i < n - 1:
+        c[i + 1] = c[i] + 1
+        inc(i)
+
+for el in combinations([1, 2, 3, 4, 5], 3):
+  echo el
+
+for el in combinations("abcde", 3):
+  echo el
+----
+
+The idea behind the algorithm is easy to understand when
+we assume that it works by shifting the 1\'s items of the abstract mask pattern
+shown at the beginning of this section. For an arbitrary numeric output value,
+e.g., [.clit]#'134'# with corresponding mask value [.clit]#'x_xx_'#, we try starting from the right to shift an [.clit]#'x'# further to the right,
+to get the next larger numeric value. Here, the symbolic mask shift just means that we increase the numeric value
+at an index position of our output data. That might result in the tuple  [.lit]#(135 x_x_x)#.
+When we have shifted one mask position to the right, we have to shift all positions to the right
+of it to the left, to ensure that our generated value is the next larger one.
+You may compare the mask patterns from the beginning of this section to verify this strategy.
+This [.func]#combinations()# algorithm uses internally input data that is a sequence of integers starting at zero, and
+that is created with the statement [.code]#c = toSeq(0 ..< n)# at the beginning of the iterator.
+The iterator uses an outer {while} [.lit]#true# loop, with two inner {while} loops. The first of these tries to find a
+number in the current output that can be increased (shifted to the right). If no candidate is found, the iterator terminates, and
+otherwise that value is increased. After that, the second inner {while} loop shifts all positions on the right fully to the left, which just means that
+these positions all get the value of the direct left neighbor plus one to create the smallest allowed value.
+The test [.code]#if c[i] < d.high:# is an optimization: If rightmost item can be increased, we are already done, we
+don't have to execute the two inner {while} loops.
+
+This algorithm has the advantage that no stack variable is needed, but the disadvantage that it works internally only for
+sequences of numbers starting with zero. To allow using it with arbitrary data, we use the intern numeric data as an index for
+our actual data {array} [.var]#d#. The {for} loop after the {while} [.lit]#true# expression copies the matching data values into the [.var]#res# {seq}, which is then returned
+by a {yield} statement.  
+
+References:
+
+* https://en.wikipedia.org/wiki/Combination
+* https://rosettacode.org/wiki/Combinations
+
 == Sorting
 
-Sorting a sequence or an {array} of numbers is typically a component of
+((Sorting)) a sequence or an {array} of numbers is typically a component of
 each computer programming course.
 While we would not typically code a sorting algorithm for the actual software that we write, instead using the generic sorting algorithm from the standard library, learning about sorting algorithms can teach us some basic programming skills.
 When we
@@ -21637,21 +22158,26 @@ Lastly, we utilized the GPT-4 model to check the grammar and suggest possible im
 
 == Changes for Nim 2.0
 
-After the release of Nim v1.0 in 2019 and Nim v1.6.14 in June 2023, Mr. Rumpf is slated to release Nim 2.0 still in 2023.
-While Nim 2.0 brings some important
+After the release of Nim v1.0 in 2019 and Nim v1.6.14 in June 2023, 
+on 01 August 2023 the long awaited Nim 2.0 version was finally released.
+One of the defining features of Nim 2.0 is the adoption of the ORC memory management system as its default mechanism.
+While Nim 2.0 does not yet support incremental compilation (IC), it comes with a
+new package manager called [.ndef]#Atlas#.
+Additionally, with the inclusion of the [.ndef]#Malebolgia# package, Nim 2.0 has improved support for concurrent and parallel programming.
+
+Although Nim 2.0 brings some important
 changes and improvements, there should be no serious incompatibility issues between
 Nim 1.6 and Nim 2.0, and adapting older programs for Nim 2.0 should not be difficult,
-at least not as long as the old programs use no ugly hacks. Unfortunately, with Nim 2.0
+at least as long as the old programs don't use any ugly hacks.
+Unfortunately, with Nim 2.0
 some incompatibility issues with other implementations like the https://github.com/nim-works/nimskull
 may arise. The future will show if alternative implementations will try to be as compatible as possible with
 the implementation of Rumpf, or if they will create language dialects or even new languages with new names, like Cyo
-for nimskull. We had a similar case already for modules of Nim's standard library, which have been partly
+for Nimskull. We had a similar case already for modules of Nim's standard library, which have been partly
 replaced by incompatible, improved variants created by Status Corporation
 (e.g. https://github.com/status-im/nim-taskpools and https://github.com/status-im/nim-chronos) and other Nim contributors.
 
-The most important improvement for Nim 2.0 is that the ORC memory management system is now the default.
-We have mentioned some new features of Nim 2.0 already in the book, and we
-will summarize the most important changes of Nim 2.0 in the next few sections:
+While we have touched upon several features of Nim 2.0 throughout this book, the subsequent sections will provide a concise summary of the pivotal changes introduced in this version.
 
 === ARC/ORC memory management
 
@@ -22798,6 +23324,14 @@ We have added a few more simple examples and exercises:
 * <<Using parsecsv>>
 * <<Memory-mapped files>>
 
+=== Sep 2023
+
+* <<Combinations>>
+* Index for PDF version
+
+[index]
+= Index
+
 
 ////
 We capitalize Appendix and Part, see https://ell.stackexchange.com/questions/11630/chapter-sections-etc-in-capital-letters
@@ -22830,13 +23364,15 @@ Do we have
 
 Missing?
 
---std/parsecsv
+-- Big O notation, see issue
 -- repeat macro
 -- debugging
 -- profiling
 -- godbolt, assembly
 -- nimscript
 -- FFI
+-- Atlas
+-- Malebolgia
 
 
 Asciidoctor issues:

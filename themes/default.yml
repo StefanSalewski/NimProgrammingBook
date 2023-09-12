@@ -20,53 +20,53 @@ role:
     font-style: italic
     
   op:
-    font-family: Courier
+    font-family: $codespan-font-family
     font_style: bold
     
   key:
     font_style: bold
     
   type:
-    font-family: Courier
+    font-family: $codespan-font-family
 
   str:
-    font-family: Courier
+    font-family: $codespan-font-family
 
   array:
-    font-family: Courier
+    font-family: $codespan-font-family
     
   tup:
-    font-family: Courier
+    font-family: $codespan-font-family
     
   obj:
-    font-family: Courier
+    font-family: $codespan-font-family
         
   var:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-style: italic
     
   mod:
-    #font-family: Courier
+    #font-family: $codespan-font-family
     text-transform: smallcaps
     
   lit:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-style: italic
     
   clit:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-style: italic
     
   slit:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-style: italic
     
   const:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-style: italic
     
   code:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-color: #000
     background-color: #EEE
     #border-color: #33FF33
@@ -75,7 +75,7 @@ role:
     #border-offset: .0
     
   term:
-    font-family: Courier
+    font-family: $codespan-font-family
     font-color: #000
     background-color: #EEE
     
