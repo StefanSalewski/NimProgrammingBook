@@ -1,6 +1,6 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-SEP-12
+//v0.1, 2023-SEP-18
 :doctype: book
 :part-signifier: Part
 // mobi does not work with SVG!
@@ -15702,6 +15702,258 @@ References:
 
 * https://en.wikipedia.org/wiki/Timsort
 
+=== Iterative merge sort
+
+In the preceding section, we said that an iterative merge sort algorithm might be difficult, and has no
+significant advantages compared to the recursive version.
+Actually, after our detailed discussion of various strategies to convert recursive algorithms to iterative
+ones in the <<Combinations>> section -- and some vacation -- it is obvious how we can convert our 
+recursive merge sort algorithm with only some tiny fixes to an iterative one.
+Before you continue reading, you should think about a possible solution yourself for a few minutes as an exercise.
+
+There might be no real benefit of an iterative algorithm, but at least it is some fun to create it. And an
+iterative solution might be a good starting point, in the case that we ever should have the demand for
+a parallel sorting algorithm using all available CPU cores.
+
+Recall that the recursive merge sort halves the data set size in each recursive step, so the maximum recursive
+depth is [.func]#lg(datasetsize)#, where [.func]#lg()# ([.func]#log~2~()#) is the binary logarithm and [.func]#datasetsize# is the length of our {array} or {seq} to sort.
+As all possible data set sizes are smaller than [.lit]#2^64# bytes in size on a 64-bit system, the maximum recursion depth, or the corresponding
+size of a stack buffer variable for an iterative solution, is never larger than [.lit]#64#.
+
+The merge sort algorithm has the special property, that the full dataset range is first divided into two partitions, which are both first
+sorted again, and finally merged. So an iterative algorithm might look not that straight forward.
+But when we think about it a bit longer, there is one easy solution: we need to store just two different actions in our stack variable -- a true sort action of an interval and a merge action only.
+So we would start by placing the interval boundaries for a full sort action onto the stack, pop() that data, and then push the data for the next full sort action of the two new partitions onto the stack. Afterward, we'd push the data for a plain merge action.
+For the two different action types, we might create an {object} type, containing a boolean or an enumeration field specifying the action type,
+and two integer fields holding the data range to process. But actually, we do not need an {object} or {tuple} type. The two boundaries
+of the data range to process are always indices of an [.type]#openArray# type, so both values are never negative, and the first value
+should be never larger than the second. So we can leave the boundaries as they are for a full sort action, but exchange them, or make at least one value negative, to indicate
+that only a merge action is required. In the following code, we exchanged the two boundaries to indicate the merge action:
+
+[source, nim]
+----
+proc msort(s, sh: var openArray[int]; a, b: int) =
+  type R = tuple[a, b: int]
+  var stack: seq[R]
+  stack.add((a, b))
+  while stack.len > 0:
+    var (a, b) = stack.pop
+    var m = (a + b) div 2
+    if a <= b: # regular interval
+      assert(b - a >= 0)
+      if b - a == 0:
+        continue
+      elif b - a == 1:
+        if s[a] > s[b]:
+          swap(s[a], s[b])
+        continue
+      assert (m >= a and m < b and b - a > 1)
+      #imsort(s, sh, a, m)
+      #imsort(s, sh, m + 1, b)
+      # note that we push intervalls onto stack in inverted order!
+      stack.add((b, a)) # merge only
+      stack.add((m + 1, b)) # sort
+      stack.add((a, m)) # sort
+    else: # merge only
+      swap(a, b) # we have to swap, because we pushed the interval to merge inverted onto stack!
+      var ls = b + 1
+      var lh = b - m - 1
+      var lm = m
+      #sh[sh.low .. lh] = s[m + 1 .. b]
+      for i in 0 .. lh: # a bit faster
+        sh[i] = s[m + 1 + i]
+      while ls > a:
+        dec(ls)
+        if lh < 0:
+          assert ls == lm
+          break
+        elif  lm < a:
+          while lh >= 0:
+            s[ls] = sh[lh]
+            dec(ls); dec(lh)
+        else:
+          if sh[lh] > s[lm]:
+            s[ls] = sh[lh]
+            dec(lh)
+          else:
+            s[ls] = s[lm]
+            dec(lm)
+----
+
+When you compare this modified iterative [.func]#msort()# {promi} with the one in the code example from before, you will notice
+that the changes are tiny. You can directly replace the recursive [.func]#msort()# {proc} from the last example in the preceding section
+with this one, and compile and run the program.
+We have created a {tuple} type [.type]#R#, which stores the two integer boundaries of the range to sort, and used
+a local {seq} with the base type R as stack.
+The iterative [.func]#msort()# procedure starts by pushing the initial interval parameters [.var]#a# and [.var]#b# onto the [.var]#stack#,
+indicating that a full sort is required. In the {while} loop, we [.func]#pop()# a range from the [.var]#stack#, and test
+if it is a regular interval, or an inverted interval. For a regular interval, we test for the trivial cases
+with interval sizes [.lit]#1# or [.lit]#2# first. If the interval is larger than two elements, we halve it, and [.func]#push()# the
+two halved intervals onto the [.var]#stack# along with the full, inverted interval. Note the order in which we
+push these intervals onto the stack: We put the full inverted interval first, so it is popped last, keeping the
+original processing order. For the case that an inverted interval was popped from the [.var]#stack#, we invert it again
+to recover the original values, and proceed exactly as in the recursive case.
+
+As expected, this first iterative solution is not faster than our recursive version, but a bit slower. One reason might be that
+we use as [.var]#stack# an ordinary {seq} data type with its relatively slow [.func]#add()# operation. As the size of the
+[.type]#stack# variable is always limited by [.lit]#64# entries, we can use a plain {array} instead. But we have to simulate the
+[.func]#push()# and [.func]#pop()# operations by updating an explicit stack index variable for that case.
+ 
+==== Optimized generic iterative merge sort
+
+[source, nim]
+----
+proc mergeSort[T](s: var openArray[T]; ascending = true) =
+  type R = tuple[a, b: int]
+
+  var sp: int = -1
+  var stack: array[64, R]
+
+  template add(r: R) =
+    inc(sp)
+    stack[sp] = r
+
+  template pop: R =
+    let res = stack[sp]
+    dec(sp)
+    res
+
+  if s.len == 0: return
+  var sh = newSeq[T](s.len div 2)
+
+  add((s.low, s.high))
+  while sp >= 0:
+    var (a, b) = pop
+    let m = (a + b) div 2
+    if a <= b: # regular interval
+      assert(b - a >= 0)
+      if b - a == 1:
+        if ascending and s[a] > s[b] or not ascending and s[a] < s[b]:
+          swap(s[a], s[b])
+      elif a != b:
+        assert (m >= a and m < b and b - a > 1)
+        add((b, a)) # merge only
+        add((m + 1, b)) # sort
+        add((a, m)) # sort
+    else: # merge only
+      swap(a, b) # we have to swap, because we pushed the interval to merge inverted onto stack!
+      var ls = b + 1
+      var lh = b - m - 1
+      var lm = m
+      for i in 0 .. lh:
+        sh[i] = s[m + 1 + i]
+      while ls > a and lh >= 0:
+        dec(ls)
+        if  lm < a:
+          while lh >= 0:
+            s[ls] = sh[lh]
+            dec(ls); dec(lh)
+        else:
+          if sh[lh] > s[lm] == ascending:
+            s[ls] = sh[lh]
+            dec(lh)
+          else:
+            s[ls] = s[lm]
+            dec(lm)
+----
+
+We have unified the two distinct {promis}  [.func]#mergeSort()# and [.func]#msort()#, and made them generic.
+Further, we use as [.var]#stack# an {array} instead of a {seq}, supported by our own [.func]#push()# and [.func]#pop()# [.key]#templates#.
+As another minor optimization,
+we replaced the [.code]#if lh < 0: break# statement with the additional {while} condition [.code]#lh >= 0#.
+Finally, we have introduced a boolean {proc} parameter, called [.var]#ascending#, with default [.lit]#true# value, to
+optionally sort in descending order. In the {promi} body, we have to watch for this parameter at two places.
+In the merging part, we modified the condition to [.code]#if sh[lh] > s[lm] == ascending:#, which should cost nearly no performance.
+If we were to use a similar test as the actual [.func]#swap()# condition, we would get swaps for equal values, which is always the case for [.code]#a == b#.
+So, we now test for the condition [.code]#b - a == 1# first, and then use the longer condition [.code]#if ascending and s[a] > s[b] or not ascending and s[a] < s[b]:#
+as the actual [.func]#swap()# condition. Due to short-circuit evaluation, this should have no significant impact on performance.
+
+As an exercise, you could create a {promi} variant that use
+a passed [.func]#cmp()# {proc} instead of the [.op]#># operator. That should not be difficult, but the use of a passed [.func]#cmp()# {promi} makes the sorting slower, as that {proc} can not be inlined.
+
+==== Iterative merge sort variant with internal loop
+
+For our iterative [.func]#quicksort()# algorithm, we created a variant which popped only one interval onto the stack, and continued
+directly with processing of the other interval.
+We did that to avoid a very large stack size for worst-case data. It is easy to do the same for our iterative merge sort procedure.
+For the case where an actual sort action is required, and not just a merge, we can directly continue with one of the two intervals
+in an internal {while} loop.
+You may try it yourself, before looking at the following code:
+
+[source, nim]
+----
+proc mergeSort[T](s: var openArray[T]; ascending = true) =
+  type R = tuple[a, b: int]
+
+  var sp: int = -1
+  var stack: array[64, R]
+
+  template add(r: R) =
+    inc(sp)
+    stack[sp] = r
+
+  template pop: R =
+    let res = stack[sp]
+    dec(sp)
+    res
+
+  if s.len == 0: return
+  var sh = newSeq[T](s.len div 2)
+
+  add((s.low, s.high))
+  while sp >= 0:
+    var (a, b) = pop
+    var m = (a + b) div 2
+    if a <= b: # regular interval
+      assert(b - a >= 0)
+      while true:
+        if b - a == 0:
+          break
+        elif b - a == 1:
+          if ascending and s[a] > s[b] or not ascending and s[a] < s[b]:
+            swap(s[a], s[b])
+          break
+        else:
+          assert (m >= a and m < b and b - a > 1)
+          add((b, a)) # merge only
+          add((m + 1, b)) # sort
+          #add((a, m)) # sort
+          b = m
+          m = (a + b) div 2
+    else: # merge only
+      swap(a, b) # we have to swap, because we pushed the interval to merge inverted onto stack!
+      var ls = b + 1
+      var lh = b - m - 1
+      var lm = m
+      for i in 0 .. lh:
+        sh[i] = s[m + 1 + i]
+      while ls > a and lh >= 0:
+        dec(ls)
+        if  lm < a:
+          while lh >= 0:
+            s[ls] = sh[lh]
+            dec(ls); dec(lh)
+        else:
+          if sh[lh] > s[lm] == ascending:
+            s[ls] = sh[lh]
+            dec(lh)
+          else:
+            s[ls] = s[lm]
+            dec(lm)
+----
+
+This version has no actual benefit, but it is always good to know that it exists.
+The careful reader may wonder whether our selected size for the stack {array} of [.lit]#64# elements is really large enough,
+as we pushed always three items at once on the stack. Indeed, theoretically the stack variable should have three or at least
+two times that used size of [.lit]#64#. But [.lit]#2^64# bytes is the theoretical maximum memory size of a 64-bit computer, from which
+the available devices are far removed. Typical desktop computers have no more than 64 GB RAM, which is only [.lit]#2^36# bytes.
+And current CPUs have typically only a 40-bit width data bus, so that only [.lit]#2^40# bytes can be physically addressed (1 TB).
+As a conclusion, we might indeed increase the stack variable size to [.lit]#80# elements to be on the safe side.
+At the end of this section, there's an interesting observation: When we compile our test program from above, where we use
+the [.func]#sort()# function of Nim's standard library as well, with the option [.term]#-d:lto#, the performance of that [.func]#sort()# function
+doubles, and is close to our own merge sort. So with the gcc 13.2.1 backend and  LTO, the
+C compiler seems to be able to inline the [.func]#cmp()# function used by Nim's standard library's [.func]#sort()# {proc}.
+
 == Reading CSV files and other data
 
 We discuss the reading of CSV files (comma-separated values) and other data files in {part}VI of the book,
@@ -19655,7 +19907,7 @@ of the [.mod]#threadpool# module, you should consult its documentation.
 
 As a direct replacement for the [.mod]#threadpool# module, you may also try the external [.mod]#taskpools#
 package. Or you may try the much more advanced [.mod]#weave# package. Recently, two more modules for
-threading support, called Malebogia and Constantine, have arrived.
+threading support, called Malebolgia and Constantine, have arrived.
 
 * https://github.com/status-im/nim-taskpools
 * https://github.com/mratsim/weave
@@ -19933,12 +20185,197 @@ This applies not only to the threads of
 the [.mod]#threads# module but also when the [.func]#spawn()# function is applied to
 run functions by one of the threads in the pool.
 
+=== Malebolgia
+
+We already mentioned a few external packages for parallel code execution, including Weave, Taskpools, and Malebolgia.
+While Malebolgia is not yet part of Nim's standard library, it was created by Nim's main developer Mr. Rumpf, so
+we can expect that it works with Nim 2.0 and ARC/ORC memory management, and may continue to work in the future.
+Internally using a pool of threads, Malebolgia supports structured concurrency with data parallelism, and
+ensures synchronization using barriers.
+It can be used similar to the legacy [.func]#parallel# statement of the [.mod]#threadpool# module
+to process the content of seq and array containers in parallel.
+Mr. Rumpf already provides a few examples, like [.func]#parMap()#, [.func]#parApply()#, [.func]#parReduce()#, and [.func]#parFind()#, for processing of container content in parallel.
+Additionally, Malebolgia also supports spawning recursive procedures, and provides methods to cancel parallel code execution
+or to specify timeouts. Finally, the package is advertised to be energy efficient and compact,
+allowing its use also for embedded systems with restricted resources. 
+In fact, the malebolgia.nim module has fewer than 300 lines of source code.
+
+As a first, very simple example, we will present a way to sum up in parallel some numbers stored in a sequence.
+By utilizing the [.func]#spawn# and [.func]#awaitAll# features, the program distributes the workload across multiple threads:
+
+[source, nim]
+----
+import malebolgia
+import std/sequtils
+
+const Cores = 8
+
+proc sum(d: openArray[int]; a, b: int): int =
+  for i in a .. min(b, d.high):
+    result += d[i]
+
+proc main(s: openArray[int]) =
+  var sums = newSeq[int](Cores)
+  var b = s.len div Cores + 1
+  var m = createMaster()
+  m.awaitAll:
+    for i in 0 ..< Cores:
+      m.spawn sum(s, i * b, (i + 1) * b - 1) -> sums[i]
+
+  var res: int
+  for el in sums:
+    res += el
+  echo res
+
+main(toSeq(1 .. 100))
+----
+
+As Malebolgia is not yet part of Nim's standard library, we would have to use Nimble or the newer Atlas tool
+to install it. For Nimble, a 'head' install with [.code]#nimble install malebolgia@{hashtag}head# is recommended, as
+last time we tried, the nimble file of that project was not properly updated, so that we got a very old package version.
+
+Malebolgia uses a so-called master {object}, which is created by a call of [.func]#createMaster()#, to synchronize the parallel code execution.
+Our code example creates such a master {object}, and then uses it to construct an [.func]#awaitAll# block
+in which [.func]#spawn# is used in a {for} loop to execute a user defined {proc} in parallel.
+The parallel executed subroutines can have ordinary value parameters and return an optional result, which
+is stored by use of the [.op]#+->+# operator in ordinary variables.
+
+In our example code, we assume that we have eight CPUs available. So we split the full sequence into eight equally sized blocks,
+and pass the block ranges to the spawned [.func]#sum()# {proc}. After all the in parallel executing [.func]#sum()# procedures have finished their work and
+so the [.func]#awaitAll# block has been terminated, we only have to sum up the eight partial sums and can print the result.
+
+When we test our program with a longer sequence, for example with ten millions values, and measure the
+execution time with the shell [.term]#time# command, we might notice that the execution time is longer than what a
+plain summing for loop would take. That is not too surprising, as for such simple tasks the memory 
+bandwidth of our computer and the cache use are important. So the use of more cores may not
+really improve the performance.
+Perhaps passing our {seq} as an [.type]#openArray# parameter to the [.func]#sum()# {proc} causes data copies, so
+data passing as a [.code]#ptr UncheckedArray# as done in the examples provided by the package may give better performance.
+
+Malebolgia supports even some form of recursion. Because a master {object} can not be passed to subroutines, we can
+use the function [.func]#createHandle()# to create a master handle, which we may pass and use for further recursive [.func]#spawn# calls.
+The Malebolgia readme file has a simple example for that, where the subroutine just prints some texts.
+Master handles can be used for further [.func]#spawns#, but they do not support the [.func]#awaitAll()# operation.
+
+Note that using a recursive call of {procs} that return a result can not work:
+
+[source, nim]
+----
+proc fac(m: MasterHandle; i: int): int {.gcsafe.} =
+  var res: int
+  if i < 2:
+    result = 1
+  else:
+    m.spawn fac(m, i - 1) -> result
+  result *= i
+
+proc  factorial(i: int): int =
+  var m = createMaster()
+  m.awaitAll:
+    m.spawn fac(m.getHandle, i) -> result
+
+echo factorial(5)
+----
+
+We have not yet managed to convert the Pi approximation code from https://github.com/status-im/nim-taskpools#example-usage or the https://github.com/mratsim/weave#task-parallelism
+example to Malebolgia.
+
+In the [.func]#awaitAll# block, we can call [.func]#cancel()# on the master {object} to cancel the execution of all spawned threads.
+The [.func]#createMaster()# function supports additionally an optional timeout parameter for the thread execution.
+The cancellation on timeout does not occur automatically, but the function
+[.func]#canceled()# can be called on the master {object} to check if a timeout is reached.
+Actually, this timeout seems to work as a plain timer with no additional functionality.
+The Malebolgia readme file has simple examples for the use of timeouts and the cancel operation, so we will
+not repeat that here.
+
+==== Lockers
+
+The package supports the shared access and mutation of data structures like hash tables.
+To make that work, the instance variable is wrapped by an [.func]#initLocker()# call, and can then be passed
+to the spawned subroutine, where a protecting lock() statement allows its mutation.
+The readme file has a simple code example for this.
+
+==== Exception handling
+
+If a spawned task raises an exception, that exception is automatically re-raised after the [.func]#awaitAll# block.
+
+==== Mutable parameters
+
+The spawned subroutines currently do not allow the use of var parameters. However,
+we can take the address of a variable declared outside of the [.func]#awaitAll# block and pass it as a pointer to spawned subroutines.
+Inside that subroutine, that variable has typically to be protected with a lock, for which the
+Malebolgia package provides a convenient [.type]#TicketLock# data type. The readme file has an
+example for its use.
+
+==== Parallel processing of container content 
+
+A typical use case of the Malebolgia package seems to be the parallel processing of {seq}-like data types.
+As an example, we will investigate the [.func]#parMap()# template from the src folder of the package:
+
+[source, nim]
+----
+template `@!`[T](data: openArray[T]; i: int): untyped =
+  cast[ptr UncheckedArray[T]](addr data[i])
+
+template parMap*[T](data: var openArray[T]; bulkSize: int; op: untyped): untyped =
+
+  proc worker[Tin, Tout](a: ptr UncheckedArray[Tin];
+                         dest: ptr UncheckedArray[Tout]; until: int) =
+    for i in 0..<until: dest[i] = op(a[i])
+
+  var m = createMaster()
+  var result = newSeq[typeof(op(data[0]))](data.len)
+  m.awaitAll:
+    var i = 0
+    while i+bulkSize <= data.len:
+      m.spawn worker(data@!i, result@!i, bulkSize)
+      i += bulkSize
+    if i < data.len:
+      m.spawn worker(data@!i, result@!i, data.len-i)
+  result
+----
+
+This template behaves similarly to the [.func]#map()# {proc} or the [.func]#mapIt()# {template} from the [.mod]#sequtils# module of Nim's standard library, but performs
+the work in parallel on all available CPU cores.
+The {template} has the familiar structure with the [.func]#waitAll# block and the [.func]#spawn# calls on the master {object}.
+The input and output data is passed as [.code]#ptr UncheckedArray# to the worker {proc}, using the helper {template} [.func]#@!#
+to cast the data. The [.var]#bulksize# parameter controls the number of used threads. Typically
+that value might be [.code]#data.len div NumCPUs#.
+
+A typical use case for the [.func]#parMap()# {template} could be the mapping of integer numbers to corresponding {strings}, as that
+should be an operation which is not too trivial and requires at least a few CPU cycles:
+
+[source, nim]
+----
+import std/monotimes
+import sequtils
+import Malebolgia, Malebolgia/[paralgos]
+
+proc main =
+  var start: MonoTime
+  var s = toSeq(0 .. 9999)
+  var r: seq[string]
+  start = getMonotime()
+  r = s.mapIt($it) 
+  echo getMonotime() - start
+  echo r[^1]
+
+  start = getMonotime()
+  r = s.parMap(s.len div 8, `$`) 
+  echo getMonotime() - start
+  echo r[^1]
+
+main()
+----
+
+However, for our test the performance of the single-threaded and the parallel version are very close.
+
 === Parsing data files (in parallel)
 
 As a practical application for parallel code execution, we will finally present an example of
 the process of parsing textual data files to extract some information.
 A commonly used file format to store data in files is a [.ndef]#comma-separated value# (CSV) file.
-Each line of the file is a data record, consisting of one or more fields, separated by commas.
+Each line of the file is a data record, consisting of one or more fields, separated by commas from each other.
 
 An example can be a file, which stores the population and total area (in km^2)
 of all the districts of our county, like
@@ -23327,6 +23764,8 @@ We have added a few more simple examples and exercises:
 === Sep 2023
 
 * <<Combinations>>
+* <<Iterative merge sort>>
+* <<Malebolgia>>
 * Index for PDF version
 
 [index]
