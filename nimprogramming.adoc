@@ -1,11 +1,12 @@
 = Computer Programming with the Nim Programming Language
 A Gentle Introduction (C) Dr. Stefan Salewski 2020, 2021, 2022, 2023
-//v0.1, 2023-SEP-18
+//v0.1, 2023-NOV-05
 :doctype: book
 :part-signifier: Part
 // mobi does not work with SVG!
-:front-cover-image: image:default-cover.svg[Front Cover,1050,1600]
+//:front-cover-image: image:default-cover.svg[Front Cover,1050,1600]
 //:front-cover-image: image:GPT-4.jpg[Front Cover,1050,1600]
+:front-cover-image: image:frog1.jpg[fit=cover]
 :partnums:
 :hyphens:
 :toc: left
@@ -5142,7 +5143,7 @@ of variable [.var]#computer1# into variable [.var]#comp2#, and finally, we overw
 the [.var]#price# field in [.var]#comp2#. As both variables are distinct instances,
 the fields of variable [.var]#computer1# are not modified this way.
 
-Starting with Nim v2.0, object fields can have custom default values, instead of the binary zero.
+Starting with Nim v2.0, {object} fields can have custom default values, instead of the binary zero.
 The syntax for the defaults is the same as the assignment for ordinary variables, as shown below:
 
 [source, nim]
@@ -5151,7 +5152,22 @@ type
   Computer = object
     freeShipping: bool = true
     manufacturer = "bananas"
+    quantity: int
+
+var c1 = Computer(quantity: 12)
+echo c1.manufacturer # "bananas"
+c1 = default(Computer)
+echo c1.freeShipping # true
+var c2: Computer # no custom default values, all fields binary zero!
+echo c2.freeShipping # false
 ----
+
+Note that custom default values for {object} fields are only applied, when we explicitly initialize a variable
+by use of an {object} constructor, or when we use the [.func]#default()# function for the initialization. A plain
+variable declaration like [.code]#var c2: Computer# initializes all fields to binary zero".
+This behaviour could be surprising,
+and perhaps it would be a good idea when the compiler gives a warning when for {objects} with default field values a plain
+declaration like [.code]#var c2: Computer# is used.
 
 Typically, a computer store would offer many different types of computers, so it would
 make sense to store all the different devices in a container like a sequence, called
@@ -17780,6 +17796,8 @@ Fidget:: Fidget - A cross-platform UI library for nim (https://github.com/treefo
 
 Fidgetty:: Widget library built using a fork of Fidget written in pure Nim and OpenGL rendered. (https://github.com/elcritch/fidgetty)
 
+Figuro:: Experimental UI Library for Nim (https://github.com/elcritch/figuro)
+
 Owlkettle:: A declarative user interface framework based on GTK 4 (https://github.com/can-lehmann/owlkettle)
 
 NiGui:: Cross-platform desktop GUI toolkit written in Nim (https://github.com/simonkrauter/NiGui)
@@ -21202,6 +21220,88 @@ look strange, as we generally avoid allocations in loops. But as [.func]#candida
 may pass the newly allocated [.var]#buf# variable just to [.func]#candidates()#, instead of copying it. And
 we do not have to call [.code]#buf.setLen(BlockSize)# at the end of the loop.
 
+
+==== Use of malebolgia instead of threadpool
+
+With some small changes in the [.func]#main()# procedure, we can use the code from above with the new [.mod]#malebolgia# module: 
+
+[source, nim]
+----
+import malebolgia
+import std/parseutils
+
+const
+  FileName = "csvdata.txt"
+  BlockSize = 1024 * 1024 - 1
+
+type
+  Res = object
+    dist, count, state, vreg: string
+    area: float
+    pop: int
+
+proc candidate(lines: string): Res =
+  var
+    res: Res
+    j: int
+    l = newStringOfCap(127) # avoid reallocations
+  result = Res(area: NegInf, pop: int.low)
+  while true:
+    j += parseUntil(lines, l, '\n', j) + 1
+    if l.len == 0:
+      break
+    if l[0] != '#':
+      var i: int
+      i += parseUntil(l, res.dist, ',', i) + 1
+      i += parseUntil(l, res.count, ',', i) + 1
+      i += parseUntil(l, res.state, ',', i) + 1
+      i += parseUntil(l, res.vreg, ',', i) + 1
+      i += parseFloat(l, res.area, i) + 1
+      i += parseInt(l, res.pop, i) + 1
+      if res.pop > result.pop:
+        result = res
+
+proc main =
+  var flowVarSeq = newSeq[Res](1000) # ugly
+  var f: File = open(FileName, fmRead)
+  var m = createMaster()
+  var blocks = 0
+  m.awaitAll:
+    while not f.endOfFile:
+      var buf = newString(BlockSize) # passed as sink parameter to candidates()
+      let res = f.readChars(buf)
+      if f.endOfFile:
+        buf.setLen(res)
+      else:
+        var i = res - 1
+        while buf[i] != '\n':
+          dec(i)
+        inc(i)
+        f.setFilePos(i - res, fspCur)
+        buf.setLen(buf.len + i - res)
+        assert(blocks < flowVarSeq.len)
+        m.spawn candidate(buf) -> flowVarSeq[blocks]
+        inc(blocks)
+      assert buf[buf.high] == '\n'
+  f.close
+  echo "Blocks: ", blocks
+  flowVarSeq.setLen(blocks)
+
+  var final = Res(area: NegInf, pop: int.low)
+  for c in flowVarSeq:
+    if c.pop > final.pop:
+      final = c
+
+  echo "Final result:", final
+
+main()
+----
+
+Note that [.mod]#malebolgia# was designed for Nim 2.0 with ARC or ORC memory management and may not work with old refc memory management.
+When we compile the above code with option [.term]#-d:danger# the program runs on our box (AMD Ryzen 9 5900HX, 8-core) with the original test data set in less than 50 ms,
+which is a good value. One disadvantage of the [.mod]#malebolgia# module with its [.op]#+->+# operator is, that we can not use [.func]#add()# to fill the sequence with the
+results, but have to pre-allocate a large {seq}. 
+
 ****
 Note: All the example codes in this section are nearly untested. The intention of this section was only to show you
 which strategies can be used to parse CSV files, and how the parsing can be optimized and parallelized.
@@ -22644,11 +22744,11 @@ to monitor the still-occupied memory resources.
 
 === Default values for object fields
 
-Nim initializes variables to binary zero by default, and this applies to object fields as well.
-Before v2.0, it was not possible to specify other default values for object fields in the type definition.
+Nim initializes variables to binary zero by default, and this applies to {object} fields as well.
+Before v2.0, it was not possible to specify other default values for {object} fields in the type definition.
 Nim 2.0 allows this now finally in the same way as we can do it for plain variables.
 We used this feature already in section <<The Prim algorithm>> where we set
-the dist field of our Vertex to math.Inf, indicating that we have not yet found a neighbor.
+the [.var]#dist# field of our [.type]#Vertex# type to [.const]#math.Inf#, indicating that we have not yet found a neighbor.
 
 [source, nim]
 ----
@@ -22660,6 +22760,12 @@ type
 ----
 
 Default values for {object} fields are useful whenever the default zero is nonsensical or may even cause a runtime exception. This could be the case for the denominator of a fraction, or a scaling parameter, which generally defaults to 1 or 100 percent, not zero.
+
+Note that custom default values for {object} fields are only applied, when we explicitly initialize a variable
+by use of an {object} constructor, or when we use the [.func]#default()# function for the initialization. A plain
+variable declaration like [.code]#var c2: Computer# always initializes all fields to binary zero. This behaviour could be surprising,
+and perhaps it would be a good idea when the compiler gives a warning when for {objects} with default field values a plain
+declaration like [.code]#var c2: Computer# is used.
 
 === Overloadable enums
 
